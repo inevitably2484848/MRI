@@ -1,0 +1,40 @@
+g0/s00/t00/-45  05DAC002_BAS_tag.009.001.points
+g0/s00/t00/ 45  05DAC002_BAS_tag.999.001.points
+g0/s00/t06/-45  05DAC002_BAS_tag.009.007.points
+g0/s00/t06/ 45  05DAC002_BAS_tag.999.007.points
+g1/s02/t00/-45  05DAC002_BAS_tag.011.041.points
+g1/s02/t00/ 45  05DAC002_BAS_tag.998.041.points
+g1/s03/t00/-45  05DAC002_BAS_tag.011.061.points
+g1/s03/t00/ 45  05DAC002_BAS_tag.998.061.points
+g1/s03/t06/-45  05DAC002_BAS_tag.011.067.points
+g1/s03/t06/ 45  05DAC002_BAS_tag.998.067.points
+g1/s04/t00/-45  05DAC002_BAS_tag.011.081.points
+g1/s04/t00/ 45  05DAC002_BAS_tag.998.081.points
+g1/s04/t06/-45  05DAC002_BAS_tag.011.087.points
+g1/s04/t06/ 45  05DAC002_BAS_tag.998.087.points
+g1/s05/t00/-45  05DAC002_BAS_tag.011.101.points
+g1/s05/t00/ 45  05DAC002_BAS_tag.998.101.points
+g1/s05/t06/-45  05DAC002_BAS_tag.011.107.points
+g1/s05/t06/ 45  05DAC002_BAS_tag.998.107.points
+g1/s06/t00/-45  05DAC002_BAS_tag.011.121.points
+g1/s06/t00/ 45  05DAC002_BAS_tag.998.121.points
+g1/s06/t06/-45  05DAC002_BAS_tag.011.127.points
+g1/s06/t06/ 45  05DAC002_BAS_tag.998.127.points
+g1/s07/t00/-45  05DAC002_BAS_tag.011.141.points
+g1/s07/t00/ 45  05DAC002_BAS_tag.998.141.points
+g1/s07/t06/-45  05DAC002_BAS_tag.011.147.points
+g1/s07/t06/ 45  05DAC002_BAS_tag.998.147.points
+g1/s08/t00/-45  05DAC002_BAS_tag.011.161.points
+g1/s08/t00/ 45  05DAC002_BAS_tag.998.161.points
+g1/s08/t06/-45  05DAC002_BAS_tag.011.167.points
+g1/s08/t06/ 45  05DAC002_BAS_tag.998.167.points
+g1/s09/t00/-45  05DAC002_BAS_tag.011.181.points
+g1/s09/t00/ 45  05DAC002_BAS_tag.998.181.points
+g1/s09/t06/-45  05DAC002_BAS_tag.011.187.points
+g1/s09/t06/ 45  05DAC002_BAS_tag.998.187.points
+g1/s10/t00/-45  05DAC002_BAS_tag.011.201.points
+g1/s10/t00/ 45  05DAC002_BAS_tag.998.201.points
+g2/s00/t00/-45  05DAC002_BAS_tag.012.001.points
+g2/s00/t00/ 45  05DAC002_BAS_tag.997.001.points
+g2/s00/t06/-45  05DAC002_BAS_tag.012.007.points
+g2/s00/t06/ 45  05DAC002_BAS_tag.997.001.points

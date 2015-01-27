@@ -1,0 +1,3311 @@
+begin study
+nGroups = 3
+studyId = 05DAC002_BAS_tag
+
+begin group
+nSlices = 1
+groupIndex = 0
+heartAxis = LONG_AXIS
+sliceOrder = BASE_TO_APEX
+
+begin slice
+process = true
+nTimeframes = 7
+sliceIndex = 0
+version = @(#)write_srt_file.m	1.5 08/04/05
+heartAxis = LONG_AXIS
+nROI = 0 0 2 2
+nROIshape = RECTANGLE
+ROIshape = ELLIPSE
+ROI = 74 100 64 48
+LAline = 138.52 124.30 E
+tagCenter = -28.9787 -9.9537
+tagOrientation = GRID
+tagSpacing = 10.781257
+bloodIntensity = BLACK
+snakeForce = NOISE_ONLY
+tagDetectionMethod = NOISE_ONLY_DETECT
+tagPredictionMethod = HARP
+tagInitialization = NO_INITIALIZATION
+myocardiumSegmentation = NOISE_ONLY_SEG
+fwhm = 1.000000
+nFWHMsteps = 19
+FWHMrange = 0.900000
+T1 = 100.000000
+nT1steps = 19
+T1range = 0.900000
+window = 2
+noiseOnlySegmentation_width = 0.500000
+noiseOnlySegmentation_steps = 2
+noiseOnlyAdjust_width = 0.500000
+noiseOnlyAdjust_steps = 5
+myocardiumRho = 0.900000
+backgroundRho = 0.900000
+P_T = 0.500000
+P_B = 0.330000
+P_M = 0.330000
+minimumRunLength = 3
+temporalNeighborhoodSize = 1
+snakeChangeWeight = 10.000000
+snakeBendingWeight = 1.000000
+snakeStepSize = 0.100000
+snakeTolerance = 0.010000
+snakeMaxIterations = 150
+snakeSeparation = 0.600000
+snakeSeparationForce = 10.000000
+snakeContinuity = DISCONTINUOUS
+snakeBoundaryCondition = VON_NEUMANN
+intensityStats = STATIONARY_MEDIAN
+varianceModification = FORCE_EQUAL_VARIANCE_MIN
+
+begin timeframe
+nImages = 1
+timeframeIndex = 0
+
+begin image
+imageIndex = 0
+fileName = K:\tdenney\SCCOR\05DAC002\BAS\SE9\IM1
+timeFromQRS = 10.000000
+pixelSize = 1.562501
+imageTopLeft = 161.643921,-243.897153,112.534550
+imageTopRight = -117.723058,8.430609,247.756237
+imageBottomLeft = 181.847082,-38.044348,-229.833193
+imageCenter = 32.062012,-14.806870,8.961522
+imageNormal = -0.713905,-0.580715,-0.391290
+imageAngle = 0
+imageLocation = -34.080044
+imageFormat = DICOM
+imageSeries = 009
+imageNumber = 001
+SArefSeries = 009
+end image
+
+end timeframe
+
+begin timeframe
+nImages = 1
+timeframeIndex = 1
+
+begin image
+imageIndex = 0
+fileName = K:\tdenney\SCCOR\05DAC002\BAS\SE9\IM2
+timeFromQRS = 63.000000
+pixelSize = 1.562501
+imageTopLeft = 163.661636,-241.374588,116.045166
+imageTopRight = -115.705343,10.953173,251.266853
+imageBottomLeft = 183.864797,-35.521783,-226.322577
+imageCenter = 34.079727,-12.284305,12.472138
+imageNormal = -0.713905,-0.580715,-0.391290
+imageAngle = 0
+imageLocation = -34.080044
+imageFormat = DICOM
+imageSeries = 009
+imageNumber = 002
+SArefSeries = 009
+end image
+
+end timeframe
+
+begin timeframe
+nImages = 1
+timeframeIndex = 2
+
+begin image
+imageIndex = 0
+fileName = K:\tdenney\SCCOR\05DAC002\BAS\SE9\IM3
+timeFromQRS = 117.000000
+pixelSize = 1.562501
+imageTopLeft = 163.661636,-241.374588,116.045166
+imageTopRight = -115.705343,10.953173,251.266853
+imageBottomLeft = 183.864797,-35.521783,-226.322577
+imageCenter = 34.079727,-12.284305,12.472138
+imageNormal = -0.713905,-0.580715,-0.391290
+imageAngle = 0
+imageLocation = -34.080044
+imageFormat = DICOM
+imageSeries = 009
+imageNumber = 003
+SArefSeries = 009
+end image
+
+end timeframe
+
+begin timeframe
+nImages = 1
+timeframeIndex = 3
+
+begin image
+imageIndex = 0
+fileName = K:\tdenney\SCCOR\05DAC002\BAS\SE9\IM4
+timeFromQRS = 170.000000
+pixelSize = 1.562501
+imageTopLeft = 163.661636,-241.374588,116.045166
+imageTopRight = -115.705343,10.953173,251.266853
+imageBottomLeft = 183.864797,-35.521783,-226.322577
+imageCenter = 34.079727,-12.284305,12.472138
+imageNormal = -0.713905,-0.580715,-0.391290
+imageAngle = 0
+imageLocation = -34.080044
+imageFormat = DICOM
+imageSeries = 009
+imageNumber = 004
+SArefSeries = 009
+end image
+
+end timeframe
+
+begin timeframe
+nImages = 1
+timeframeIndex = 4
+
+begin image
+imageIndex = 0
+fileName = K:\tdenney\SCCOR\05DAC002\BAS\SE9\IM5
+timeFromQRS = 224.000000
+pixelSize = 1.562501
+imageTopLeft = 163.661636,-241.374588,116.045166
+imageTopRight = -115.705343,10.953173,251.266853
+imageBottomLeft = 183.864797,-35.521783,-226.322577
+imageCenter = 34.079727,-12.284305,12.472138
+imageNormal = -0.713905,-0.580715,-0.391290
+imageAngle = 0
+imageLocation = -34.080044
+imageFormat = DICOM
+imageSeries = 009
+imageNumber = 005
+SArefSeries = 009
+end image
+
+end timeframe
+
+begin timeframe
+nImages = 1
+timeframeIndex = 5
+
+begin image
+imageIndex = 0
+fileName = K:\tdenney\SCCOR\05DAC002\BAS\SE9\IM6
+timeFromQRS = 277.000000
+pixelSize = 1.562501
+imageTopLeft = 163.661636,-241.374588,116.045166
+imageTopRight = -115.705343,10.953173,251.266853
+imageBottomLeft = 183.864797,-35.521783,-226.322577
+imageCenter = 34.079727,-12.284305,12.472138
+imageNormal = -0.713905,-0.580715,-0.391290
+imageAngle = 0
+imageLocation = -34.080044
+imageFormat = DICOM
+imageSeries = 009
+imageNumber = 006
+SArefSeries = 009
+end image
+
+end timeframe
+
+begin timeframe
+nImages = 1
+timeframeIndex = 6
+
+begin image
+imageIndex = 0
+fileName = K:\tdenney\SCCOR\05DAC002\BAS\SE9\IM7
+timeFromQRS = 331.000000
+pixelSize = 1.562501
+imageTopLeft = 165.119249,-244.783150,114.640489
+imageTopRight = -114.247730,7.544611,249.862176
+imageBottomLeft = 185.322410,-38.930345,-227.727254
+imageCenter = 35.537340,-15.692867,11.067461
+imageNormal = -0.713905,-0.580715,-0.391290
+imageAngle = 0
+imageLocation = -34.080044
+imageFormat = DICOM
+imageSeries = 009
+imageNumber = 007
+SArefSeries = 009
+end image
+
+end timeframe
+
+end slice
+
+end group
+
+begin group
+nSlices = 13
+groupIndex = 1
+heartAxis = SHORT_AXIS
+sliceOrder = BASE_TO_APEX
+
+begin slice
+process = false
+nTimeframes = 7
+sliceIndex = 0
+version = @(#)write_srt_file.m	1.5 08/04/05
+heartAxis = SHORT_AXIS
+nROI = 0 0 2 2
+nROIshape = RECTANGLE
+tagCenter = -1.8681 -5.6731
+tagOrientation = GRID
+tagSpacing = 11.250007
+bloodIntensity = BLACK
+snakeForce = NOISE_ONLY
+tagDetectionMethod = NOISE_ONLY_DETECT
+tagPredictionMethod = HARP
+tagInitialization = NO_INITIALIZATION
+myocardiumSegmentation = NOISE_ONLY_SEG
+fwhm = 1.000000
+nFWHMsteps = 19
+FWHMrange = 0.900000
+T1 = 100.000000
+nT1steps = 19
+T1range = 0.900000
+window = 2
+noiseOnlySegmentation_width = 0.500000
+noiseOnlySegmentation_steps = 2
+noiseOnlyAdjust_width = 0.500000
+noiseOnlyAdjust_steps = 5
+myocardiumRho = 0.900000
+backgroundRho = 0.900000
+P_T = 0.500000
+P_B = 0.330000
+P_M = 0.330000
+minimumRunLength = 3
+temporalNeighborhoodSize = 1
+snakeChangeWeight = 10.000000
+snakeBendingWeight = 1.000000
+snakeStepSize = 0.100000
+snakeTolerance = 0.010000
+snakeMaxIterations = 150
+snakeSeparation = 0.600000
+snakeSeparationForce = 10.000000
+snakeContinuity = DISCONTINUOUS
+snakeBoundaryCondition = VON_NEUMANN
+intensityStats = STATIONARY_MEDIAN
+varianceModification = FORCE_EQUAL_VARIANCE_MIN
+
+begin timeframe
+nImages = 1
+timeframeIndex = 0
+
+begin image
+imageIndex = 0
+fileName = K:\tdenney\SCCOR\05DAC002\BAS\SE11\IM1
+timeFromQRS = 10.000000
+pixelSize = 1.562501
+imageTopLeft = -132.377029,-219.294586,111.844261
+imageTopRight = 168.523164,-1.648847,260.469556
+imageBottomLeft = -112.173829,-13.441386,-230.524539
+imageCenter = 28.174667,-7.545116,14.972509
+imageNormal = -0.656938,0.662634,0.359651
+imageAngle = 0
+imageLocation = 7.544965
+imageFormat = DICOM
+imageSeries = 011
+imageNumber = 001
+SArefSeries = 011
+end image
+
+end timeframe
+
+begin timeframe
+nImages = 1
+timeframeIndex = 1
+
+begin image
+imageIndex = 0
+fileName = K:\tdenney\SCCOR\05DAC002\BAS\SE11\IM2
+timeFromQRS = 65.000000
+pixelSize = 1.562501
+imageTopLeft = -132.377029,-219.294586,111.844261
+imageTopRight = 168.523164,-1.648847,260.469556
+imageBottomLeft = -112.173829,-13.441386,-230.524539
+imageCenter = 28.174667,-7.545116,14.972509
+imageNormal = -0.656938,0.662634,0.359651
+imageAngle = 0
+imageLocation = 7.544965
+imageFormat = DICOM
+imageSeries = 011
+imageNumber = 002
+SArefSeries = 011
+end image
+
+end timeframe
+
+begin timeframe
+nImages = 1
+timeframeIndex = 2
+
+begin image
+imageIndex = 0
+fileName = K:\tdenney\SCCOR\05DAC002\BAS\SE11\IM3
+timeFromQRS = 121.000000
+pixelSize = 1.562501
+imageTopLeft = -132.377029,-219.294586,111.844261
+imageTopRight = 168.523164,-1.648847,260.469556
+imageBottomLeft = -112.173829,-13.441386,-230.524539
+imageCenter = 28.174667,-7.545116,14.972509
+imageNormal = -0.656938,0.662634,0.359651
+imageAngle = 0
+imageLocation = 7.544965
+imageFormat = DICOM
+imageSeries = 011
+imageNumber = 003
+SArefSeries = 011
+end image
+
+end timeframe
+
+begin timeframe
+nImages = 1
+timeframeIndex = 3
+
+begin image
+imageIndex = 0
+fileName = K:\tdenney\SCCOR\05DAC002\BAS\SE11\IM4
+timeFromQRS = 176.000000
+pixelSize = 1.562501
+imageTopLeft = -132.377029,-219.294586,111.844261
+imageTopRight = 168.523164,-1.648847,260.469556
+imageBottomLeft = -112.173829,-13.441386,-230.524539
+imageCenter = 28.174667,-7.545116,14.972509
+imageNormal = -0.656938,0.662634,0.359651
+imageAngle = 0
+imageLocation = 7.544965
+imageFormat = DICOM
+imageSeries = 011
+imageNumber = 004
+SArefSeries = 011
+end image
+
+end timeframe
+
+begin timeframe
+nImages = 1
+timeframeIndex = 4
+
+begin image
+imageIndex = 0
+fileName = K:\tdenney\SCCOR\05DAC002\BAS\SE11\IM5
+timeFromQRS = 232.000000
+pixelSize = 1.562501
+imageTopLeft = -132.377029,-219.294586,111.844261
+imageTopRight = 168.523164,-1.648847,260.469556
+imageBottomLeft = -112.173829,-13.441386,-230.524539
+imageCenter = 28.174667,-7.545116,14.972509
+imageNormal = -0.656938,0.662634,0.359651
+imageAngle = 0
+imageLocation = 7.544965
+imageFormat = DICOM
+imageSeries = 011
+imageNumber = 005
+SArefSeries = 011
+end image
+
+end timeframe
+
+begin timeframe
+nImages = 1
+timeframeIndex = 5
+
+begin image
+imageIndex = 0
+fileName = K:\tdenney\SCCOR\05DAC002\BAS\SE11\IM6
+timeFromQRS = 287.000000
+pixelSize = 1.562501
+imageTopLeft = -132.377029,-219.294586,111.844261
+imageTopRight = 168.523164,-1.648847,260.469556
+imageBottomLeft = -112.173829,-13.441386,-230.524539
+imageCenter = 28.174667,-7.545116,14.972509
+imageNormal = -0.656938,0.662634,0.359651
+imageAngle = 0
+imageLocation = 7.544965
+imageFormat = DICOM
+imageSeries = 011
+imageNumber = 006
+SArefSeries = 011
+end image
+
+end timeframe
+
+begin timeframe
+nImages = 1
+timeframeIndex = 6
+
+begin image
+imageIndex = 0
+fileName = K:\tdenney\SCCOR\05DAC002\BAS\SE11\IM7
+timeFromQRS = 343.000000
+pixelSize = 1.562501
+imageTopLeft = -132.377029,-219.294586,111.844261
+imageTopRight = 168.523164,-1.648847,260.469556
+imageBottomLeft = -112.173829,-13.441386,-230.524539
+imageCenter = 28.174667,-7.545116,14.972509
+imageNormal = -0.656938,0.662634,0.359651
+imageAngle = 0
+imageLocation = 7.544965
+imageFormat = DICOM
+imageSeries = 011
+imageNumber = 007
+SArefSeries = 011
+end image
+
+end timeframe
+
+end slice
+
+begin slice
+process = false
+nTimeframes = 7
+sliceIndex = 1
+version = @(#)write_srt_file.m	1.5 08/04/05
+heartAxis = SHORT_AXIS
+nROI = 0 0 2 2
+nROIshape = RECTANGLE
+tagOrientation = GRID
+bloodIntensity = BLACK
+snakeForce = NOISE_ONLY
+tagDetectionMethod = NOISE_ONLY_DETECT
+tagPredictionMethod = HARP
+tagInitialization = NO_INITIALIZATION
+myocardiumSegmentation = NOISE_ONLY_SEG
+fwhm = 1.000000
+nFWHMsteps = 19
+FWHMrange = 0.900000
+T1 = 100.000000
+nT1steps = 19
+T1range = 0.900000
+window = 2
+noiseOnlySegmentation_width = 0.500000
+noiseOnlySegmentation_steps = 2
+noiseOnlyAdjust_width = 0.500000
+noiseOnlyAdjust_steps = 5
+myocardiumRho = 0.900000
+backgroundRho = 0.900000
+P_T = 0.500000
+P_B = 0.330000
+P_M = 0.330000
+minimumRunLength = 3
+temporalNeighborhoodSize = 1
+snakeChangeWeight = 10.000000
+snakeBendingWeight = 1.000000
+snakeStepSize = 0.100000
+snakeTolerance = 0.010000
+snakeMaxIterations = 150
+snakeSeparation = 0.600000
+snakeSeparationForce = 10.000000
+snakeContinuity = DISCONTINUOUS
+snakeBoundaryCondition = VON_NEUMANN
+intensityStats = STATIONARY_MEDIAN
+varianceModification = FORCE_EQUAL_VARIANCE_MIN
+
+begin timeframe
+nImages = 1
+timeframeIndex = 0
+
+begin image
+imageIndex = 0
+fileName = K:\tdenney\SCCOR\05DAC002\BAS\SE11\IM21
+timeFromQRS = 10.000000
+pixelSize = 1.562501
+imageTopLeft = -127.121483,-224.595703,108.967216
+imageTopRight = 173.778710,-6.949964,257.592511
+imageBottomLeft = -106.918283,-18.742503,-233.401584
+imageCenter = 33.430213,-12.846233,12.095464
+imageNormal = -0.656938,0.662634,0.359651
+imageAngle = 0
+imageLocation = 12.846077
+imageFormat = DICOM
+imageSeries = 011
+imageNumber = 021
+SArefSeries = 011
+end image
+
+end timeframe
+
+begin timeframe
+nImages = 1
+timeframeIndex = 1
+
+begin image
+imageIndex = 0
+fileName = K:\tdenney\SCCOR\05DAC002\BAS\SE11\IM22
+timeFromQRS = 65.000000
+pixelSize = 1.562501
+imageTopLeft = -127.121483,-224.595703,108.967216
+imageTopRight = 173.778710,-6.949964,257.592511
+imageBottomLeft = -106.918283,-18.742503,-233.401584
+imageCenter = 33.430213,-12.846233,12.095464
+imageNormal = -0.656938,0.662634,0.359651
+imageAngle = 0
+imageLocation = 12.846077
+imageFormat = DICOM
+imageSeries = 011
+imageNumber = 022
+SArefSeries = 011
+end image
+
+end timeframe
+
+begin timeframe
+nImages = 1
+timeframeIndex = 2
+
+begin image
+imageIndex = 0
+fileName = K:\tdenney\SCCOR\05DAC002\BAS\SE11\IM23
+timeFromQRS = 121.000000
+pixelSize = 1.562501
+imageTopLeft = -127.121483,-224.595703,108.967216
+imageTopRight = 173.778710,-6.949964,257.592511
+imageBottomLeft = -106.918283,-18.742503,-233.401584
+imageCenter = 33.430213,-12.846233,12.095464
+imageNormal = -0.656938,0.662634,0.359651
+imageAngle = 0
+imageLocation = 12.846077
+imageFormat = DICOM
+imageSeries = 011
+imageNumber = 023
+SArefSeries = 011
+end image
+
+end timeframe
+
+begin timeframe
+nImages = 1
+timeframeIndex = 3
+
+begin image
+imageIndex = 0
+fileName = K:\tdenney\SCCOR\05DAC002\BAS\SE11\IM24
+timeFromQRS = 176.000000
+pixelSize = 1.562501
+imageTopLeft = -127.121483,-224.595703,108.967216
+imageTopRight = 173.778710,-6.949964,257.592511
+imageBottomLeft = -106.918283,-18.742503,-233.401584
+imageCenter = 33.430213,-12.846233,12.095464
+imageNormal = -0.656938,0.662634,0.359651
+imageAngle = 0
+imageLocation = 12.846077
+imageFormat = DICOM
+imageSeries = 011
+imageNumber = 024
+SArefSeries = 011
+end image
+
+end timeframe
+
+begin timeframe
+nImages = 1
+timeframeIndex = 4
+
+begin image
+imageIndex = 0
+fileName = K:\tdenney\SCCOR\05DAC002\BAS\SE11\IM25
+timeFromQRS = 232.000000
+pixelSize = 1.562501
+imageTopLeft = -127.121483,-224.595703,108.967216
+imageTopRight = 173.778710,-6.949964,257.592511
+imageBottomLeft = -106.918283,-18.742503,-233.401584
+imageCenter = 33.430213,-12.846233,12.095464
+imageNormal = -0.656938,0.662634,0.359651
+imageAngle = 0
+imageLocation = 12.846077
+imageFormat = DICOM
+imageSeries = 011
+imageNumber = 025
+SArefSeries = 011
+end image
+
+end timeframe
+
+begin timeframe
+nImages = 1
+timeframeIndex = 5
+
+begin image
+imageIndex = 0
+fileName = K:\tdenney\SCCOR\05DAC002\BAS\SE11\IM26
+timeFromQRS = 287.000000
+pixelSize = 1.562501
+imageTopLeft = -127.121483,-224.595703,108.967216
+imageTopRight = 173.778710,-6.949964,257.592511
+imageBottomLeft = -106.918283,-18.742503,-233.401584
+imageCenter = 33.430213,-12.846233,12.095464
+imageNormal = -0.656938,0.662634,0.359651
+imageAngle = 0
+imageLocation = 12.846077
+imageFormat = DICOM
+imageSeries = 011
+imageNumber = 026
+SArefSeries = 011
+end image
+
+end timeframe
+
+begin timeframe
+nImages = 1
+timeframeIndex = 6
+
+begin image
+imageIndex = 0
+fileName = K:\tdenney\SCCOR\05DAC002\BAS\SE11\IM27
+timeFromQRS = 343.000000
+pixelSize = 1.562501
+imageTopLeft = -127.121483,-224.595703,108.967216
+imageTopRight = 173.778710,-6.949964,257.592511
+imageBottomLeft = -106.918283,-18.742503,-233.401584
+imageCenter = 33.430213,-12.846233,12.095464
+imageNormal = -0.656938,0.662634,0.359651
+imageAngle = 0
+imageLocation = 12.846077
+imageFormat = DICOM
+imageSeries = 011
+imageNumber = 027
+SArefSeries = 011
+end image
+
+end timeframe
+
+end slice
+
+begin slice
+process = true
+nTimeframes = 7
+sliceIndex = 2
+version = @(#)write_srt_file.m	1.5 08/04/05
+heartAxis = SHORT_AXIS
+nROI = 0 0 2 2
+nROIshape = RECTANGLE
+ROIshape = ELLIPSE
+ROI = 100 97 57 57
+LAline = -1 -1 NO_LALINE
+tagCenter = -2.8194 -5.1975
+tagOrientation = GRID
+tagSpacing = 10.781257
+bloodIntensity = BLACK
+snakeForce = NOISE_ONLY
+tagDetectionMethod = NOISE_ONLY_DETECT
+tagPredictionMethod = HARP
+tagInitialization = NO_INITIALIZATION
+myocardiumSegmentation = NOISE_ONLY_SEG
+fwhm = 1.000000
+nFWHMsteps = 19
+FWHMrange = 0.900000
+T1 = 100.000000
+nT1steps = 19
+T1range = 0.900000
+window = 2
+noiseOnlySegmentation_width = 0.500000
+noiseOnlySegmentation_steps = 2
+noiseOnlyAdjust_width = 0.500000
+noiseOnlyAdjust_steps = 5
+myocardiumRho = 0.900000
+backgroundRho = 0.900000
+P_T = 0.500000
+P_B = 0.330000
+P_M = 0.330000
+minimumRunLength = 3
+temporalNeighborhoodSize = 1
+snakeChangeWeight = 10.000000
+snakeBendingWeight = 1.000000
+snakeStepSize = 0.100000
+snakeTolerance = 0.010000
+snakeMaxIterations = 150
+snakeSeparation = 0.600000
+snakeSeparationForce = 10.000000
+snakeContinuity = DISCONTINUOUS
+snakeBoundaryCondition = VON_NEUMANN
+intensityStats = STATIONARY_MEDIAN
+varianceModification = FORCE_EQUAL_VARIANCE_MIN
+
+begin timeframe
+nImages = 1
+timeframeIndex = 0
+
+begin image
+imageIndex = 0
+fileName = K:\tdenney\SCCOR\05DAC002\BAS\SE11\IM41
+timeFromQRS = 10.000000
+pixelSize = 1.562501
+imageTopLeft = -120.090815,-227.117249,104.211446
+imageTopRight = 180.809378,-9.471510,252.836741
+imageBottomLeft = -99.887615,-21.264049,-238.156954
+imageCenter = 40.460881,-15.367779,7.339893
+imageNormal = -0.656937,0.662633,0.359651
+imageAngle = 0
+imageLocation = 18.147188
+imageFormat = DICOM
+imageSeries = 011
+imageNumber = 041
+SArefSeries = 011
+end image
+
+end timeframe
+
+begin timeframe
+nImages = 1
+timeframeIndex = 1
+
+begin image
+imageIndex = 0
+fileName = K:\tdenney\SCCOR\05DAC002\BAS\SE11\IM42
+timeFromQRS = 65.000000
+pixelSize = 1.562501
+imageTopLeft = -121.865936,-229.896805,106.090172
+imageTopRight = 179.034257,-12.251066,254.715467
+imageBottomLeft = -101.662736,-24.043605,-236.278228
+imageCenter = 38.685760,-18.147335,9.218620
+imageNormal = -0.656937,0.662633,0.359651
+imageAngle = 0
+imageLocation = 18.147188
+imageFormat = DICOM
+imageSeries = 011
+imageNumber = 042
+SArefSeries = 011
+end image
+
+end timeframe
+
+begin timeframe
+nImages = 1
+timeframeIndex = 2
+
+begin image
+imageIndex = 0
+fileName = K:\tdenney\SCCOR\05DAC002\BAS\SE11\IM43
+timeFromQRS = 121.000000
+pixelSize = 1.562501
+imageTopLeft = -121.865936,-229.896805,106.090172
+imageTopRight = 179.034257,-12.251066,254.715467
+imageBottomLeft = -101.662736,-24.043605,-236.278228
+imageCenter = 38.685760,-18.147335,9.218620
+imageNormal = -0.656937,0.662633,0.359651
+imageAngle = 0
+imageLocation = 18.147188
+imageFormat = DICOM
+imageSeries = 011
+imageNumber = 043
+SArefSeries = 011
+end image
+
+end timeframe
+
+begin timeframe
+nImages = 1
+timeframeIndex = 3
+
+begin image
+imageIndex = 0
+fileName = K:\tdenney\SCCOR\05DAC002\BAS\SE11\IM44
+timeFromQRS = 176.000000
+pixelSize = 1.562501
+imageTopLeft = -121.865936,-229.896805,106.090172
+imageTopRight = 179.034257,-12.251066,254.715467
+imageBottomLeft = -101.662736,-24.043605,-236.278228
+imageCenter = 38.685760,-18.147335,9.218620
+imageNormal = -0.656937,0.662633,0.359651
+imageAngle = 0
+imageLocation = 18.147188
+imageFormat = DICOM
+imageSeries = 011
+imageNumber = 044
+SArefSeries = 011
+end image
+
+end timeframe
+
+begin timeframe
+nImages = 1
+timeframeIndex = 4
+
+begin image
+imageIndex = 0
+fileName = K:\tdenney\SCCOR\05DAC002\BAS\SE11\IM45
+timeFromQRS = 232.000000
+pixelSize = 1.562501
+imageTopLeft = -121.865936,-229.896805,106.090172
+imageTopRight = 179.034257,-12.251066,254.715467
+imageBottomLeft = -101.662736,-24.043605,-236.278228
+imageCenter = 38.685760,-18.147335,9.218620
+imageNormal = -0.656937,0.662633,0.359651
+imageAngle = 0
+imageLocation = 18.147188
+imageFormat = DICOM
+imageSeries = 011
+imageNumber = 045
+SArefSeries = 011
+end image
+
+end timeframe
+
+begin timeframe
+nImages = 1
+timeframeIndex = 5
+
+begin image
+imageIndex = 0
+fileName = K:\tdenney\SCCOR\05DAC002\BAS\SE11\IM46
+timeFromQRS = 287.000000
+pixelSize = 1.562501
+imageTopLeft = -121.865936,-229.896805,106.090172
+imageTopRight = 179.034257,-12.251066,254.715467
+imageBottomLeft = -101.662736,-24.043605,-236.278228
+imageCenter = 38.685760,-18.147335,9.218620
+imageNormal = -0.656937,0.662633,0.359651
+imageAngle = 0
+imageLocation = 18.147188
+imageFormat = DICOM
+imageSeries = 011
+imageNumber = 046
+SArefSeries = 011
+end image
+
+end timeframe
+
+begin timeframe
+nImages = 1
+timeframeIndex = 6
+
+begin image
+imageIndex = 0
+fileName = K:\tdenney\SCCOR\05DAC002\BAS\SE11\IM47
+timeFromQRS = 343.000000
+pixelSize = 1.562501
+imageTopLeft = -117.187496,-229.660276,114.200021
+imageTopRight = 183.712697,-12.014537,262.825316
+imageBottomLeft = -96.984296,-23.807076,-228.168379
+imageCenter = 43.364201,-17.910806,17.328468
+imageNormal = -0.656937,0.662633,0.359651
+imageAngle = 0
+imageLocation = 18.147188
+imageFormat = DICOM
+imageSeries = 011
+imageNumber = 047
+SArefSeries = 011
+end image
+
+end timeframe
+
+end slice
+
+begin slice
+process = true
+nTimeframes = 7
+sliceIndex = 3
+version = @(#)write_srt_file.m	1.5 08/04/05
+heartAxis = SHORT_AXIS
+nROI = 0 0 2 2
+nROIshape = RECTANGLE
+ROIshape = ELLIPSE
+ROI = 105 98 54 54
+LAline = -1 -1 NO_LALINE
+tagCenter = -2.8194 -5.1975
+tagOrientation = GRID
+tagSpacing = 10.781257
+bloodIntensity = BLACK
+snakeForce = NOISE_ONLY
+tagDetectionMethod = NOISE_ONLY_DETECT
+tagPredictionMethod = HARP
+tagInitialization = NO_INITIALIZATION
+myocardiumSegmentation = NOISE_ONLY_SEG
+fwhm = 1.000000
+nFWHMsteps = 19
+FWHMrange = 0.900000
+T1 = 100.000000
+nT1steps = 19
+T1range = 0.900000
+window = 2
+noiseOnlySegmentation_width = 0.500000
+noiseOnlySegmentation_steps = 2
+noiseOnlyAdjust_width = 0.500000
+noiseOnlyAdjust_steps = 5
+myocardiumRho = 0.900000
+backgroundRho = 0.900000
+P_T = 0.500000
+P_B = 0.330000
+P_M = 0.330000
+minimumRunLength = 3
+temporalNeighborhoodSize = 1
+snakeChangeWeight = 10.000000
+snakeBendingWeight = 1.000000
+snakeStepSize = 0.100000
+snakeTolerance = 0.010000
+snakeMaxIterations = 150
+snakeSeparation = 0.600000
+snakeSeparationForce = 10.000000
+snakeContinuity = DISCONTINUOUS
+snakeBoundaryCondition = VON_NEUMANN
+intensityStats = STATIONARY_MEDIAN
+varianceModification = FORCE_EQUAL_VARIANCE_MIN
+
+begin timeframe
+nImages = 1
+timeframeIndex = 0
+
+begin image
+imageIndex = 0
+fileName = K:\tdenney\SCCOR\05DAC002\BAS\SE11\IM61
+timeFromQRS = 10.000000
+pixelSize = 1.562501
+imageTopLeft = -117.224321,-235.218106,102.128894
+imageTopRight = 183.675872,-17.572367,250.754189
+imageBottomLeft = -97.021121,-29.364906,-240.239906
+imageCenter = 43.327375,-23.468637,5.257142
+imageNormal = -0.656938,0.662634,0.359651
+imageAngle = 0
+imageLocation = 23.448299
+imageFormat = DICOM
+imageSeries = 011
+imageNumber = 061
+SArefSeries = 011
+end image
+
+end timeframe
+
+begin timeframe
+nImages = 1
+timeframeIndex = 1
+
+begin image
+imageIndex = 0
+fileName = K:\tdenney\SCCOR\05DAC002\BAS\SE11\IM62
+timeFromQRS = 65.000000
+pixelSize = 1.562501
+imageTopLeft = -116.610382,-235.197922,103.213127
+imageTopRight = 184.289811,-17.552183,251.838422
+imageBottomLeft = -96.407182,-29.344722,-239.155673
+imageCenter = 43.941314,-23.448452,6.341375
+imageNormal = -0.656938,0.662634,0.359651
+imageAngle = 0
+imageLocation = 23.448299
+imageFormat = DICOM
+imageSeries = 011
+imageNumber = 062
+SArefSeries = 011
+end image
+
+end timeframe
+
+begin timeframe
+nImages = 1
+timeframeIndex = 2
+
+begin image
+imageIndex = 0
+fileName = K:\tdenney\SCCOR\05DAC002\BAS\SE11\IM63
+timeFromQRS = 121.000000
+pixelSize = 1.562501
+imageTopLeft = -116.610382,-235.197922,103.213127
+imageTopRight = 184.289811,-17.552183,251.838422
+imageBottomLeft = -96.407182,-29.344722,-239.155673
+imageCenter = 43.941314,-23.448452,6.341375
+imageNormal = -0.656938,0.662634,0.359651
+imageAngle = 0
+imageLocation = 23.448299
+imageFormat = DICOM
+imageSeries = 011
+imageNumber = 063
+SArefSeries = 011
+end image
+
+end timeframe
+
+begin timeframe
+nImages = 1
+timeframeIndex = 3
+
+begin image
+imageIndex = 0
+fileName = K:\tdenney\SCCOR\05DAC002\BAS\SE11\IM64
+timeFromQRS = 176.000000
+pixelSize = 1.562501
+imageTopLeft = -116.610382,-235.197922,103.213127
+imageTopRight = 184.289811,-17.552183,251.838422
+imageBottomLeft = -96.407182,-29.344722,-239.155673
+imageCenter = 43.941314,-23.448452,6.341375
+imageNormal = -0.656938,0.662634,0.359651
+imageAngle = 0
+imageLocation = 23.448299
+imageFormat = DICOM
+imageSeries = 011
+imageNumber = 064
+SArefSeries = 011
+end image
+
+end timeframe
+
+begin timeframe
+nImages = 1
+timeframeIndex = 4
+
+begin image
+imageIndex = 0
+fileName = K:\tdenney\SCCOR\05DAC002\BAS\SE11\IM65
+timeFromQRS = 232.000000
+pixelSize = 1.562501
+imageTopLeft = -116.610382,-235.197922,103.213127
+imageTopRight = 184.289811,-17.552183,251.838422
+imageBottomLeft = -96.407182,-29.344722,-239.155673
+imageCenter = 43.941314,-23.448452,6.341375
+imageNormal = -0.656938,0.662634,0.359651
+imageAngle = 0
+imageLocation = 23.448299
+imageFormat = DICOM
+imageSeries = 011
+imageNumber = 065
+SArefSeries = 011
+end image
+
+end timeframe
+
+begin timeframe
+nImages = 1
+timeframeIndex = 5
+
+begin image
+imageIndex = 0
+fileName = K:\tdenney\SCCOR\05DAC002\BAS\SE11\IM66
+timeFromQRS = 287.000000
+pixelSize = 1.562501
+imageTopLeft = -116.610382,-235.197922,103.213127
+imageTopRight = 184.289811,-17.552183,251.838422
+imageBottomLeft = -96.407182,-29.344722,-239.155673
+imageCenter = 43.941314,-23.448452,6.341375
+imageNormal = -0.656938,0.662634,0.359651
+imageAngle = 0
+imageLocation = 23.448299
+imageFormat = DICOM
+imageSeries = 011
+imageNumber = 066
+SArefSeries = 011
+end image
+
+end timeframe
+
+begin timeframe
+nImages = 1
+timeframeIndex = 6
+
+begin image
+imageIndex = 0
+fileName = K:\tdenney\SCCOR\05DAC002\BAS\SE11\IM67
+timeFromQRS = 343.000000
+pixelSize = 1.562501
+imageTopLeft = -115.260258,-237.995659,110.833923
+imageTopRight = 185.639935,-20.349920,259.459218
+imageBottomLeft = -95.057058,-32.142459,-231.534877
+imageCenter = 45.291438,-26.246189,13.962170
+imageNormal = -0.656938,0.662634,0.359651
+imageAngle = 0
+imageLocation = 23.448299
+imageFormat = DICOM
+imageSeries = 011
+imageNumber = 067
+SArefSeries = 011
+end image
+
+end timeframe
+
+end slice
+
+begin slice
+process = true
+nTimeframes = 7
+sliceIndex = 4
+version = @(#)write_srt_file.m	1.5 08/04/05
+heartAxis = SHORT_AXIS
+nROI = 0 0 2 2
+nROIshape = RECTANGLE
+ROIshape = ELLIPSE
+ROI = 108 101 51 51
+LAline = -1 -1 NO_LALINE
+tagCenter = -0.4413 -8.5269
+tagOrientation = GRID
+tagSpacing = 10.781257
+bloodIntensity = BLACK
+snakeForce = NOISE_ONLY
+tagDetectionMethod = NOISE_ONLY_DETECT
+tagPredictionMethod = HARP
+tagInitialization = NO_INITIALIZATION
+myocardiumSegmentation = NOISE_ONLY_SEG
+fwhm = 1.000000
+nFWHMsteps = 19
+FWHMrange = 0.900000
+T1 = 100.000000
+nT1steps = 19
+T1range = 0.900000
+window = 2
+noiseOnlySegmentation_width = 0.500000
+noiseOnlySegmentation_steps = 2
+noiseOnlyAdjust_width = 0.500000
+noiseOnlyAdjust_steps = 5
+myocardiumRho = 0.900000
+backgroundRho = 0.900000
+P_T = 0.500000
+P_B = 0.330000
+P_M = 0.330000
+minimumRunLength = 3
+temporalNeighborhoodSize = 1
+snakeChangeWeight = 10.000000
+snakeBendingWeight = 1.000000
+snakeStepSize = 0.100000
+snakeTolerance = 0.010000
+snakeMaxIterations = 150
+snakeSeparation = 0.600000
+snakeSeparationForce = 10.000000
+snakeContinuity = DISCONTINUOUS
+snakeBoundaryCondition = VON_NEUMANN
+intensityStats = STATIONARY_MEDIAN
+varianceModification = FORCE_EQUAL_VARIANCE_MIN
+
+begin timeframe
+nImages = 1
+timeframeIndex = 0
+
+begin image
+imageIndex = 0
+fileName = K:\tdenney\SCCOR\05DAC002\BAS\SE11\IM81
+timeFromQRS = 10.000000
+pixelSize = 1.562501
+imageTopLeft = -112.597417,-242.391127,101.552448
+imageTopRight = 188.302775,-24.745388,250.177743
+imageBottomLeft = -92.394217,-36.537927,-240.815952
+imageCenter = 47.954279,-30.641657,4.680895
+imageNormal = -0.656937,0.662633,0.359651
+imageAngle = 0
+imageLocation = 28.749411
+imageFormat = DICOM
+imageSeries = 011
+imageNumber = 081
+SArefSeries = 011
+end image
+
+end timeframe
+
+begin timeframe
+nImages = 1
+timeframeIndex = 1
+
+begin image
+imageIndex = 0
+fileName = K:\tdenney\SCCOR\05DAC002\BAS\SE11\IM82
+timeFromQRS = 65.000000
+pixelSize = 1.562501
+imageTopLeft = -111.354828,-240.499023,100.336075
+imageTopRight = 189.545365,-22.853284,248.961370
+imageBottomLeft = -91.151628,-34.645823,-242.032325
+imageCenter = 49.196868,-28.749553,3.464523
+imageNormal = -0.656937,0.662633,0.359651
+imageAngle = 0
+imageLocation = 28.749411
+imageFormat = DICOM
+imageSeries = 011
+imageNumber = 082
+SArefSeries = 011
+end image
+
+end timeframe
+
+begin timeframe
+nImages = 1
+timeframeIndex = 2
+
+begin image
+imageIndex = 0
+fileName = K:\tdenney\SCCOR\05DAC002\BAS\SE11\IM83
+timeFromQRS = 121.000000
+pixelSize = 1.562501
+imageTopLeft = -111.354828,-240.499023,100.336075
+imageTopRight = 189.545365,-22.853284,248.961370
+imageBottomLeft = -91.151628,-34.645823,-242.032325
+imageCenter = 49.196868,-28.749553,3.464523
+imageNormal = -0.656937,0.662633,0.359651
+imageAngle = 0
+imageLocation = 28.749411
+imageFormat = DICOM
+imageSeries = 011
+imageNumber = 083
+SArefSeries = 011
+end image
+
+end timeframe
+
+begin timeframe
+nImages = 1
+timeframeIndex = 3
+
+begin image
+imageIndex = 0
+fileName = K:\tdenney\SCCOR\05DAC002\BAS\SE11\IM84
+timeFromQRS = 176.000000
+pixelSize = 1.562501
+imageTopLeft = -111.354828,-240.499023,100.336075
+imageTopRight = 189.545365,-22.853284,248.961370
+imageBottomLeft = -91.151628,-34.645823,-242.032325
+imageCenter = 49.196868,-28.749553,3.464523
+imageNormal = -0.656937,0.662633,0.359651
+imageAngle = 0
+imageLocation = 28.749411
+imageFormat = DICOM
+imageSeries = 011
+imageNumber = 084
+SArefSeries = 011
+end image
+
+end timeframe
+
+begin timeframe
+nImages = 1
+timeframeIndex = 4
+
+begin image
+imageIndex = 0
+fileName = K:\tdenney\SCCOR\05DAC002\BAS\SE11\IM85
+timeFromQRS = 232.000000
+pixelSize = 1.562501
+imageTopLeft = -111.354828,-240.499023,100.336075
+imageTopRight = 189.545365,-22.853284,248.961370
+imageBottomLeft = -91.151628,-34.645823,-242.032325
+imageCenter = 49.196868,-28.749553,3.464523
+imageNormal = -0.656937,0.662633,0.359651
+imageAngle = 0
+imageLocation = 28.749411
+imageFormat = DICOM
+imageSeries = 011
+imageNumber = 085
+SArefSeries = 011
+end image
+
+end timeframe
+
+begin timeframe
+nImages = 1
+timeframeIndex = 5
+
+begin image
+imageIndex = 0
+fileName = K:\tdenney\SCCOR\05DAC002\BAS\SE11\IM86
+timeFromQRS = 287.000000
+pixelSize = 1.562501
+imageTopLeft = -111.354828,-240.499023,100.336075
+imageTopRight = 189.545365,-22.853284,248.961370
+imageBottomLeft = -91.151628,-34.645823,-242.032325
+imageCenter = 49.196868,-28.749553,3.464523
+imageNormal = -0.656937,0.662633,0.359651
+imageAngle = 0
+imageLocation = 28.749411
+imageFormat = DICOM
+imageSeries = 011
+imageNumber = 086
+SArefSeries = 011
+end image
+
+end timeframe
+
+begin timeframe
+nImages = 1
+timeframeIndex = 6
+
+begin image
+imageIndex = 0
+fileName = K:\tdenney\SCCOR\05DAC002\BAS\SE11\IM87
+timeFromQRS = 343.000000
+pixelSize = 1.562501
+imageTopLeft = -112.157368,-242.842010,103.186968
+imageTopRight = 188.742825,-25.196271,251.812263
+imageBottomLeft = -91.954168,-36.988810,-239.181432
+imageCenter = 48.394329,-31.092541,6.315415
+imageNormal = -0.656937,0.662633,0.359651
+imageAngle = 0
+imageLocation = 28.749411
+imageFormat = DICOM
+imageSeries = 011
+imageNumber = 087
+SArefSeries = 011
+end image
+
+end timeframe
+
+end slice
+
+begin slice
+process = true
+nTimeframes = 7
+sliceIndex = 5
+version = @(#)write_srt_file.m	1.5 08/04/05
+heartAxis = SHORT_AXIS
+nROI = 0 0 2 2
+nROIshape = RECTANGLE
+ROIshape = ELLIPSE
+ROI = 109 100 49 49
+LAline = -1 -1 NO_LALINE
+tagCenter = -0.4413 -7.1000
+tagOrientation = GRID
+tagSpacing = 10.937507
+bloodIntensity = BLACK
+snakeForce = NOISE_ONLY
+tagDetectionMethod = NOISE_ONLY_DETECT
+tagPredictionMethod = HARP
+tagInitialization = NO_INITIALIZATION
+myocardiumSegmentation = NOISE_ONLY_SEG
+fwhm = 1.000000
+nFWHMsteps = 19
+FWHMrange = 0.900000
+T1 = 100.000000
+nT1steps = 19
+T1range = 0.900000
+window = 2
+noiseOnlySegmentation_width = 0.500000
+noiseOnlySegmentation_steps = 2
+noiseOnlyAdjust_width = 0.500000
+noiseOnlyAdjust_steps = 5
+myocardiumRho = 0.900000
+backgroundRho = 0.900000
+P_T = 0.500000
+P_B = 0.330000
+P_M = 0.330000
+minimumRunLength = 3
+temporalNeighborhoodSize = 1
+snakeChangeWeight = 10.000000
+snakeBendingWeight = 1.000000
+snakeStepSize = 0.100000
+snakeTolerance = 0.010000
+snakeMaxIterations = 150
+snakeSeparation = 0.600000
+snakeSeparationForce = 10.000000
+snakeContinuity = DISCONTINUOUS
+snakeBoundaryCondition = VON_NEUMANN
+intensityStats = STATIONARY_MEDIAN
+varianceModification = FORCE_EQUAL_VARIANCE_MIN
+
+begin timeframe
+nImages = 1
+timeframeIndex = 0
+
+begin image
+imageIndex = 0
+fileName = K:\tdenney\SCCOR\05DAC002\BAS\SE11\IM101
+timeFromQRS = 10.000000
+pixelSize = 1.562501
+imageTopLeft = -107.568211,-246.949268,96.893082
+imageTopRight = 193.331982,-29.303529,245.518377
+imageBottomLeft = -87.365011,-41.096068,-245.475718
+imageCenter = 52.983485,-35.199799,0.021329
+imageNormal = -0.656938,0.662634,0.359651
+imageAngle = 0
+imageLocation = 34.050522
+imageFormat = DICOM
+imageSeries = 011
+imageNumber = 101
+SArefSeries = 011
+end image
+
+end timeframe
+
+begin timeframe
+nImages = 1
+timeframeIndex = 1
+
+begin image
+imageIndex = 0
+fileName = K:\tdenney\SCCOR\05DAC002\BAS\SE11\IM102
+timeFromQRS = 65.000000
+pixelSize = 1.562501
+imageTopLeft = -106.099281,-245.800140,97.459030
+imageTopRight = 194.800912,-28.154401,246.084325
+imageBottomLeft = -85.896081,-39.946940,-244.909770
+imageCenter = 54.452415,-34.050670,0.587278
+imageNormal = -0.656938,0.662634,0.359651
+imageAngle = 0
+imageLocation = 34.050522
+imageFormat = DICOM
+imageSeries = 011
+imageNumber = 102
+SArefSeries = 011
+end image
+
+end timeframe
+
+begin timeframe
+nImages = 1
+timeframeIndex = 2
+
+begin image
+imageIndex = 0
+fileName = K:\tdenney\SCCOR\05DAC002\BAS\SE11\IM103
+timeFromQRS = 121.000000
+pixelSize = 1.562501
+imageTopLeft = -106.099281,-245.800140,97.459030
+imageTopRight = 194.800912,-28.154401,246.084325
+imageBottomLeft = -85.896081,-39.946940,-244.909770
+imageCenter = 54.452415,-34.050670,0.587278
+imageNormal = -0.656938,0.662634,0.359651
+imageAngle = 0
+imageLocation = 34.050522
+imageFormat = DICOM
+imageSeries = 011
+imageNumber = 103
+SArefSeries = 011
+end image
+
+end timeframe
+
+begin timeframe
+nImages = 1
+timeframeIndex = 3
+
+begin image
+imageIndex = 0
+fileName = K:\tdenney\SCCOR\05DAC002\BAS\SE11\IM104
+timeFromQRS = 176.000000
+pixelSize = 1.562501
+imageTopLeft = -106.099281,-245.800140,97.459030
+imageTopRight = 194.800912,-28.154401,246.084325
+imageBottomLeft = -85.896081,-39.946940,-244.909770
+imageCenter = 54.452415,-34.050670,0.587278
+imageNormal = -0.656938,0.662634,0.359651
+imageAngle = 0
+imageLocation = 34.050522
+imageFormat = DICOM
+imageSeries = 011
+imageNumber = 104
+SArefSeries = 011
+end image
+
+end timeframe
+
+begin timeframe
+nImages = 1
+timeframeIndex = 4
+
+begin image
+imageIndex = 0
+fileName = K:\tdenney\SCCOR\05DAC002\BAS\SE11\IM105
+timeFromQRS = 232.000000
+pixelSize = 1.562501
+imageTopLeft = -106.099281,-245.800140,97.459030
+imageTopRight = 194.800912,-28.154401,246.084325
+imageBottomLeft = -85.896081,-39.946940,-244.909770
+imageCenter = 54.452415,-34.050670,0.587278
+imageNormal = -0.656938,0.662634,0.359651
+imageAngle = 0
+imageLocation = 34.050522
+imageFormat = DICOM
+imageSeries = 011
+imageNumber = 105
+SArefSeries = 011
+end image
+
+end timeframe
+
+begin timeframe
+nImages = 1
+timeframeIndex = 5
+
+begin image
+imageIndex = 0
+fileName = K:\tdenney\SCCOR\05DAC002\BAS\SE11\IM106
+timeFromQRS = 287.000000
+pixelSize = 1.562501
+imageTopLeft = -106.099281,-245.800140,97.459030
+imageTopRight = 194.800912,-28.154401,246.084325
+imageBottomLeft = -85.896081,-39.946940,-244.909770
+imageCenter = 54.452415,-34.050670,0.587278
+imageNormal = -0.656938,0.662634,0.359651
+imageAngle = 0
+imageLocation = 34.050522
+imageFormat = DICOM
+imageSeries = 011
+imageNumber = 106
+SArefSeries = 011
+end image
+
+end timeframe
+
+begin timeframe
+nImages = 1
+timeframeIndex = 6
+
+begin image
+imageIndex = 0
+fileName = K:\tdenney\SCCOR\05DAC002\BAS\SE11\IM107
+timeFromQRS = 343.000000
+pixelSize = 1.562501
+imageTopLeft = -108.373920,-247.765860,96.925895
+imageTopRight = 192.526273,-30.120121,245.551190
+imageBottomLeft = -88.170720,-41.912660,-245.442905
+imageCenter = 52.177777,-36.016390,0.054142
+imageNormal = -0.656938,0.662634,0.359651
+imageAngle = 0
+imageLocation = 34.050522
+imageFormat = DICOM
+imageSeries = 011
+imageNumber = 107
+SArefSeries = 011
+end image
+
+end timeframe
+
+end slice
+
+begin slice
+process = true
+nTimeframes = 7
+sliceIndex = 6
+version = @(#)write_srt_file.m	1.5 08/04/05
+heartAxis = SHORT_AXIS
+nROI = 0 0 2 2
+nROIshape = RECTANGLE
+ROIshape = ELLIPSE
+ROI = 109 100 48 48
+LAline = -1 -1 NO_LALINE
+tagCenter = -0.9169 -7.5756
+tagOrientation = GRID
+tagSpacing = 10.937507
+bloodIntensity = BLACK
+snakeForce = NOISE_ONLY
+tagDetectionMethod = NOISE_ONLY_DETECT
+tagPredictionMethod = HARP
+tagInitialization = NO_INITIALIZATION
+myocardiumSegmentation = NOISE_ONLY_SEG
+fwhm = 1.000000
+nFWHMsteps = 19
+FWHMrange = 0.900000
+T1 = 100.000000
+nT1steps = 19
+T1range = 0.900000
+window = 2
+noiseOnlySegmentation_width = 0.500000
+noiseOnlySegmentation_steps = 2
+noiseOnlyAdjust_width = 0.500000
+noiseOnlyAdjust_steps = 5
+myocardiumRho = 0.900000
+backgroundRho = 0.900000
+P_T = 0.500000
+P_B = 0.330000
+P_M = 0.330000
+minimumRunLength = 3
+temporalNeighborhoodSize = 1
+snakeChangeWeight = 10.000000
+snakeBendingWeight = 1.000000
+snakeStepSize = 0.100000
+snakeTolerance = 0.010000
+snakeMaxIterations = 150
+snakeSeparation = 0.600000
+snakeSeparationForce = 10.000000
+snakeContinuity = DISCONTINUOUS
+snakeBoundaryCondition = VON_NEUMANN
+intensityStats = STATIONARY_MEDIAN
+varianceModification = FORCE_EQUAL_VARIANCE_MIN
+
+begin timeframe
+nImages = 1
+timeframeIndex = 0
+
+begin image
+imageIndex = 0
+fileName = K:\tdenney\SCCOR\05DAC002\BAS\SE11\IM121
+timeFromQRS = 10.000000
+pixelSize = 1.562501
+imageTopLeft = -103.377824,-253.072709,93.585498
+imageTopRight = 197.522369,-35.426969,242.210793
+imageBottomLeft = -83.174624,-47.219509,-248.783302
+imageCenter = 57.173873,-41.323239,-3.286254
+imageNormal = -0.656938,0.662634,0.359651
+imageAngle = 0
+imageLocation = 39.351635
+imageFormat = DICOM
+imageSeries = 011
+imageNumber = 121
+SArefSeries = 011
+end image
+
+end timeframe
+
+begin timeframe
+nImages = 1
+timeframeIndex = 1
+
+begin image
+imageIndex = 0
+fileName = K:\tdenney\SCCOR\05DAC002\BAS\SE11\IM122
+timeFromQRS = 65.000000
+pixelSize = 1.562501
+imageTopLeft = -100.843735,-251.101257,94.581985
+imageTopRight = 200.056458,-33.455518,243.207280
+imageBottomLeft = -80.640535,-45.248057,-247.786815
+imageCenter = 59.707961,-39.351787,-2.289767
+imageNormal = -0.656938,0.662634,0.359651
+imageAngle = 0
+imageLocation = 39.351635
+imageFormat = DICOM
+imageSeries = 011
+imageNumber = 122
+SArefSeries = 011
+end image
+
+end timeframe
+
+begin timeframe
+nImages = 1
+timeframeIndex = 2
+
+begin image
+imageIndex = 0
+fileName = K:\tdenney\SCCOR\05DAC002\BAS\SE11\IM123
+timeFromQRS = 121.000000
+pixelSize = 1.562501
+imageTopLeft = -100.843735,-251.101257,94.581985
+imageTopRight = 200.056458,-33.455518,243.207280
+imageBottomLeft = -80.640535,-45.248057,-247.786815
+imageCenter = 59.707961,-39.351787,-2.289767
+imageNormal = -0.656938,0.662634,0.359651
+imageAngle = 0
+imageLocation = 39.351635
+imageFormat = DICOM
+imageSeries = 011
+imageNumber = 123
+SArefSeries = 011
+end image
+
+end timeframe
+
+begin timeframe
+nImages = 1
+timeframeIndex = 3
+
+begin image
+imageIndex = 0
+fileName = K:\tdenney\SCCOR\05DAC002\BAS\SE11\IM124
+timeFromQRS = 176.000000
+pixelSize = 1.562501
+imageTopLeft = -100.843735,-251.101257,94.581985
+imageTopRight = 200.056458,-33.455518,243.207280
+imageBottomLeft = -80.640535,-45.248057,-247.786815
+imageCenter = 59.707961,-39.351787,-2.289767
+imageNormal = -0.656938,0.662634,0.359651
+imageAngle = 0
+imageLocation = 39.351635
+imageFormat = DICOM
+imageSeries = 011
+imageNumber = 124
+SArefSeries = 011
+end image
+
+end timeframe
+
+begin timeframe
+nImages = 1
+timeframeIndex = 4
+
+begin image
+imageIndex = 0
+fileName = K:\tdenney\SCCOR\05DAC002\BAS\SE11\IM125
+timeFromQRS = 232.000000
+pixelSize = 1.562501
+imageTopLeft = -100.843735,-251.101257,94.581985
+imageTopRight = 200.056458,-33.455518,243.207280
+imageBottomLeft = -80.640535,-45.248057,-247.786815
+imageCenter = 59.707961,-39.351787,-2.289767
+imageNormal = -0.656938,0.662634,0.359651
+imageAngle = 0
+imageLocation = 39.351635
+imageFormat = DICOM
+imageSeries = 011
+imageNumber = 125
+SArefSeries = 011
+end image
+
+end timeframe
+
+begin timeframe
+nImages = 1
+timeframeIndex = 5
+
+begin image
+imageIndex = 0
+fileName = K:\tdenney\SCCOR\05DAC002\BAS\SE11\IM126
+timeFromQRS = 287.000000
+pixelSize = 1.562501
+imageTopLeft = -100.843735,-251.101257,94.581985
+imageTopRight = 200.056458,-33.455518,243.207280
+imageBottomLeft = -80.640535,-45.248057,-247.786815
+imageCenter = 59.707961,-39.351787,-2.289767
+imageNormal = -0.656938,0.662634,0.359651
+imageAngle = 0
+imageLocation = 39.351635
+imageFormat = DICOM
+imageSeries = 011
+imageNumber = 126
+SArefSeries = 011
+end image
+
+end timeframe
+
+begin timeframe
+nImages = 1
+timeframeIndex = 6
+
+begin image
+imageIndex = 0
+fileName = K:\tdenney\SCCOR\05DAC002\BAS\SE11\IM127
+timeFromQRS = 343.000000
+pixelSize = 1.562501
+imageTopLeft = -101.392983,-252.138636,95.490036
+imageTopRight = 199.507210,-34.492897,244.115331
+imageBottomLeft = -81.189783,-46.285436,-246.878764
+imageCenter = 59.158713,-40.389166,-1.381716
+imageNormal = -0.656938,0.662634,0.359651
+imageAngle = 0
+imageLocation = 39.351635
+imageFormat = DICOM
+imageSeries = 011
+imageNumber = 127
+SArefSeries = 011
+end image
+
+end timeframe
+
+end slice
+
+begin slice
+process = true
+nTimeframes = 7
+sliceIndex = 7
+version = @(#)write_srt_file.m	1.5 08/04/05
+heartAxis = SHORT_AXIS
+nROI = 0 0 2 2
+nROIshape = RECTANGLE
+ROIshape = ELLIPSE
+ROI = 107 100 47 47
+LAline = -1 -1 NO_LALINE
+tagCenter = -0.9169 -7.5756
+tagOrientation = GRID
+tagSpacing = 10.937507
+bloodIntensity = BLACK
+snakeForce = NOISE_ONLY
+tagDetectionMethod = NOISE_ONLY_DETECT
+tagPredictionMethod = HARP
+tagInitialization = NO_INITIALIZATION
+myocardiumSegmentation = NOISE_ONLY_SEG
+fwhm = 1.000000
+nFWHMsteps = 19
+FWHMrange = 0.900000
+T1 = 100.000000
+nT1steps = 19
+T1range = 0.900000
+window = 2
+noiseOnlySegmentation_width = 0.500000
+noiseOnlySegmentation_steps = 2
+noiseOnlyAdjust_width = 0.500000
+noiseOnlyAdjust_steps = 5
+myocardiumRho = 0.900000
+backgroundRho = 0.900000
+P_T = 0.500000
+P_B = 0.330000
+P_M = 0.330000
+minimumRunLength = 3
+temporalNeighborhoodSize = 1
+snakeChangeWeight = 10.000000
+snakeBendingWeight = 1.000000
+snakeStepSize = 0.100000
+snakeTolerance = 0.010000
+snakeMaxIterations = 150
+snakeSeparation = 0.600000
+snakeSeparationForce = 10.000000
+snakeContinuity = DISCONTINUOUS
+snakeBoundaryCondition = VON_NEUMANN
+intensityStats = STATIONARY_MEDIAN
+varianceModification = FORCE_EQUAL_VARIANCE_MIN
+
+begin timeframe
+nImages = 1
+timeframeIndex = 0
+
+begin image
+imageIndex = 0
+fileName = K:\tdenney\SCCOR\05DAC002\BAS\SE11\IM141
+timeFromQRS = 10.000000
+pixelSize = 1.562501
+imageTopLeft = -94.977218,-255.759803,91.637021
+imageTopRight = 205.922975,-38.114064,240.262316
+imageBottomLeft = -74.774018,-49.906603,-250.731379
+imageCenter = 65.574478,-44.010334,-5.234531
+imageNormal = -0.656937,0.662633,0.359651
+imageAngle = 0
+imageLocation = 44.652748
+imageFormat = DICOM
+imageSeries = 011
+imageNumber = 141
+SArefSeries = 011
+end image
+
+end timeframe
+
+begin timeframe
+nImages = 1
+timeframeIndex = 1
+
+begin image
+imageIndex = 0
+fileName = K:\tdenney\SCCOR\05DAC002\BAS\SE11\IM142
+timeFromQRS = 65.000000
+pixelSize = 1.562501
+imageTopLeft = -95.588181,-256.402374,91.704933
+imageTopRight = 205.312012,-38.756635,240.330228
+imageBottomLeft = -75.384981,-50.549174,-250.663467
+imageCenter = 64.963515,-44.652904,-5.166619
+imageNormal = -0.656937,0.662633,0.359651
+imageAngle = 0
+imageLocation = 44.652748
+imageFormat = DICOM
+imageSeries = 011
+imageNumber = 142
+SArefSeries = 011
+end image
+
+end timeframe
+
+begin timeframe
+nImages = 1
+timeframeIndex = 2
+
+begin image
+imageIndex = 0
+fileName = K:\tdenney\SCCOR\05DAC002\BAS\SE11\IM143
+timeFromQRS = 121.000000
+pixelSize = 1.562501
+imageTopLeft = -95.588181,-256.402374,91.704933
+imageTopRight = 205.312012,-38.756635,240.330228
+imageBottomLeft = -75.384981,-50.549174,-250.663467
+imageCenter = 64.963515,-44.652904,-5.166619
+imageNormal = -0.656937,0.662633,0.359651
+imageAngle = 0
+imageLocation = 44.652748
+imageFormat = DICOM
+imageSeries = 011
+imageNumber = 143
+SArefSeries = 011
+end image
+
+end timeframe
+
+begin timeframe
+nImages = 1
+timeframeIndex = 3
+
+begin image
+imageIndex = 0
+fileName = K:\tdenney\SCCOR\05DAC002\BAS\SE11\IM144
+timeFromQRS = 176.000000
+pixelSize = 1.562501
+imageTopLeft = -95.588181,-256.402374,91.704933
+imageTopRight = 205.312012,-38.756635,240.330228
+imageBottomLeft = -75.384981,-50.549174,-250.663467
+imageCenter = 64.963515,-44.652904,-5.166619
+imageNormal = -0.656937,0.662633,0.359651
+imageAngle = 0
+imageLocation = 44.652748
+imageFormat = DICOM
+imageSeries = 011
+imageNumber = 144
+SArefSeries = 011
+end image
+
+end timeframe
+
+begin timeframe
+nImages = 1
+timeframeIndex = 4
+
+begin image
+imageIndex = 0
+fileName = K:\tdenney\SCCOR\05DAC002\BAS\SE11\IM145
+timeFromQRS = 232.000000
+pixelSize = 1.562501
+imageTopLeft = -95.588181,-256.402374,91.704933
+imageTopRight = 205.312012,-38.756635,240.330228
+imageBottomLeft = -75.384981,-50.549174,-250.663467
+imageCenter = 64.963515,-44.652904,-5.166619
+imageNormal = -0.656937,0.662633,0.359651
+imageAngle = 0
+imageLocation = 44.652748
+imageFormat = DICOM
+imageSeries = 011
+imageNumber = 145
+SArefSeries = 011
+end image
+
+end timeframe
+
+begin timeframe
+nImages = 1
+timeframeIndex = 5
+
+begin image
+imageIndex = 0
+fileName = K:\tdenney\SCCOR\05DAC002\BAS\SE11\IM146
+timeFromQRS = 287.000000
+pixelSize = 1.562501
+imageTopLeft = -95.588181,-256.402374,91.704933
+imageTopRight = 205.312012,-38.756635,240.330228
+imageBottomLeft = -75.384981,-50.549174,-250.663467
+imageCenter = 64.963515,-44.652904,-5.166619
+imageNormal = -0.656937,0.662633,0.359651
+imageAngle = 0
+imageLocation = 44.652748
+imageFormat = DICOM
+imageSeries = 011
+imageNumber = 146
+SArefSeries = 011
+end image
+
+end timeframe
+
+begin timeframe
+nImages = 1
+timeframeIndex = 6
+
+begin image
+imageIndex = 0
+fileName = K:\tdenney\SCCOR\05DAC002\BAS\SE11\IM147
+timeFromQRS = 343.000000
+pixelSize = 1.562501
+imageTopLeft = -95.939316,-256.329686,90.929627
+imageTopRight = 204.960877,-38.683947,239.554922
+imageBottomLeft = -75.736116,-50.476486,-251.438773
+imageCenter = 64.612380,-44.580216,-5.941926
+imageNormal = -0.656937,0.662633,0.359651
+imageAngle = 0
+imageLocation = 44.652748
+imageFormat = DICOM
+imageSeries = 011
+imageNumber = 147
+SArefSeries = 011
+end image
+
+end timeframe
+
+end slice
+
+begin slice
+process = true
+nTimeframes = 7
+sliceIndex = 8
+version = @(#)write_srt_file.m	1.5 08/04/05
+heartAxis = SHORT_AXIS
+nROI = 0 0 2 2
+nROIshape = RECTANGLE
+ROIshape = ELLIPSE
+ROI = 110 103 44 44
+LAline = -1 -1 NO_LALINE
+tagCenter = -0.9169 -7.5756
+tagOrientation = GRID
+tagSpacing = 10.937507
+bloodIntensity = BLACK
+snakeForce = NOISE_ONLY
+tagDetectionMethod = NOISE_ONLY_DETECT
+tagPredictionMethod = HARP
+tagInitialization = NO_INITIALIZATION
+myocardiumSegmentation = NOISE_ONLY_SEG
+fwhm = 1.000000
+nFWHMsteps = 19
+FWHMrange = 0.900000
+T1 = 100.000000
+nT1steps = 19
+T1range = 0.900000
+window = 2
+noiseOnlySegmentation_width = 0.500000
+noiseOnlySegmentation_steps = 2
+noiseOnlyAdjust_width = 0.500000
+noiseOnlyAdjust_steps = 5
+myocardiumRho = 0.900000
+backgroundRho = 0.900000
+P_T = 0.500000
+P_B = 0.330000
+P_M = 0.330000
+minimumRunLength = 3
+temporalNeighborhoodSize = 1
+snakeChangeWeight = 10.000000
+snakeBendingWeight = 1.000000
+snakeStepSize = 0.100000
+snakeTolerance = 0.010000
+snakeMaxIterations = 150
+snakeSeparation = 0.600000
+snakeSeparationForce = 10.000000
+snakeContinuity = DISCONTINUOUS
+snakeBoundaryCondition = VON_NEUMANN
+intensityStats = STATIONARY_MEDIAN
+varianceModification = FORCE_EQUAL_VARIANCE_MIN
+
+begin timeframe
+nImages = 1
+timeframeIndex = 0
+
+begin image
+imageIndex = 0
+fileName = K:\tdenney\SCCOR\05DAC002\BAS\SE11\IM161
+timeFromQRS = 10.000000
+pixelSize = 1.562501
+imageTopLeft = -89.651385,-260.714124,88.249395
+imageTopRight = 211.248808,-43.068384,236.874690
+imageBottomLeft = -69.448185,-54.860924,-254.119005
+imageCenter = 70.900312,-48.964654,-8.622158
+imageNormal = -0.656937,0.662633,0.359651
+imageAngle = 0
+imageLocation = 49.953861
+imageFormat = DICOM
+imageSeries = 011
+imageNumber = 161
+SArefSeries = 011
+end image
+
+end timeframe
+
+begin timeframe
+nImages = 1
+timeframeIndex = 1
+
+begin image
+imageIndex = 0
+fileName = K:\tdenney\SCCOR\05DAC002\BAS\SE11\IM162
+timeFromQRS = 65.000000
+pixelSize = 1.562501
+imageTopLeft = -90.332626,-261.703491,88.827888
+imageTopRight = 210.567567,-44.057752,237.453183
+imageBottomLeft = -70.129426,-55.850291,-253.540512
+imageCenter = 70.219070,-49.954021,-8.043664
+imageNormal = -0.656937,0.662633,0.359651
+imageAngle = 0
+imageLocation = 49.953861
+imageFormat = DICOM
+imageSeries = 011
+imageNumber = 162
+SArefSeries = 011
+end image
+
+end timeframe
+
+begin timeframe
+nImages = 1
+timeframeIndex = 2
+
+begin image
+imageIndex = 0
+fileName = K:\tdenney\SCCOR\05DAC002\BAS\SE11\IM163
+timeFromQRS = 121.000000
+pixelSize = 1.562501
+imageTopLeft = -90.332626,-261.703491,88.827888
+imageTopRight = 210.567567,-44.057752,237.453183
+imageBottomLeft = -70.129426,-55.850291,-253.540512
+imageCenter = 70.219070,-49.954021,-8.043664
+imageNormal = -0.656937,0.662633,0.359651
+imageAngle = 0
+imageLocation = 49.953861
+imageFormat = DICOM
+imageSeries = 011
+imageNumber = 163
+SArefSeries = 011
+end image
+
+end timeframe
+
+begin timeframe
+nImages = 1
+timeframeIndex = 3
+
+begin image
+imageIndex = 0
+fileName = K:\tdenney\SCCOR\05DAC002\BAS\SE11\IM164
+timeFromQRS = 176.000000
+pixelSize = 1.562501
+imageTopLeft = -90.332626,-261.703491,88.827888
+imageTopRight = 210.567567,-44.057752,237.453183
+imageBottomLeft = -70.129426,-55.850291,-253.540512
+imageCenter = 70.219070,-49.954021,-8.043664
+imageNormal = -0.656937,0.662633,0.359651
+imageAngle = 0
+imageLocation = 49.953861
+imageFormat = DICOM
+imageSeries = 011
+imageNumber = 164
+SArefSeries = 011
+end image
+
+end timeframe
+
+begin timeframe
+nImages = 1
+timeframeIndex = 4
+
+begin image
+imageIndex = 0
+fileName = K:\tdenney\SCCOR\05DAC002\BAS\SE11\IM165
+timeFromQRS = 232.000000
+pixelSize = 1.562501
+imageTopLeft = -90.332626,-261.703491,88.827888
+imageTopRight = 210.567567,-44.057752,237.453183
+imageBottomLeft = -70.129426,-55.850291,-253.540512
+imageCenter = 70.219070,-49.954021,-8.043664
+imageNormal = -0.656937,0.662633,0.359651
+imageAngle = 0
+imageLocation = 49.953861
+imageFormat = DICOM
+imageSeries = 011
+imageNumber = 165
+SArefSeries = 011
+end image
+
+end timeframe
+
+begin timeframe
+nImages = 1
+timeframeIndex = 5
+
+begin image
+imageIndex = 0
+fileName = K:\tdenney\SCCOR\05DAC002\BAS\SE11\IM166
+timeFromQRS = 287.000000
+pixelSize = 1.562501
+imageTopLeft = -90.332626,-261.703491,88.827888
+imageTopRight = 210.567567,-44.057752,237.453183
+imageBottomLeft = -70.129426,-55.850291,-253.540512
+imageCenter = 70.219070,-49.954021,-8.043664
+imageNormal = -0.656937,0.662633,0.359651
+imageAngle = 0
+imageLocation = 49.953861
+imageFormat = DICOM
+imageSeries = 011
+imageNumber = 166
+SArefSeries = 011
+end image
+
+end timeframe
+
+begin timeframe
+nImages = 1
+timeframeIndex = 6
+
+begin image
+imageIndex = 0
+fileName = K:\tdenney\SCCOR\05DAC002\BAS\SE11\IM167
+timeFromQRS = 343.000000
+pixelSize = 1.562501
+imageTopLeft = -90.483633,-261.486737,88.152702
+imageTopRight = 210.416560,-43.840997,236.777997
+imageBottomLeft = -70.280433,-55.633537,-254.215698
+imageCenter = 70.068064,-49.737267,-8.718850
+imageNormal = -0.656937,0.662633,0.359651
+imageAngle = 0
+imageLocation = 49.953861
+imageFormat = DICOM
+imageSeries = 011
+imageNumber = 167
+SArefSeries = 011
+end image
+
+end timeframe
+
+end slice
+
+begin slice
+process = true
+nTimeframes = 7
+sliceIndex = 9
+version = @(#)write_srt_file.m	1.5 08/04/05
+heartAxis = SHORT_AXIS
+nROI = 0 0 2 2
+nROIshape = RECTANGLE
+ROIshape = ELLIPSE
+ROI = 112 105 40 40
+LAline = -1 -1 NO_LALINE
+tagCenter = -0.4413 -7.1000
+tagOrientation = GRID
+tagSpacing = 10.937507
+bloodIntensity = BLACK
+snakeForce = NOISE_ONLY
+tagDetectionMethod = NOISE_ONLY_DETECT
+tagPredictionMethod = HARP
+tagInitialization = NO_INITIALIZATION
+myocardiumSegmentation = NOISE_ONLY_SEG
+fwhm = 1.000000
+nFWHMsteps = 19
+FWHMrange = 0.900000
+T1 = 100.000000
+nT1steps = 19
+T1range = 0.900000
+window = 2
+noiseOnlySegmentation_width = 0.500000
+noiseOnlySegmentation_steps = 2
+noiseOnlyAdjust_width = 0.500000
+noiseOnlyAdjust_steps = 5
+myocardiumRho = 0.900000
+backgroundRho = 0.900000
+P_T = 0.500000
+P_B = 0.330000
+P_M = 0.330000
+minimumRunLength = 3
+temporalNeighborhoodSize = 1
+snakeChangeWeight = 10.000000
+snakeBendingWeight = 1.000000
+snakeStepSize = 0.100000
+snakeTolerance = 0.010000
+snakeMaxIterations = 150
+snakeSeparation = 0.600000
+snakeSeparationForce = 10.000000
+snakeContinuity = DISCONTINUOUS
+snakeBoundaryCondition = VON_NEUMANN
+intensityStats = STATIONARY_MEDIAN
+varianceModification = FORCE_EQUAL_VARIANCE_MIN
+
+begin timeframe
+nImages = 1
+timeframeIndex = 0
+
+begin image
+imageIndex = 0
+fileName = K:\tdenney\SCCOR\05DAC002\BAS\SE11\IM181
+timeFromQRS = 10.000000
+pixelSize = 1.562501
+imageTopLeft = -82.487816,-263.918159,84.993839
+imageTopRight = 218.412376,-46.272419,233.619134
+imageBottomLeft = -62.284616,-58.064959,-257.374961
+imageCenter = 78.063880,-52.168689,-11.877913
+imageNormal = -0.656938,0.662634,0.359651
+imageAngle = 0
+imageLocation = 55.254974
+imageFormat = DICOM
+imageSeries = 011
+imageNumber = 181
+SArefSeries = 011
+end image
+
+end timeframe
+
+begin timeframe
+nImages = 1
+timeframeIndex = 1
+
+begin image
+imageIndex = 0
+fileName = K:\tdenney\SCCOR\05DAC002\BAS\SE11\IM182
+timeFromQRS = 65.000000
+pixelSize = 1.562501
+imageTopLeft = -85.077072,-267.004578,85.950844
+imageTopRight = 215.823121,-49.358839,234.576139
+imageBottomLeft = -64.873872,-61.151378,-256.417956
+imageCenter = 75.474624,-55.255108,-10.920908
+imageNormal = -0.656938,0.662634,0.359651
+imageAngle = 0
+imageLocation = 55.254974
+imageFormat = DICOM
+imageSeries = 011
+imageNumber = 182
+SArefSeries = 011
+end image
+
+end timeframe
+
+begin timeframe
+nImages = 1
+timeframeIndex = 2
+
+begin image
+imageIndex = 0
+fileName = K:\tdenney\SCCOR\05DAC002\BAS\SE11\IM183
+timeFromQRS = 121.000000
+pixelSize = 1.562501
+imageTopLeft = -85.077072,-267.004578,85.950844
+imageTopRight = 215.823121,-49.358839,234.576139
+imageBottomLeft = -64.873872,-61.151378,-256.417956
+imageCenter = 75.474624,-55.255108,-10.920908
+imageNormal = -0.656938,0.662634,0.359651
+imageAngle = 0
+imageLocation = 55.254974
+imageFormat = DICOM
+imageSeries = 011
+imageNumber = 183
+SArefSeries = 011
+end image
+
+end timeframe
+
+begin timeframe
+nImages = 1
+timeframeIndex = 3
+
+begin image
+imageIndex = 0
+fileName = K:\tdenney\SCCOR\05DAC002\BAS\SE11\IM184
+timeFromQRS = 176.000000
+pixelSize = 1.562501
+imageTopLeft = -85.077072,-267.004578,85.950844
+imageTopRight = 215.823121,-49.358839,234.576139
+imageBottomLeft = -64.873872,-61.151378,-256.417956
+imageCenter = 75.474624,-55.255108,-10.920908
+imageNormal = -0.656938,0.662634,0.359651
+imageAngle = 0
+imageLocation = 55.254974
+imageFormat = DICOM
+imageSeries = 011
+imageNumber = 184
+SArefSeries = 011
+end image
+
+end timeframe
+
+begin timeframe
+nImages = 1
+timeframeIndex = 4
+
+begin image
+imageIndex = 0
+fileName = K:\tdenney\SCCOR\05DAC002\BAS\SE11\IM185
+timeFromQRS = 232.000000
+pixelSize = 1.562501
+imageTopLeft = -85.077072,-267.004578,85.950844
+imageTopRight = 215.823121,-49.358839,234.576139
+imageBottomLeft = -64.873872,-61.151378,-256.417956
+imageCenter = 75.474624,-55.255108,-10.920908
+imageNormal = -0.656938,0.662634,0.359651
+imageAngle = 0
+imageLocation = 55.254974
+imageFormat = DICOM
+imageSeries = 011
+imageNumber = 185
+SArefSeries = 011
+end image
+
+end timeframe
+
+begin timeframe
+nImages = 1
+timeframeIndex = 5
+
+begin image
+imageIndex = 0
+fileName = K:\tdenney\SCCOR\05DAC002\BAS\SE11\IM186
+timeFromQRS = 287.000000
+pixelSize = 1.562501
+imageTopLeft = -85.077072,-267.004578,85.950844
+imageTopRight = 215.823121,-49.358839,234.576139
+imageBottomLeft = -64.873872,-61.151378,-256.417956
+imageCenter = 75.474624,-55.255108,-10.920908
+imageNormal = -0.656938,0.662634,0.359651
+imageAngle = 0
+imageLocation = 55.254974
+imageFormat = DICOM
+imageSeries = 011
+imageNumber = 186
+SArefSeries = 011
+end image
+
+end timeframe
+
+begin timeframe
+nImages = 1
+timeframeIndex = 6
+
+begin image
+imageIndex = 0
+fileName = K:\tdenney\SCCOR\05DAC002\BAS\SE11\IM187
+timeFromQRS = 343.000000
+pixelSize = 1.562501
+imageTopLeft = -86.701766,-268.068408,84.943219
+imageTopRight = 214.198426,-50.422668,233.568514
+imageBottomLeft = -66.498566,-62.215208,-257.425581
+imageCenter = 73.849930,-56.318938,-11.928534
+imageNormal = -0.656938,0.662634,0.359651
+imageAngle = 0
+imageLocation = 55.254974
+imageFormat = DICOM
+imageSeries = 011
+imageNumber = 187
+SArefSeries = 011
+end image
+
+end timeframe
+
+end slice
+
+begin slice
+process = true
+nTimeframes = 7
+sliceIndex = 10
+version = @(#)write_srt_file.m	1.5 08/04/05
+heartAxis = SHORT_AXIS
+nROI = 0 0 2 2
+nROIshape = RECTANGLE
+ROIshape = ELLIPSE
+ROI = 116 115 25 25
+LAline = -1 -1 NO_LALINE
+tagCenter = -1.3925 -5.6731
+tagOrientation = GRID
+tagSpacing = 10.625007
+bloodIntensity = BLACK
+snakeForce = NOISE_ONLY
+tagDetectionMethod = NOISE_ONLY_DETECT
+tagPredictionMethod = HARP
+tagInitialization = NO_INITIALIZATION
+myocardiumSegmentation = NOISE_ONLY_SEG
+fwhm = 1.000000
+nFWHMsteps = 19
+FWHMrange = 0.900000
+T1 = 100.000000
+nT1steps = 19
+T1range = 0.900000
+window = 2
+noiseOnlySegmentation_width = 0.500000
+noiseOnlySegmentation_steps = 2
+noiseOnlyAdjust_width = 0.500000
+noiseOnlyAdjust_steps = 5
+myocardiumRho = 0.900000
+backgroundRho = 0.900000
+P_T = 0.500000
+P_B = 0.330000
+P_M = 0.330000
+minimumRunLength = 3
+temporalNeighborhoodSize = 1
+snakeChangeWeight = 10.000000
+snakeBendingWeight = 1.000000
+snakeStepSize = 0.100000
+snakeTolerance = 0.010000
+snakeMaxIterations = 150
+snakeSeparation = 0.600000
+snakeSeparationForce = 10.000000
+snakeContinuity = DISCONTINUOUS
+snakeBoundaryCondition = VON_NEUMANN
+intensityStats = STATIONARY_MEDIAN
+varianceModification = FORCE_EQUAL_VARIANCE_MIN
+
+begin timeframe
+nImages = 1
+timeframeIndex = 0
+
+begin image
+imageIndex = 0
+fileName = K:\tdenney\SCCOR\05DAC002\BAS\SE11\IM201
+timeFromQRS = 10.000000
+pixelSize = 1.562501
+imageTopLeft = -76.167058,-270.923455,87.202335
+imageTopRight = 224.733134,-53.277716,235.827630
+imageBottomLeft = -55.963858,-65.070255,-255.166465
+imageCenter = 84.384638,-59.173985,-9.669418
+imageNormal = -0.656938,0.662634,0.359651
+imageAngle = 0
+imageLocation = 60.556087
+imageFormat = DICOM
+imageSeries = 011
+imageNumber = 201
+SArefSeries = 011
+end image
+
+end timeframe
+
+begin timeframe
+nImages = 1
+timeframeIndex = 1
+
+begin image
+imageIndex = 0
+fileName = K:\tdenney\SCCOR\05DAC002\BAS\SE11\IM202
+timeFromQRS = 65.000000
+pixelSize = 1.562501
+imageTopLeft = -79.821518,-272.305695,83.073792
+imageTopRight = 221.078675,-54.659956,231.699087
+imageBottomLeft = -59.618318,-66.452495,-259.295008
+imageCenter = 80.730178,-60.556225,-13.797960
+imageNormal = -0.656938,0.662634,0.359651
+imageAngle = 0
+imageLocation = 60.556087
+imageFormat = DICOM
+imageSeries = 011
+imageNumber = 202
+SArefSeries = 011
+end image
+
+end timeframe
+
+begin timeframe
+nImages = 1
+timeframeIndex = 2
+
+begin image
+imageIndex = 0
+fileName = K:\tdenney\SCCOR\05DAC002\BAS\SE11\IM203
+timeFromQRS = 121.000000
+pixelSize = 1.562501
+imageTopLeft = -79.821518,-272.305695,83.073792
+imageTopRight = 221.078675,-54.659956,231.699087
+imageBottomLeft = -59.618318,-66.452495,-259.295008
+imageCenter = 80.730178,-60.556225,-13.797960
+imageNormal = -0.656938,0.662634,0.359651
+imageAngle = 0
+imageLocation = 60.556087
+imageFormat = DICOM
+imageSeries = 011
+imageNumber = 203
+SArefSeries = 011
+end image
+
+end timeframe
+
+begin timeframe
+nImages = 1
+timeframeIndex = 3
+
+begin image
+imageIndex = 0
+fileName = K:\tdenney\SCCOR\05DAC002\BAS\SE11\IM204
+timeFromQRS = 176.000000
+pixelSize = 1.562501
+imageTopLeft = -79.821518,-272.305695,83.073792
+imageTopRight = 221.078675,-54.659956,231.699087
+imageBottomLeft = -59.618318,-66.452495,-259.295008
+imageCenter = 80.730178,-60.556225,-13.797960
+imageNormal = -0.656938,0.662634,0.359651
+imageAngle = 0
+imageLocation = 60.556087
+imageFormat = DICOM
+imageSeries = 011
+imageNumber = 204
+SArefSeries = 011
+end image
+
+end timeframe
+
+begin timeframe
+nImages = 1
+timeframeIndex = 4
+
+begin image
+imageIndex = 0
+fileName = K:\tdenney\SCCOR\05DAC002\BAS\SE11\IM205
+timeFromQRS = 232.000000
+pixelSize = 1.562501
+imageTopLeft = -79.821518,-272.305695,83.073792
+imageTopRight = 221.078675,-54.659956,231.699087
+imageBottomLeft = -59.618318,-66.452495,-259.295008
+imageCenter = 80.730178,-60.556225,-13.797960
+imageNormal = -0.656938,0.662634,0.359651
+imageAngle = 0
+imageLocation = 60.556087
+imageFormat = DICOM
+imageSeries = 011
+imageNumber = 205
+SArefSeries = 011
+end image
+
+end timeframe
+
+begin timeframe
+nImages = 1
+timeframeIndex = 5
+
+begin image
+imageIndex = 0
+fileName = K:\tdenney\SCCOR\05DAC002\BAS\SE11\IM206
+timeFromQRS = 287.000000
+pixelSize = 1.562501
+imageTopLeft = -79.821518,-272.305695,83.073792
+imageTopRight = 221.078675,-54.659956,231.699087
+imageBottomLeft = -59.618318,-66.452495,-259.295008
+imageCenter = 80.730178,-60.556225,-13.797960
+imageNormal = -0.656938,0.662634,0.359651
+imageAngle = 0
+imageLocation = 60.556087
+imageFormat = DICOM
+imageSeries = 011
+imageNumber = 206
+SArefSeries = 011
+end image
+
+end timeframe
+
+begin timeframe
+nImages = 1
+timeframeIndex = 6
+
+begin image
+imageIndex = 0
+fileName = K:\tdenney\SCCOR\05DAC002\BAS\SE11\IM207
+timeFromQRS = 343.000000
+pixelSize = 1.562501
+imageTopLeft = -79.821518,-272.305695,83.073792
+imageTopRight = 221.078675,-54.659956,231.699087
+imageBottomLeft = -59.618318,-66.452495,-259.295008
+imageCenter = 80.730178,-60.556225,-13.797960
+imageNormal = -0.656938,0.662634,0.359651
+imageAngle = 0
+imageLocation = 60.556087
+imageFormat = DICOM
+imageSeries = 011
+imageNumber = 207
+SArefSeries = 011
+end image
+
+end timeframe
+
+end slice
+
+begin slice
+process = false
+nTimeframes = 7
+sliceIndex = 11
+version = @(#)write_srt_file.m	1.5 08/04/05
+heartAxis = SHORT_AXIS
+nROI = 0 0 2 2
+nROIshape = RECTANGLE
+tagOrientation = GRID
+bloodIntensity = BLACK
+snakeForce = NOISE_ONLY
+tagDetectionMethod = NOISE_ONLY_DETECT
+tagPredictionMethod = HARP
+tagInitialization = NO_INITIALIZATION
+myocardiumSegmentation = NOISE_ONLY_SEG
+fwhm = 1.000000
+nFWHMsteps = 19
+FWHMrange = 0.900000
+T1 = 100.000000
+nT1steps = 19
+T1range = 0.900000
+window = 2
+noiseOnlySegmentation_width = 0.500000
+noiseOnlySegmentation_steps = 2
+noiseOnlyAdjust_width = 0.500000
+noiseOnlyAdjust_steps = 5
+myocardiumRho = 0.900000
+backgroundRho = 0.900000
+P_T = 0.500000
+P_B = 0.330000
+P_M = 0.330000
+minimumRunLength = 3
+temporalNeighborhoodSize = 1
+snakeChangeWeight = 10.000000
+snakeBendingWeight = 1.000000
+snakeStepSize = 0.100000
+snakeTolerance = 0.010000
+snakeMaxIterations = 150
+snakeSeparation = 0.600000
+snakeSeparationForce = 10.000000
+snakeContinuity = DISCONTINUOUS
+snakeBoundaryCondition = VON_NEUMANN
+intensityStats = STATIONARY_MEDIAN
+varianceModification = FORCE_EQUAL_VARIANCE_MIN
+
+begin timeframe
+nImages = 1
+timeframeIndex = 0
+
+begin image
+imageIndex = 0
+fileName = K:\tdenney\SCCOR\05DAC002\BAS\SE11\IM221
+timeFromQRS = 10.000000
+pixelSize = 1.562501
+imageTopLeft = -74.565964,-277.606812,80.196747
+imageTopRight = 226.334229,-59.961073,228.822042
+imageBottomLeft = -54.362764,-71.753612,-262.171653
+imageCenter = 85.985732,-65.857342,-16.674805
+imageNormal = -0.656937,0.662633,0.359651
+imageAngle = 0
+imageLocation = 65.857201
+imageFormat = DICOM
+imageSeries = 011
+imageNumber = 221
+SArefSeries = 011
+end image
+
+end timeframe
+
+begin timeframe
+nImages = 1
+timeframeIndex = 1
+
+begin image
+imageIndex = 0
+fileName = K:\tdenney\SCCOR\05DAC002\BAS\SE11\IM222
+timeFromQRS = 65.000000
+pixelSize = 1.562501
+imageTopLeft = -74.565964,-277.606812,80.196747
+imageTopRight = 226.334229,-59.961073,228.822042
+imageBottomLeft = -54.362764,-71.753612,-262.171653
+imageCenter = 85.985732,-65.857342,-16.674805
+imageNormal = -0.656937,0.662633,0.359651
+imageAngle = 0
+imageLocation = 65.857201
+imageFormat = DICOM
+imageSeries = 011
+imageNumber = 222
+SArefSeries = 011
+end image
+
+end timeframe
+
+begin timeframe
+nImages = 1
+timeframeIndex = 2
+
+begin image
+imageIndex = 0
+fileName = K:\tdenney\SCCOR\05DAC002\BAS\SE11\IM223
+timeFromQRS = 121.000000
+pixelSize = 1.562501
+imageTopLeft = -74.565964,-277.606812,80.196747
+imageTopRight = 226.334229,-59.961073,228.822042
+imageBottomLeft = -54.362764,-71.753612,-262.171653
+imageCenter = 85.985732,-65.857342,-16.674805
+imageNormal = -0.656937,0.662633,0.359651
+imageAngle = 0
+imageLocation = 65.857201
+imageFormat = DICOM
+imageSeries = 011
+imageNumber = 223
+SArefSeries = 011
+end image
+
+end timeframe
+
+begin timeframe
+nImages = 1
+timeframeIndex = 3
+
+begin image
+imageIndex = 0
+fileName = K:\tdenney\SCCOR\05DAC002\BAS\SE11\IM224
+timeFromQRS = 176.000000
+pixelSize = 1.562501
+imageTopLeft = -74.565964,-277.606812,80.196747
+imageTopRight = 226.334229,-59.961073,228.822042
+imageBottomLeft = -54.362764,-71.753612,-262.171653
+imageCenter = 85.985732,-65.857342,-16.674805
+imageNormal = -0.656937,0.662633,0.359651
+imageAngle = 0
+imageLocation = 65.857201
+imageFormat = DICOM
+imageSeries = 011
+imageNumber = 224
+SArefSeries = 011
+end image
+
+end timeframe
+
+begin timeframe
+nImages = 1
+timeframeIndex = 4
+
+begin image
+imageIndex = 0
+fileName = K:\tdenney\SCCOR\05DAC002\BAS\SE11\IM225
+timeFromQRS = 232.000000
+pixelSize = 1.562501
+imageTopLeft = -74.565964,-277.606812,80.196747
+imageTopRight = 226.334229,-59.961073,228.822042
+imageBottomLeft = -54.362764,-71.753612,-262.171653
+imageCenter = 85.985732,-65.857342,-16.674805
+imageNormal = -0.656937,0.662633,0.359651
+imageAngle = 0
+imageLocation = 65.857201
+imageFormat = DICOM
+imageSeries = 011
+imageNumber = 225
+SArefSeries = 011
+end image
+
+end timeframe
+
+begin timeframe
+nImages = 1
+timeframeIndex = 5
+
+begin image
+imageIndex = 0
+fileName = K:\tdenney\SCCOR\05DAC002\BAS\SE11\IM226
+timeFromQRS = 287.000000
+pixelSize = 1.562501
+imageTopLeft = -74.565964,-277.606812,80.196747
+imageTopRight = 226.334229,-59.961073,228.822042
+imageBottomLeft = -54.362764,-71.753612,-262.171653
+imageCenter = 85.985732,-65.857342,-16.674805
+imageNormal = -0.656937,0.662633,0.359651
+imageAngle = 0
+imageLocation = 65.857201
+imageFormat = DICOM
+imageSeries = 011
+imageNumber = 226
+SArefSeries = 011
+end image
+
+end timeframe
+
+begin timeframe
+nImages = 1
+timeframeIndex = 6
+
+begin image
+imageIndex = 0
+fileName = K:\tdenney\SCCOR\05DAC002\BAS\SE11\IM227
+timeFromQRS = 343.000000
+pixelSize = 1.562501
+imageTopLeft = -74.565964,-277.606812,80.196747
+imageTopRight = 226.334229,-59.961073,228.822042
+imageBottomLeft = -54.362764,-71.753612,-262.171653
+imageCenter = 85.985732,-65.857342,-16.674805
+imageNormal = -0.656937,0.662633,0.359651
+imageAngle = 0
+imageLocation = 65.857201
+imageFormat = DICOM
+imageSeries = 011
+imageNumber = 227
+SArefSeries = 011
+end image
+
+end timeframe
+
+end slice
+
+begin slice
+process = false
+nTimeframes = 7
+sliceIndex = 12
+version = @(#)write_srt_file.m	1.5 08/04/05
+heartAxis = SHORT_AXIS
+nROI = 0 0 2 2
+nROIshape = RECTANGLE
+tagOrientation = GRID
+bloodIntensity = BLACK
+snakeForce = NOISE_ONLY
+tagDetectionMethod = NOISE_ONLY_DETECT
+tagPredictionMethod = HARP
+tagInitialization = NO_INITIALIZATION
+myocardiumSegmentation = NOISE_ONLY_SEG
+fwhm = 1.000000
+nFWHMsteps = 19
+FWHMrange = 0.900000
+T1 = 100.000000
+nT1steps = 19
+T1range = 0.900000
+window = 2
+noiseOnlySegmentation_width = 0.500000
+noiseOnlySegmentation_steps = 2
+noiseOnlyAdjust_width = 0.500000
+noiseOnlyAdjust_steps = 5
+myocardiumRho = 0.900000
+backgroundRho = 0.900000
+P_T = 0.500000
+P_B = 0.330000
+P_M = 0.330000
+minimumRunLength = 3
+temporalNeighborhoodSize = 1
+snakeChangeWeight = 10.000000
+snakeBendingWeight = 1.000000
+snakeStepSize = 0.100000
+snakeTolerance = 0.010000
+snakeMaxIterations = 150
+snakeSeparation = 0.600000
+snakeSeparationForce = 10.000000
+snakeContinuity = DISCONTINUOUS
+snakeBoundaryCondition = VON_NEUMANN
+intensityStats = STATIONARY_MEDIAN
+varianceModification = FORCE_EQUAL_VARIANCE_MIN
+
+begin timeframe
+nImages = 1
+timeframeIndex = 0
+
+begin image
+imageIndex = 0
+fileName = K:\tdenney\SCCOR\05DAC002\BAS\SE11\IM241
+timeFromQRS = 10.000000
+pixelSize = 1.562501
+imageTopLeft = -69.310410,-282.907928,77.319702
+imageTopRight = 231.589783,-65.262189,225.944997
+imageBottomLeft = -49.107210,-77.054728,-265.049098
+imageCenter = 91.241286,-71.158458,-19.552050
+imageNormal = -0.656938,0.662634,0.359651
+imageAngle = 0
+imageLocation = 71.158310
+imageFormat = DICOM
+imageSeries = 011
+imageNumber = 241
+SArefSeries = 011
+end image
+
+end timeframe
+
+begin timeframe
+nImages = 1
+timeframeIndex = 1
+
+begin image
+imageIndex = 0
+fileName = K:\tdenney\SCCOR\05DAC002\BAS\SE11\IM242
+timeFromQRS = 65.000000
+pixelSize = 1.562501
+imageTopLeft = -69.310410,-282.907928,77.319702
+imageTopRight = 231.589783,-65.262189,225.944997
+imageBottomLeft = -49.107210,-77.054728,-265.049098
+imageCenter = 91.241286,-71.158458,-19.552050
+imageNormal = -0.656938,0.662634,0.359651
+imageAngle = 0
+imageLocation = 71.158310
+imageFormat = DICOM
+imageSeries = 011
+imageNumber = 242
+SArefSeries = 011
+end image
+
+end timeframe
+
+begin timeframe
+nImages = 1
+timeframeIndex = 2
+
+begin image
+imageIndex = 0
+fileName = K:\tdenney\SCCOR\05DAC002\BAS\SE11\IM243
+timeFromQRS = 121.000000
+pixelSize = 1.562501
+imageTopLeft = -69.310410,-282.907928,77.319702
+imageTopRight = 231.589783,-65.262189,225.944997
+imageBottomLeft = -49.107210,-77.054728,-265.049098
+imageCenter = 91.241286,-71.158458,-19.552050
+imageNormal = -0.656938,0.662634,0.359651
+imageAngle = 0
+imageLocation = 71.158310
+imageFormat = DICOM
+imageSeries = 011
+imageNumber = 243
+SArefSeries = 011
+end image
+
+end timeframe
+
+begin timeframe
+nImages = 1
+timeframeIndex = 3
+
+begin image
+imageIndex = 0
+fileName = K:\tdenney\SCCOR\05DAC002\BAS\SE11\IM244
+timeFromQRS = 176.000000
+pixelSize = 1.562501
+imageTopLeft = -69.310410,-282.907928,77.319702
+imageTopRight = 231.589783,-65.262189,225.944997
+imageBottomLeft = -49.107210,-77.054728,-265.049098
+imageCenter = 91.241286,-71.158458,-19.552050
+imageNormal = -0.656938,0.662634,0.359651
+imageAngle = 0
+imageLocation = 71.158310
+imageFormat = DICOM
+imageSeries = 011
+imageNumber = 244
+SArefSeries = 011
+end image
+
+end timeframe
+
+begin timeframe
+nImages = 1
+timeframeIndex = 4
+
+begin image
+imageIndex = 0
+fileName = K:\tdenney\SCCOR\05DAC002\BAS\SE11\IM245
+timeFromQRS = 232.000000
+pixelSize = 1.562501
+imageTopLeft = -69.310410,-282.907928,77.319702
+imageTopRight = 231.589783,-65.262189,225.944997
+imageBottomLeft = -49.107210,-77.054728,-265.049098
+imageCenter = 91.241286,-71.158458,-19.552050
+imageNormal = -0.656938,0.662634,0.359651
+imageAngle = 0
+imageLocation = 71.158310
+imageFormat = DICOM
+imageSeries = 011
+imageNumber = 245
+SArefSeries = 011
+end image
+
+end timeframe
+
+begin timeframe
+nImages = 1
+timeframeIndex = 5
+
+begin image
+imageIndex = 0
+fileName = K:\tdenney\SCCOR\05DAC002\BAS\SE11\IM246
+timeFromQRS = 287.000000
+pixelSize = 1.562501
+imageTopLeft = -69.310410,-282.907928,77.319702
+imageTopRight = 231.589783,-65.262189,225.944997
+imageBottomLeft = -49.107210,-77.054728,-265.049098
+imageCenter = 91.241286,-71.158458,-19.552050
+imageNormal = -0.656938,0.662634,0.359651
+imageAngle = 0
+imageLocation = 71.158310
+imageFormat = DICOM
+imageSeries = 011
+imageNumber = 246
+SArefSeries = 011
+end image
+
+end timeframe
+
+begin timeframe
+nImages = 1
+timeframeIndex = 6
+
+begin image
+imageIndex = 0
+fileName = K:\tdenney\SCCOR\05DAC002\BAS\SE11\IM247
+timeFromQRS = 343.000000
+pixelSize = 1.562501
+imageTopLeft = -69.310410,-282.907928,77.319702
+imageTopRight = 231.589783,-65.262189,225.944997
+imageBottomLeft = -49.107210,-77.054728,-265.049098
+imageCenter = 91.241286,-71.158458,-19.552050
+imageNormal = -0.656938,0.662634,0.359651
+imageAngle = 0
+imageLocation = 71.158310
+imageFormat = DICOM
+imageSeries = 011
+imageNumber = 247
+SArefSeries = 011
+end image
+
+end timeframe
+
+end slice
+
+end group
+
+begin group
+nSlices = 1
+groupIndex = 2
+heartAxis = LONG_AXIS
+sliceOrder = SLICE_ORDER_UNKNOWN
+
+begin slice
+process = true
+nTimeframes = 7
+sliceIndex = 0
+version = @(#)write_srt_file.m	1.5 08/04/05
+heartAxis = LONG_AXIS
+nROI = 0 0 2 2
+nROIshape = RECTANGLE
+ROIshape = ELLIPSE
+ROI = 106 78 50 87
+LAline = 130.63 142.42 S
+tagCenter = -11.8563 -22.3200
+tagOrientation = GRID
+tagSpacing = 10.625034
+bloodIntensity = BLACK
+snakeForce = NOISE_ONLY
+tagDetectionMethod = NOISE_ONLY_DETECT
+tagPredictionMethod = HARP
+tagInitialization = NO_INITIALIZATION
+myocardiumSegmentation = NOISE_ONLY_SEG
+fwhm = 1.000000
+nFWHMsteps = 19
+FWHMrange = 0.900000
+T1 = 100.000000
+nT1steps = 19
+T1range = 0.900000
+window = 2
+noiseOnlySegmentation_width = 0.500000
+noiseOnlySegmentation_steps = 2
+noiseOnlyAdjust_width = 0.500000
+noiseOnlyAdjust_steps = 5
+myocardiumRho = 0.900000
+backgroundRho = 0.900000
+P_T = 0.500000
+P_B = 0.330000
+P_M = 0.330000
+minimumRunLength = 3
+temporalNeighborhoodSize = 1
+snakeChangeWeight = 10.000000
+snakeBendingWeight = 1.000000
+snakeStepSize = 0.100000
+snakeTolerance = 0.010000
+snakeMaxIterations = 150
+snakeSeparation = 0.600000
+snakeSeparationForce = 10.000000
+snakeContinuity = DISCONTINUOUS
+snakeBoundaryCondition = VON_NEUMANN
+intensityStats = STATIONARY_MEDIAN
+varianceModification = FORCE_EQUAL_VARIANCE_MIN
+
+begin timeframe
+nImages = 1
+timeframeIndex = 0
+
+begin image
+imageIndex = 0
+fileName = K:\tdenney\SCCOR\05DAC002\BAS\SE12\IM1
+timeFromQRS = 10.000000
+pixelSize = 1.562505
+imageTopLeft = 15.322817,-256.134614,-138.749757
+imageTopRight = 325.254209,-47.914348,4.735102
+imageBottomLeft = -236.737525,16.397951,10.230663
+imageCenter = 44.258342,-15.758198,7.482883
+imageNormal = -0.050521,-0.514621,0.855928
+imageAngle = 0
+imageLocation = 9.496099
+imageFormat = DICOM
+imageSeries = 012
+imageNumber = 001
+SArefSeries = 012
+end image
+
+end timeframe
+
+begin timeframe
+nImages = 1
+timeframeIndex = 1
+
+begin image
+imageIndex = 0
+fileName = K:\tdenney\SCCOR\05DAC002\BAS\SE12\IM2
+timeFromQRS = 63.000000
+pixelSize = 1.562505
+imageTopLeft = 16.915119,-258.762329,-136.736389
+imageTopRight = 326.846511,-50.542063,6.748470
+imageBottomLeft = -235.145223,13.770236,12.244032
+imageCenter = 45.850644,-18.385913,9.496251
+imageNormal = -0.050521,-0.514621,0.855928
+imageAngle = 0
+imageLocation = 9.496099
+imageFormat = DICOM
+imageSeries = 012
+imageNumber = 002
+SArefSeries = 012
+end image
+
+end timeframe
+
+begin timeframe
+nImages = 1
+timeframeIndex = 2
+
+begin image
+imageIndex = 0
+fileName = K:\tdenney\SCCOR\05DAC002\BAS\SE12\IM3
+timeFromQRS = 117.000000
+pixelSize = 1.562505
+imageTopLeft = 16.915119,-258.762329,-136.736389
+imageTopRight = 326.846511,-50.542063,6.748470
+imageBottomLeft = -235.145223,13.770236,12.244032
+imageCenter = 45.850644,-18.385913,9.496251
+imageNormal = -0.050521,-0.514621,0.855928
+imageAngle = 0
+imageLocation = 9.496099
+imageFormat = DICOM
+imageSeries = 012
+imageNumber = 003
+SArefSeries = 012
+end image
+
+end timeframe
+
+begin timeframe
+nImages = 1
+timeframeIndex = 3
+
+begin image
+imageIndex = 0
+fileName = K:\tdenney\SCCOR\05DAC002\BAS\SE12\IM4
+timeFromQRS = 170.000000
+pixelSize = 1.562505
+imageTopLeft = 16.915119,-258.762329,-136.736389
+imageTopRight = 326.846511,-50.542063,6.748470
+imageBottomLeft = -235.145223,13.770236,12.244032
+imageCenter = 45.850644,-18.385913,9.496251
+imageNormal = -0.050521,-0.514621,0.855928
+imageAngle = 0
+imageLocation = 9.496099
+imageFormat = DICOM
+imageSeries = 012
+imageNumber = 004
+SArefSeries = 012
+end image
+
+end timeframe
+
+begin timeframe
+nImages = 1
+timeframeIndex = 4
+
+begin image
+imageIndex = 0
+fileName = K:\tdenney\SCCOR\05DAC002\BAS\SE12\IM5
+timeFromQRS = 224.000000
+pixelSize = 1.562505
+imageTopLeft = 16.915119,-258.762329,-136.736389
+imageTopRight = 326.846511,-50.542063,6.748470
+imageBottomLeft = -235.145223,13.770236,12.244032
+imageCenter = 45.850644,-18.385913,9.496251
+imageNormal = -0.050521,-0.514621,0.855928
+imageAngle = 0
+imageLocation = 9.496099
+imageFormat = DICOM
+imageSeries = 012
+imageNumber = 005
+SArefSeries = 012
+end image
+
+end timeframe
+
+begin timeframe
+nImages = 1
+timeframeIndex = 5
+
+begin image
+imageIndex = 0
+fileName = K:\tdenney\SCCOR\05DAC002\BAS\SE12\IM6
+timeFromQRS = 277.000000
+pixelSize = 1.562505
+imageTopLeft = 16.915119,-258.762329,-136.736389
+imageTopRight = 326.846511,-50.542063,6.748470
+imageBottomLeft = -235.145223,13.770236,12.244032
+imageCenter = 45.850644,-18.385913,9.496251
+imageNormal = -0.050521,-0.514621,0.855928
+imageAngle = 0
+imageLocation = 9.496099
+imageFormat = DICOM
+imageSeries = 012
+imageNumber = 006
+SArefSeries = 012
+end image
+
+end timeframe
+
+begin timeframe
+nImages = 1
+timeframeIndex = 6
+
+begin image
+imageIndex = 0
+fileName = K:\tdenney\SCCOR\05DAC002\BAS\SE12\IM7
+timeFromQRS = 331.000000
+pixelSize = 1.562505
+imageTopLeft = 13.109118,-253.888284,-141.132773
+imageTopRight = 323.040510,-45.668018,2.352086
+imageBottomLeft = -238.951224,18.644281,7.847648
+imageCenter = 42.044643,-13.511868,5.099867
+imageNormal = -0.050521,-0.514621,0.855928
+imageAngle = 0
+imageLocation = 9.496099
+imageFormat = DICOM
+imageSeries = 012
+imageNumber = 007
+SArefSeries = 012
+end image
+
+end timeframe
+
+end slice
+
+end group
+
+end study
