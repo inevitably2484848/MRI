@@ -246,7 +246,7 @@ public class TestAttributeListReadTerminationStrategy extends TestCase {
 					s2.addItem(s2list);
 				}
 			}
-			list.put(new SequenceAttribute(TagFromName.Relevant​Information​Sequence));
+			list.put(new SequenceAttribute(TagFromName.RelevantInformationSequence));
 			
 			list.write(testFile);
 		}
@@ -264,7 +264,7 @@ public class TestAttributeListReadTerminationStrategy extends TestCase {
 			}
 			
 			{
-				Attribute a = list.get(TagFromName.Relevant​Information​Sequence);
+				Attribute a = list.get(TagFromName.RelevantInformationSequence);
 //System.err.println("TestAttributeListReadTerminationStrategy_SpecificAttributeWithinSequence(): a "+a);
 				assertTrue("Checking Relevant​Information​Sequence was read",a != null);
 			}

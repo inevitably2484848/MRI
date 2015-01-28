@@ -2,8 +2,14 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="test"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
 	<classpathentry kind="lib" path="jai_imageio-1.1.jar"/>
+	<classpathentry kind="lib" path="/home/monzy/Documents/git/MRI/pixelmed.jar"/>
+	<classpathentry kind="lib" path="/home/monzy/Documents/git/MRI/hsqldb.jar"/>
+	<classpathentry kind="lib" path="/home/monzy/Documents/git/MRI/jmdns.jar"/>
+	<classpathentry kind="lib" path="/home/monzy/Documents/git/MRI/commons-net-3.3.jar"/>
+	<classpathentry kind="lib" path="/home/monzy/Documents/git/MRI/vecmath.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
+	<classpathentry kind="con" path="org.eclipse.jst.server.core.container/org.eclipse.jst.server.tomcat.runtimeTarget/Apache Tomcat v8.0"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
