@@ -54,10 +54,12 @@ public class GUIController  implements java.awt.event.ActionListener, MouseListe
 	
 	private String				filename;
 	
+	private JFileChooser 		fileChooser = new JFileChooser();
+	
 	
 	// ActionListener methods
 	public void actionPerformed(java.awt.event.ActionEvent e) {
-		
+
 		String actionCommand = e.getActionCommand();
 		
 //System.out.println("GUIController : actionPerformed - " + actionCommand);
@@ -177,7 +179,7 @@ public class GUIController  implements java.awt.event.ActionListener, MouseListe
 	private void createNewStudy(ActionEvent e) {
 //System.out.println("GUIController : Create New Study");
 		
-		JFileChooser fileChooser = new JFileChooser();
+		
 		fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 		
 		int returnVal = fileChooser.showOpenDialog(this.mainComponent);
@@ -210,7 +212,6 @@ public class GUIController  implements java.awt.event.ActionListener, MouseListe
 	private void loadExistingStudy(ActionEvent e) {
 //System.out.println("GUIController : Load Existing Study");
 		
-		JFileChooser fileChooser = new JFileChooser();
 				
 		FileFilter studyFilter = new FileNameExtensionFilter("Study file (.smc)", "smc");
 		fileChooser.setFileFilter(studyFilter);
@@ -245,7 +246,7 @@ public class GUIController  implements java.awt.event.ActionListener, MouseListe
 	private void loadSingleDicom(ActionEvent e) throws NotInStudyException {
 //System.out.println("GUIController : Load Single DICOM");
 		
-		JFileChooser fileChooser = new JFileChooser();
+		
 		
 		FileFilter dicomType = new FileNameExtensionFilter("DICOM file (.dcm)",
                 "dcm");
@@ -285,7 +286,6 @@ public class GUIController  implements java.awt.event.ActionListener, MouseListe
 	private void importDicom(ActionEvent e) {
 //System.out.println("GUIController : Import DICOM");
 		
-		JFileChooser fileChooser = new JFileChooser();
 		
 		FileFilter dicomFilter = new FileNameExtensionFilter("DICOM file (.dcm)",
                 "dcm");
@@ -428,7 +428,7 @@ public class GUIController  implements java.awt.event.ActionListener, MouseListe
 		if (this.studyStructModel.getStudy() != null) {
 //System.out.println("Saving Study As...");
 			
-			JFileChooser saveFC = new JFileChooser();
+			JFileChooser saveFC = fileChooser;
 			
 			FileFilter studyFileFilter = new FileNameExtensionFilter("Study file (.smc)",
 	                "smc");
