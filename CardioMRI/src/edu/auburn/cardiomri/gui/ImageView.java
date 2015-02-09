@@ -1,8 +1,10 @@
 package edu.auburn.cardiomri.gui;
 
-import java.awt.Color;
-import java.awt.GridLayout;
+import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.Arrays;
 import java.util.Observable;
 
 import javax.swing.JPanel;
@@ -10,6 +12,7 @@ import javax.swing.JPanel;
 import com.pixelmed.dicom.DicomException;
 import com.pixelmed.display.SingleImagePanel;
 import com.pixelmed.display.SourceImage;
+import com.pixelmed.display.SingleImagePanel;
 
 import edu.auburn.cardiomri.datastructure.DICOMImage;
 
@@ -22,32 +25,25 @@ public class ImageView implements java.util.Observer {
 	// Observer methods
 	public void update(Observable obs, Object obj) {
 		if (obj.getClass() == DICOMImage.class) {
-//System.out.println("ImageView : update with DICOMImage");
-			
-			this.panel.removeAll();
+			System.out.println("ImageView : update with DICOMImage");
 			
 			this.sIP = null;
-			
 			DICOMImage dImage = ((DICOMImage) obj);
-			
 			SourceImage sImage = null;
+			
 			try {
 				sImage = new SourceImage(dImage);
-				
 				this.sIP = new SingleImagePanel(sImage);
-				
-				this.panel.revalidate();
-				
-				
+
 			} catch (DicomException e) {
 				e.printStackTrace();
 			}
 			
-			this.sIP.addMouseListener(this.mouseListener);
+			//this.sIP.addMouseListener(this.mouseListener);
 			
 			SingleImagePanel.deconstructAllSingleImagePanelsInContainer(this.panel);
 			this.panel.removeAll();
-			this.panel.add(sIP);
+			this.panel.add(sIP);	
 			
 			this.panel.revalidate();
 		}
@@ -70,17 +66,18 @@ public class ImageView implements java.util.Observer {
 	 * 
 	 *  @return		The class' panel attribute.
 	 */
-	public JPanel getPanel() { return this.panel; }
+	public JPanel getPanel() { 
+		return this.panel; 
+	}
 	
 	// Constructors
 	public ImageView() {
-//System.out.println("ImageView()");
+		//System.out.println("ImageView()");
 		
 		this.panel = new JPanel();
 		this.panel.setLayout(new GridLayout(1,1));
 		this.panel.setBackground(Color.BLACK);
 		this.panel.setOpaque(true);
-		
 		this.panel.setVisible(true);
 	}
 	

@@ -40,7 +40,7 @@ import com.pixelmed.geometry.GeometryOfVolume;
  *
  * @author	dclunie
  */
-class SingleImagePanelWithLineDrawing extends SingleImagePanel {
+public class SingleImagePanelWithLineDrawing extends SingleImagePanel {
 
 	/***/
 	private static final String identString = "@(#) $Header: /userland/cvs/pixelmed/imgbook/com/pixelmed/display/SingleImagePanelWithLineDrawing.java,v 1.4 2013/06/19 12:48:41 dclunie Exp $";
