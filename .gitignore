@@ -3,3 +3,5 @@
 .classpath
 
 .settings
+
+CardioMRI/dicom_importer_error_log.txt
