@@ -5,3 +5,7 @@
 .settings
 
 CardioMRI/.classpath
+
+CardioMRI/dicom_importer_error_log.txt
+
+CardioMRI/res/SCCOR/05DAC002/BASCopy.smc
