@@ -13,6 +13,7 @@ public class Contour implements Shape {
 
     // XY coordinates of points the user clicked
     private List<javafx.geometry.Point2D> controlPoints;
+    private List<javafx.geometry.Point2D> generatedPoints;
 
     public Contour() {
         // TODO Auto-generated constructor stub
@@ -186,12 +187,13 @@ public class Contour implements Shape {
         SIMPLE_CONTOUR = new Vector<javafx.geometry.Point2D>();
 
         // Add points (0, 0) and (10, 10)
-        SIMPLE_CONTOUR.add(new javafx.geometry.Point2D(400.0, 300.0));
-        SIMPLE_CONTOUR.add(new javafx.geometry.Point2D(500.0, 400.0));
-        SIMPLE_CONTOUR.add(new javafx.geometry.Point2D(600.0, 500.0));
-        SIMPLE_CONTOUR.add(new javafx.geometry.Point2D(600.0, 600.0));
-        SIMPLE_CONTOUR.add(new javafx.geometry.Point2D(600.0, 500.0));
-        SIMPLE_CONTOUR.add(new javafx.geometry.Point2D(500.0, 400.0));
-        SIMPLE_CONTOUR.add(new javafx.geometry.Point2D(400.0, 300.0));
+        SIMPLE_CONTOUR.add(new javafx.geometry.Point2D(0.0, 0.0));
+        SIMPLE_CONTOUR.add(new javafx.geometry.Point2D(50.0, 50.0));
+        SIMPLE_CONTOUR.add(new javafx.geometry.Point2D(100.0, 100.0));
+        SIMPLE_CONTOUR.add(new javafx.geometry.Point2D(150.0, 175.0));
+        SIMPLE_CONTOUR.add(new javafx.geometry.Point2D(200.0, 200.0));
+        SIMPLE_CONTOUR.add(new javafx.geometry.Point2D(150.0, 190.0));
+        SIMPLE_CONTOUR.add(new javafx.geometry.Point2D(100.0, 175.0));
+        SIMPLE_CONTOUR.add(new javafx.geometry.Point2D(50.0, 75.0));
     }
 }
