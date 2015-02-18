@@ -190,16 +190,34 @@ public class Contour implements Shape {
         return false;
     }
 
+    /**
+     * Adds a control point to the contour with the given coordinates
+     *
+     * @param x nonnegative double value
+     * @param y nonnegative double value
+     */
     public void addControlPoint(double x, double y) {
-        controlPoints.add(new javafx.geometry.Point2D(x, y));
+        if ((x >= 0) && (y >= 0)) {
+            controlPoints.add(new javafx.geometry.Point2D(x, y));
+        }
     }
 
+    /**
+     * Returns a list of the control points
+     *
+     * @return copy of the internal list
+     */
     public List<javafx.geometry.Point2D> getControlPoints() {
-        return controlPoints;
+        return new Vector<javafx.geometry.Point2D>(controlPoints);
     }
 
+    /**
+     * Returns a list of the points generated to create a smooth curve
+     *
+     * @return copy of the internal list
+     */
     public List<javafx.geometry.Point2D> getGeneratedPoints() {
-        return generatedPoints;
+        return new Vector<javafx.geometry.Point2D>(generatedPoints);
     }
 
     public static final List<javafx.geometry.Point2D> SIMPLE_CONTOUR;
