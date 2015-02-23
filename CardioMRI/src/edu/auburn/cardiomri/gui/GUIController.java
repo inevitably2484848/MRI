@@ -8,8 +8,12 @@ import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -24,6 +28,7 @@ import javax.swing.tree.TreePath;
 
 import edu.auburn.cardiomri.dataimporter.DICOM3Importer;
 import edu.auburn.cardiomri.dataimporter.DICOMFileTreeWalker;
+import edu.auburn.cardiomri.datastructure.Contour;
 import edu.auburn.cardiomri.datastructure.DICOMImage;
 import edu.auburn.cardiomri.datastructure.Slice;
 import edu.auburn.cardiomri.datastructure.Study;
@@ -320,6 +325,40 @@ public class GUIController  implements java.awt.event.ActionListener, MouseListe
         }
 	}
 	
+	/*
+	 * Saves current image's contour lines into a .txt file containing 
+	 * the X and Y coordinates of all the points along the contour
+	 * 
+	 * @param contour : Contour object to be saved
+	 * 
+	 */
+	 public static void SaveContour(Contour contour) {
+	    	
+	    	// TODO Categorize points based on location (i.e. LA, RA, Endo, Epi, etc...)
+	    	
+	    	Writer writer = null;
+
+	    		try {
+	    		    writer = new BufferedWriter(new OutputStreamWriter(
+	    		          new FileOutputStream("contourPoints.txt"), "utf-8"));
+	    		    
+	    		    for (javafx.geometry.Point2D point : contour.getControlPoints()) {
+	    		    	writer.write(Double.toString(point.getX()) + "," + Double.toString(point.getY()));
+	    		    }
+	    		    for (javafx.geometry.Point2D point : contour.getGeneratedPoints()) {
+	    		    	writer.write(Double.toString(point.getX()) + "," + Double.toString(point.getY()));
+	    		    }
+	    		    
+	    		} catch (IOException ex) {
+	    		  // report
+	    		} finally {
+	    		   try {
+	    			   writer.close();
+	    		   } 
+	    		   	catch (Exception ex) {}
+	    		}
+	    	
+	    }
 	/*
 	 * Decrements the current time index and updates the models.
 	 */

@@ -28,6 +28,7 @@ public class Contour implements Shape {
         // TODO Remove this when it becomes easier to add points
         controlPoints.addAll(SIMPLE_CONTOUR);
     }
+  
 
     @Override
     public boolean contains(Point2D p) {

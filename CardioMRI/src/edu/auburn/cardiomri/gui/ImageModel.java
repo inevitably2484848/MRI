@@ -1,5 +1,8 @@
 package edu.auburn.cardiomri.gui;
 
+import java.util.Vector;
+
+import edu.auburn.cardiomri.datastructure.Contour;
 import edu.auburn.cardiomri.datastructure.DICOMImage;
 import edu.auburn.cardiomri.datastructure.Study;
 
@@ -8,6 +11,7 @@ public class ImageModel extends java.util.Observable {
 	private Study study;
 	private DICOMImage dImage;
 	private int g, s, t, i;
+	Vector<Contour> contours = new Vector<Contour>();
 	
 	// Setters
 	/*
@@ -59,6 +63,8 @@ public class ImageModel extends java.util.Observable {
 	public ImageModel() {
 //System.out.println("ImageModel()");
 		this.dImage = null;
+		contours.add(new Contour());
 	}
+	
 	
 }
