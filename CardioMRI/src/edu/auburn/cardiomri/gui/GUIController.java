@@ -8,6 +8,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -755,6 +756,7 @@ public class GUIController  implements java.awt.event.ActionListener, MouseListe
 	
 	// Default constructor
 	public GUIController() {
+        fileChooser.setCurrentDirectory(new File(System.getProperty("user.dir")));
 //System.out.println("GUIController : GUIController()");
 	}
 	
