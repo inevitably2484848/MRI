@@ -9,6 +9,9 @@ import java.awt.geom.Rectangle2D;
 import java.util.List;
 import java.util.Vector;
 
+import toxi.geom.Spline2D;
+import toxi.geom.Vec2D;
+
 public class Contour implements Shape {
 
     // XY coordinates of points the user clicked
@@ -92,6 +95,8 @@ public class Contour implements Shape {
         // Just for the spike
         // TODO Don't ignore the transform
         controlPoints = SIMPLE_CONTOUR;
+        generatedPoints = new Vector<javafx.geometry.Point2D>();
+        this.generate();
 
         return new PathIterator() {
             private int index = 0;
@@ -104,7 +109,7 @@ public class Contour implements Shape {
             @Override
             public boolean isDone() {
                 // TODO Make sure controlPoints isn't null
-                return index > controlPoints.size();
+                return index > generatedPoints.size();
             }
 
             @Override
@@ -115,26 +120,26 @@ public class Contour implements Shape {
             @Override
             public int currentSegment(double[] coords) {
                 if (index == 0) {
-                    coords[0] = controlPoints.get(0).getX();
-                    coords[1] = controlPoints.get(0).getY();
+                    coords[0] = generatedPoints.get(0).getX();
+                    coords[1] = generatedPoints.get(0).getY();
                     return SEG_MOVETO;
-                } else if ((index > 0) && (index < controlPoints.size())) {
+                } else if ((index > 0) && (index < generatedPoints.size())) {
                     // First control point
-                    coords[0] = controlPoints.get(index - 1).getX();
-                    coords[1] = controlPoints.get(index - 1).getY();
+                    coords[0] = generatedPoints.get(index - 1).getX();
+                    coords[1] = generatedPoints.get(index - 1).getY();
 
                     // Second control point
-                    coords[2] = controlPoints.get(index).getX();
-                    coords[3] = controlPoints.get(index).getY();
+                    coords[2] = generatedPoints.get(index).getX();
+                    coords[3] = generatedPoints.get(index).getY();
                     return SEG_QUADTO;
-                } else if (index == controlPoints.size()) {
+                } else if (index == generatedPoints.size()) {
                     // First control point
-                    coords[0] = controlPoints.get(index - 1).getX();
-                    coords[1] = controlPoints.get(index - 1).getY();
+                    coords[0] = generatedPoints.get(index - 1).getX();
+                    coords[1] = generatedPoints.get(index - 1).getY();
 
                     // Second control point
-                    coords[2] = controlPoints.get(0).getX();
-                    coords[3] = controlPoints.get(0).getY();
+                    coords[2] = generatedPoints.get(0).getX();
+                    coords[3] = generatedPoints.get(0).getY();
                     return SEG_QUADTO;
                 } else {
                     return SEG_CLOSE;
@@ -144,26 +149,26 @@ public class Contour implements Shape {
             @Override
             public int currentSegment(float[] coords) {
                 if (index == 0) {
-                    coords[0] = (float) controlPoints.get(0).getX();
-                    coords[1] = (float) controlPoints.get(0).getY();
+                    coords[0] = (float) generatedPoints.get(0).getX();
+                    coords[1] = (float) generatedPoints.get(0).getY();
                     return SEG_MOVETO;
-                } else if ((index > 0) && (index < controlPoints.size())) {
+                } else if ((index > 0) && (index < generatedPoints.size())) {
                     // First control point
-                    coords[0] = (float) controlPoints.get(index - 1).getX();
-                    coords[1] = (float) controlPoints.get(index - 1).getY();
+                    coords[0] = (float) generatedPoints.get(index - 1).getX();
+                    coords[1] = (float) generatedPoints.get(index - 1).getY();
 
                     // Second control point
-                    coords[2] = (float) controlPoints.get(index).getX();
-                    coords[3] = (float) controlPoints.get(index).getY();
+                    coords[2] = (float) generatedPoints.get(index).getX();
+                    coords[3] = (float) generatedPoints.get(index).getY();
                     return SEG_QUADTO;
-                } else if (index == controlPoints.size()) {
+                } else if (index == generatedPoints.size()) {
                     // First control point
-                    coords[0] = (float) controlPoints.get(index - 1).getX();
-                    coords[1] = (float) controlPoints.get(index - 1).getY();
+                    coords[0] = (float) generatedPoints.get(index - 1).getX();
+                    coords[1] = (float) generatedPoints.get(index - 1).getY();
 
                     // Second control point
-                    coords[2] = (float) controlPoints.get(0).getX();
-                    coords[3] = (float) controlPoints.get(0).getY();
+                    coords[2] = (float) generatedPoints.get(0).getX();
+                    coords[3] = (float) generatedPoints.get(0).getY();
                     return SEG_QUADTO;
                 } else {
                     return SEG_CLOSE;
@@ -193,8 +198,10 @@ public class Contour implements Shape {
     /**
      * Adds a control point to the contour with the given coordinates
      *
-     * @param x nonnegative double value
-     * @param y nonnegative double value
+     * @param x
+     *            nonnegative double value
+     * @param y
+     *            nonnegative double value
      */
     public void addControlPoint(double x, double y) {
         if ((x >= 0) && (y >= 0)) {
@@ -217,22 +224,55 @@ public class Contour implements Shape {
      * @return copy of the internal list
      */
     public List<javafx.geometry.Point2D> getGeneratedPoints() {
+        this.generate();
         return new Vector<javafx.geometry.Point2D>(generatedPoints);
     }
 
+    /**
+     * Connects the control points with a smooth curve and fills generatedPoints
+     * with points on that curve.
+     */
+    private void generate() {
+        // TODO: sortControlPoints()
+        // Find centroid, sort by angle to centroid
+
+        generatedPoints.clear();
+        if (controlPoints.size() < 2) {
+            // generatedPoints.addAll(controlPoints);
+            return;
+        }
+
+        Vec2D[] points = new Vec2D[controlPoints.size()];
+        javafx.geometry.Point2D temp;
+        for (int i = 0; i < controlPoints.size(); i++) {
+            temp = controlPoints.get(i);
+            points[i] = new Vec2D((float) temp.getX(), (float) temp.getY());
+        }
+
+        Spline2D spline = new Spline2D(points);
+        List<Vec2D> genPoints = spline.getDecimatedVertices(SEPARATION_DISTANCE);
+        // System.err.println(genPoints.size());
+
+        for (Vec2D point : genPoints) {
+            generatedPoints.add(new javafx.geometry.Point2D(point.x, point.y));
+        }
+    }
+
     public static final List<javafx.geometry.Point2D> SIMPLE_CONTOUR;
+    private static int SEPARATION_DISTANCE = 1; // Distance between each
+                                                // of the generated points
 
     static {
         SIMPLE_CONTOUR = new Vector<javafx.geometry.Point2D>();
 
-        // Add points (0, 0) and (10, 10)
-        SIMPLE_CONTOUR.add(new javafx.geometry.Point2D(0.0, 0.0));
-        SIMPLE_CONTOUR.add(new javafx.geometry.Point2D(50.0, 50.0));
-        SIMPLE_CONTOUR.add(new javafx.geometry.Point2D(100.0, 100.0));
-        SIMPLE_CONTOUR.add(new javafx.geometry.Point2D(150.0, 175.0));
-        SIMPLE_CONTOUR.add(new javafx.geometry.Point2D(200.0, 200.0));
-        SIMPLE_CONTOUR.add(new javafx.geometry.Point2D(150.0, 190.0));
-        SIMPLE_CONTOUR.add(new javafx.geometry.Point2D(100.0, 175.0));
-        SIMPLE_CONTOUR.add(new javafx.geometry.Point2D(50.0, 75.0));
+        SIMPLE_CONTOUR.add(new javafx.geometry.Point2D(500, 400));
+        SIMPLE_CONTOUR.add(new javafx.geometry.Point2D(570, 430));
+        SIMPLE_CONTOUR.add(new javafx.geometry.Point2D(600, 500));
+        SIMPLE_CONTOUR.add(new javafx.geometry.Point2D(570, 570));
+        SIMPLE_CONTOUR.add(new javafx.geometry.Point2D(500, 600));
+        SIMPLE_CONTOUR.add(new javafx.geometry.Point2D(430, 570));
+        SIMPLE_CONTOUR.add(new javafx.geometry.Point2D(400, 500));
+        SIMPLE_CONTOUR.add(new javafx.geometry.Point2D(430, 430));
+        SIMPLE_CONTOUR.add(new javafx.geometry.Point2D(500, 400));
     }
 }
