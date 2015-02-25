@@ -13,11 +13,20 @@ public class Contour implements Shape {
 
     // XY coordinates of points the user clicked
     private List<javafx.geometry.Point2D> controlPoints;
+
+    // XY coordinates of points that look like a smooth curve is drawn between
+    // each of the control points
     private List<javafx.geometry.Point2D> generatedPoints;
 
+    /**
+     * Sets controlPoints to a predefined set of points.
+     */
     public Contour() {
-        // TODO Auto-generated constructor stub
-        controlPoints = SIMPLE_CONTOUR;
+        controlPoints = new Vector<javafx.geometry.Point2D>();
+        generatedPoints = new Vector<javafx.geometry.Point2D>();
+
+        // TODO Remove this when it becomes easier to add points
+        controlPoints.addAll(SIMPLE_CONTOUR);
     }
 
     @Override
@@ -179,6 +188,36 @@ public class Contour implements Shape {
     public boolean intersects(double x, double y, double w, double h) {
         // TODO Auto-generated method stub
         return false;
+    }
+
+    /**
+     * Adds a control point to the contour with the given coordinates
+     *
+     * @param x nonnegative double value
+     * @param y nonnegative double value
+     */
+    public void addControlPoint(double x, double y) {
+        if ((x >= 0) && (y >= 0)) {
+            controlPoints.add(new javafx.geometry.Point2D(x, y));
+        }
+    }
+
+    /**
+     * Returns a list of the control points
+     *
+     * @return copy of the internal list
+     */
+    public List<javafx.geometry.Point2D> getControlPoints() {
+        return new Vector<javafx.geometry.Point2D>(controlPoints);
+    }
+
+    /**
+     * Returns a list of the points generated to create a smooth curve
+     *
+     * @return copy of the internal list
+     */
+    public List<javafx.geometry.Point2D> getGeneratedPoints() {
+        return new Vector<javafx.geometry.Point2D>(generatedPoints);
     }
 
     public static final List<javafx.geometry.Point2D> SIMPLE_CONTOUR;
