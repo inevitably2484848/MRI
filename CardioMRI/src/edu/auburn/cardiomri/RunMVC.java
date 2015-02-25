@@ -120,12 +120,19 @@ public class RunMVC {
 		importDicom.setActionCommand("Import DICOM");
 		importDicom.addActionListener(guiController);
 		
+		//SaveContours to .txt
+		// TODO add shortcut?
+		JMenuItem saveContours = new JMenuItem("Save Contours (.txt File)");
+		saveContours.setActionCommand("Save Contours")
+		saveContours.addActionListener(guiController);
 		
 		fileMenu.add(newMenu);
 		fileMenu.add(openExisting);
 		fileMenu.add(saveStudy);
 		fileMenu.add(saveAsStudy);
 		fileMenu.add(importDicom);
+		fileMenu.add(saveContours);
+		
 		
 		guiController.setAppFrame(frame);
 		

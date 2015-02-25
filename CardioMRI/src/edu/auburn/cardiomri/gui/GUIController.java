@@ -69,7 +69,7 @@ public class GUIController  implements java.awt.event.ActionListener, MouseListe
 		String actionCommand = e.getActionCommand();
 		
 //System.out.println("GUIController : actionPerformed - " + actionCommand);
-		
+
 		if (actionCommand.equals("Create New Study")) {
 			this.createNewStudy(e);
 		}
@@ -97,6 +97,9 @@ public class GUIController  implements java.awt.event.ActionListener, MouseListe
 			else {
 //System.out.println("GUIController : failed attempt to import DICOM");
 			}
+		}
+		else if (actionCommand.equals("Save Contours")) {
+			this.saveContours();
 		}
 		else if (actionCommand.substring(0, 6).equals("Button")) {
 //System.out.println("GUIController : resetting focus");
@@ -332,23 +335,43 @@ public class GUIController  implements java.awt.event.ActionListener, MouseListe
 	 * @param contour : Contour object to be saved
 	 * 
 	 */
-	 public static void SaveContour(Contour contour) {
-	    	
-	    	// TODO Categorize points based on location (i.e. LA, RA, Endo, Epi, etc...)
-	    	
-	    	Writer writer = null;
+	 private void saveContour() {
+		 
+	    	//TODO Categorize points based on location (i.e. LA, RA, Endo, Epi, etc...)
+	
+		 	//TODO"points on contour" temporary filename. Dr. Denney wants field blank.
 
+		 DICOMImage dImage = this.imageModel.getImage();
+		 Vector<Contour> contours = new Vector<Contour>();
+		 contours = dImage.getContours();
+		 
+		 int numPoints = 0;
+		 String sopInstanceUID = dImage.getSopInstanceUID();
+		 
+		 //TODO need to put actual contour types
+		 String contourType = dImage.getSeriesDescription();
+		 
+		 
+	    	Writer writer = null;
 	    		try {
 	    		    writer = new BufferedWriter(new OutputStreamWriter(
 	    		          new FileOutputStream("contourPoints.txt"), "utf-8"));
 	    		    
-	    		    for (javafx.geometry.Point2D point : contour.getControlPoints()) {
-	    		    	writer.write(Double.toString(point.getX()) + "," + Double.toString(point.getY()));
-	    		    }
-	    		    for (javafx.geometry.Point2D point : contour.getGeneratedPoints()) {
-	    		    	writer.write(Double.toString(point.getX()) + "," + Double.toString(point.getY()));
-	    		    }
+	    		    for (Contour c : contours) {
+	    		    	numPoints = c.getControlPoints().size() + c.getGeneratedPoints().size();
 	    		    
+	    		    	writer.write("FILE_NAME (not used)\n");
+	    		    	writer.write("SOP_INSTANCE_UID" + sopInstanceUID + "\nCONTOUR_TYPE" 
+	    		    			+ contourType + "\nnumPoints" + "\n");
+	    		    
+	    		    	for (javafx.geometry.Point2D point : c.getControlPoints()) {
+	    		    		writer.write(Double.toString(point.getX()) + "," + Double.toString(point.getY()) + "\n");
+	    		    	}
+	    		    	for (javafx.geometry.Point2D point : c.getGeneratedPoints()) {
+	    		    		writer.write(Double.toString(point.getX()) + "," + Double.toString(point.getY()) + "\n");
+	    		    	}
+	    		    	writer.write((-1) + "\n");
+	    		    }
 	    		} catch (IOException ex) {
 	    		  // report
 	    		} finally {
@@ -357,7 +380,6 @@ public class GUIController  implements java.awt.event.ActionListener, MouseListe
 	    		   } 
 	    		   	catch (Exception ex) {}
 	    		}
-	    	
 	    }
 	/*
 	 * Decrements the current time index and updates the models.

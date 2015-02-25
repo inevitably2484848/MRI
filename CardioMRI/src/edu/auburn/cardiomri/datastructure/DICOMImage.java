@@ -17,7 +17,8 @@ import java.util.HashMap;
 public class DICOMImage implements Serializable {
 	
 	private HashMap<String, String> attributes;
-
+	private Vector<Contour> contours;
+	
 	private String filename;
 	private String manufacturer;
 	private String studyID;
@@ -90,6 +91,14 @@ public class DICOMImage implements Serializable {
 		}
 		
 		return combinedNamesAndValues;
+	}
+	
+	public Vector<Contour> getContours() {
+		return this.contours;
+	}
+	
+	public void setContours(Vector<Contour> contours) {
+		this.contours = contours;
 	}
 	
 	public String getSopInstanceUID() {

@@ -47,7 +47,11 @@ public class ImageView implements java.util.Observer {
 
 				Vector<Contour> contours = new Vector<Contour>();
 				contours.add(new Contour());
-				this.sIP.setPreDefinedShapes(contours);
+				dImage.setContours(contours);
+				this.sIP.setPreDefinedShapes(dImage.getContours());
+				
+				
+//				this.sIP.setPreDefinedShapes(contours);
 
 				this.panel.revalidate();
 
