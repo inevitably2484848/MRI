@@ -123,7 +123,7 @@ public class RunMVC {
 		//SaveContours to .txt
 		// TODO add shortcut?
 		JMenuItem saveContours = new JMenuItem("Save Contours (.txt File)");
-		saveContours.setActionCommand("Save Contours")
+		saveContours.setActionCommand("Save Contours");
 		saveContours.addActionListener(guiController);
 		
 		fileMenu.add(newMenu);

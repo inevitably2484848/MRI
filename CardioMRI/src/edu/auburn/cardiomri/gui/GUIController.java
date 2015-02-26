@@ -8,6 +8,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
+import java.util.Vector;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -99,7 +100,7 @@ public class GUIController  implements java.awt.event.ActionListener, MouseListe
 			}
 		}
 		else if (actionCommand.equals("Save Contours")) {
-			this.saveContours();
+			this.saveContour();
 		}
 		else if (actionCommand.substring(0, 6).equals("Button")) {
 //System.out.println("GUIController : resetting focus");
@@ -361,7 +362,7 @@ public class GUIController  implements java.awt.event.ActionListener, MouseListe
 	    		    	numPoints = c.getControlPoints().size() + c.getGeneratedPoints().size();
 	    		    
 	    		    	writer.write("FILE_NAME (not used)\n");
-	    		    	writer.write("SOP_INSTANCE_UID" + sopInstanceUID + "\nCONTOUR_TYPE" 
+	    		    	writer.write("SOP_INSTANCE_UID: " + sopInstanceUID + "\nCONTOUR_TYPE: " 
 	    		    			+ contourType + "\nnumPoints" + "\n");
 	    		    
 	    		    	for (javafx.geometry.Point2D point : c.getControlPoints()) {
