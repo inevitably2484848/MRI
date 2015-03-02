@@ -355,7 +355,7 @@ public class GUIController  implements java.awt.event.ActionListener, MouseListe
 		 //TODO move to save() in SerializableManager
 		 DICOMImage dImage = this.imageModel.getImage();
 		 Vector<Contour> contours = new Vector<Contour>();
-		 contours = dImage.getContours();
+		 contours = this.imageModel.getContourList();
 		 int numPoints = 0;
 		 String sopInstanceUID = dImage.getSopInstanceUID();
 		 //TODO need to put actual contour types
