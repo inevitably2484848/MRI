@@ -126,12 +126,17 @@ public class RunMVC {
 		saveContours.setActionCommand("Save Contours");
 		saveContours.addActionListener(guiController);
 		
+		JMenuItem loadContours = new JMenuItem("Load Contours");
+		loadContours.setActionCommand("Load Contours");
+		loadContours.addActionListener(guiController);
+		
 		fileMenu.add(newMenu);
 		fileMenu.add(openExisting);
 		fileMenu.add(saveStudy);
 		fileMenu.add(saveAsStudy);
 		fileMenu.add(importDicom);
 		fileMenu.add(saveContours);
+		fileMenu.add(loadContours);
 		
 		
 		guiController.setAppFrame(frame);

@@ -9,11 +9,17 @@ import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 import java.util.Vector;
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.LineNumberReader;
 import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.io.Writer;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -101,6 +107,14 @@ public class GUIController  implements java.awt.event.ActionListener, MouseListe
 		}
 		else if (actionCommand.equals("Save Contours")) {
 			this.saveContour();
+		}
+		else if (actionCommand.equals("Load Contours")) {
+			try {
+				this.loadContour();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 		}
 		else if (actionCommand.substring(0, 6).equals("Button")) {
 //System.out.println("GUIController : resetting focus");
@@ -331,50 +345,45 @@ public class GUIController  implements java.awt.event.ActionListener, MouseListe
 	
 	/*
 	 * Saves current image's contour lines into a .txt file containing 
-	 * the X and Y coordinates of all the points along the contour
+	 * a header and the X and Y coordinates of all the points along the contour
 	 * 
 	 * @param contour : Contour object to be saved
 	 * 
 	 */
 	 private void saveContour() {
-		 
-	    	//TODO Categorize points based on location (i.e. LA, RA, Endo, Epi, etc...)
-	
-		 	//TODO"points on contour" temporary filename. Dr. Denney wants field blank.
-
+	     //TODO Categorize points based on location (i.e. LA, RA, Endo, Epi, etc...
+		 //TODO move to save() in SerializableManager
 		 DICOMImage dImage = this.imageModel.getImage();
 		 Vector<Contour> contours = new Vector<Contour>();
 		 contours = dImage.getContours();
-		 
 		 int numPoints = 0;
 		 String sopInstanceUID = dImage.getSopInstanceUID();
-		 
 		 //TODO need to put actual contour types
 		 String contourType = dImage.getSeriesDescription();
+		 Writer writer = null;
 		 
-		 
-	    	Writer writer = null;
 	    		try {
-	    		    writer = new BufferedWriter(new OutputStreamWriter(
-	    		          new FileOutputStream("contourPoints.txt"), "utf-8"));
-	    		    
+	    			//writes to working directory of user
+	    			String path = System.getProperty("user.dir") + File.separator + "/contourPoints.txt";
+	    		    File f = new File(path);
+
 	    		    for (Contour c : contours) {
 	    		    	numPoints = c.getControlPoints().size() + c.getGeneratedPoints().size();
+	    		    	String uid = "SOP_INSTANCE_UID: " + sopInstanceUID;
+	    		    	String type = "\nCONTOUR_TYPE: " + contourType;
+	    		    	String num = "\n" + numPoints + "\n";
+	    		    	writer = new PrintWriter(new BufferedWriter(new FileWriter(f, false)));
+	    		    	writer.write(uid + type  + num);
 	    		    
-	    		    	writer.write("FILE_NAME (not used)\n");
-	    		    	writer.write("SOP_INSTANCE_UID: " + sopInstanceUID + "\nCONTOUR_TYPE: " 
-	    		    			+ contourType + "\nnumPoints" + "\n");
-	    		    
-	    		    	for (javafx.geometry.Point2D point : c.getControlPoints()) {
-	    		    		writer.write(Double.toString(point.getX()) + "," + Double.toString(point.getY()) + "\n");
-	    		    	}
-	    		    	for (javafx.geometry.Point2D point : c.getGeneratedPoints()) {
-	    		    		writer.write(Double.toString(point.getX()) + "," + Double.toString(point.getY()) + "\n");
-	    		    	}
-	    		    	writer.write((-1) + "\n");
+	    		    		for (javafx.geometry.Point2D point : c.getControlPoints()) {
+	    		    			writer.write(Double.toString(point.getX()) + "\t" + Double.toString(point.getY()) + "\n");
+	    		    		}
+	    		    		for (javafx.geometry.Point2D point : c.getGeneratedPoints()) {
+	    		    			writer.write(Double.toString(point.getX()) + "\t" + Double.toString(point.getY()) + "\n");
+	    		    		}
+	    		    		writer.write((-1) + "\n");
 	    		    }
 	    		} catch (IOException ex) {
-	    		  // report
 	    		} finally {
 	    		   try {
 	    			   writer.close();
@@ -382,7 +391,47 @@ public class GUIController  implements java.awt.event.ActionListener, MouseListe
 	    		   	catch (Exception ex) {}
 	    		}
 	    }
-	/*
+	
+	 private void loadContour() throws IOException {
+		 //TODO parse through Images using SUID to find the correct image...
+		 //TODO read until -1 which is endfile
+		 //TODO #7, 8. log error if type not found...
+		 DICOMImage dImage = this.imageModel.getImage();
+		 Vector<Contour> contours = new Vector<Contour>();
+		 
+		 
+		 	fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+			
+			int returnVal = fileChooser.showOpenDialog(this.mainComponent);
+			if (returnVal == JFileChooser.APPROVE_OPTION) {
+				
+				File file = fileChooser.getSelectedFile();
+				int numLines;
+				BufferedReader reader = new BufferedReader(new FileReader(file));
+				LineNumberReader lnr = new LineNumberReader(new FileReader(file));
+				lnr.skip(Long.MAX_VALUE);
+				numLines = lnr.getLineNumber() + 1; 
+				lnr.close();
+				
+				String[] inputs;
+				String line;
+				String sopInstanceUID;
+				
+				for (int i = 0; i < numLines; i++ ) {
+					while(Integer.parseInt(reader.readLine()) != -1) {
+						System.out.println(reader.readLine());
+					}
+				}
+			}
+			else {
+	//System.out.println("FileChooser : Canceled choosing directory");
+			}
+		 
+	 }
+	 
+	 
+	 
+	 /*
 	 * Decrements the current time index and updates the models.
 	 */
 	private void decrementTimeIndex() {
