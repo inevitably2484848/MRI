@@ -24,6 +24,7 @@ import javax.swing.tree.TreePath;
 
 import edu.auburn.cardiomri.dataimporter.DICOM3Importer;
 import edu.auburn.cardiomri.dataimporter.DICOMFileTreeWalker;
+import edu.auburn.cardiomri.datastructure.Contour;
 import edu.auburn.cardiomri.datastructure.DICOMImage;
 import edu.auburn.cardiomri.datastructure.Slice;
 import edu.auburn.cardiomri.datastructure.Study;
@@ -491,6 +492,7 @@ public class GUIController  implements java.awt.event.ActionListener, MouseListe
 		this.gridModel.setCurrentImage(this.gIndex, this.sIndex, this.tIndex, this.iIndex);
 		this.metaDataModel.setCurrentImage(this.gIndex, this.sIndex, this.tIndex, this.iIndex);
 		this.imageModel.setCurrentImage(this.gIndex, this.sIndex, this.tIndex, this.iIndex);
+		this.imageModel.addContourToImage(new Contour());
 	}
 
 	// Setters

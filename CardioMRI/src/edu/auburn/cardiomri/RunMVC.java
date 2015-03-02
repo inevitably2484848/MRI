@@ -1,12 +1,14 @@
 package edu.auburn.cardiomri;
 
+import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.GridLayout;
+import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
-import javax.swing.JFrame;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JSplitPane;
+import javax.swing.*;
 
 import edu.auburn.cardiomri.gui.*;
 
@@ -61,6 +63,8 @@ public class RunMVC {
 		JFrame frame = new JFrame("Cardio MRI");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setSize(1200, 600);
+		
+		
 		
 		JSplitPane structAndGridPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
 				studyStructView.getPanel(), gridView.getPanel());
@@ -128,6 +132,29 @@ public class RunMVC {
 		fileMenu.add(importDicom);
 		
 		guiController.setAppFrame(frame);
+		
+		JPanel glass = new JPanel(new GridLayout(0, 1));
+		glass.setOpaque(false);
+		glass.setSize(imageView.getPanel().getSize());
+		glass.setLocation(imageView.getPanel().getLocation());
+		glass.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e)
+			     {
+			          System.out.println("clicked 1");
+			          Point glassPoint = e.getPoint();
+			          Component component_under_glass = SwingUtilities.getDeepestComponentAt(frame.getContentPane(), glassPoint.x, glassPoint.y);
+			          System.out.println(component_under_glass.toString());
+			          Point component_point = SwingUtilities.convertPoint(glass, glassPoint, component_under_glass);
+			          if (component_under_glass instanceof JButton || component_under_glass instanceof JMenuItem  ){
+			        	  System.out.println("processed click");
+			        	  ActionEvent ae = new ActionEvent(e.getSource(), e.getID(), e.paramString());
+			        	  guiController.actionPerformed(ae);
+			          }
+			          guiController.mouseClicked(e);
+			     }
+		});
+	    //frame.setGlassPane(glass);
+	    glass.setVisible(true);
 		
 		frame.setVisible(true);
 	}

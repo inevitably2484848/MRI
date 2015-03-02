@@ -26,7 +26,7 @@ public class Contour implements Shape {
         generatedPoints = new Vector<javafx.geometry.Point2D>();
 
         // TODO Remove this when it becomes easier to add points
-        controlPoints.addAll(SIMPLE_CONTOUR);
+        //controlPoints.addAll(SIMPLE_CONTOUR);
     }
 
     @Override
@@ -91,7 +91,7 @@ public class Contour implements Shape {
     public PathIterator getPathIterator(AffineTransform at) {
         // Just for the spike
         // TODO Don't ignore the transform
-        controlPoints = SIMPLE_CONTOUR;
+        //controlPoints = SIMPLE_CONTOUR;
 
         return new PathIterator() {
             private int index = 0;
