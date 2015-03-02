@@ -10,24 +10,28 @@ import java.util.Vector;
 
 import javax.swing.JPanel;
 
+import com.pixelmed.dicom.AttributeList;
 import com.pixelmed.dicom.DicomException;
 import com.pixelmed.display.SingleImagePanel;
-import com.pixelmed.display.SourceImage;
+//import com.pixelmed.display.SourceImage;
 import com.pixelmed.display.SingleImagePanel;
+import com.pixelmed.display.SourceImage;
 
 import edu.auburn.cardiomri.datastructure.Contour;
 import edu.auburn.cardiomri.datastructure.DICOMImage;
+import edu.auburn.cardiomri.gui.ConstructImage;
 
 public class ImageView implements java.util.Observer {
 
 	private JPanel panel;
 	private MouseListener mouseListener;
+	
 	private SingleImagePanel sIP;
 
 	// Observer methods
 	@Override
 	public void update(Observable obs, Object obj) {
-		if (obj.getClass() == DICOMImage.class) {
+		if (obj.getClass() == DICOMImage.class) { //set class from DICOMImage to AttributeList
 
 			// System.out.println("ImageView : update with DICOMImage");
 
@@ -36,12 +40,13 @@ public class ImageView implements java.util.Observer {
 			this.sIP = null;
 
 			DICOMImage dImage = ((DICOMImage) obj);
+			//AttributeList dList = ((AttributeList) obj);
 
 
-			SourceImage sImage = null;
+			ConstructImage sImage = null;
 			
 			try {
-				sImage = new SourceImage(dImage);
+				sImage = new ConstructImage(dImage);
 
 				this.sIP = new SingleImagePanel(sImage);
 

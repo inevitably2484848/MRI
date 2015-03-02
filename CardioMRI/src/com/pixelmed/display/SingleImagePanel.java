@@ -24,7 +24,6 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
-
 import java.awt.Font;
 import java.awt.Transparency;
 import java.awt.color.ColorSpace;
@@ -66,7 +65,6 @@ import com.pixelmed.event.ApplicationEventDispatcher;
 import com.pixelmed.event.Event;
 import com.pixelmed.event.EventContext;
 import com.pixelmed.event.SelfRegisteringListener;
-
 import com.pixelmed.display.event.ApplyShutterChangeEvent;
 import com.pixelmed.display.event.FrameSelectionChangeEvent;
 import com.pixelmed.display.event.FrameSortOrderChangeEvent;
@@ -76,7 +74,6 @@ import com.pixelmed.display.event.VOIFunctionChangeEvent;
 import com.pixelmed.display.event.WindowingAccelerationValueChangeEvent;
 import com.pixelmed.display.event.WindowLinearCalculationChangeEvent;
 import com.pixelmed.display.event.WindowCenterAndWidthChangeEvent;
-
 import com.pixelmed.dicom.AttributeList;
 import com.pixelmed.dicom.DisplayShutter;
 import com.pixelmed.dicom.ModalityTransform;
@@ -84,12 +81,12 @@ import com.pixelmed.dicom.Overlay;
 import com.pixelmed.dicom.RealWorldValueTransform;
 import com.pixelmed.dicom.SUVTransform;
 import com.pixelmed.dicom.VOITransform;
-
 import com.pixelmed.utils.ColorUtilities;
 import com.pixelmed.utils.FloatFormatter;
-
 import com.pixelmed.geometry.GeometryOfSlice;
 import com.pixelmed.geometry.GeometryOfVolume;
+
+import edu.auburn.cardiomri.gui.ConstructImage;
 
 /**
  * <p>Implements a component that can display a single or multi-frame image in a
@@ -1703,6 +1700,10 @@ System.err.println("Round trip imageGeometry.getGeometryOfSlice().lookupImageCoo
 			null,
 			null,null,
 			null);
+	}
+
+	public SingleImagePanel(ConstructImage sImage) {
+		// TODO Auto-generated constructor stub
 	}
 
 	public void deconstruct() {
