@@ -31,7 +31,7 @@ public class Contour implements Shape {
         generatedPoints = new Vector<javafx.geometry.Point2D>();
 
         // TODO Remove this when it becomes easier to add points
-        controlPoints.addAll(SIMPLE_CONTOUR);
+        //controlPoints.addAll(SIMPLE_CONTOUR);
     }
 
     @Override
@@ -99,7 +99,7 @@ public class Contour implements Shape {
 
         // Just for the spike
         // TODO Don't ignore the transform
-        controlPoints = SIMPLE_CONTOUR;
+        //controlPoints = SIMPLE_CONTOUR;
 
         // this.sortPoints(controlPoints);
         generatedPoints = new Vector<javafx.geometry.Point2D>();
