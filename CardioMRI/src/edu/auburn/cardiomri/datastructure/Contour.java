@@ -6,6 +6,8 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.PathIterator;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Vector;
 
@@ -92,11 +94,18 @@ public class Contour implements Shape {
 
     @Override
     public PathIterator getPathIterator(AffineTransform at) {
+        // System.out.println(at.getScaleX());
+        // System.out.println(at.getScaleY());
+
         // Just for the spike
         // TODO Don't ignore the transform
         controlPoints = SIMPLE_CONTOUR;
+
+        // this.sortPoints(controlPoints);
         generatedPoints = new Vector<javafx.geometry.Point2D>();
         this.generate();
+
+        this.sortPoints(generatedPoints);
 
         return new PathIterator() {
             private int index = 0;
@@ -224,6 +233,7 @@ public class Contour implements Shape {
      * @return copy of the internal list
      */
     public List<javafx.geometry.Point2D> getGeneratedPoints() {
+        // TODO Can this be changed so that it's only called when necessary?
         this.generate();
         return new Vector<javafx.geometry.Point2D>(generatedPoints);
     }
@@ -250,7 +260,8 @@ public class Contour implements Shape {
         }
 
         Spline2D spline = new Spline2D(points);
-        List<Vec2D> genPoints = spline.getDecimatedVertices(SEPARATION_DISTANCE);
+        List<Vec2D> genPoints = spline
+                .getDecimatedVertices(SEPARATION_DISTANCE);
         // System.err.println(genPoints.size());
 
         for (Vec2D point : genPoints) {
@@ -258,9 +269,55 @@ public class Contour implements Shape {
         }
     }
 
+    /**
+     * Calculates the centroid by averaging the x,y coordinates in the list
+     */
+    private javafx.geometry.Point2D calcCentroid(
+            List<javafx.geometry.Point2D> points) {
+
+        double averageX = 0, averageY = 0;
+        for (javafx.geometry.Point2D p : points) {
+            averageX += p.getX();
+            averageY += p.getY();
+        }
+        averageX /= points.size();
+        averageY /= points.size();
+
+        javafx.geometry.Point2D centroid = new javafx.geometry.Point2D(
+                averageX, averageY);
+        return centroid;
+    }
+
+    private void sortPoints(List<javafx.geometry.Point2D> points) {
+        if (points == null || points.size() < 2) {
+            return;
+        }
+        javafx.geometry.Point2D centroid = this.calcCentroid(points);
+
+        Collections.sort(points, new Comparator<javafx.geometry.Point2D>() {
+
+            /**
+             * Returns negative integer if point p1 is comes before point p2 in
+             * the contour?
+             */
+            @Override
+            public int compare(javafx.geometry.Point2D p1,
+                    javafx.geometry.Point2D p2) {
+                double thetaP1 = Math.atan2(p1.getX() - centroid.getX(),
+                        p2.getY() - centroid.getY());
+                double thetaP2 = Math.atan2(p2.getX() - centroid.getX(),
+                        p2.getY() - centroid.getY());
+                double delta = thetaP1 - thetaP2;
+                if (delta < 0.1)
+                    return 0;
+                return (int) Math.signum(delta);
+            }
+        });
+    }
+
     public static final List<javafx.geometry.Point2D> SIMPLE_CONTOUR;
     private static int SEPARATION_DISTANCE = 1; // Distance between each
-                                                // of the generated points
+    // of the generated points
 
     static {
         SIMPLE_CONTOUR = new Vector<javafx.geometry.Point2D>();
