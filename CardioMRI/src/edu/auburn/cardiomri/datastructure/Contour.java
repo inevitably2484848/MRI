@@ -108,7 +108,6 @@ public class Contour implements Shape {
 
         this.sortPoints(generatedPoints);
 
-
         return new PathIterator() {
             private int index = 0;
 
