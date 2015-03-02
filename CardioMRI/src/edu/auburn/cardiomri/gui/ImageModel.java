@@ -11,7 +11,7 @@ public class ImageModel extends java.util.Observable {
 	private Study study;
 	private DICOMImage dImage;
 	private int g, s, t, i;
-	Vector<Contour> contours = new Vector<Contour>();
+	private Vector<Contour> contours = new Vector<Contour>();
 	
 	// Setters
 	/*
@@ -20,7 +20,7 @@ public class ImageModel extends java.util.Observable {
 	 *  @param s : The object that the class will use as its study attribute.
 	 */
 	public void setStudy(Study s) {
-//System.out.println("ImageModel : setStudy(Study s)");
+		//System.out.println("ImageModel : setStudy(Study s)");
 		
 		this.study = s;
 	}
@@ -46,6 +46,25 @@ public class ImageModel extends java.util.Observable {
 		
 		setChanged();
 		notifyObservers(this.dImage);
+	}
+	
+	public void setContourList(Vector<Contour> contour_list)
+	{
+		this.contours = contour_list;
+		setChanged();
+		notifyObservers(this.contours);
+	}
+
+	public Vector<Contour> getContourList()
+	{
+		return this.contours;
+	}
+	
+	public void addContourToImage(Contour contour)
+	{
+		//this.contours.add(contour);
+		setChanged();
+		notifyObservers(contour);
 	}
 	
 	// Getters

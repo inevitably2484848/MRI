@@ -121,7 +121,7 @@ public class SingleImagePanel extends JComponent implements KeyListener, MouseLi
 	private static final String identString = "@(#) $Header: /userland/cvs/pixelmed/imgbook/com/pixelmed/display/SingleImagePanel.java,v 1.189 2014/04/17 15:12:05 dclunie Exp $";
 
 	/***/
-	SourceImage sImg;
+	public SourceImage sImg;
 	/***/
 	int currentSrcImageIndex;
 	/***/
