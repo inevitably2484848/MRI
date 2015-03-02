@@ -28,7 +28,7 @@ public class ImageDisplay extends SingleImagePanel {
 		//System.out.print(this.getSelectedDrawingShapes());
 		currentContour.addControlPoint(e.getX(), e.getY());
 		
-		if(currentContour.getControlPoints().size() == 1)
+		if(currentContour.getControlPoints().size() == 3)
 		{
 			System.out.println("Added contour");
 			contours.add(currentContour);
