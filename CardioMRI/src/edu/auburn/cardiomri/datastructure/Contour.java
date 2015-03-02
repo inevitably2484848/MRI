@@ -101,7 +101,7 @@ public class Contour implements Shape {
         // TODO Don't ignore the transform
         //controlPoints = SIMPLE_CONTOUR;
 
-        // this.sortPoints(controlPoints);
+        this.sortPoints(controlPoints);
         generatedPoints = new Vector<javafx.geometry.Point2D>();
         this.generate();
 
