@@ -64,8 +64,6 @@ public class RunMVC {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setSize(1200, 600);
 		
-		
-		
 		JSplitPane structAndGridPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
 				studyStructView.getPanel(), gridView.getPanel());
 		structAndGridPane.setDividerLocation(270);
@@ -132,29 +130,6 @@ public class RunMVC {
 		fileMenu.add(importDicom);
 		
 		guiController.setAppFrame(frame);
-		
-		JPanel glass = new JPanel(new GridLayout(0, 1));
-		glass.setOpaque(false);
-		glass.setSize(imageView.getPanel().getSize());
-		glass.setLocation(imageView.getPanel().getLocation());
-		glass.addMouseListener(new MouseAdapter() {
-			public void mouseClicked(MouseEvent e)
-			     {
-			          System.out.println("clicked 1");
-			          Point glassPoint = e.getPoint();
-			          Component component_under_glass = SwingUtilities.getDeepestComponentAt(frame.getContentPane(), glassPoint.x, glassPoint.y);
-			          System.out.println(component_under_glass.toString());
-			          Point component_point = SwingUtilities.convertPoint(glass, glassPoint, component_under_glass);
-			          if (component_under_glass instanceof JButton || component_under_glass instanceof JMenuItem  ){
-			        	  System.out.println("processed click");
-			        	  ActionEvent ae = new ActionEvent(e.getSource(), e.getID(), e.paramString());
-			        	  guiController.actionPerformed(ae);
-			          }
-			          guiController.mouseClicked(e);
-			     }
-		});
-	    //frame.setGlassPane(glass);
-	    glass.setVisible(true);
 		
 		frame.setVisible(true);
 	}
