@@ -8,6 +8,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -23,6 +24,7 @@ import javax.swing.tree.TreePath;
 
 import edu.auburn.cardiomri.dataimporter.DICOM3Importer;
 import edu.auburn.cardiomri.dataimporter.DICOMFileTreeWalker;
+import edu.auburn.cardiomri.datastructure.Contour;
 import edu.auburn.cardiomri.datastructure.DICOMImage;
 import edu.auburn.cardiomri.datastructure.Slice;
 import edu.auburn.cardiomri.datastructure.Study;
@@ -490,6 +492,7 @@ public class GUIController  implements java.awt.event.ActionListener, MouseListe
 		this.gridModel.setCurrentImage(this.gIndex, this.sIndex, this.tIndex, this.iIndex);
 		this.metaDataModel.setCurrentImage(this.gIndex, this.sIndex, this.tIndex, this.iIndex);
 		this.imageModel.setCurrentImage(this.gIndex, this.sIndex, this.tIndex, this.iIndex);
+		this.imageModel.addContourToImage(new Contour());
 	}
 
 	// Setters
@@ -755,6 +758,7 @@ public class GUIController  implements java.awt.event.ActionListener, MouseListe
 	
 	// Default constructor
 	public GUIController() {
+        fileChooser.setCurrentDirectory(new File(System.getProperty("user.dir")));
 //System.out.println("GUIController : GUIController()");
 	}
 	

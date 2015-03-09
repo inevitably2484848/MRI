@@ -1,5 +1,3 @@
-/* Copyright (c) 2001-2013, David A. Clunie DBA Pixelmed Publishing. All rights reserved. */
-
 package edu.auburn.cardiomri.gui;
 
 import java.awt.Dimension;
@@ -38,8 +36,11 @@ import java.nio.ShortBuffer;
 import java.nio.channels.FileChannel;
 import java.util.jar.JarException;
 
-import org.apache.jasper.compiler.JavacErrorDetail;
-import org.eclipse.jdt.internal.compiler.ast.TrueLiteral;
+//import org.apache.jasper.compiler.JavacErrorDetail;
+//import org.eclipse.jdt.internal.compiler.ast.TrueLiteral;
+
+
+
 
 import com.pixelmed.dicom.Attribute;
 import com.pixelmed.dicom.AttributeList;
@@ -59,12 +60,16 @@ import com.pixelmed.dicom.TagFromName;
 import com.pixelmed.dicom.UnsignedLongAttribute;
 import com.pixelmed.dicom.VOITransform;
 import com.pixelmed.dicom.ValueRepresentation;
-import com.pixelmed.display.SourceImage.BandInterleavedByteRGBBufferedImageSource;
-import com.pixelmed.display.SourceImage.ByteBufferedImageSource;
-import com.pixelmed.display.SourceImage.PixelInterleavedByteRGBBufferedImageSource;
-import com.sun.media.jfxmedia.events.BufferListener;
+//import com.pixelmed.display.SourceImage.BandInterleavedByteRGBBufferedImageSource;
+//import com.pixelmed.display.SourceImage.ByteBufferedImageSource;
+//import com.pixelmed.display.SourceImage.PixelInterleavedByteRGBBufferedImageSource;
+
+
+
+
 
 import edu.auburn.cardiomri.datastructure.DICOMImage;
+
 public class ConstructImage {
 
 	/***/
@@ -160,6 +165,12 @@ public class ConstructImage {
 	
 	protected BufferedImageSource bufferedImageSource = null;
 
+	public ConstructImage(DICOMImage image) throws DicomException {
+		if (image != null) {
+			constructSourceImage(image);
+		}
+	}
+	
 	void constructSourceImage(DICOMImage image) throws DicomException {
 	     
 		width = getIntOrDefault(image.getColumns(), 0);
@@ -496,6 +507,35 @@ public class ConstructImage {
 			this.nframesamples = nframesamples;
 			cachedIndex = -1;
 			cachedBufferedImage = null; 
+		}
+		
+		protected void finalize() throws Throwable {
+			cachedBufferedImage = null;
+			super.finalize();
+		}
+		
+		public BufferedImage getBufferedImage(int index) {
+			if (index != cachedIndex) {
+				cachedBufferedImage = getUncachedBufferedImage(index);
+				if (cachedBufferedImage != null) {
+					cachedIndex = index;
+				} else {
+					cachedIndex = -1;
+				}
+			}
+			return cachedBufferedImage;
+		}
+		
+		abstract public BufferedImage getUncachedBufferedImage(int index);
+
+		public double getMinimumPixelValueOfMostRecentBufferedImage(
+				double oldMin) {
+			return oldMin;
+		}
+		
+		public double getMaximumPixelValueOfMostRecentBufferedImage(
+				double oldMax) {
+			return oldMax;
 		}
 	}
 	
@@ -874,6 +914,46 @@ public class ConstructImage {
 		if (string == null) 
 			return default_string;
 		return string;
+	}
+	
+	/***/
+	public BufferedImage getBufferedImage() {
+		return getBufferedImage(0);
+	}
+	
+	/***/
+	public BufferedImage getBufferedImage(int i) {
+		BufferedImage img = null;
+		if (bufferedImageSource == null) {
+			img = (imgs == null || i < 0 || i >= imgs.length) ? null : imgs[i];
+		} else {
+			img = bufferedImageSource.getBufferedImage(i);
+
+			if (img.getColorModel().getColorSpace().getType() == ColorSpace.TYPE_RGB
+					&& srcColorSpace != null
+					&& dstColorSpace != null
+					&& srcColorSpace != dstColorSpace) {
+				System.err
+						.println("SourceImage.getBufferedImage(): have color image with different source and destination color spaces - converting");
+				try {
+					System.err
+							.println("SourceImage.getBufferedImage(): System.getProperty(\"sun.java2d.cmm\") = "
+									+ System.getProperty("sun.java2d.cmm"));
+					ColorConvertOp cco = new ColorConvertOp(srcColorSpace,
+							dstColorSpace, new RenderingHints(
+									RenderingHints.KEY_COLOR_RENDERING,
+									RenderingHints.VALUE_COLOR_RENDER_QUALITY));
+					BufferedImage convertedImg = cco.filter(img, null);
+					// System.err.println("SourceImage.getBufferedImage(): have converted color image ="+convertedImg);
+					img = convertedImg;
+				} catch (Exception e) {
+					e.printStackTrace(System.err);
+				}
+			}
+			imgMin = bufferedImageSource.getMinimumPixelValueOfMostRecentBufferedImage(imgMin);
+			imgMax = bufferedImageSource.getMaximumPixelValueOfMostRecentBufferedImage(imgMax);
+		}
+		return img;			
 	}
 	
 	/***/
