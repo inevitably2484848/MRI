@@ -15,7 +15,7 @@ public class ImageDisplay extends SingleImagePanel {
 	
 	//Constructor 
 	//Takes a image to be displayed
-	public ImageDisplay(SourceImage sImg) {
+	public ImageDisplay(ConstructImage sImg) { //change from SourceImage to ConstructImage
 		super(sImg);
 	}
 	

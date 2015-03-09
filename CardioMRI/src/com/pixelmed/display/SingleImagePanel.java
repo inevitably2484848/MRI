@@ -24,7 +24,6 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
-
 import java.awt.Font;
 import java.awt.Transparency;
 import java.awt.color.ColorSpace;
@@ -66,7 +65,6 @@ import com.pixelmed.event.ApplicationEventDispatcher;
 import com.pixelmed.event.Event;
 import com.pixelmed.event.EventContext;
 import com.pixelmed.event.SelfRegisteringListener;
-
 import com.pixelmed.display.event.ApplyShutterChangeEvent;
 import com.pixelmed.display.event.FrameSelectionChangeEvent;
 import com.pixelmed.display.event.FrameSortOrderChangeEvent;
@@ -76,7 +74,6 @@ import com.pixelmed.display.event.VOIFunctionChangeEvent;
 import com.pixelmed.display.event.WindowingAccelerationValueChangeEvent;
 import com.pixelmed.display.event.WindowLinearCalculationChangeEvent;
 import com.pixelmed.display.event.WindowCenterAndWidthChangeEvent;
-
 import com.pixelmed.dicom.AttributeList;
 import com.pixelmed.dicom.DisplayShutter;
 import com.pixelmed.dicom.ModalityTransform;
@@ -84,12 +81,13 @@ import com.pixelmed.dicom.Overlay;
 import com.pixelmed.dicom.RealWorldValueTransform;
 import com.pixelmed.dicom.SUVTransform;
 import com.pixelmed.dicom.VOITransform;
-
 import com.pixelmed.utils.ColorUtilities;
 import com.pixelmed.utils.FloatFormatter;
-
 import com.pixelmed.geometry.GeometryOfSlice;
 import com.pixelmed.geometry.GeometryOfVolume;
+
+import edu.auburn.cardiomri.datastructure.DICOMImage;
+import edu.auburn.cardiomri.gui.ConstructImage;
 
 /**
  * <p>Implements a component that can display a single or multi-frame image in a
@@ -105,13 +103,13 @@ import com.pixelmed.geometry.GeometryOfVolume;
  *
  * <pre>
  * JFrame p = new JFrame();
- * p.add(new SingleImagePanel(new SourceImage(filename)));
+ * p.add(new SingleImagePanel(new ConstructImage(filename)));
  * p.setBackground(Color.BLACK);
  * p.setSize(512,512);
  * p.setVisible(true);
  * </pre>
  *
- * @see com.pixelmed.display.SourceImage
+ * @see com.pixelmed.display.ConstructImage
  *
  * @author	dclunie
  */
@@ -121,7 +119,7 @@ public class SingleImagePanel extends JComponent implements KeyListener, MouseLi
 	private static final String identString = "@(#) $Header: /userland/cvs/pixelmed/imgbook/com/pixelmed/display/SingleImagePanel.java,v 1.189 2014/04/17 15:12:05 dclunie Exp $";
 
 	/***/
-	public SourceImage sImg;
+	public ConstructImage sImg;
 	/***/
 	int currentSrcImageIndex;
 	/***/
@@ -150,11 +148,11 @@ public class SingleImagePanel extends JComponent implements KeyListener, MouseLi
 		cachedPreWindowedImage=null;
 	}
 	
-	public void dirty(SourceImage sImg) {
+	public void dirty(ConstructImage sImg) {
 		dirtySource(sImg);
 	}
 
-	public void dirtySource(SourceImage sImg) {
+	public void dirtySource(ConstructImage sImg) {
 		this.sImg=sImg;
 		this.realWorldValueTransform=sImg.getRealWorldValueTransform();
 		this.modalityTransform=sImg.getModalityTransform();
@@ -544,7 +542,7 @@ public class SingleImagePanel extends JComponent implements KeyListener, MouseLi
 	/***/
 	protected boolean showZoomFactorLeftSide = false;
 	/***/
-	protected double pixelSpacingInSourceImage = 0;
+	protected double pixelSpacingInConstructImage = 0;
 	/***/
 	protected String typeOfPixelSpacing;
 
@@ -553,16 +551,16 @@ public class SingleImagePanel extends JComponent implements KeyListener, MouseLi
 	 *
 	 * <p>Uses same font parameters as set for orientation annotations.</p>
 	 *
-	 * <p>Also implicitly effects setPixelSpacingInSourceImage().</p>
+	 * <p>Also implicitly effects setPixelSpacingInConstructImage().</p>
 	 *
 	 * @param	showZoomFactor				true or false to activate annotation of zoom factor
 	 * @param	leftSide					show zoom factor on left (true) or right (false) side of view port
-	 * @param	pixelSpacingInSourceImage	a single value that is the (square) row and column pixel spacing, or 0 if not known
+	 * @param	pixelSpacingInConstructImage	a single value that is the (square) row and column pixel spacing, or 0 if not known
 	 */
-	public final void setShowZoomFactor(boolean showZoomFactor,boolean leftSide,double pixelSpacingInSourceImage) {
+	public final void setShowZoomFactor(boolean showZoomFactor,boolean leftSide,double pixelSpacingInConstructImage) {
 		this.showZoomFactor=showZoomFactor;
 		this.showZoomFactorLeftSide=leftSide;
-		this.pixelSpacingInSourceImage=pixelSpacingInSourceImage;
+		this.pixelSpacingInConstructImage=pixelSpacingInConstructImage;
 	}
 
 	/**
@@ -570,17 +568,17 @@ public class SingleImagePanel extends JComponent implements KeyListener, MouseLi
 	 *
 	 * <p>Uses same font parameters as set for orientation annotations.</p>
 	 *
-	 * <p>Also implicitly effects setPixelSpacingInSourceImage().</p>
+	 * <p>Also implicitly effects setPixelSpacingInConstructImage().</p>
 	 *
 	 * @param	showZoomFactor				true or false to activate annotation of zoom factor
 	 * @param	leftSide					show zoom factor on left (true) or right (false) side of view port
-	 * @param	pixelSpacingInSourceImage	a single value that is the (square) row and column pixel spacing, or 0 if not known
+	 * @param	pixelSpacingInConstructImage	a single value that is the (square) row and column pixel spacing, or 0 if not known
 	 * @param	typeOfPixelSpacing       	a String that describes the type of pixel spacing (e.g., detector plane, calibrated, accounting for geometric magnification, etc.), or null if not to be described when making measurements
 	 */
-	public final void setShowZoomFactor(boolean showZoomFactor,boolean leftSide,double pixelSpacingInSourceImage,String typeOfPixelSpacing) {
+	public final void setShowZoomFactor(boolean showZoomFactor,boolean leftSide,double pixelSpacingInConstructImage,String typeOfPixelSpacing) {
 		this.showZoomFactor=showZoomFactor;
 		this.showZoomFactorLeftSide=leftSide;
-		this.pixelSpacingInSourceImage=pixelSpacingInSourceImage;
+		this.pixelSpacingInConstructImage=pixelSpacingInConstructImage;
 		this.typeOfPixelSpacing=typeOfPixelSpacing;
 	}
 
@@ -589,10 +587,10 @@ public class SingleImagePanel extends JComponent implements KeyListener, MouseLi
 	 *
 	 * <p>Used for displaying zoom factor and making measurements, therefore should be appropriate choice of Pixel Spacing or Imager Pixel Spacing (appropriately corrected for radiographic magnification factor, if any), etc.</p>
 	 *
-	 * @param	pixelSpacingInSourceImage	a single value that is the (square) row and column pixel spacing, or 0 if not known
+	 * @param	pixelSpacingInConstructImage	a single value that is the (square) row and column pixel spacing, or 0 if not known
 	 */
-	public final void setPixelSpacingInSourceImage(double pixelSpacingInSourceImage) {
-		this.pixelSpacingInSourceImage=pixelSpacingInSourceImage;
+	public final void setPixelSpacingInConstructImage(double pixelSpacingInConstructImage) {
+		this.pixelSpacingInConstructImage=pixelSpacingInConstructImage;
 	}
 
 	/**
@@ -600,11 +598,11 @@ public class SingleImagePanel extends JComponent implements KeyListener, MouseLi
 	 *
 	 * <p>Used for displaying zoom factor and making measurements, therefore should be appropriate choice of Pixel Spacing or Imager Pixel Spacing (appropriately corrected for radiographic magnification factor, if any), etc.</p>
 	 *
-	 * @param	pixelSpacingInSourceImage	a single value that is the (square) row and column pixel spacing, or 0 if not known
+	 * @param	pixelSpacingInConstructImage	a single value that is the (square) row and column pixel spacing, or 0 if not known
 	 * @param	typeOfPixelSpacing       	a String that describes the type of pixel spacing (e.g., detector plane, calibrated, accounting for geometric magnification, etc.), or null if not to be described when making measurements
 	 */
-	public final void setPixelSpacingInSourceImage(double pixelSpacingInSourceImage,String typeOfPixelSpacing) {
-		this.pixelSpacingInSourceImage=pixelSpacingInSourceImage;
+	public final void setPixelSpacingInConstructImage(double pixelSpacingInConstructImage,String typeOfPixelSpacing) {
+		this.pixelSpacingInConstructImage=pixelSpacingInConstructImage;
 		this.typeOfPixelSpacing=typeOfPixelSpacing;
 	}
 	
@@ -914,11 +912,11 @@ public class SingleImagePanel extends JComponent implements KeyListener, MouseLi
 //		}
 //	}
 
-	protected int getSourceImageHeight() {
+	protected int getConstructImageHeight() {
 		return sImg.getHeight();
 	}
 	
-	protected int getSourceImageWidth() {
+	protected int getConstructImageWidth() {
 		return sImg.getWidth();
 	}
 	
@@ -943,7 +941,7 @@ public class SingleImagePanel extends JComponent implements KeyListener, MouseLi
 				xi=0;
 			}
 			else {
-				int width = getSourceImageWidth();
+				int width = getConstructImageWidth();
 				if (xi > width) {
 					xi=width;
 				}
@@ -952,7 +950,7 @@ public class SingleImagePanel extends JComponent implements KeyListener, MouseLi
 				yi=0;
 			}
 			else {
-				int height = getSourceImageHeight();
+				int height = getConstructImageHeight();
 				if (yi > height) {
 					yi=height;
 				}
@@ -1522,7 +1520,7 @@ System.err.println("Round trip imageGeometry.getGeometryOfSlice().lookupImageCoo
 	 * @param	preDefinedText
 	 * @param	imageGeometry
 	 */
-	private void doCommonConstructorStuff(SourceImage sImg,
+	private void doCommonConstructorStuff(ConstructImage sImg,
 			EventContext typeOfPanelEventContext,
 			int[] sortOrder,
 			Vector preDefinedShapes,Vector preDefinedText,
@@ -1654,7 +1652,7 @@ System.err.println("Round trip imageGeometry.getGeometryOfSlice().lookupImageCoo
 	 * @param	preDefinedText
 	 * @param	imageGeometry
 	 */
-	public SingleImagePanel(SourceImage sImg,
+	public SingleImagePanel(ConstructImage sImg,
 			EventContext typeOfPanelEventContext,
 			int[] sortOrder,
 			Vector preDefinedShapes,Vector preDefinedText,
@@ -1671,7 +1669,7 @@ System.err.println("Round trip imageGeometry.getGeometryOfSlice().lookupImageCoo
 	 * @param	typeOfPanelEventContext
 	 * @param	imageGeometry
 	 */
-	public SingleImagePanel(SourceImage sImg,
+	public SingleImagePanel(ConstructImage sImg,
 			EventContext typeOfPanelEventContext,
 			GeometryOfVolume imageGeometry) {
 		doCommonConstructorStuff(sImg,
@@ -1685,7 +1683,7 @@ System.err.println("Round trip imageGeometry.getGeometryOfSlice().lookupImageCoo
 	 * @param	sImg
 	 * @param	typeOfPanelEventContext
 	 */
-	public SingleImagePanel(SourceImage sImg,
+	public SingleImagePanel(ConstructImage sImg,
 			EventContext typeOfPanelEventContext) {
 		doCommonConstructorStuff(sImg,
 			typeOfPanelEventContext,
@@ -1697,7 +1695,7 @@ System.err.println("Round trip imageGeometry.getGeometryOfSlice().lookupImageCoo
 	/**
 	 * @param	sImg
 	 */
-	public SingleImagePanel(SourceImage sImg) {
+	public SingleImagePanel(ConstructImage sImg) {
 		doCommonConstructorStuff(sImg,
 			null,
 			null,
@@ -2151,7 +2149,7 @@ System.err.println("SingleImagePanel.paintComponent(): is 3 component");
 				String sZoomFactor = "1:" + FloatFormatter.toString(scaleFactor,Locale.US);
 //System.err.println("SingleImagePanel.paintComponent(): sZoomFactor = "+sZoomFactor);
 				TextAnnotationPositioned.drawVerticallyCenteredString(sZoomFactor,showZoomFactorLeftSide,g2d,this,2,5);
-				String sDisplayPixelSize = "[" + FloatFormatter.toString(pixelSpacingInSourceImage/scaleFactor,Locale.US) + "mm]";
+				String sDisplayPixelSize = "[" + FloatFormatter.toString(pixelSpacingInConstructImage/scaleFactor,Locale.US) + "mm]";
 				TextAnnotationPositioned.drawVerticallyCenteredString(sDisplayPixelSize,showZoomFactorLeftSide,g2d,this,3,5);
 			}
 		}
@@ -2361,14 +2359,14 @@ System.err.println("SingleImagePanel.paintComponent(): not ARGB superimposed ima
 	/**
 	 * @param	arg
 	 */
-	public static void main(String arg[]) {
+	public static void main(DICOMImage arg) { //changed from string to Dicom image
 		try {
 			if (arg.length == 1) {
 				JFrame p = new JFrame();
-				p.add(new SingleImagePanel(new SourceImage(arg[0])));
+				p.add(new SingleImagePanel(new ConstructImage(arg[0])));
 				//AttributeList list = new AttributeList();
 				//list.read(arg[0]);
-				//p.add(new SingleImagePanel(new SourceImage(list)));
+				//p.add(new SingleImagePanel(new ConstructImage(list)));
 				p.setBackground(Color.BLACK);
 				p.setSize(512,512);
 				p.setVisible(true);

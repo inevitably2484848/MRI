@@ -53,7 +53,7 @@ import com.pixelmed.dicom.TagFromName;
 import com.pixelmed.dicom.VOITransform;
 import com.pixelmed.dicom.ValueRepresentation;
 
-import edu.auburn.cardiomri.datastructure.DICOMImage;
+//import edu.auburn.cardiomri.datastructure.DICOMImage;
 
 /**
  * <p>
@@ -547,11 +547,11 @@ public class SourceImage {
 			constructSourceImage(list);
 	}
 	
-	public SourceImage(DICOMImage image) throws DicomException {
+	/*public SourceImage(DICOMImage image) throws DicomException {
 		if (image != null) {
 			constructSourceImage(image);
 		}
-	}
+	}*/
 
 	private abstract class BufferedImageSource {
 		protected int nframesamples;
@@ -1910,376 +1910,402 @@ public class SourceImage {
 		// System.err.println("constructSourceImage - end");
 	}
 
-	void constructSourceImage(DICOMImage image) throws DicomException {
-
-		// title=AttributeList.buildInstanceTitleFromAttributeList(list);
-
-		width = getIntOrDefault(image.getColumns(), 0);
-		
-		height = getIntOrDefault(image.getRows(), 0);
-		
-		int depth = getIntOrDefault(image.getBitsAllocated(), 0);
-		
-		int samples = getIntOrDefault(image.getSamplesPerPixel(), 1);
-		
-		boolean byplane = (samples > 1 && getIntOrDefault(image.getPlanarConfiguration(), 0) == 1);
-		
-		nframes = getIntOrDefault(image.getNumberOfFrames(), 1);
-		
-
-		mask = 0;
-		int extend = 0;
-		int signbit = 1;
-		int stored = getIntOrDefault(image.getBitsStored(), depth);
-		
-		if (depth < stored) {
-			throw new DicomException("Unsupported Bits Allocated " + depth
-					+ "\" less then Bits Stored " + stored);
-		}
-		{
-			int s = stored;
-			while (s-- > 0) {
-				mask = mask << 1 | 1;
-				signbit = signbit << 1;
-			}
-			signbit = signbit >> 1;
-			extend = ~mask;
-		}
-		
-		signed = getIntOrDefault(image.getPixelRepresentation(), 0) == 1;
-
-		imgMin = signed ? 0x00007fff : 0x0000ffff; 
-		imgMax = signed ? 0xffff8000 : 0x00000000; 
-
-		pad = 0;
-		hasPad = false;
-		useMaskedPadRange = false;
-		useNonMaskedSinglePadValue = false;
-		
-		Integer aPixelPaddingValue = image.getPixelPaddingValue();
-		
-		if (aPixelPaddingValue != null) {
-			hasPad = true;
-			pad = aPixelPaddingValue;
-			padRangeLimit = getIntOrDefault(image.getPixelPaddingRangeLimit(), 0);
-			
-			useMaskedPadRangeStart = pad & mask;
-			useMaskedPadRangeEnd = padRangeLimit & mask;
-			if (useMaskedPadRangeStart == (pad & 0x0000ffff)
-					&& useMaskedPadRangeEnd == (padRangeLimit & 0x0000ffff)) {
-				// System.err.println("Padding values are within mask range and hence valid");
-				useMaskedPadRange = true;
-				if (useMaskedPadRangeStart > useMaskedPadRangeEnd) {
-					int tmp = useMaskedPadRangeEnd;
-					useMaskedPadRangeEnd = useMaskedPadRangeStart;
-					useMaskedPadRangeStart = tmp;
-				}
-				// System.err.println("useMaskedPadRangeStart="+useMaskedPadRangeStart);
-				// System.err.println("useMaskedPadRangeEnd="+useMaskedPadRangeEnd);
-			} else {
-				// System.err.println("Padding values are outside mask range and theoretically invalid - ignore any range and just use fixed value of PixelPaddingValue");
-				useNonMaskedSinglePadValue = true;
-				nonMaskedSinglePadValue = pad;
-			}
-		}
-
-		String vPhotometricInterpretation = getStringOrDefault(image.getPhotometricInterpretation(), "MONOCHROME2");
-
-		if (vPhotometricInterpretation.equals("MONOCHROME2")) {
-			isGrayscale = true;
-		} else if (vPhotometricInterpretation.equals("MONOCHROME1")) {
-			isGrayscale = true;
-			inverted = true;
-		} else if (vPhotometricInterpretation.equals("PALETTE COLOR")) {
-			isPaletteColor = true;
-		} else if (vPhotometricInterpretation.equals("YBR_FULL")) {
-			isYBR = !image.getPhotometricInterpretation().equals("RGB"); 
-		}
-
-		Integer aLargestMonochromePixelValue = image.getLargestMonochromePixelValue();
-		
-		// Can't find sample with these attributes.
-		/*
-	 	Attribute aRedPaletteColorLookupTableDescriptor = list
-				.get(TagFromName.RedPaletteColorLookupTableDescriptor);
-		Attribute aGreenPaletteColorLookupTableDescriptor = list
-				.get(TagFromName.GreenPaletteColorLookupTableDescriptor);
-		Attribute aBluePaletteColorLookupTableDescriptor = list
-				.get(TagFromName.BluePaletteColorLookupTableDescriptor);
-		*/
-		Attribute aRedPaletteColorLookupTableDescriptor = null;
-		Attribute aGreenPaletteColorLookupTableDescriptor = null;
-		Attribute aBluePaletteColorLookupTableDescriptor = null;
-		//
-		//
-		
-		largestGray = signed ? 0x00007fff : 0x0000ffff; 
-		boolean usedLargestMonochromePixelValue = false;
-		if (aLargestMonochromePixelValue != null) {
-			usedLargestMonochromePixelValue = true;
-			largestGray = aLargestMonochromePixelValue;
-		}
-		boolean usedLargestImagePixelValue = false;
-		if (usedLargestMonochromePixelValue == false) { 
-			//
-			//
-			Integer aLargestImagePixelValue = image.getLargestImagePixelValue();
-			//
-			//
-			if (aLargestImagePixelValue != null) {
-				usedLargestImagePixelValue = true;
-				largestGray = aLargestImagePixelValue;
-			}
-		}
-
-		if (aRedPaletteColorLookupTableDescriptor != null
-				&& aGreenPaletteColorLookupTableDescriptor != null
-				&& aBluePaletteColorLookupTableDescriptor != null) {
-
-			if (aRedPaletteColorLookupTableDescriptor != null
-					&& aRedPaletteColorLookupTableDescriptor.getVM() == 3) {
-				numberOfEntries = aRedPaletteColorLookupTableDescriptor
-						.getIntegerValues()[0];
-				if (numberOfEntries == 0)
-					numberOfEntries = 65536;
-				firstValueMapped = aRedPaletteColorLookupTableDescriptor
-						.getIntegerValues()[1];
-				String pixelPresentation = getStringOrDefault(image.getPixelPresentation(), "");
-				if ((usedLargestMonochromePixelValue == false && usedLargestImagePixelValue == false)
-						|| image.getPhotometricInterpretation().equals("PALETTE COLOR") 
-						|| !(pixelPresentation.equals("COLOR") || pixelPresentation
-								.equals("MIXED"))) {
-					largestGray = firstValueMapped - 1; 
-					System.err
-							.println("SourceImage.constructSourceImage(): not treating palette as supplemental, using firstValueMapped "
-									+ firstValueMapped
-									+ " to set largestGray = " + largestGray);
-				} else {
-					System.err
-							.println("SourceImage.constructSourceImage(): treating palette as supplemental, largestGray = "
-									+ largestGray);
-				}
-				bitsPerEntry = aRedPaletteColorLookupTableDescriptor
-						.getIntegerValues()[2];
-				if (bitsPerEntry > 0) {
-					//
-					// Cannot find sample files with these attributes
-					/* 
-					Attribute aRedPaletteColorLookupTableData = list
-							.get(TagFromName.RedPaletteColorLookupTableData);
-					// System.err.println("SourceImage.constructSourceImage(): aRedPaletteColorLookupTableData = "+aRedPaletteColorLookupTableData);
-					Attribute aGreenPaletteColorLookupTableData = list
-							.get(TagFromName.GreenPaletteColorLookupTableData);
-					Attribute aBluePaletteColorLookupTableData = list
-							.get(TagFromName.BluePaletteColorLookupTableData);
-					*/
-					Attribute aRedPaletteColorLookupTableData = null;
-					Attribute aGreenPaletteColorLookupTableData = null;
-					Attribute aBluePaletteColorLookupTableData = null;
-					//
-					//
-					if (aRedPaletteColorLookupTableData != null
-							&& aGreenPaletteColorLookupTableData != null
-							&& aBluePaletteColorLookupTableData != null) {
-						// System.err.println("SourceImage.constructSourceImage(): setting color palette tables");
-						redTable = aRedPaletteColorLookupTableData
-								.getShortValues();
-						greenTable = aGreenPaletteColorLookupTableData
-								.getShortValues();
-						blueTable = aBluePaletteColorLookupTableData
-								.getShortValues();
-						if (redTable == null || greenTable == null
-								|| blueTable == null || redTable.length == 0
-								|| greenTable.length == 0
-								|| blueTable.length == 0) {
-							
-							System.err
-									.println("SourceImage.constructSourceImage(): bad color palette (empty data), ignoring");
-							redTable = null;
-							greenTable = null;
-							blueTable = null;
-						}
-					}
-				} else {
-					System.err
-							.println("SourceImage.constructSourceImage(): bad color palette (zero value for bitsPerEntry), ignoring");
-					}
-			}
-		}
-
-		{
-			try {
-				for (GraphicsDevice gd : GraphicsEnvironment
-						.getLocalGraphicsEnvironment().getScreenDevices()) {
-					for (GraphicsConfiguration gc : gd.getConfigurations()) {
-						dstColorSpace = gc.getColorModel().getColorSpace();
-					}
-				}
-			} catch (java.awt.HeadlessException e) {
-				dstColorSpace = ColorSpace.getInstance(ColorSpace.CS_sRGB);
-			}
-
-			if (dstColorSpace == null) {
-				dstColorSpace = ColorSpace.getInstance(ColorSpace.CS_sRGB);
-			}
-		}
-
-		{
-			//
-			// Cannot find sample file with attribute
-			/*
-			Attribute aICCProfile = list.get(TagFromName.ICCProfile);
-			*/
-			Attribute aICCProfile = null;
-			//
-			//
-			if (aICCProfile != null) {
-				byte[] iccProfileBytes = aICCProfile.getByteValues();
-				ICC_Profile iccProfile = ICC_Profile
-						.getInstance(iccProfileBytes);
-				srcColorSpace = new ICC_ColorSpace(iccProfile);
-			} else {
-				srcColorSpace = ColorSpace.getInstance(ColorSpace.CS_sRGB);
-			}
-		}
-
-		bufferedImageSource = null;
-
-		int nframepixels = width * height;
-		int nframesamples = nframepixels * samples;
-		int nsamples = nframesamples * nframes;
-		int npixels = nframepixels * nframes;
-		if ((isGrayscale || isPaletteColor) && samples == 1 && depth > 8
-				&& depth <= 16) {
-			bufferedImageSource = null;
-			//
-			//
-			//Attribute a = list.getPixelData();
-			//
-			//
-			
-			short[] pixelData = image.getPixelData();
-			
-			/*
-			if (a instanceof OtherWordAttributeOnDisk) {
-				// System.err.println("SourceImage.constructSourceImage(): on disk ... attempting memory mapping");
-				try {
-					ShortBuffer shortBuffer = getShortBufferFromOtherWordAttributeOnDisk((OtherWordAttributeOnDisk) a);
-					if (signed) {
-						bufferedImageSource = new SignedShortGrayscaleBufferedImageSource(
-								shortBuffer, width, height, mask, signbit,
-								extend, largestGray);
-					} else {
-						bufferedImageSource = new UnsignedShortGrayscaleBufferedImageSource(
-								shortBuffer, width, height, mask, largestGray);
-					}
-				} catch (Exception e) {
-					e.printStackTrace(System.err);
-					bufferedImageSource = null;
-				}
-			}
-			*/
-			if (bufferedImageSource == null) { 
-				short data[] = pixelData;
-				if (signed) {
-					imgs = null;
-					//System.out.println("Creating bufferedImageSource: " + width + " " + height + " " + mask + " " + signbit + " " + extend + " " + largestGray);
-					bufferedImageSource = new SignedShortGrayscaleBufferedImageSource(
-							data, width, height, mask, signbit, extend,
-							largestGray);
-				} else {
-					imgs = null;
-					bufferedImageSource = new UnsignedShortGrayscaleBufferedImageSource(
-							data, width, height, mask, largestGray);
-				}
-			}
-		} else if ((isGrayscale || isPaletteColor) && samples == 1
-				&& depth <= 8 && depth > 1) {
-			byte data[] = null;
-			//Attribute a = list.getPixelData();
-			short[] pixelData = image.getPixelData();
-			/*if (ValueRepresentation.isOtherByteVR(a.getVR())) {
-				byte[] sdata = a.getByteValues();
-				data = new byte[nsamples];
-				for (int count = 0; count < nsamples; ++count) {
-					int value = ((int) sdata[count]) & mask;
-					int nonextendedvalue = value;
-					if (signed && (value & signbit) != 0)
-						value = value | extend;
-					data[count] = (byte) value;
-					if (nonextendedvalue < useMaskedPadRangeStart
-							|| nonextendedvalue > useMaskedPadRangeEnd) {
-						if (value > imgMax && value <= largestGray)
-							imgMax = value;
-						if (value < imgMin)
-							imgMin = value;
-					}
-				}
-			} else {*/
-				short sdata[] = pixelData;
-				data = new byte[nsamples];
-				int slen = nsamples / 2;
-				int scount = 0;
-				int count = 0;
-				while (scount < slen) {
-					int value = ((int) sdata[scount++]) & 0xffff; 
-					int value1 = value & mask; 
-					int nonextendedvalue1 = value1;
-					if (signed && (value1 & signbit) != 0)
-						value1 = value1 | extend;
-					data[count++] = (byte) value1;
-					if (nonextendedvalue1 < useMaskedPadRangeStart
-							|| nonextendedvalue1 > useMaskedPadRangeEnd) {
-						if (value1 > imgMax && value1 <= largestGray)
-							imgMax = value1;
-						if (value1 < imgMin)
-							imgMin = value1;
-					}
-					int value2 = (value >> 8) & mask;
-					int nonextendedvalue2 = value2;
-					if (signed && (value2 & signbit) != 0)
-						value2 = value2 | extend;
-					data[count++] = (byte) value2;
-					if (nonextendedvalue2 < useMaskedPadRangeStart
-							|| nonextendedvalue2 > useMaskedPadRangeEnd) {
-						if (value2 > imgMax && value2 <= largestGray)
-							imgMax = value2;
-						if (value2 < imgMin)
-							imgMin = value2;
-						
-					}
-				}
-			//}
-			
-			imgs = null;
-			bufferedImageSource = new ByteGrayscaleBufferedImageSource(data,
-					width, height);
-		} else if (isGrayscale && samples == 1 && depth == 1) {
-			
-			imgs = new BufferedImage[nframes];
-			IndexColorModel colorModel = null;
-			{
-				byte[] r = { (byte) 0, (byte) 255 };
-				byte[] g = { (byte) 0, (byte) 255 };
-				byte[] b = { (byte) 0, (byte) 255 };
-				colorModel = new IndexColorModel(1 /* bits */, 2 /* size */, r,
-						g, b);
-			}
-			imgMin = 0; 
-			imgMax = 1;
-			//
-			//
-			//Attribute a = list.getPixelData();
-			short[] pixelData = image.getPixelData();
-			//
-			//
-			int wi = 0;
-			int bitsRemaining = 0;
-			int word = 0;
-			boolean badBitOrder = false;
+//	void constructSourceImage(DICOMImage image) throws DicomException {
+//
+//		// title=AttributeList.buildInstanceTitleFromAttributeList(list);
+//
+//		width = getIntOrDefault(image.getColumns(), 0);
+//		
+//		height = getIntOrDefault(image.getRows(), 0);
+//		
+//		int depth = getIntOrDefault(image.getBitsAllocated(), 0);
+//		
+//		int samples = getIntOrDefault(image.getSamplesPerPixel(), 1);
+//		
+//		boolean byplane = (samples > 1 && getIntOrDefault(image.getPlanarConfiguration(), 0) == 1);
+//		
+//		nframes = getIntOrDefault(image.getNumberOfFrames(), 1);
+//		
+//
+//		mask = 0;
+//		int extend = 0;
+//		int signbit = 1;
+//		int stored = getIntOrDefault(image.getBitsStored(), depth);
+//		
+//		if (depth < stored) {
+//			throw new DicomException("Unsupported Bits Allocated " + depth
+//					+ "\" less then Bits Stored " + stored);
+//		}
+//		{
+//			int s = stored;
+//			while (s-- > 0) {
+//				mask = mask << 1 | 1;
+//				signbit = signbit << 1;
+//			}
+//			signbit = signbit >> 1;
+//			extend = ~mask;
+//		}
+//		
+//		signed = getIntOrDefault(image.getPixelRepresentation(), 0) == 1;
+//
+//		imgMin = signed ? 0x00007fff : 0x0000ffff; 
+//		imgMax = signed ? 0xffff8000 : 0x00000000; 
+//
+//		pad = 0;
+//		hasPad = false;
+//		useMaskedPadRange = false;
+//		useNonMaskedSinglePadValue = false;
+//		
+//		Integer aPixelPaddingValue = image.getPixelPaddingValue();
+//		
+//		if (aPixelPaddingValue != null) {
+//			hasPad = true;
+//			pad = aPixelPaddingValue;
+//			padRangeLimit = getIntOrDefault(image.getPixelPaddingRangeLimit(), 0);
 //			
-//			if (ValueRepresentation.isOtherByteVR(a.getVR())) {
-//				byte data[] = a.getByteValues();
+//			useMaskedPadRangeStart = pad & mask;
+//			useMaskedPadRangeEnd = padRangeLimit & mask;
+//			if (useMaskedPadRangeStart == (pad & 0x0000ffff)
+//					&& useMaskedPadRangeEnd == (padRangeLimit & 0x0000ffff)) {
+//				// System.err.println("Padding values are within mask range and hence valid");
+//				useMaskedPadRange = true;
+//				if (useMaskedPadRangeStart > useMaskedPadRangeEnd) {
+//					int tmp = useMaskedPadRangeEnd;
+//					useMaskedPadRangeEnd = useMaskedPadRangeStart;
+//					useMaskedPadRangeStart = tmp;
+//				}
+//				// System.err.println("useMaskedPadRangeStart="+useMaskedPadRangeStart);
+//				// System.err.println("useMaskedPadRangeEnd="+useMaskedPadRangeEnd);
+//			} else {
+//				// System.err.println("Padding values are outside mask range and theoretically invalid - ignore any range and just use fixed value of PixelPaddingValue");
+//				useNonMaskedSinglePadValue = true;
+//				nonMaskedSinglePadValue = pad;
+//			}
+//		}
+//
+//		String vPhotometricInterpretation = getStringOrDefault(image.getPhotometricInterpretation(), "MONOCHROME2");
+//
+//		if (vPhotometricInterpretation.equals("MONOCHROME2")) {
+//			isGrayscale = true;
+//		} else if (vPhotometricInterpretation.equals("MONOCHROME1")) {
+//			isGrayscale = true;
+//			inverted = true;
+//		} else if (vPhotometricInterpretation.equals("PALETTE COLOR")) {
+//			isPaletteColor = true;
+//		} else if (vPhotometricInterpretation.equals("YBR_FULL")) {
+//			isYBR = !image.getPhotometricInterpretation().equals("RGB"); 
+//		}
+//
+//		Integer aLargestMonochromePixelValue = image.getLargestMonochromePixelValue();
+//		
+//		// Can't find sample with these attributes.
+//		/*
+//	 	Attribute aRedPaletteColorLookupTableDescriptor = list
+//				.get(TagFromName.RedPaletteColorLookupTableDescriptor);
+//		Attribute aGreenPaletteColorLookupTableDescriptor = list
+//				.get(TagFromName.GreenPaletteColorLookupTableDescriptor);
+//		Attribute aBluePaletteColorLookupTableDescriptor = list
+//				.get(TagFromName.BluePaletteColorLookupTableDescriptor);
+//		*/
+//		Attribute aRedPaletteColorLookupTableDescriptor = null;
+//		Attribute aGreenPaletteColorLookupTableDescriptor = null;
+//		Attribute aBluePaletteColorLookupTableDescriptor = null;
+//		//
+//		//
+//		
+//		largestGray = signed ? 0x00007fff : 0x0000ffff; 
+//		boolean usedLargestMonochromePixelValue = false;
+//		if (aLargestMonochromePixelValue != null) {
+//			usedLargestMonochromePixelValue = true;
+//			largestGray = aLargestMonochromePixelValue;
+//		}
+//		boolean usedLargestImagePixelValue = false;
+//		if (usedLargestMonochromePixelValue == false) { 
+//			//
+//			//
+//			Integer aLargestImagePixelValue = image.getLargestImagePixelValue();
+//			//
+//			//
+//			if (aLargestImagePixelValue != null) {
+//				usedLargestImagePixelValue = true;
+//				largestGray = aLargestImagePixelValue;
+//			}
+//		}
+//
+//		if (aRedPaletteColorLookupTableDescriptor != null
+//				&& aGreenPaletteColorLookupTableDescriptor != null
+//				&& aBluePaletteColorLookupTableDescriptor != null) {
+//
+//			if (aRedPaletteColorLookupTableDescriptor != null
+//					&& aRedPaletteColorLookupTableDescriptor.getVM() == 3) {
+//				numberOfEntries = aRedPaletteColorLookupTableDescriptor
+//						.getIntegerValues()[0];
+//				if (numberOfEntries == 0)
+//					numberOfEntries = 65536;
+//				firstValueMapped = aRedPaletteColorLookupTableDescriptor
+//						.getIntegerValues()[1];
+//				String pixelPresentation = getStringOrDefault(image.getPixelPresentation(), "");
+//				if ((usedLargestMonochromePixelValue == false && usedLargestImagePixelValue == false)
+//						|| image.getPhotometricInterpretation().equals("PALETTE COLOR") 
+//						|| !(pixelPresentation.equals("COLOR") || pixelPresentation
+//								.equals("MIXED"))) {
+//					largestGray = firstValueMapped - 1; 
+//					System.err
+//							.println("SourceImage.constructSourceImage(): not treating palette as supplemental, using firstValueMapped "
+//									+ firstValueMapped
+//									+ " to set largestGray = " + largestGray);
+//				} else {
+//					System.err
+//							.println("SourceImage.constructSourceImage(): treating palette as supplemental, largestGray = "
+//									+ largestGray);
+//				}
+//				bitsPerEntry = aRedPaletteColorLookupTableDescriptor
+//						.getIntegerValues()[2];
+//				if (bitsPerEntry > 0) {
+//					//
+//					// Cannot find sample files with these attributes
+//					/* 
+//					Attribute aRedPaletteColorLookupTableData = list
+//							.get(TagFromName.RedPaletteColorLookupTableData);
+//					// System.err.println("SourceImage.constructSourceImage(): aRedPaletteColorLookupTableData = "+aRedPaletteColorLookupTableData);
+//					Attribute aGreenPaletteColorLookupTableData = list
+//							.get(TagFromName.GreenPaletteColorLookupTableData);
+//					Attribute aBluePaletteColorLookupTableData = list
+//							.get(TagFromName.BluePaletteColorLookupTableData);
+//					*/
+//					Attribute aRedPaletteColorLookupTableData = null;
+//					Attribute aGreenPaletteColorLookupTableData = null;
+//					Attribute aBluePaletteColorLookupTableData = null;
+//					//
+//					//
+//					if (aRedPaletteColorLookupTableData != null
+//							&& aGreenPaletteColorLookupTableData != null
+//							&& aBluePaletteColorLookupTableData != null) {
+//						// System.err.println("SourceImage.constructSourceImage(): setting color palette tables");
+//						redTable = aRedPaletteColorLookupTableData
+//								.getShortValues();
+//						greenTable = aGreenPaletteColorLookupTableData
+//								.getShortValues();
+//						blueTable = aBluePaletteColorLookupTableData
+//								.getShortValues();
+//						if (redTable == null || greenTable == null
+//								|| blueTable == null || redTable.length == 0
+//								|| greenTable.length == 0
+//								|| blueTable.length == 0) {
+//							
+//							System.err
+//									.println("SourceImage.constructSourceImage(): bad color palette (empty data), ignoring");
+//							redTable = null;
+//							greenTable = null;
+//							blueTable = null;
+//						}
+//					}
+//				} else {
+//					System.err
+//							.println("SourceImage.constructSourceImage(): bad color palette (zero value for bitsPerEntry), ignoring");
+//					}
+//			}
+//		}
+//
+//		{
+//			try {
+//				for (GraphicsDevice gd : GraphicsEnvironment
+//						.getLocalGraphicsEnvironment().getScreenDevices()) {
+//					for (GraphicsConfiguration gc : gd.getConfigurations()) {
+//						dstColorSpace = gc.getColorModel().getColorSpace();
+//					}
+//				}
+//			} catch (java.awt.HeadlessException e) {
+//				dstColorSpace = ColorSpace.getInstance(ColorSpace.CS_sRGB);
+//			}
+//
+//			if (dstColorSpace == null) {
+//				dstColorSpace = ColorSpace.getInstance(ColorSpace.CS_sRGB);
+//			}
+//		}
+//
+//		{
+//			//
+//			// Cannot find sample file with attribute
+//			/*
+//			Attribute aICCProfile = list.get(TagFromName.ICCProfile);
+//			*/
+//			Attribute aICCProfile = null;
+//			//
+//			//
+//			if (aICCProfile != null) {
+//				byte[] iccProfileBytes = aICCProfile.getByteValues();
+//				ICC_Profile iccProfile = ICC_Profile
+//						.getInstance(iccProfileBytes);
+//				srcColorSpace = new ICC_ColorSpace(iccProfile);
+//			} else {
+//				srcColorSpace = ColorSpace.getInstance(ColorSpace.CS_sRGB);
+//			}
+//		}
+//
+//		bufferedImageSource = null;
+//
+//		int nframepixels = width * height;
+//		int nframesamples = nframepixels * samples;
+//		int nsamples = nframesamples * nframes;
+//		int npixels = nframepixels * nframes;
+//		if ((isGrayscale || isPaletteColor) && samples == 1 && depth > 8
+//				&& depth <= 16) {
+//			bufferedImageSource = null;
+//			//
+//			//
+//			//Attribute a = list.getPixelData();
+//			//
+//			//
+//			
+//			short[] pixelData = image.getPixelData();
+//			
+//			/*
+//			if (a instanceof OtherWordAttributeOnDisk) {
+//				// System.err.println("SourceImage.constructSourceImage(): on disk ... attempting memory mapping");
+//				try {
+//					ShortBuffer shortBuffer = getShortBufferFromOtherWordAttributeOnDisk((OtherWordAttributeOnDisk) a);
+//					if (signed) {
+//						bufferedImageSource = new SignedShortGrayscaleBufferedImageSource(
+//								shortBuffer, width, height, mask, signbit,
+//								extend, largestGray);
+//					} else {
+//						bufferedImageSource = new UnsignedShortGrayscaleBufferedImageSource(
+//								shortBuffer, width, height, mask, largestGray);
+//					}
+//				} catch (Exception e) {
+//					e.printStackTrace(System.err);
+//					bufferedImageSource = null;
+//				}
+//			}
+//			*/
+//			if (bufferedImageSource == null) { 
+//				short data[] = pixelData;
+//				if (signed) {
+//					imgs = null;
+//					//System.out.println("Creating bufferedImageSource: " + width + " " + height + " " + mask + " " + signbit + " " + extend + " " + largestGray);
+//					bufferedImageSource = new SignedShortGrayscaleBufferedImageSource(
+//							data, width, height, mask, signbit, extend,
+//							largestGray);
+//				} else {
+//					imgs = null;
+//					bufferedImageSource = new UnsignedShortGrayscaleBufferedImageSource(
+//							data, width, height, mask, largestGray);
+//				}
+//			}
+//		} else if ((isGrayscale || isPaletteColor) && samples == 1
+//				&& depth <= 8 && depth > 1) {
+//			byte data[] = null;
+//			//Attribute a = list.getPixelData();
+//			short[] pixelData = image.getPixelData();
+//			/*if (ValueRepresentation.isOtherByteVR(a.getVR())) {
+//				byte[] sdata = a.getByteValues();
+//				data = new byte[nsamples];
+//				for (int count = 0; count < nsamples; ++count) {
+//					int value = ((int) sdata[count]) & mask;
+//					int nonextendedvalue = value;
+//					if (signed && (value & signbit) != 0)
+//						value = value | extend;
+//					data[count] = (byte) value;
+//					if (nonextendedvalue < useMaskedPadRangeStart
+//							|| nonextendedvalue > useMaskedPadRangeEnd) {
+//						if (value > imgMax && value <= largestGray)
+//							imgMax = value;
+//						if (value < imgMin)
+//							imgMin = value;
+//					}
+//				}
+//			} else {*/
+//				short sdata[] = pixelData;
+//				data = new byte[nsamples];
+//				int slen = nsamples / 2;
+//				int scount = 0;
+//				int count = 0;
+//				while (scount < slen) {
+//					int value = ((int) sdata[scount++]) & 0xffff; 
+//					int value1 = value & mask; 
+//					int nonextendedvalue1 = value1;
+//					if (signed && (value1 & signbit) != 0)
+//						value1 = value1 | extend;
+//					data[count++] = (byte) value1;
+//					if (nonextendedvalue1 < useMaskedPadRangeStart
+//							|| nonextendedvalue1 > useMaskedPadRangeEnd) {
+//						if (value1 > imgMax && value1 <= largestGray)
+//							imgMax = value1;
+//						if (value1 < imgMin)
+//							imgMin = value1;
+//					}
+//					int value2 = (value >> 8) & mask;
+//					int nonextendedvalue2 = value2;
+//					if (signed && (value2 & signbit) != 0)
+//						value2 = value2 | extend;
+//					data[count++] = (byte) value2;
+//					if (nonextendedvalue2 < useMaskedPadRangeStart
+//							|| nonextendedvalue2 > useMaskedPadRangeEnd) {
+//						if (value2 > imgMax && value2 <= largestGray)
+//							imgMax = value2;
+//						if (value2 < imgMin)
+//							imgMin = value2;
+//						
+//					}
+//				}
+//			//}
+//			
+//			imgs = null;
+//			bufferedImageSource = new ByteGrayscaleBufferedImageSource(data,
+//					width, height);
+//		} else if (isGrayscale && samples == 1 && depth == 1) {
+//			
+//			imgs = new BufferedImage[nframes];
+//			IndexColorModel colorModel = null;
+//			{
+//				byte[] r = { (byte) 0, (byte) 255 };
+//				byte[] g = { (byte) 0, (byte) 255 };
+//				byte[] b = { (byte) 0, (byte) 255 };
+//				colorModel = new IndexColorModel(1 /* bits */, 2 /* size */, r,
+//						g, b);
+//			}
+//			imgMin = 0; 
+//			imgMax = 1;
+//			//
+//			//
+//			//Attribute a = list.getPixelData();
+//			short[] pixelData = image.getPixelData();
+//			//
+//			//
+//			int wi = 0;
+//			int bitsRemaining = 0;
+//			int word = 0;
+//			boolean badBitOrder = false;
+////			
+////			if (ValueRepresentation.isOtherByteVR(a.getVR())) {
+////				byte data[] = a.getByteValues();
+////				for (int f = 0; f < nframes; ++f) {
+////					imgs[f] = new BufferedImage(width, height,
+////							BufferedImage.TYPE_BYTE_BINARY, colorModel);
+////					Raster raster = imgs[f].getData();
+////					SampleModel sampleModel = raster.getSampleModel();
+////					DataBuffer dataBuffer = raster.getDataBuffer();
+////					for (int row = 0; row < height; ++row) {
+////						for (int column = 0; column < width; ++column) {
+////							if (bitsRemaining <= 0) {
+////								word = data[wi++] & 0xff;
+////								bitsRemaining = 8;
+////							}
+////							int bit = badBitOrder ? (word & 0x0080)
+////									: (word & 0x0001);
+////							if (bit != 0) {
+////								sampleModel.setSample(column, row, 0/* bank */,
+////										1, dataBuffer);
+////							}
+////							word = badBitOrder ? (word << 1) : (word >>> 1);
+////							--bitsRemaining;
+////						}
+////					}
+////					imgs[f].setData(raster);
+////				}
+////			} else {
+//				short data[] = pixelData;
 //				for (int f = 0; f < nframes; ++f) {
 //					imgs[f] = new BufferedImage(width, height,
 //							BufferedImage.TYPE_BYTE_BINARY, colorModel);
@@ -2289,10 +2315,10 @@ public class SourceImage {
 //					for (int row = 0; row < height; ++row) {
 //						for (int column = 0; column < width; ++column) {
 //							if (bitsRemaining <= 0) {
-//								word = data[wi++] & 0xff;
-//								bitsRemaining = 8;
+//								word = data[wi++] & 0xffff;
+//								bitsRemaining = 16;
 //							}
-//							int bit = badBitOrder ? (word & 0x0080)
+//							int bit = badBitOrder ? (word & 0x8000)
 //									: (word & 0x0001);
 //							if (bit != 0) {
 //								sampleModel.setSample(column, row, 0/* bank */,
@@ -2304,155 +2330,129 @@ public class SourceImage {
 //					}
 //					imgs[f].setData(raster);
 //				}
+//			//}
+//		} else if (!isGrayscale && samples == 3 && depth <= 8 && depth > 1) {
+//			byte data[] = null;
+//			ByteBuffer buffer = null;
+//			//
+//			//
+//			//Attribute a = list.getPixelData();
+//			short[] pixelData = image.getPixelData();
+//			//
+//			//
+//			/*
+//			if (ValueRepresentation.isOtherByteVR(a.getVR())) {
+//				bufferedImageSource = null;
+//				if (a instanceof OtherByteAttributeOnDisk) {
+//					try {
+//						buffer = getByteBufferFromOtherAttributeOnDisk((OtherByteAttributeOnDisk) a);
+//					} catch (Exception e) {
+//						e.printStackTrace(System.err);
+//						bufferedImageSource = null;
+//					}
+//				}
+//				if (buffer == null) { 
+//					data = a.getByteValues();
+//				}
+//			} else {*/
+//				short sdata[] = pixelData;
+//				data = new byte[nsamples];
+//				int slen = nsamples / 2;
+//				int scount = 0;
+//				int count = 0;
+//				while (scount < slen) {
+//					int value = ((int) sdata[scount++]) & 0xffff; 
+//					int value1 = value & 0xff; 
+//					data[count++] = (byte) value1;
+//					int value2 = (value >> 8) & 0xff;
+//					data[count++] = (byte) value2;
+//				}
+//			//}
+//			imgs = null;
+//
+//			if (byplane) {
+//				if (buffer != null) {
+//					bufferedImageSource = new BandInterleavedByteRGBBufferedImageSource(
+//							buffer, width, height, srcColorSpace);
+//				} else {
+//					bufferedImageSource = new BandInterleavedByteRGBBufferedImageSource(
+//							data, width, height, srcColorSpace);
+//				}
 //			} else {
-				short data[] = pixelData;
-				for (int f = 0; f < nframes; ++f) {
-					imgs[f] = new BufferedImage(width, height,
-							BufferedImage.TYPE_BYTE_BINARY, colorModel);
-					Raster raster = imgs[f].getData();
-					SampleModel sampleModel = raster.getSampleModel();
-					DataBuffer dataBuffer = raster.getDataBuffer();
-					for (int row = 0; row < height; ++row) {
-						for (int column = 0; column < width; ++column) {
-							if (bitsRemaining <= 0) {
-								word = data[wi++] & 0xffff;
-								bitsRemaining = 16;
-							}
-							int bit = badBitOrder ? (word & 0x8000)
-									: (word & 0x0001);
-							if (bit != 0) {
-								sampleModel.setSample(column, row, 0/* bank */,
-										1, dataBuffer);
-							}
-							word = badBitOrder ? (word << 1) : (word >>> 1);
-							--bitsRemaining;
-						}
-					}
-					imgs[f].setData(raster);
-				}
-			//}
-		} else if (!isGrayscale && samples == 3 && depth <= 8 && depth > 1) {
-			byte data[] = null;
-			ByteBuffer buffer = null;
-			//
-			//
-			//Attribute a = list.getPixelData();
-			short[] pixelData = image.getPixelData();
-			//
-			//
-			/*
-			if (ValueRepresentation.isOtherByteVR(a.getVR())) {
-				bufferedImageSource = null;
-				if (a instanceof OtherByteAttributeOnDisk) {
-					try {
-						buffer = getByteBufferFromOtherAttributeOnDisk((OtherByteAttributeOnDisk) a);
-					} catch (Exception e) {
-						e.printStackTrace(System.err);
-						bufferedImageSource = null;
-					}
-				}
-				if (buffer == null) { 
-					data = a.getByteValues();
-				}
-			} else {*/
-				short sdata[] = pixelData;
-				data = new byte[nsamples];
-				int slen = nsamples / 2;
-				int scount = 0;
-				int count = 0;
-				while (scount < slen) {
-					int value = ((int) sdata[scount++]) & 0xffff; 
-					int value1 = value & 0xff; 
-					data[count++] = (byte) value1;
-					int value2 = (value >> 8) & 0xff;
-					data[count++] = (byte) value2;
-				}
-			//}
-			imgs = null;
-
-			if (byplane) {
-				if (buffer != null) {
-					bufferedImageSource = new BandInterleavedByteRGBBufferedImageSource(
-							buffer, width, height, srcColorSpace);
-				} else {
-					bufferedImageSource = new BandInterleavedByteRGBBufferedImageSource(
-							data, width, height, srcColorSpace);
-				}
-			} else {
-				if (buffer != null) {
-					bufferedImageSource = new PixelInterleavedByteRGBBufferedImageSource(
-							buffer, width, height, srcColorSpace);
-				} else {
-					bufferedImageSource = new PixelInterleavedByteRGBBufferedImageSource(
-							data, width, height, srcColorSpace);
-				}
-			}
-		} else if (isGrayscale && samples == 1 && depth == 32) {
-			//
-			//
-			//Attribute a = list.getPixelData();
-			short[] pixelData = image.getPixelData();
-			//
-			//
-			/*
-			if (a != null && a instanceof OtherFloatAttribute) {
-				float data[] = a.getFloatValues();
-				imgs = null;
-				bufferedImageSource = new FloatGrayscaleBufferedImageSource(
-						data, width, height);
-			} else {*/
-				throw new DicomException(
-						"Unsupported 32 bit grayscale image encoding");
-			//}
-		} else if (isGrayscale && samples == 1 && depth == 64) {
-			//
-			//
-			//Attribute a = list.getPixelData();
-			short[] pixelData = image.getPixelData();
-			//
-			//
-			/*
-			 if (a != null && a instanceof OtherDoubleAttribute) {
-				double data[] = a.getDoubleValues();
-				// mask,signbit,extend,largestGray are irrelevant ...
-				imgs = null;
-				bufferedImageSource = new DoubleGrayscaleBufferedImageSource(
-						data, width, height);
-			} else { */
-				throw new DicomException(
-						"Unsupported 64 bit grayscale image encoding");
-			//}
-		} else {
-			throw new DicomException(
-					"Unsupported image encoding: Photometric Interpretation = \""
-							+ vPhotometricInterpretation + "\", samples = "
-							+ samples + "\", Bits Allocated = " + depth
-							+ ", Bits Stored = " + stored);
-		}
-
-		//
-		// Not sure if these are needed?
-		/*
-		suvTransform = new SUVTransform(list);
-		realWorldValueTransform = new RealWorldValueTransform(list);
-		modalityTransform = new ModalityTransform(list);
-		voiTransform = new VOITransform(list);
-		displayShutter = new DisplayShutter(list);
-		overlay = new Overlay(list);
-		*/
-		//
-		//
-		
-		if (hasPad) {
-			backgroundValue = pad;
-		} else if (isGrayscale) {
-			backgroundValue = inverted ? (signed ? (mask >> 1) : mask) 
-					: (signed ? (((mask >> 1) + 1) | extend) : 0); 
-		} else {
-			backgroundValue = 0;
-		}
-		
-	}
+//				if (buffer != null) {
+//					bufferedImageSource = new PixelInterleavedByteRGBBufferedImageSource(
+//							buffer, width, height, srcColorSpace);
+//				} else {
+//					bufferedImageSource = new PixelInterleavedByteRGBBufferedImageSource(
+//							data, width, height, srcColorSpace);
+//				}
+//			}
+//		} else if (isGrayscale && samples == 1 && depth == 32) {
+//			//
+//			//
+//			//Attribute a = list.getPixelData();
+//			short[] pixelData = image.getPixelData();
+//			//
+//			//
+//			/*
+//			if (a != null && a instanceof OtherFloatAttribute) {
+//				float data[] = a.getFloatValues();
+//				imgs = null;
+//				bufferedImageSource = new FloatGrayscaleBufferedImageSource(
+//						data, width, height);
+//			} else {*/
+//				throw new DicomException(
+//						"Unsupported 32 bit grayscale image encoding");
+//			//}
+//		} else if (isGrayscale && samples == 1 && depth == 64) {
+//			//
+//			//
+//			//Attribute a = list.getPixelData();
+//			short[] pixelData = image.getPixelData();
+//			//
+//			//
+//			/*
+//			 if (a != null && a instanceof OtherDoubleAttribute) {
+//				double data[] = a.getDoubleValues();
+//				// mask,signbit,extend,largestGray are irrelevant ...
+//				imgs = null;
+//				bufferedImageSource = new DoubleGrayscaleBufferedImageSource(
+//						data, width, height);
+//			} else { */
+//				throw new DicomException(
+//						"Unsupported 64 bit grayscale image encoding");
+//			//}
+//		} else {
+//			throw new DicomException(
+//					"Unsupported image encoding: Photometric Interpretation = \""
+//							+ vPhotometricInterpretation + "\", samples = "
+//							+ samples + "\", Bits Allocated = " + depth
+//							+ ", Bits Stored = " + stored);
+//		}
+//
+//		//
+//		// Not sure if these are needed?
+//		/*
+//		suvTransform = new SUVTransform(list);
+//		realWorldValueTransform = new RealWorldValueTransform(list);
+//		modalityTransform = new ModalityTransform(list);
+//		voiTransform = new VOITransform(list);
+//		displayShutter = new DisplayShutter(list);
+//		overlay = new Overlay(list);
+//		*/
+//		//
+//		//
+//		
+//		if (hasPad) {
+//			backgroundValue = pad;
+//		} else if (isGrayscale) {
+//			backgroundValue = inverted ? (signed ? (mask >> 1) : mask) 
+//					: (signed ? (((mask >> 1) + 1) | extend) : 0); 
+//		} else {
+//			backgroundValue = 0;
+//		}
+//		
+//	}
 
 	private String getStringOrDefault(String string,
 			String default_string) {
