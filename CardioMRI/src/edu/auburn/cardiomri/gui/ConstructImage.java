@@ -42,6 +42,7 @@ import java.util.jar.JarException;
 
 
 
+
 import com.pixelmed.dicom.Attribute;
 import com.pixelmed.dicom.AttributeList;
 import com.pixelmed.dicom.DicomException;
@@ -68,9 +69,11 @@ import com.pixelmed.dicom.ValueRepresentation;
 
 
 
+import com.pixelmed.display.SourceImage;
+
 import edu.auburn.cardiomri.datastructure.DICOMImage;
 
-public class ConstructImage {
+public class ConstructImage extends SourceImage{
 
 	/***/
 	private static final String identString = "@(#) $Header: /userland/cvs/pixelmed/imgbook/com/pixelmed/display/SourceImage.java,v 1.81 2014/06/22 12:25:18 dclunie Exp $";
