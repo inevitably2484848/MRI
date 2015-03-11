@@ -35,6 +35,7 @@ public final class ContourCalc {
 
     /**
      * Sort the points in radial(?) order.
+     * TODO: This doesn't actually work yet.
      *
      * @param points List of points to sort
      */
