@@ -128,6 +128,9 @@ public class DICOMImage implements Serializable {
 		this.acquisitionNumber = getIntValue(header.get("AcquisitionNumber"));
 		this.instanceNumber = getIntValue(header.get("InstanceNumber"));
 		this.sopInstanceUID = header.get("SOPInstanceUID");
+		this.contours = new Vector<Contour>();
+		//TODO will change once contour types implemented
+		this.contours.add(new Contour());
 		
 		/*
 		 * Check that all required information (SliceThickness, ImagePositionPatient, ImageOrientationPatient, and PixelSpacing)

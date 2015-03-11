@@ -62,7 +62,7 @@ public class ImageModel extends java.util.Observable {
 	
 	public void addContourToImage(Contour contour)
 	{
-		this.contours.add(contour);
+		this.dImage.getContours().add(contour);
 		setChanged();
 		notifyObservers(contour);
 	}

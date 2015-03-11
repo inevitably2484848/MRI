@@ -57,6 +57,7 @@ public class ImageView implements java.util.Observer {
 			}
 
 			SingleImagePanel.deconstructAllSingleImagePanelsInContainer(this.panel);
+			this.display.setCurrentContour(dImage.getContours().firstElement());
 			this.panel.removeAll();
 			
 			this.panel.add(display);

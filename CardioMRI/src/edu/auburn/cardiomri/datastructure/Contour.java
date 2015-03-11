@@ -33,6 +33,13 @@ public class Contour implements Shape {
         // TODO Remove this when it becomes easier to add points
         //controlPoints.addAll(SIMPLE_CONTOUR);
     }
+    
+    public void setControlPoints(List<javafx.geometry.Point2D> points) {
+    	this.controlPoints = points;
+    }
+    public void setGeneratedPoints(List<javafx.geometry.Point2D> points) {
+    	this.generatedPoints = points;
+    }
   
 
     @Override
