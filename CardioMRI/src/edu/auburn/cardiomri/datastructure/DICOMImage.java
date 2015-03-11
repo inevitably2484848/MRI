@@ -129,7 +129,7 @@ public class DICOMImage implements Serializable {
 		this.instanceNumber = getIntValue(header.get("InstanceNumber"));
 		this.sopInstanceUID = header.get("SOPInstanceUID");
 		this.contours = new Vector<Contour>();
-		//TODO will change once contour types implemented
+		//TODO will change once contour types implemented to associate
 		this.contours.add(new Contour());
 		
 		/*

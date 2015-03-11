@@ -228,5 +228,6 @@ public class Study implements Serializable {
 
 	public Map<String, DICOMImage> getSOPInstanceUIDToDICOMImage() {
 		return this.SOPInstanceUIDtoDICOMImage;
+		//e
 	}
 }

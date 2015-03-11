@@ -82,6 +82,7 @@ public class ImageModel extends java.util.Observable {
 	public ImageModel() {
 //System.out.println("ImageModel()");
 		this.dImage = null;
+		//testchange
 		contours.add(new Contour());
 	}
 	

@@ -634,6 +634,7 @@ public class GUIController  implements java.awt.event.ActionListener, MouseListe
 		this.gridModel.setStudy(s);
 		this.metaDataModel.setStudy(s);
 		this.imageModel.setStudy(s);
+		//reemove
 	}
 	
 	/*
