@@ -12,13 +12,16 @@ import javax.swing.JFrame;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 
+import com.pixelmed.dicom.AttributeList;
 import com.pixelmed.dicom.DicomException;
 import com.pixelmed.display.SingleImagePanel;
-import com.pixelmed.display.SourceImage;
+//import com.pixelmed.display.SourceImage;
 import com.pixelmed.display.SingleImagePanel;
+import com.pixelmed.display.SourceImage;
 
 import edu.auburn.cardiomri.datastructure.Contour;
 import edu.auburn.cardiomri.datastructure.DICOMImage;
+import edu.auburn.cardiomri.gui.ConstructImage;
 
 public class ImageView implements java.util.Observer {
 
@@ -27,6 +30,7 @@ public class ImageView implements java.util.Observer {
 	private JPanel panel;
 	private JPanel glass;
 	private MouseListener mouseListener;
+
 	private ImageDisplay display = null;
 	private Vector<Contour> contours = new Vector<Contour>();
 	private Contour contourObject = new Contour(), currentContour;
@@ -34,7 +38,8 @@ public class ImageView implements java.util.Observer {
 	// Observer methods
 	@Override
 	public void update(Observable obs, Object obj) {
-		if (obj.getClass() == DICOMImage.class) {
+
+		if (obj.getClass() == DICOMImage.class) { 
 
 			this.panel.removeAll();
 
@@ -42,14 +47,17 @@ public class ImageView implements java.util.Observer {
 
 			DICOMImage dImage = ((DICOMImage) obj);
 
-			SourceImage sImage = null;
+			//AttributeList dList = ((AttributeList) obj);
+
+			ConstructImage sImg = null;
 			
 			try {
+				
 				System.out.println("Image view reset Image");
-				sImage = new SourceImage(dImage);
+				sImg = new ConstructImage(dImage);
 				
-				this.display = new ImageDisplay(sImage);
-				
+				this.display = new ImageDisplay(sImg);
+
 				this.panel.revalidate();
 
 			} catch (DicomException e) {
