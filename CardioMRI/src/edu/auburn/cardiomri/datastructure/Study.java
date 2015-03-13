@@ -3,6 +3,8 @@ package edu.auburn.cardiomri.datastructure;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import edu.auburn.cardiomri.datastructure.Group.GroupComparator;
 
@@ -19,6 +21,7 @@ public class Study implements Serializable {
 
 	public static final double GROUP_COMPARISON_EPSILON = 0.00001;
 	
+	private Map<String, DICOMImage>  SOPInstanceUIDtoDICOMImage = new HashMap<String, DICOMImage>();
 	private String version;
 	private String userID;
 	private String studyID;
@@ -180,6 +183,7 @@ public class Study implements Serializable {
 				//if (Math.abs(imgStackUnitVector.getY() - groupStackUnitVector.getY()) > GROUP_COMPARISON_EPSILON) continue;
 				//if (Math.abs(imgStackUnitVector.getZ() - groupStackUnitVector.getZ()) > GROUP_COMPARISON_EPSILON) continue;
 				group.addImage(image);
+				SOPInstanceUIDtoDICOMImage.put(image.getSopInstanceUID(), image);
 				return;
 			}
 		}
@@ -196,6 +200,18 @@ public class Study implements Serializable {
 		return;
 	}
 	
+	
+	/**
+	 * gets the image associated with a given SOPInstanceUID
+	 * 
+	 * @param SOPInstanceUID
+	 * @return
+	 */
+	public DICOMImage getImage(String SOPInstanceUID){
+		return this.SOPInstanceUIDtoDICOMImage.get(SOPInstanceUID);
+	}
+	
+	
 	/**
 	 * The Exception class representing the occurance of a DICOMImage being
 	 * attempted to be added to a Study it does not belong to.
@@ -207,5 +223,11 @@ public class Study implements Serializable {
 		public NotInStudyException(String sopInstanceUID) {
 			super(sopInstanceUID);
 		}
+	}
+
+
+	public Map<String, DICOMImage> getSOPInstanceUIDToDICOMImage() {
+		return this.SOPInstanceUIDtoDICOMImage;
+		//e
 	}
 }

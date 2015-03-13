@@ -65,6 +65,7 @@ public class ImageView implements java.util.Observer {
 			}
 
 			SingleImagePanel.deconstructAllSingleImagePanelsInContainer(this.panel);
+			this.display.setCurrentContour(dImage.getContours().firstElement());
 			this.panel.removeAll();
 			
 			this.panel.add(display);
@@ -122,7 +123,6 @@ public class ImageView implements java.util.Observer {
 		this.panel.setLayout(new GridLayout(1, 1));
 		this.panel.setBackground(Color.BLACK);
 		this.panel.setOpaque(true);
-
 		this.panel.setVisible(true);
 	}
 

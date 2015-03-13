@@ -42,7 +42,6 @@ import java.util.jar.JarException;
 
 
 
-
 import com.pixelmed.dicom.Attribute;
 import com.pixelmed.dicom.AttributeList;
 import com.pixelmed.dicom.DicomException;
