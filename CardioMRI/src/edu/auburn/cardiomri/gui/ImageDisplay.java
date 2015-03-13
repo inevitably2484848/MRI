@@ -34,6 +34,7 @@ public class ImageDisplay extends SingleImagePanel {
 			contours.add(currentContour);
 			this.setPreDefinedShapes(contours);
 			this.revalidate();
+			
 		}
 		this.repaint();	
 	}
@@ -45,5 +46,8 @@ public class ImageDisplay extends SingleImagePanel {
 		currentContour = contour;
 	}
 	
+	public Vector<Contour> getContours() {
+		return this.contours;
+	}
 }
 
