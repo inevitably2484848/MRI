@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="src"/>
+	<classpathentry excluding="com/pixelmed/" kind="src" path="src"/>
 	<classpathentry kind="src" path="test"/>
 	<classpathentry kind="lib" path="jai_imageio-1.1.jar"/>
-	<classpathentry kind="lib" path="pixelmed.jar"/>
+	<classpathentry kind="lib" path="pixelmed.jar" sourcepath="src"/>
 	<classpathentry kind="lib" path="hsqldb.jar"/>
 	<classpathentry kind="lib" path="jmdns.jar"/>
 	<classpathentry kind="lib" path="commons-net-3.3.jar"/>
