@@ -11,7 +11,7 @@ import edu.auburn.cardiomri.datastructure.Contour;
 public class ImageDisplay extends SingleImagePanel {
 
 	private Contour currentContour;
-	private Vector<Contour> contours = new Vector<Contour>();
+	private Vector<Contour> contours;
 	
 	//Constructor 
 	//Takes a image to be displayed
@@ -28,13 +28,10 @@ public class ImageDisplay extends SingleImagePanel {
 		//System.out.print(this.getSelectedDrawingShapes());
 		currentContour.addControlPoint(e.getX(), e.getY());
 		
-		if(currentContour.getControlPoints().size() == 3)
+		if(currentContour.getControlPoints().size() > 2)
 		{
-			System.out.println("Added contour");
-			contours.add(currentContour);
 			this.setPreDefinedShapes(contours);
 			this.revalidate();
-			
 		}
 		this.repaint();	
 	}
@@ -48,6 +45,10 @@ public class ImageDisplay extends SingleImagePanel {
 	
 	public Vector<Contour> getContours() {
 		return this.contours;
+	}
+	
+	public void setContours(Vector<Contour> contours) {
+	    this.contours = contours;
 	}
 }
 

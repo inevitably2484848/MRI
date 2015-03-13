@@ -365,38 +365,39 @@ public class GUIController  implements java.awt.event.ActionListener, MouseListe
 		int numPoints = 0;
 
 		Writer writer = null;
-		String path = System.getProperty("user.dir") + File.separator + "/contourPoints.txt";
+		String path = System.getProperty("user.dir") + File.separator + "contourPoints.txt";
 		File f = new File(path);
-		for (DICOMImage image : study.getSOPInstanceUIDToDICOMImage().values()) {
-			try {
-				String sopInstanceUID = image.getSopInstanceUID();
-				contours = image.getContours();
-				int contourType = 7;
-				if (contours.size() > 0) {
-					for (Contour c : contours) {
-						numPoints = c.getControlPoints().size() + c.getGeneratedPoints().size();
-						String uid = "SOP_INSTANCE_UID: " + sopInstanceUID;
-						String type = "\nCONTOUR_TYPE: " + contourType;
-						String num = "\n" + numPoints + "\n";
-						writer = new PrintWriter(new BufferedWriter(new FileWriter(f, false)));
-						writer.write(uid + type  + num);
-						for (javafx.geometry.Point2D point : c.getControlPoints()) {
-							writer.write(Double.toString(point.getX()) + "\t" + Double.toString(point.getY()) + "\n");
-						}
-						for (javafx.geometry.Point2D point : c.getGeneratedPoints()) {
-							writer.write(Double.toString(point.getX()) + "\t" + Double.toString(point.getY()) + "\n");
-						}
-						writer.write((-1) + "\n");
-					}
-				}
-			} catch (IOException ex) {
-			} finally {
-				try {
-					writer.close();
-				} 
-				catch (Exception ex) {}
-			}
+		try {
+		    writer = new PrintWriter(new BufferedWriter(new FileWriter(f, false)));
+		    for (DICOMImage image : study.getSOPInstanceUIDToDICOMImage().values()) {
+
+		        String sopInstanceUID = image.getSopInstanceUID();
+		        contours = image.getContours();
+		        int contourType = 7;
+		        for (Contour c : contours) {
+		            if (c.getControlPoints().size() > 0) {
+		                numPoints = c.getControlPoints().size() + c.getGeneratedPoints().size();
+		                String uid = "SOP_INSTANCE_UID: " + sopInstanceUID;
+		                String type = "\nCONTOUR_TYPE: " + contourType;
+		                String num = "\n" + numPoints + "\n";
+		                writer.write(uid + type  + num);
+		                for (javafx.geometry.Point2D point : c.getControlPoints()) {
+		                    writer.write(Double.toString(point.getX()) + "\t" + Double.toString(point.getY()) + "\n");
+		                }
+		                for (javafx.geometry.Point2D point : c.getGeneratedPoints()) {
+		                    writer.write(Double.toString(point.getX()) + "\t" + Double.toString(point.getY()) + "\n");
+		                }
+		                writer.write((-1) + "\n");
+		            }
+
+		        }
+		    }
+		    writer.close();
+		} catch (IOException e) {
+		    // TODO Auto-generated catch block
+		    e.printStackTrace();
 		}
+
 	}
 	    		
 	    
