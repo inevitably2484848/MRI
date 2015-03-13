@@ -32,7 +32,7 @@ public class ImageView implements java.util.Observer {
 	private MouseListener mouseListener;
 
 	private ImageDisplay display = null;
-	private Vector<Contour> contours = new Vector<Contour>();
+	private Vector<Contour> contours;
 	private Contour contourObject = new Contour(), currentContour;
 
 	// Observer methods
@@ -46,7 +46,8 @@ public class ImageView implements java.util.Observer {
 			this.display = null;
 
 			DICOMImage dImage = ((DICOMImage) obj);
-
+			this.contours = dImage.getContours();
+			
 			//AttributeList dList = ((AttributeList) obj);
 
 			ConstructImage sImg = null;
@@ -66,6 +67,7 @@ public class ImageView implements java.util.Observer {
 
 			SingleImagePanel.deconstructAllSingleImagePanelsInContainer(this.panel);
 			this.display.setCurrentContour(dImage.getContours().firstElement());
+			this.display.setContours(contours);
 			this.panel.removeAll();
 			
 			this.panel.add(display);
