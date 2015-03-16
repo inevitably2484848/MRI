@@ -362,8 +362,6 @@ public class GUIController  implements java.awt.event.ActionListener, MouseListe
 		Study study = this.studyStructModel.getStudy();
 		Vector<Contour> contours = new Vector<Contour>();
 
-		int numPoints = 0;
-
 		Writer writer = null;
 		String path = System.getProperty("user.dir") + File.separator + "contourPoints.txt";
 		File f = new File(path);
@@ -650,8 +648,7 @@ public class GUIController  implements java.awt.event.ActionListener, MouseListe
 		this.gridModel.setCurrentImage(this.gIndex, this.sIndex, this.tIndex, this.iIndex);
 		this.metaDataModel.setCurrentImage(this.gIndex, this.sIndex, this.tIndex, this.iIndex);
 		this.imageModel.setCurrentImage(this.gIndex, this.sIndex, this.tIndex, this.iIndex);
-		//this.imageModel.addContourToImage(new Contour());
-		
+		this.imageModel.addContourToImage(new Contour(Contour.Type.DEFAULT));
 	}
 
 	// Setters
