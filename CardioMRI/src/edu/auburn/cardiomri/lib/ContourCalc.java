@@ -104,11 +104,9 @@ public final class ContourCalc {
 
         ContourCalc.sortPoints(controlPoints);
 
-        List<Point2D> rawPoints;
+        List<Point2D> rawPoints = new Vector<Point2D>(controlPoints);;
         if (isClosed) {
-            rawPoints = ContourCalc.createRepeatedList(controlPoints);
-        } else {
-            rawPoints = controlPoints;
+            rawPoints.add(rawPoints.get(0));
         }
 
         Vec2D[] points = new Vec2D[rawPoints.size()];
@@ -138,7 +136,7 @@ public final class ContourCalc {
      * @return A list three times the size of the input
      */
     public static List<Point2D> createRepeatedList(List<Point2D> points) {
-        int timesToRepeat = 3;
+        int timesToRepeat = 1;
         List<Point2D> allPoints = new Vector<Point2D>(points.size()
                 * timesToRepeat);
 
