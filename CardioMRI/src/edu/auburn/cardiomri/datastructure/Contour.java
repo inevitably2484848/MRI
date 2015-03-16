@@ -6,14 +6,14 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.PathIterator;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
 import edu.auburn.cardiomri.lib.ContourCalc;
 
 public class Contour implements Shape {
-
-    private boolean isClosedCurve = true;
 
     // XY coordinates of points the user clicked
     private List<javafx.geometry.Point2D> controlPoints;
@@ -22,17 +22,20 @@ public class Contour implements Shape {
     // each of the control points
     private List<javafx.geometry.Point2D> generatedPoints;
 
+    private Type contourType;
+
+    public Contour(Type contourTypeIn) {
+        this();
+        this.contourType = contourTypeIn;
+    }
+
     /**
      * Sets controlPoints to a predefined set of points.
      */
-    public Contour() {
-        controlPoints = new Vector<javafx.geometry.Point2D>();
-        generatedPoints = new Vector<javafx.geometry.Point2D>();
-
-        // TODO Remove this when it becomes easier to add points
-        //controlPoints.addAll(SIMPLE_CONTOUR);
+    private Contour() {
+        this.controlPoints = new Vector<javafx.geometry.Point2D>();
+        this.generatedPoints = new Vector<javafx.geometry.Point2D>();
     }
-  
 
     @Override
     public boolean contains(Point2D p) {
@@ -65,7 +68,7 @@ public class Contour implements Shape {
         int maxX = Integer.MIN_VALUE;
         int maxY = Integer.MIN_VALUE;
 
-        for (javafx.geometry.Point2D point : controlPoints) {
+        for (javafx.geometry.Point2D point : this.controlPoints) {
             minX = (int) Math.floor(Math.min(point.getX(), minX));
             minY = (int) Math.floor(Math.min(point.getY(), minY));
             maxX = (int) Math.ceil(Math.max(point.getX(), maxX));
@@ -82,7 +85,7 @@ public class Contour implements Shape {
         double maxX = Double.MIN_VALUE;
         double maxY = Double.MIN_VALUE;
 
-        for (javafx.geometry.Point2D point : controlPoints) {
+        for (javafx.geometry.Point2D point : this.controlPoints) {
             minX = Math.min(point.getX(), minX);
             minY = Math.min(point.getY(), minY);
             maxX = Math.max(point.getX(), maxX);
@@ -98,82 +101,63 @@ public class Contour implements Shape {
         // System.out.println(at.getScaleY());
         // TODO Don't ignore the transform
 
-        ContourCalc.generate(controlPoints, generatedPoints, this.isClosedCurve);
+        ContourCalc.generate(this.controlPoints, this.generatedPoints,
+                this.isClosedCurve());
 
         return new PathIterator() {
             private int index = 0;
 
             @Override
             public void next() {
-                index += 1; // Is this right?
+                this.index += 1; // Is this right?
             }
 
             @Override
             public boolean isDone() {
                 // TODO Make sure controlPoints isn't null
-                return index > generatedPoints.size();
+                return this.index >= Contour.this.generatedPoints.size();
             }
 
             @Override
             public int getWindingRule() {
-                return WIND_NON_ZERO;
+                return PathIterator.WIND_NON_ZERO;
             }
 
             @Override
             public int currentSegment(double[] coords) {
-                if (index == 0) {
-                    coords[0] = generatedPoints.get(0).getX();
-                    coords[1] = generatedPoints.get(0).getY();
-                    return SEG_MOVETO;
-                } else if ((index > 0) && (index < generatedPoints.size())) {
-                    // First control point
-                    coords[0] = generatedPoints.get(index - 1).getX();
-                    coords[1] = generatedPoints.get(index - 1).getY();
-
-                    // Second control point
-                    coords[2] = generatedPoints.get(index).getX();
-                    coords[3] = generatedPoints.get(index).getY();
-                    return SEG_QUADTO;
-                } else if (index == generatedPoints.size()) {
-                    // First control point
-                    coords[0] = generatedPoints.get(index - 1).getX();
-                    coords[1] = generatedPoints.get(index - 1).getY();
-
-                    // Second control point
-                    coords[2] = generatedPoints.get(0).getX();
-                    coords[3] = generatedPoints.get(0).getY();
-                    return SEG_QUADTO;
+                if (this.index == 0) {
+                    coords[0] = Contour.this.generatedPoints.get(0).getX();
+                    coords[1] = Contour.this.generatedPoints.get(0).getY();
+                    return PathIterator.SEG_MOVETO;
+                } else if ((this.index > 0)) { // && (this.index <
+                                               // Contour.this.generatedPoints.size()))
+                                               // {
+                    coords[0] = Contour.this.generatedPoints.get(this.index)
+                            .getX();
+                    coords[1] = Contour.this.generatedPoints.get(this.index)
+                            .getY();
+                    return PathIterator.SEG_LINETO;
                 } else {
-                    return SEG_CLOSE;
+                    return PathIterator.SEG_CLOSE;
                 }
             }
 
             @Override
             public int currentSegment(float[] coords) {
-                if (index == 0) {
-                    coords[0] = (float) generatedPoints.get(0).getX();
-                    coords[1] = (float) generatedPoints.get(0).getY();
-                    return SEG_MOVETO;
-                } else if ((index > 0) && (index < generatedPoints.size())) {
-                    // First control point
-                    coords[0] = (float) generatedPoints.get(index - 1).getX();
-                    coords[1] = (float) generatedPoints.get(index - 1).getY();
-
-                    // Second control point
-                    coords[2] = (float) generatedPoints.get(index).getX();
-                    coords[3] = (float) generatedPoints.get(index).getY();
-                    return SEG_QUADTO;
-                } else if (index == generatedPoints.size()) {
-                    // First control point
-                    coords[0] = (float) generatedPoints.get(index - 1).getX();
-                    coords[1] = (float) generatedPoints.get(index - 1).getY();
-
-                    // Second control point
-                    coords[2] = (float) generatedPoints.get(0).getX();
-                    coords[3] = (float) generatedPoints.get(0).getY();
-                    return SEG_QUADTO;
+                if (this.index == 0) {
+                    coords[0] = (float) Contour.this.generatedPoints.get(0)
+                            .getX();
+                    coords[1] = (float) Contour.this.generatedPoints.get(0)
+                            .getY();
+                    return PathIterator.SEG_MOVETO;
+                } else if (this.index > 0) {
+                    coords[0] = (float) Contour.this.generatedPoints.get(
+                            this.index).getX();
+                    coords[1] = (float) Contour.this.generatedPoints.get(
+                            this.index).getY();
+                    return PathIterator.SEG_LINETO;
                 } else {
-                    return SEG_CLOSE;
+                    return PathIterator.SEG_CLOSE;
                 }
             }
         };
@@ -182,7 +166,7 @@ public class Contour implements Shape {
     @Override
     public PathIterator getPathIterator(AffineTransform at, double flatness) {
         // TODO Don't ignore flatness
-        return getPathIterator(at);
+        return this.getPathIterator(at);
     }
 
     @Override
@@ -207,7 +191,7 @@ public class Contour implements Shape {
      */
     public void addControlPoint(double x, double y) {
         if ((x >= 0) && (y >= 0)) {
-            controlPoints.add(new javafx.geometry.Point2D(x, y));
+            this.controlPoints.add(new javafx.geometry.Point2D(x, y));
         }
     }
 
@@ -217,37 +201,54 @@ public class Contour implements Shape {
      * @return copy of the internal list
      */
     public List<javafx.geometry.Point2D> getControlPoints() {
-        return new Vector<javafx.geometry.Point2D>(controlPoints);
+        return new Vector<javafx.geometry.Point2D>(this.controlPoints);
     }
 
     /**
-     * Returns a copy list of the points generated to create a smooth curve.
-     * The {@link #generate} function is called before the points are returned.
+     * Returns a copy list of the points generated to create a smooth curve. The
+     * {@link #generate} function is called before the points are returned.
      *
      * @return copy of the internal list
      */
     public List<javafx.geometry.Point2D> getGeneratedPoints() {
         // TODO Can this be changed so that it's only called when necessary?
-        ContourCalc.generate(controlPoints, generatedPoints, this.isClosedCurve);
-        return new Vector<javafx.geometry.Point2D>(generatedPoints);
+        ContourCalc.generate(this.controlPoints, this.generatedPoints,
+                this.isClosedCurve());
+        return new Vector<javafx.geometry.Point2D>(this.generatedPoints);
     }
 
     /**
      * Get whether this contour is a closed curve or open curve
-     * 
+     *
      * @return boolean value is true if the curve is closed
      */
     public boolean isClosedCurve() {
-        return this.isClosedCurve;
+        return Contour.IS_CLOSED_CONTOUR.get(this.contourType);
     }
 
-
     /**
-     * Set the curve as closed or open
-     * 
-     * @param isClosedCurve true if the curve is closed
+     * Set the contour type
+     *
+     * @param contourTypeIn
+     *            the type of contour
      */
-    public void setClosedCurve(boolean isClosedCurve) {
-        this.isClosedCurve = isClosedCurve;
+    public void setContourType(Type contourTypeIn) {
+        this.contourType = contourTypeIn;
+    }
+
+    public enum Type {
+        DEFAULT, DEFAULT_CLOSED, // Example of something that is always a closed
+        // contour
+        DEFAULT_OPEN // Example of something that is always an open contour
+    }
+
+    public static final Map<Type, Boolean> IS_CLOSED_CONTOUR;
+
+    static {
+        IS_CLOSED_CONTOUR = new HashMap<Type, Boolean>();
+
+        Contour.IS_CLOSED_CONTOUR.put(Type.DEFAULT, Boolean.TRUE);
+        Contour.IS_CLOSED_CONTOUR.put(Type.DEFAULT_CLOSED, Boolean.TRUE);
+        Contour.IS_CLOSED_CONTOUR.put(Type.DEFAULT_OPEN, Boolean.FALSE);
     }
 }
