@@ -14,3 +14,4 @@ CardioMRI/contourPoints.txt
 
 *.smc
 
+.DS_Store
