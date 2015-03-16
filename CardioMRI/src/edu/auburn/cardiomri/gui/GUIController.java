@@ -456,7 +456,7 @@ public class GUIController  implements java.awt.event.ActionListener, MouseListe
 								}
 								
 							}
-							Contour contour = new Contour();
+							Contour contour = new Contour(Contour.Type.DEFAULT);
 							contour.setControlPoints(controlPoints);
 							contour.setGeneratedPoints(generatedPoints);
 							contours.add(contour);
@@ -647,7 +647,7 @@ public class GUIController  implements java.awt.event.ActionListener, MouseListe
 		this.gridModel.setCurrentImage(this.gIndex, this.sIndex, this.tIndex, this.iIndex);
 		this.metaDataModel.setCurrentImage(this.gIndex, this.sIndex, this.tIndex, this.iIndex);
 		this.imageModel.setCurrentImage(this.gIndex, this.sIndex, this.tIndex, this.iIndex);
-		//this.imageModel.addContourToImage(new Contour());
+		this.imageModel.addContourToImage(new Contour(Contour.Type.DEFAULT));
 	}
 
 	// Setters
