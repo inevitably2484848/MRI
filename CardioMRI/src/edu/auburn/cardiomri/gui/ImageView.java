@@ -33,7 +33,7 @@ public class ImageView implements java.util.Observer {
 
 	private ImageDisplay display = null;
 	private Vector<Contour> contours = new Vector<Contour>();
-	private Contour contourObject = new Contour(), currentContour;
+	private Contour contourObject = new Contour(Contour.Type.DEFAULT), currentContour;
 
 	// Observer methods
 	@Override
