@@ -368,6 +368,7 @@ public class GUIController  implements java.awt.event.ActionListener, MouseListe
 		String path = System.getProperty("user.dir") + File.separator + "contourPoints.txt";
 		File f = new File(path);
 		try {
+
 		    writer = new PrintWriter(new BufferedWriter(new FileWriter(f, false)));
 		    for (DICOMImage image : study.getSOPInstanceUIDToDICOMImage().values()) {
 
@@ -396,14 +397,16 @@ public class GUIController  implements java.awt.event.ActionListener, MouseListe
 		} catch (IOException e) {
 		    // TODO Auto-generated catch block
 		    e.printStackTrace();
+
+			
 		}
 
 	}
+	
 	    		
 	    
 	
 	 private void loadContour() throws IOException {
-	//TODO parse through Images using SUID to find the correct image...
 	//TODO #7, 8. log error if type not found...
 	//TODO figure out how to separate control/generated points
 		 Study study = this.studyStructModel.getStudy();
@@ -648,6 +651,7 @@ public class GUIController  implements java.awt.event.ActionListener, MouseListe
 		this.metaDataModel.setCurrentImage(this.gIndex, this.sIndex, this.tIndex, this.iIndex);
 		this.imageModel.setCurrentImage(this.gIndex, this.sIndex, this.tIndex, this.iIndex);
 		//this.imageModel.addContourToImage(new Contour());
+		
 	}
 
 	// Setters

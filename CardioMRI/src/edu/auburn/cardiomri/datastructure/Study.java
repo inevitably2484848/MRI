@@ -187,8 +187,6 @@ public class Study implements Serializable {
 				return;
 			}
 		}
-	
-		
 		// Matching Group not found
 		Group group = new Group();
 		group.setSeriesNumber(image.getSeriesNumber());

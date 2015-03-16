@@ -44,7 +44,7 @@ public class ImageModel extends java.util.Observable {
 		
 		this.dImage = this.study.getGroups().get(g).getSlices().get(s).getTimes().get(t).getImages().get(i);
 		this.contours = this.dImage.getContours();
-		
+
 		setChanged();
 		notifyObservers(this.dImage);
 	}
@@ -82,9 +82,8 @@ public class ImageModel extends java.util.Observable {
 	
 	// Constructors
 	public ImageModel() {
-//System.out.println("ImageModel()");
 		this.dImage = null;
-		//testchange
+		
 	}
 	
 	

@@ -47,7 +47,7 @@ public class ImageView implements java.util.Observer {
 
 			DICOMImage dImage = ((DICOMImage) obj);
 			this.contours = dImage.getContours();
-			
+
 			//AttributeList dList = ((AttributeList) obj);
 
 			ConstructImage sImg = null;
@@ -69,6 +69,7 @@ public class ImageView implements java.util.Observer {
 			this.display.setCurrentContour(dImage.getContours().firstElement());
 			this.display.setContours(contours);
 			this.panel.removeAll();
+			
 			
 			this.panel.add(display);
 			this.panel.revalidate();
