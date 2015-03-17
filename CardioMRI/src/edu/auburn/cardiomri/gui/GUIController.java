@@ -365,11 +365,11 @@ public class GUIController  implements java.awt.event.ActionListener, MouseListe
 		Writer writer = null;
 		String path = System.getProperty("user.dir") + File.separator + "contourPoints.txt";
 		File f = new File(path);
+		int numPoints = 0;
+		
 		try {
-
 		    writer = new PrintWriter(new BufferedWriter(new FileWriter(f, false)));
 		    for (DICOMImage image : study.getSOPInstanceUIDToDICOMImage().values()) {
-
 		        String sopInstanceUID = image.getSopInstanceUID();
 		        contours = image.getContours();
 		        int contourType = 7;
@@ -395,15 +395,10 @@ public class GUIController  implements java.awt.event.ActionListener, MouseListe
 		} catch (IOException e) {
 		    // TODO Auto-generated catch block
 		    e.printStackTrace();
-
 			
 		}
-
 	}
-	
-	    		
-	    
-	
+
 	 private void loadContour() throws IOException {
 	//TODO #7, 8. log error if type not found...
 	//TODO figure out how to separate control/generated points
@@ -457,7 +452,7 @@ public class GUIController  implements java.awt.event.ActionListener, MouseListe
 								}
 								
 							}
-							Contour contour = new Contour();
+							Contour contour = new Contour(Contour.Type.DEFAULT);
 							contour.setControlPoints(controlPoints);
 							contour.setGeneratedPoints(generatedPoints);
 							contours.add(contour);
