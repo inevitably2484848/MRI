@@ -18,7 +18,7 @@ import java.util.Vector;
 public class DICOMImage implements Serializable {
 	
 	private HashMap<String, String> attributes;
-	private Vector<Contour> contours;
+	private Vector<Contour> contours = new Vector<Contour>();
 	
 	private String filename;
 	private String manufacturer;
@@ -128,6 +128,9 @@ public class DICOMImage implements Serializable {
 		this.acquisitionNumber = getIntValue(header.get("AcquisitionNumber"));
 		this.instanceNumber = getIntValue(header.get("InstanceNumber"));
 		this.sopInstanceUID = header.get("SOPInstanceUID");
+
+		//TODO will change once contour types implemented to associate
+		this.contours.add(new Contour(Contour.Type.DEFAULT));
 		
 		/*
 		 * Check that all required information (SliceThickness, ImagePositionPatient, ImageOrientationPatient, and PixelSpacing)

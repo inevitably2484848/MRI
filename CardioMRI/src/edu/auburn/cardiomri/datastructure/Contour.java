@@ -36,6 +36,14 @@ public class Contour implements Shape {
         this.controlPoints = new Vector<javafx.geometry.Point2D>();
         this.generatedPoints = new Vector<javafx.geometry.Point2D>();
     }
+    
+    public void setControlPoints(List<javafx.geometry.Point2D> points) {
+    	this.controlPoints = points;
+    }
+    public void setGeneratedPoints(List<javafx.geometry.Point2D> points) {
+    	this.generatedPoints = points;
+    }
+  
 
     @Override
     public boolean contains(Point2D p) {
@@ -236,19 +244,37 @@ public class Contour implements Shape {
         this.contourType = contourTypeIn;
     }
 
-    public enum Type {
+    public Type getContourType() {
+		return contourType;
+	}
+
+
+
+	public Integer getIntFromType() {
+		return Contour.TYPE_TO_INTEGER.get(getContourType());
+	}
+
+
+
+	public enum Type {
         DEFAULT, DEFAULT_CLOSED, // Example of something that is always a closed
         // contour
         DEFAULT_OPEN // Example of something that is always an open contour
     }
 
     public static final Map<Type, Boolean> IS_CLOSED_CONTOUR;
-
+    public static final Map<Type, Integer> TYPE_TO_INTEGER;
     static {
         IS_CLOSED_CONTOUR = new HashMap<Type, Boolean>();
-
+        
         Contour.IS_CLOSED_CONTOUR.put(Type.DEFAULT, Boolean.TRUE);
         Contour.IS_CLOSED_CONTOUR.put(Type.DEFAULT_CLOSED, Boolean.TRUE);
         Contour.IS_CLOSED_CONTOUR.put(Type.DEFAULT_OPEN, Boolean.FALSE);
+
+        TYPE_TO_INTEGER = new HashMap<Type, Integer>();
+        //TODO fine tune exact types/integer values
+        Contour.TYPE_TO_INTEGER.put(Type.DEFAULT, 7);
+        Contour.TYPE_TO_INTEGER.put(Type.DEFAULT_CLOSED, 8);
+        Contour.TYPE_TO_INTEGER.put(Type.DEFAULT_OPEN, 4);
     }
 }

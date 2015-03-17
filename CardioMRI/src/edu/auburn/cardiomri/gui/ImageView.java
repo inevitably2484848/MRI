@@ -32,7 +32,7 @@ public class ImageView implements java.util.Observer {
 	private MouseListener mouseListener;
 
 	private ImageDisplay display = null;
-	private Vector<Contour> contours = new Vector<Contour>();
+	private Vector<Contour> contours;
 	private Contour contourObject = new Contour(Contour.Type.DEFAULT), currentContour;
 
 	// Observer methods
@@ -46,6 +46,7 @@ public class ImageView implements java.util.Observer {
 			this.display = null;
 
 			DICOMImage dImage = ((DICOMImage) obj);
+			this.contours = dImage.getContours();
 
 			//AttributeList dList = ((AttributeList) obj);
 
@@ -65,16 +66,20 @@ public class ImageView implements java.util.Observer {
 			}
 
 			SingleImagePanel.deconstructAllSingleImagePanelsInContainer(this.panel);
+			this.display.setContours(contours);
+			this.display.setCurrentContour(dImage.getContours().firstElement());
 			this.panel.removeAll();
+			
 			
 			this.panel.add(display);
 			this.panel.revalidate();
 		}
+		
 		if(obj instanceof Vector<?>)
 		{
 			if(((Vector<Contour>) obj).firstElement().getClass() == contourObject.getClass())
 			{
-				contours = (Vector<Contour>) obj;
+				this.contours = (Vector<Contour>) obj;
 				if(this.display != null){
 					this.display.setPreDefinedShapes(contours);
 					this.display.setCurrentContour(contours.firstElement());
@@ -82,6 +87,7 @@ public class ImageView implements java.util.Observer {
 				}
 			}
 		}
+		
 		if(obj.getClass() == contourObject.getClass())
 		{
 			if(this.display != null){
@@ -122,7 +128,6 @@ public class ImageView implements java.util.Observer {
 		this.panel.setLayout(new GridLayout(1, 1));
 		this.panel.setBackground(Color.BLACK);
 		this.panel.setOpaque(true);
-
 		this.panel.setVisible(true);
 	}
 

@@ -10,6 +10,8 @@ CardioMRI/.classpath
 
 CardioMRI/dicom_importer_error_log.txt
 
+CardioMRI/contourPoints.txt
+
 *.smc
 
 .DS_Store

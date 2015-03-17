@@ -3,6 +3,8 @@ package edu.auburn.cardiomri.datastructure;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import edu.auburn.cardiomri.datastructure.Group.GroupComparator;
 
@@ -19,6 +21,7 @@ public class Study implements Serializable {
 
 	public static final double GROUP_COMPARISON_EPSILON = 0.00001;
 	
+	private Map<String, DICOMImage>  SOPInstanceUIDtoDICOMImage = new HashMap<String, DICOMImage>();
 	private String version;
 	private String userID;
 	private String studyID;
@@ -170,6 +173,10 @@ public class Study implements Serializable {
 				image.getImageOrientationPatient()[5]);
 		Vector3d imgStackUnitVector = imgRowsVector.cross(imgColVector).unit();
 		
+		if (image.getContours().size() == 0) {
+		    image.getContours().add(new Contour(Contour.Type.DEFAULT));
+		}
+		
 		for (Group group : groups) {
 			if (image.getSeriesNumber() == group.getSeriesNumber()) {
 				
@@ -180,11 +187,10 @@ public class Study implements Serializable {
 				//if (Math.abs(imgStackUnitVector.getY() - groupStackUnitVector.getY()) > GROUP_COMPARISON_EPSILON) continue;
 				//if (Math.abs(imgStackUnitVector.getZ() - groupStackUnitVector.getZ()) > GROUP_COMPARISON_EPSILON) continue;
 				group.addImage(image);
+				SOPInstanceUIDtoDICOMImage.put(image.getSopInstanceUID(), image);
 				return;
 			}
 		}
-	
-		
 		// Matching Group not found
 		Group group = new Group();
 		group.setSeriesNumber(image.getSeriesNumber());
@@ -193,8 +199,21 @@ public class Study implements Serializable {
 		group.addImage(image);
 		groups.add(group);
 		Collections.sort(groups, new GroupComparator());
+        SOPInstanceUIDtoDICOMImage.put(image.getSopInstanceUID(), image);
 		return;
 	}
+	
+	
+	/**
+	 * gets the image associated with a given SOPInstanceUID
+	 * 
+	 * @param SOPInstanceUID
+	 * @return
+	 */
+	public DICOMImage getImage(String SOPInstanceUID){
+		return this.SOPInstanceUIDtoDICOMImage.get(SOPInstanceUID);
+	}
+	
 	
 	/**
 	 * The Exception class representing the occurance of a DICOMImage being
@@ -207,5 +226,11 @@ public class Study implements Serializable {
 		public NotInStudyException(String sopInstanceUID) {
 			super(sopInstanceUID);
 		}
+	}
+
+
+	public Map<String, DICOMImage> getSOPInstanceUIDToDICOMImage() {
+		return this.SOPInstanceUIDtoDICOMImage;
+		//e
 	}
 }

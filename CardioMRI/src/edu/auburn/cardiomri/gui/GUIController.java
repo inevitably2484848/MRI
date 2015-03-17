@@ -7,6 +7,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.StringTokenizer;
 import java.util.Vector;
 import java.io.BufferedReader;
@@ -24,6 +25,8 @@ import java.io.Writer;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import javafx.geometry.Point2D;
+
 import javax.swing.AbstractAction;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
@@ -36,7 +39,9 @@ import javax.swing.tree.TreePath;
 import edu.auburn.cardiomri.dataimporter.DICOM3Importer;
 import edu.auburn.cardiomri.dataimporter.DICOMFileTreeWalker;
 import edu.auburn.cardiomri.datastructure.Contour;
+import edu.auburn.cardiomri.datastructure.Contour.Type;
 import edu.auburn.cardiomri.datastructure.DICOMImage;
+import edu.auburn.cardiomri.datastructure.Group;
 import edu.auburn.cardiomri.datastructure.Slice;
 import edu.auburn.cardiomri.datastructure.Study;
 import edu.auburn.cardiomri.datastructure.Study.NotInStudyException;
@@ -350,83 +355,114 @@ public class GUIController  implements java.awt.event.ActionListener, MouseListe
 	 * @param contour : Contour object to be saved
 	 * 
 	 */
-	 private void saveContour() {
-	     //TODO Categorize points based on location (i.e. LA, RA, Endo, Epi, etc...
-		 //TODO move to save() in SerializableManager
-		 DICOMImage dImage = this.imageModel.getImage();
-		 Vector<Contour> contours = new Vector<Contour>();
-		 contours = this.imageModel.getContourList();
-		 int numPoints = 0;
-		 String sopInstanceUID = dImage.getSopInstanceUID();
-		 //TODO need to put actual contour types
-		 String contourType = dImage.getSeriesDescription();
-		 Writer writer = null;
-		 
-	    		try {
-	    			//writes to working directory of user
-	    			String path = System.getProperty("user.dir") + File.separator + "/contourPoints.txt";
-	    		    File f = new File(path);
+	private void saveContour() {
+		//TODO Categorize points based on location (i.e. LA, RA, Endo, Epi, etc...
+		//TODO merge with save() in SerializableManager
+		Study study = this.studyStructModel.getStudy();
+		Vector<Contour> contours = new Vector<Contour>();
+		Writer writer = null;
+		String path = System.getProperty("user.dir") + File.separator + "contourPoints.txt";
+		File f = new File(path);
+		
+		try {
+		    writer = new PrintWriter(new BufferedWriter(new FileWriter(f, false)));
+		    for (DICOMImage image : study.getSOPInstanceUIDToDICOMImage().values()) {
+		        String sopInstanceUID = image.getSopInstanceUID();
+		        contours = image.getContours();
+//		        if (!contours.isEmpty()) {
+//		        	 //want to print UID once per image not once per contour
+//		        }
+		        for (Contour c : contours) {
+		            if (c.getControlPoints().size() > 0) {
+		            	writer.write("\n" + image.getSopInstanceUID());
+		                int numPoints = c.getControlPoints().size() + c.getGeneratedPoints().size();
+		                String header = "\n" + c.getIntFromType() + "\n" + numPoints + "\n";
+		                writer.write(header);
+		                for (javafx.geometry.Point2D point : c.getControlPoints()) {
+		                    writer.write(Double.toString(point.getX()) + "\t" + Double.toString(point.getY()) + "\n");
+		                }
+		                for (javafx.geometry.Point2D point : c.getGeneratedPoints()) {
+		                    writer.write(Double.toString(point.getX()) + "\t" + Double.toString(point.getY()) + "\n");
+		                }
+		                writer.write((-1) + "\n");
+		            }
+		        }
+		    }
+		    writer.close();
+		} catch (IOException e) {
+		    e.printStackTrace();
+		}
+	}
 
-	    		    for (Contour c : contours) {
-	    		    	numPoints = c.getControlPoints().size() + c.getGeneratedPoints().size();
-	    		    	String uid = "SOP_INSTANCE_UID: " + sopInstanceUID;
-	    		    	String type = "\nCONTOUR_TYPE: " + contourType;
-	    		    	String num = "\n" + numPoints + "\n";
-	    		    	writer = new PrintWriter(new BufferedWriter(new FileWriter(f, false)));
-	    		    	writer.write(uid + type  + num);
-	    		    
-	    		    		for (javafx.geometry.Point2D point : c.getControlPoints()) {
-	    		    			writer.write(Double.toString(point.getX()) + "\t" + Double.toString(point.getY()) + "\n");
-	    		    		}
-	    		    		for (javafx.geometry.Point2D point : c.getGeneratedPoints()) {
-	    		    			writer.write(Double.toString(point.getX()) + "\t" + Double.toString(point.getY()) + "\n");
-	    		    		}
-	    		    		writer.write((-1) + "\n");
-	    		    }
-	    		} catch (IOException ex) {
-	    		} finally {
-	    		   try {
-	    			   writer.close();
-	    		   } 
-	    		   	catch (Exception ex) {}
-	    		}
-	    }
-	
 	 private void loadContour() throws IOException {
-		 //TODO parse through Images using SUID to find the correct image...
-		 //TODO read until -1 which is endfile
-		 //TODO #7, 8. log error if type not found...
-		 DICOMImage dImage = this.imageModel.getImage();
+	//TODO #7, 8. log error if type not found...
+	//TODO figure out how to separate control/generated points
+		 Study study = this.studyStructModel.getStudy();
+
 		 Vector<Contour> contours = new Vector<Contour>();
-		 
-		 
 		 	fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-			
 			int returnVal = fileChooser.showOpenDialog(this.mainComponent);
 			if (returnVal == JFileChooser.APPROVE_OPTION) {
-				
-				File file = fileChooser.getSelectedFile();
-				int numLines;
-				BufferedReader reader = new BufferedReader(new FileReader(file));
-				LineNumberReader lnr = new LineNumberReader(new FileReader(file));
-				lnr.skip(Long.MAX_VALUE);
-				numLines = lnr.getLineNumber() + 1; 
-				lnr.close();
-				
-				String[] inputs;
-				String line;
-				String sopInstanceUID;
-				
-				for (int i = 0; i < numLines; i++ ) {
-					while(Integer.parseInt(reader.readLine()) != -1) {
-						System.out.println(reader.readLine());
-					}
+				File file = new File(fileChooser.getSelectedFile().getPath());
+				List<Point2D> controlPoints = new Vector<Point2D>();
+				List<Point2D> generatedPoints = new Vector<Point2D>();
+				try {
+						int numLines;
+						BufferedReader reader = new BufferedReader(new FileReader(file));
+						LineNumberReader lnr = new LineNumberReader(new FileReader(file));
+						lnr.skip(Long.MAX_VALUE);
+						numLines = lnr.getLineNumber() + 1; 
+						lnr.close();
+						
+						String sopInstanceUID = "";
+						int contourType;
+						int numPoints;
+						String[] line = new String[2];
+						
+						for (int i = 0; i < numLines; i++ ) {
+							sopInstanceUID = reader.readLine();
+							System.out.println(sopInstanceUID);
+							boolean isEndOfOverlay = false;
+							while (!isEndOfOverlay) {
+							line = reader.readLine().split("\t");
+								if(line.length <= 1) {
+									if (Integer.parseInt(line[0]) == -1) {
+									isEndOfOverlay = true;
+									System.out.println("Reached end of first overlay....loading next set of contours.");
+									}
+									contourType = Integer.parseInt(line[0]);
+									numPoints = Integer.parseInt(line[1]);
+									System.out.println(contourType);
+								}	
+								else {
+									float x = Float.parseFloat(line[0]);
+									float y = Float.parseFloat(line[1]);
+									//control points
+									if(x % Math.floor(x) == 0) {
+										controlPoints.add(new Point2D(x, y));
+									}
+									else {
+										generatedPoints.add(new Point2D(x, y));
+									}
+								}
+								
+							}
+							Contour contour = new Contour(Contour.Type.DEFAULT);
+							contour.setControlPoints(controlPoints);
+							contour.setGeneratedPoints(generatedPoints);
+							contours.add(contour);
+						}
+						boolean set = false;
+						DICOMImage image = study.getImage(sopInstanceUID);
+						image.setContours(contours);
+						set=true;
+						if (set) {System.out.println("Found the image corresponding to text file");}
+						else {System.out.println("Couldn't find the image from the text file");}
+						reader.close();
+				} catch (IOException x) {
+				    System.err.format("IOException: %s%n", x);
 				}
 			}
-			else {
-	//System.out.println("FileChooser : Canceled choosing directory");
-			}
-		 
 	 }
 	 
 	 
