@@ -105,7 +105,7 @@ public final class ContourCalc {
 
         ContourCalc.sortPoints(controlPoints);
 
-        List<Point2D> rawPoints = new Vector<Point2D>(controlPoints);;
+        List<Point2D> rawPoints = new Vector<Point2D>(controlPoints);
         if (isClosed) {
             rawPoints.add(rawPoints.get(0));
         }
