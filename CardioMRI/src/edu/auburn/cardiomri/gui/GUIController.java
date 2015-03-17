@@ -39,6 +39,7 @@ import javax.swing.tree.TreePath;
 import edu.auburn.cardiomri.dataimporter.DICOM3Importer;
 import edu.auburn.cardiomri.dataimporter.DICOMFileTreeWalker;
 import edu.auburn.cardiomri.datastructure.Contour;
+import edu.auburn.cardiomri.datastructure.Contour.Type;
 import edu.auburn.cardiomri.datastructure.DICOMImage;
 import edu.auburn.cardiomri.datastructure.Group;
 import edu.auburn.cardiomri.datastructure.Slice;
@@ -356,30 +357,27 @@ public class GUIController  implements java.awt.event.ActionListener, MouseListe
 	 */
 	private void saveContour() {
 		//TODO Categorize points based on location (i.e. LA, RA, Endo, Epi, etc...
-		//TODO move to save() in SerializableManager
-		//TODO only get SOPinstanceUID once per image..
-		//DICOMImage dImage = this.imageModel.getImage();
+		//TODO merge with save() in SerializableManager
 		Study study = this.studyStructModel.getStudy();
 		Vector<Contour> contours = new Vector<Contour>();
-
 		Writer writer = null;
 		String path = System.getProperty("user.dir") + File.separator + "contourPoints.txt";
 		File f = new File(path);
-		int numPoints = 0;
 		
 		try {
 		    writer = new PrintWriter(new BufferedWriter(new FileWriter(f, false)));
 		    for (DICOMImage image : study.getSOPInstanceUIDToDICOMImage().values()) {
 		        String sopInstanceUID = image.getSopInstanceUID();
 		        contours = image.getContours();
-		        int contourType = 7;
+//		        if (!contours.isEmpty()) {
+//		        	 //want to print UID once per image not once per contour
+//		        }
 		        for (Contour c : contours) {
 		            if (c.getControlPoints().size() > 0) {
-		                numPoints = c.getControlPoints().size() + c.getGeneratedPoints().size();
-		                String uid = "SOP_INSTANCE_UID: " + sopInstanceUID;
-		                String type = "\nCONTOUR_TYPE: " + contourType;
-		                String num = "\n" + numPoints + "\n";
-		                writer.write(uid + type  + num);
+		            	writer.write("\n" + image.getSopInstanceUID());
+		                int numPoints = c.getControlPoints().size() + c.getGeneratedPoints().size();
+		                String header = "\n" + c.getIntFromType() + "\n" + numPoints + "\n";
+		                writer.write(header);
 		                for (javafx.geometry.Point2D point : c.getControlPoints()) {
 		                    writer.write(Double.toString(point.getX()) + "\t" + Double.toString(point.getY()) + "\n");
 		                }
@@ -388,14 +386,11 @@ public class GUIController  implements java.awt.event.ActionListener, MouseListe
 		                }
 		                writer.write((-1) + "\n");
 		            }
-
 		        }
 		    }
 		    writer.close();
 		} catch (IOException e) {
-		    // TODO Auto-generated catch block
 		    e.printStackTrace();
-			
 		}
 	}
 

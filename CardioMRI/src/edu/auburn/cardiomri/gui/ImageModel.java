@@ -21,7 +21,6 @@ public class ImageModel extends java.util.Observable {
 	 */
 	public void setStudy(Study s) {
 		//System.out.println("ImageModel : setStudy(Study s)");
-		
 		this.study = s;
 	}
 	
@@ -64,7 +63,6 @@ public class ImageModel extends java.util.Observable {
 	public void addContourToImage(Contour contour)
 	{
 		this.dImage.getContours().add(contour);
-		
 		setChanged();
 		notifyObservers(contour);
 	}
