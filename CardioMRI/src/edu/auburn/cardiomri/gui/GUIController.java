@@ -121,6 +121,9 @@ public class GUIController  implements java.awt.event.ActionListener, MouseListe
 				e1.printStackTrace();
 			}
 		}
+		else if (actionCommand.equals("Default Type")) {
+			//add new contour of correct type to list
+		}
 		else if (actionCommand.substring(0, 6).equals("Button")) {
 //System.out.println("GUIController : resetting focus");
 			
@@ -367,7 +370,6 @@ public class GUIController  implements java.awt.event.ActionListener, MouseListe
 		try {
 		    writer = new PrintWriter(new BufferedWriter(new FileWriter(f, false)));
 		    for (DICOMImage image : study.getSOPInstanceUIDToDICOMImage().values()) {
-		        String sopInstanceUID = image.getSopInstanceUID();
 		        contours = image.getContours();
 //		        if (!contours.isEmpty()) {
 //		        	 //want to print UID once per image not once per contour
