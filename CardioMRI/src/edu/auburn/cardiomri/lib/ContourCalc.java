@@ -53,15 +53,16 @@ public final class ContourCalc {
              */
             @Override
             public int compare(Point2D p1, Point2D p2) {
-                double thetaP1 = Math.atan2(p1.getX() - centroid.getX(),
-                        p2.getY() - centroid.getY());
-                double thetaP2 = Math.atan2(p2.getX() - centroid.getX(),
-                        p2.getY() - centroid.getY());
+                double thetaP1 = Math.atan2(p1.getY() - centroid.getY(),
+                        p1.getX() - centroid.getX());
+                double thetaP2 = Math.atan2(p2.getY() - centroid.getY(),
+                        p2.getX() - centroid.getX());
                 double delta = thetaP1 - thetaP2;
-                if (delta < 0.1) {
+                double deltaDegrees = delta * 180 / Math.PI;
+                if (Math.abs(deltaDegrees) < 1) {
                     return 0;
                 }
-                return (int) Math.signum(delta);
+                return (int) Math.signum(deltaDegrees);
             }
         });
     }
