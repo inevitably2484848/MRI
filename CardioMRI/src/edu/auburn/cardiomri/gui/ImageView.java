@@ -33,6 +33,7 @@ public class ImageView implements java.util.Observer {
 	private MouseListener mouseListener;
 
 	private ImageDisplay display = null;
+
 	private Vector<Contour> contours;
 	private Contour contourObject = new Contour(Contour.Type.DEFAULT), currentContour;
 
@@ -45,7 +46,9 @@ public class ImageView implements java.util.Observer {
 			this.panel.removeAll();
 			this.display = null;
 			DICOMImage dImage = ((DICOMImage) obj);
+			
 			this.contours = dImage.getContours();
+		
 			ConstructImage sImg = null;
 
 			try {
@@ -54,6 +57,7 @@ public class ImageView implements java.util.Observer {
 				sImg = new ConstructImage(dImage);
 
 				this.display = new ImageDisplay(sImg);
+				this.display.setContours(this.contours);
 
 				this.panel.revalidate();
 
@@ -62,6 +66,7 @@ public class ImageView implements java.util.Observer {
 			}
 
 			SingleImagePanel.deconstructAllSingleImagePanelsInContainer(this.panel);
+
 			//this.display.setContours(contours);
 			//TODO need changed when implement multiple contours on image?
 			if(dImage.getContours() == null) {
@@ -76,6 +81,7 @@ public class ImageView implements java.util.Observer {
 					this.display.setCurrentContour(new Contour(Type.DEFAULT));
 				}
 			}
+
 			this.panel.removeAll();
 
 			this.panel.add(display);
@@ -88,10 +94,8 @@ public class ImageView implements java.util.Observer {
 			{
 				this.contours = (Vector<Contour>) obj;
 				if(this.display != null){
-					if ((this.display.getContours() != null) && (this.display.getContours().size() > 0) ) {
+					this.display.setContours(contours);
 					this.display.setPreDefinedShapes(contours);
-					this.display.setCurrentContour(contours.firstElement());
-					}
 					this.display.repaint();
 				}
 			}

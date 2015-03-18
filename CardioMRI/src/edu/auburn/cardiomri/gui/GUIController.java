@@ -445,6 +445,7 @@ public class GUIController  implements java.awt.event.ActionListener, MouseListe
 							}
 							else {
 								generatedPoints.add(new Point2D(x, y));
+
 							}
 
 							Contour contour = new Contour(Contour.Type.DEFAULT);
@@ -642,7 +643,7 @@ public class GUIController  implements java.awt.event.ActionListener, MouseListe
 		this.gridModel.setCurrentImage(this.gIndex, this.sIndex, this.tIndex, this.iIndex);
 		this.metaDataModel.setCurrentImage(this.gIndex, this.sIndex, this.tIndex, this.iIndex);
 		this.imageModel.setCurrentImage(this.gIndex, this.sIndex, this.tIndex, this.iIndex);
-		//this.imageModel.addContourToImage(new Contour(Contour.Type.DEFAULT));
+
 	}
 
 	// Setters

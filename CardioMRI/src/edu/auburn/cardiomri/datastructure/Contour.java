@@ -44,7 +44,6 @@ public class Contour implements Shape {
     	this.generatedPoints = points;
     }
 
-
     @Override
     public boolean contains(Point2D p) {
         // TODO Auto-generated method stub
@@ -244,7 +243,6 @@ public class Contour implements Shape {
         this.contourType = contourTypeIn;
     }
 
-
     public Type getContourType() {
 		return contourType;
 	}
@@ -269,7 +267,6 @@ public class Contour implements Shape {
     public static final Map<Type, Integer> TYPE_TO_INTEGER;
     static {
         IS_CLOSED_CONTOUR = new HashMap<Type, Boolean>();
-
         
         Contour.IS_CLOSED_CONTOUR.put(Type.DEFAULT, Boolean.TRUE);
         Contour.IS_CLOSED_CONTOUR.put(Type.DEFAULT_CLOSED, Boolean.TRUE);
@@ -280,7 +277,6 @@ public class Contour implements Shape {
         Contour.TYPE_TO_INTEGER.put(Type.DEFAULT, 7);
         Contour.TYPE_TO_INTEGER.put(Type.DEFAULT_CLOSED, 8);
         Contour.TYPE_TO_INTEGER.put(Type.DEFAULT_OPEN, 4);
-
 
     }
 }

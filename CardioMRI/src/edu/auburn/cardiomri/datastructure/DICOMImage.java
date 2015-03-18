@@ -94,9 +94,7 @@ public class DICOMImage implements Serializable {
 		return combinedNamesAndValues;
 	}
 	
-	public void add(Contour contour) {
-		this.contours.add(contour);
-	}
+	
 	public Vector<Contour> getContours() {
 		return this.contours;
 	}
@@ -130,6 +128,7 @@ public class DICOMImage implements Serializable {
 		this.seriesDescription = header.get("SeriesDescription");
 		this.acquisitionNumber = getIntValue(header.get("AcquisitionNumber"));
 		this.instanceNumber = getIntValue(header.get("InstanceNumber"));
+
 		this.sopInstanceUID = header.get("SOPInstanceUID");
 		this.contours.add(new Contour(Contour.Type.DEFAULT));
 
@@ -266,11 +265,7 @@ public class DICOMImage implements Serializable {
 		
 		return result;
 	}
-	
-	public void addContour(Contour contour) {
-		this.contours.add(contour);
-	}
-	
+
 	public String getFilename() {
 		return filename;
 	}
@@ -635,5 +630,9 @@ public class DICOMImage implements Serializable {
 			return image1.getSopInstanceUID().compareTo(image2.getSopInstanceUID());
 		}
 		
+	}
+
+	public void addContour(Contour contour) {
+		this.contours.add(contour);
 	}
 }
