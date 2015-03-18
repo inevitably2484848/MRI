@@ -44,7 +44,6 @@ public class Contour implements Shape {
     	this.generatedPoints = points;
     }
 
-
     @Override
     public boolean contains(Point2D p) {
         // TODO Auto-generated method stub
