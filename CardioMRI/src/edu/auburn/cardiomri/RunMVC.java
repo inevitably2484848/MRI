@@ -51,14 +51,16 @@ public class RunMVC {
 		
 		// Image bit
 		ImageModel imageModel = new ImageModel();
+		ImageModel imageModel2 = new ImageModel();
 		ImageView imageView = new ImageView();
 		ImageView imageView2 = new ImageView();
 		ImageView imageView3 = new ImageView();
 		
 		imageModel.addObserver(imageView);
+		imageModel2.addObserver(imageView2);
 		
 		guiController.setImageViewer(imageModel, imageView);
-		//guiController.setImageViewer(imageModel,  imageView2);
+		guiController.setImageViewer2(imageModel2,  imageView2);
 				
 		
 		//imageView.addController(guiController);
@@ -140,6 +142,9 @@ public class RunMVC {
 		
 		JMenu view = new JMenu("View");
 		
+		JMenuItem zoom = new JMenuItem("Zoom");
+		
+		
 		JMenu contours = new JMenu("Contours");
 		
 		JMenuItem saveContours = new JMenuItem("Save Contours (.txt File)");
@@ -167,6 +172,7 @@ public class RunMVC {
 		contours.add(deleteContourAxis);
 		contours.add(deleteContour);
 		contours.add(deleteAllContours);
+		view.add(zoom);
 		
 		menuBar.add(contours);
 		menuBar.add(view);
