@@ -94,6 +94,9 @@ public class DICOMImage implements Serializable {
 		return combinedNamesAndValues;
 	}
 	
+	public void add(Contour contour) {
+		this.contours.add(contour);
+	}
 	public Vector<Contour> getContours() {
 		return this.contours;
 	}
@@ -128,9 +131,8 @@ public class DICOMImage implements Serializable {
 		this.acquisitionNumber = getIntValue(header.get("AcquisitionNumber"));
 		this.instanceNumber = getIntValue(header.get("InstanceNumber"));
 		this.sopInstanceUID = header.get("SOPInstanceUID");
+		this.contours.add(new Contour(Contour.Type.DEFAULT));
 
-		//TODO will change once contour types implemented to associate
-		//this.contours.add(new Contour(Contour.Type.DEFAULT));
 		
 		/*
 		 * Check that all required information (SliceThickness, ImagePositionPatient, ImageOrientationPatient, and PixelSpacing)

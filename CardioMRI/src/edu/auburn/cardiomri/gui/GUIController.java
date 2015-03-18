@@ -446,6 +446,12 @@ public class GUIController  implements java.awt.event.ActionListener, MouseListe
 							else {
 								generatedPoints.add(new Point2D(x, y));
 							}
+
+							Contour contour = new Contour(Contour.Type.DEFAULT);
+							contour.setControlPoints(controlPoints);
+							contour.setGeneratedPoints(generatedPoints);
+							contours.add(contour);
+
 						}
 					}
 					System.out.println("Reached end of first overlay....loading next set of contours.");
