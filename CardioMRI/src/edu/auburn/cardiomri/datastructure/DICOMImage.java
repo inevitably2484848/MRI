@@ -18,7 +18,7 @@ import java.util.Vector;
 public class DICOMImage implements Serializable {
 	
 	private HashMap<String, String> attributes;
-	private Vector<Contour> contours;
+	private Vector<Contour> contours = new Vector<Contour>();
 	
 	private String filename;
 	private String manufacturer;
@@ -263,6 +263,10 @@ public class DICOMImage implements Serializable {
 		result[1] = Double.parseDouble(PS_strings[1]);
 		
 		return result;
+	}
+	
+	public void addContour(Contour contour) {
+		this.contours.add(contour);
 	}
 	
 	public String getFilename() {

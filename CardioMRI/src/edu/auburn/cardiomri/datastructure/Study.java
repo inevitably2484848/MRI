@@ -173,10 +173,6 @@ public class Study implements Serializable {
 				image.getImageOrientationPatient()[5]);
 		Vector3d imgStackUnitVector = imgRowsVector.cross(imgColVector).unit();
 		
-//		if (image.getContours().size() == 0) {
-//		    image.getContours().add(new Contour(Contour.Type.DEFAULT));
-//		}
-		
 		for (Group group : groups) {
 			if (image.getSeriesNumber() == group.getSeriesNumber()) {
 				

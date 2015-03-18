@@ -429,9 +429,7 @@ public class GUIController  implements java.awt.event.ActionListener, MouseListe
 					
 					while ((lineCheck = reader.readLine()) != "-1") {
 						if (lineCheck.length() == 1) {
-								
-								
-				
+		
 								contourType = Integer.parseInt(line[0]);
 								numPoints = Integer.parseInt(line[1]);
 								System.out.println(contourType);

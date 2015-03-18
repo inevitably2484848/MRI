@@ -22,19 +22,21 @@ public class ImageDisplay extends SingleImagePanel {
 	//SingleImagePanel methods 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		
+
 		//System.out.println("Success");
 		//System.out.println("   " + e.getX()*2 + " " +e.getY()*2);
 		//System.out.print(this.getSelectedDrawingShapes());
-		currentContour.addControlPoint(e.getX(), e.getY());
-		
-		if(currentContour.getControlPoints().size() == 3)
-		{
-	        System.out.println("Added contour");
-	        //how to get back to DICOMImage??
-	        contours.add(currentContour);
-			this.setPreDefinedShapes(contours);
-			this.revalidate();
+		if (currentContour != null) {
+			currentContour.addControlPoint(e.getX(), e.getY());
+
+			if(currentContour.getControlPoints().size() == 3)
+			{
+				System.out.println("Added contour");
+				//how to get back to DICOMImage??
+				contours.add(currentContour);
+				this.setPreDefinedShapes(contours);
+				this.revalidate();
+			}
 		}
 		this.repaint();	
 	}

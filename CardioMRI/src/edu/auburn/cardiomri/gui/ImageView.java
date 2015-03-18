@@ -43,30 +43,16 @@ public class ImageView implements java.util.Observer {
 		if (obj.getClass() == DICOMImage.class) { 
 
 			this.panel.removeAll();
-
 			this.display = null;
-
 			DICOMImage dImage = ((DICOMImage) obj);
-			if (dImage.getContours() != null) {
-				this.contours = dImage.getContours();
-			}
-//			if (dImage.getContours().size() == 0) {
-//				this.contours = null;
-//				this.currentContour = null;
-//			}
-//			else {
-//				this.contours = dImage.getContours();
-//				this.currentContour = dImage.getContours().firstElement();
-//			}
-			//AttributeList dList = ((AttributeList) obj);
-
+			this.contours = dImage.getContours();
 			ConstructImage sImg = null;
-			
+
 			try {
-				
+
 				System.out.println("Image view reset Image");
 				sImg = new ConstructImage(dImage);
-				
+
 				this.display = new ImageDisplay(sImg);
 
 				this.panel.revalidate();
@@ -76,22 +62,22 @@ public class ImageView implements java.util.Observer {
 			}
 
 			SingleImagePanel.deconstructAllSingleImagePanelsInContainer(this.panel);
-				//this.display.setContours(contours);
-				//TODO need changed when implement multiple contours on image?
-				if(dImage.getContours() == null) {
-					this.display.setContours(new Vector<Contour> ());
+			//this.display.setContours(contours);
+			//TODO need changed when implement multiple contours on image?
+			if(dImage.getContours() == null) {
+				this.display.setContours(new Vector<Contour> ());
+			}
+			else {
+				this.display.setContours(dImage.getContours());
+				if (dImage.getContours().size() > 0) {
+					this.display.setCurrentContour(dImage.getContours().firstElement());
 				}
 				else {
-					this.display.setContours(dImage.getContours());
-					if (dImage.getContours().size() > 0) {
-						this.display.setCurrentContour(dImage.getContours().firstElement());
-					}
-					else {
-						this.display.setCurrentContour(new Contour(Type.DEFAULT));
-					}
+					this.display.setCurrentContour(new Contour(Type.DEFAULT));
 				}
+			}
 			this.panel.removeAll();
-			
+
 			this.panel.add(display);
 			this.panel.revalidate();
 		}
