@@ -59,11 +59,13 @@ public class GUIController  implements java.awt.event.ActionListener, MouseListe
 	private GridModel			gridModel;
 	private MetaDataModel 		metaDataModel;
 	private ImageModel			imageModel;
+	private ImageModel			imageModel2;
 	
 	private StudyStructureView	studyStructView;
 	private GridView			gridView;
 	private MetaDataView 		metaDataView;
 	private ImageView			imageView;
+	private ImageView			imageView2;
 	
 	private String				filename;
 	
@@ -590,6 +592,7 @@ public class GUIController  implements java.awt.event.ActionListener, MouseListe
 		this.gridModel.setStudy(s);
 		this.metaDataModel.setStudy(s);
 		this.imageModel.setStudy(s);
+		this.imageModel2.setStudy(s);
 	}
 	
 	/*
@@ -603,6 +606,8 @@ public class GUIController  implements java.awt.event.ActionListener, MouseListe
 		this.metaDataModel.setCurrentImage(this.gIndex, this.sIndex, this.tIndex, this.iIndex);
 		this.imageModel.setCurrentImage(this.gIndex, this.sIndex, this.tIndex, this.iIndex);
 		this.imageModel.addContourToImage(new Contour(Contour.Type.DEFAULT));
+		this.imageModel2.setCurrentImage(this.gIndex, this.sIndex, this.tIndex, this.iIndex);
+		this.imageModel2.addContourToImage(new Contour(Contour.Type.DEFAULT));
 	}
 
 	// Setters
@@ -721,6 +726,10 @@ public class GUIController  implements java.awt.event.ActionListener, MouseListe
 		this.setImageView(iv);
 	}
 
+	public void setImageViewer2(ImageModel im, ImageView iv) {
+		this.setImageModel2(im);
+		this.setImageView2(iv);
+	}
 	/*
 	 * Sets the class' imageModel attribute.
 	 * 
@@ -729,6 +738,10 @@ public class GUIController  implements java.awt.event.ActionListener, MouseListe
 	 */
 	public void setImageModel(ImageModel im) {
 		this.imageModel = im;
+	}
+	
+	public void setImageModel2(ImageModel im) {
+		this.imageModel2 = im;
 	}
 	
 	/*
@@ -741,6 +754,11 @@ public class GUIController  implements java.awt.event.ActionListener, MouseListe
 	public void setImageView(ImageView iv) {
 		this.imageView = iv;
 		this.imageView.setMouseListener(this);
+	}
+	
+	public void setImageView2(ImageView iv) {
+		this.imageView2 = iv;
+		this.imageView2.setMouseListener(this);
 	}
 	
 	
