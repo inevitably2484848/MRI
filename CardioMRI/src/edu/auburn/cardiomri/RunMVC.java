@@ -143,13 +143,13 @@ public class RunMVC {
 		addContour.add(defaultType);
 		
 		JMenuItem closedType = new JMenuItem("Closed");
-		defaultType.setActionCommand("Closed Type");
-		defaultType.addActionListener(guiController);
+		closedType.setActionCommand("Closed Type");
+		closedType.addActionListener(guiController);
 		addContour.add(closedType);
 		
 		JMenuItem openType = new JMenuItem("Open");
-		defaultType.setActionCommand("Open Type");
-		defaultType.addActionListener(guiController);
+		openType.setActionCommand("Open Type");
+		openType.addActionListener(guiController);
 		addContour.add(openType);
 		
 		
