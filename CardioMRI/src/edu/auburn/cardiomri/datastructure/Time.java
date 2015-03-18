@@ -16,7 +16,7 @@ import edu.auburn.cardiomri.datastructure.DICOMImage.ImageComparator;
  */
 public class Time implements Serializable {
 
-	private ArrayList<DICOMImage> images = new ArrayList<DICOMImage>();
+	private ArrayList<DICOMImage> images;
 	private double TriggerTime;
 
 	public ArrayList<DICOMImage> getImages() {

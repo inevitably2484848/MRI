@@ -21,6 +21,7 @@ import com.pixelmed.display.SourceImage;
 
 import edu.auburn.cardiomri.datastructure.Contour;
 import edu.auburn.cardiomri.datastructure.DICOMImage;
+import edu.auburn.cardiomri.datastructure.Contour.Type;
 import edu.auburn.cardiomri.gui.ConstructImage;
 
 public class ImageView implements java.util.Observer {
@@ -35,7 +36,6 @@ public class ImageView implements java.util.Observer {
 	private Vector<Contour> contours;
 	private Contour contourObject = new Contour(Contour.Type.DEFAULT), currentContour;
 
-
 	// Observer methods
 	@Override
 	public void update(Observable obs, Object obj) {
@@ -47,8 +47,17 @@ public class ImageView implements java.util.Observer {
 			this.display = null;
 
 			DICOMImage dImage = ((DICOMImage) obj);
-			this.contours = dImage.getContours();
-			
+			if (dImage.getContours() != null) {
+				this.contours = dImage.getContours();
+			}
+//			if (dImage.getContours().size() == 0) {
+//				this.contours = null;
+//				this.currentContour = null;
+//			}
+//			else {
+//				this.contours = dImage.getContours();
+//				this.currentContour = dImage.getContours().firstElement();
+//			}
 			//AttributeList dList = ((AttributeList) obj);
 
 			ConstructImage sImg = null;
@@ -67,25 +76,41 @@ public class ImageView implements java.util.Observer {
 			}
 
 			SingleImagePanel.deconstructAllSingleImagePanelsInContainer(this.panel);
-			this.display.setCurrentContour(dImage.getContours().firstElement());
-			this.display.setContours(contours);
+				//this.display.setContours(contours);
+				//TODO need changed when implement multiple contours on image?
+				if(dImage.getContours() == null) {
+					this.display.setContours(new Vector<Contour> ());
+				}
+				else {
+					this.display.setContours(dImage.getContours());
+					if (dImage.getContours().size() > 0) {
+						this.display.setCurrentContour(dImage.getContours().firstElement());
+					}
+					else {
+						this.display.setCurrentContour(new Contour(Type.DEFAULT));
+					}
+				}
 			this.panel.removeAll();
 			
 			this.panel.add(display);
 			this.panel.revalidate();
 		}
+		
 		if(obj instanceof Vector<?>)
 		{
-			if(((Vector<Contour>) obj).firstElement().getClass() == contourObject.getClass())
+			if(((Vector<Contour>) obj).firstElement().getClass() == currentContour.getClass())
 			{
-				contours = (Vector<Contour>) obj;
+				this.contours = (Vector<Contour>) obj;
 				if(this.display != null){
+					if ((this.display.getContours() != null) && (this.display.getContours().size() > 0) ) {
 					this.display.setPreDefinedShapes(contours);
 					this.display.setCurrentContour(contours.firstElement());
+					}
 					this.display.repaint();
 				}
 			}
 		}
+		
 		if(obj.getClass() == contourObject.getClass())
 		{
 			if(this.display != null){
@@ -127,6 +152,10 @@ public class ImageView implements java.util.Observer {
 		this.panel.setBackground(Color.BLACK);
 		this.panel.setOpaque(true);
 		this.panel.setVisible(true);
+	}
+	
+	public ImageDisplay getImageDisplay() {
+		return this.display;
 	}
 
 }

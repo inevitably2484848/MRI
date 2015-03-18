@@ -28,8 +28,11 @@ public class ImageDisplay extends SingleImagePanel {
 		//System.out.print(this.getSelectedDrawingShapes());
 		currentContour.addControlPoint(e.getX(), e.getY());
 		
-		if(currentContour.getControlPoints().size() > 2)
+		if(currentContour.getControlPoints().size() == 3)
 		{
+	        System.out.println("Added contour");
+	        //how to get back to DICOMImage??
+	        contours.add(currentContour);
 			this.setPreDefinedShapes(contours);
 			this.revalidate();
 		}

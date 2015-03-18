@@ -89,6 +89,11 @@ public class RunMVC {
 		JMenu fileMenu = new JMenu("File");
 		menuBar.add(fileMenu);
 		
+		JMenu add = new JMenu("Add"); //change to add shape later?
+		menuBar.add(add);
+		
+		JMenu addContour = new JMenu("Add Contour");
+		add.add(addContour);
 		// New menu
 		JMenu newMenu = new JMenu("New Study");
 		
@@ -131,6 +136,22 @@ public class RunMVC {
 		JMenuItem loadContours = new JMenuItem("Load Contours");
 		loadContours.setActionCommand("Load Contours");
 		loadContours.addActionListener(guiController);
+		
+		JMenuItem defaultType = new JMenuItem("Default");
+		defaultType.setActionCommand("Default Type");
+		defaultType.addActionListener(guiController);
+		addContour.add(defaultType);
+		
+		JMenuItem closedType = new JMenuItem("Closed");
+		closedType.setActionCommand("Closed Type");
+		closedType.addActionListener(guiController);
+		addContour.add(closedType);
+		
+		JMenuItem openType = new JMenuItem("Open");
+		openType.setActionCommand("Open Type");
+		openType.addActionListener(guiController);
+		addContour.add(openType);
+		
 		
 		fileMenu.add(newMenu);
 		fileMenu.add(openExisting);
