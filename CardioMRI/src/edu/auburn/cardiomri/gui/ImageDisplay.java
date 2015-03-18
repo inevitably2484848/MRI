@@ -7,10 +7,11 @@ import com.pixelmed.display.SingleImagePanel;
 import com.pixelmed.display.SourceImage;
 
 import edu.auburn.cardiomri.datastructure.Contour;
+import edu.auburn.cardiomri.datastructure.Contour.Type;
 
 public class ImageDisplay extends SingleImagePanel {
 
-	private Contour currentContour;
+	private Contour currentContour = null;
 	private Vector<Contour> contours;
 	
 	//Constructor 
@@ -26,17 +27,18 @@ public class ImageDisplay extends SingleImagePanel {
 		//System.out.println("Success");
 		//System.out.println("   " + e.getX()*2 + " " +e.getY()*2);
 		//System.out.print(this.getSelectedDrawingShapes());
-		currentContour.addControlPoint(e.getX(), e.getY());
-		
-		if(currentContour.getControlPoints().size() == 3)
+		if (currentContour != null)
 		{
-	        System.out.println("Added contour");
-	        //how to get back to DICOMImage??
-	        contours.add(currentContour);
-			this.setPreDefinedShapes(contours);
-			this.revalidate();
+			currentContour.addControlPoint(e.getX(), e.getY());
+			if(currentContour.getControlPoints().size() == 3)
+			{
+		        //how to get back to DICOMImage??
+		        //contours.add(currentContour);
+				this.setPreDefinedShapes(contours);
+				this.revalidate();
+			}
+			this.repaint();	
 		}
-		this.repaint();	
 	}
 	
 	//Allows for imageView to set the contour that the clicks get added to

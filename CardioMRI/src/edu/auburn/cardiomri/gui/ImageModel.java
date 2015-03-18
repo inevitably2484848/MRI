@@ -42,12 +42,8 @@ public class ImageModel extends java.util.Observable {
 		this.i = imageIndex;
 		
 		this.dImage = this.study.getGroups().get(g).getSlices().get(s).getTimes().get(t).getImages().get(i);
-		if (this.dImage.getContours() != null) {
-			this.setContourList(this.dImage.getContours());
-		}
-		else {
-			this.dImage.setContours(new Vector<Contour>());
-		}
+		this.contours = this.dImage.getContours();
+
 		setChanged();
 		notifyObservers(this.dImage);
 	}
@@ -66,16 +62,12 @@ public class ImageModel extends java.util.Observable {
 	
 	public void addContourToImage(Contour contour)
 	{
-		this.dImage.getContours().add(contour);
+		this.dImage.addContour(contour);
+		this.contours = this.dImage.getContours();
 		setChanged();
 		notifyObservers(contour);
 	}
 	
-	public void instantiateContours(Vector<Contour> contours) {
-		this.dImage.setContours(contours);
-		setChanged();
-		notifyObservers(contours);
-	}
 	// Getters
 	/*
 	 * Returns the currently selected DICOMImage object given the current
