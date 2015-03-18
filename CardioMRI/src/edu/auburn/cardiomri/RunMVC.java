@@ -51,11 +51,17 @@ public class RunMVC {
 		
 		// Image bit
 		ImageModel imageModel = new ImageModel();
+		ImageModel imageModel2 = new ImageModel();
 		ImageView imageView = new ImageView();
+		ImageView imageView2 = new ImageView();
+		ImageView imageView3 = new ImageView();
 		
 		imageModel.addObserver(imageView);
+		imageModel2.addObserver(imageView2);
 		
 		guiController.setImageViewer(imageModel, imageView);
+		guiController.setImageViewer2(imageModel2,  imageView2);
+				
 		
 		//imageView.addController(guiController);
 		
@@ -71,17 +77,29 @@ public class RunMVC {
 		// set the size of the grid view
 		gridView.setSize(new Dimension(300, 200));
 		
-		JSplitPane structGridAndAttr = new JSplitPane(JSplitPane.VERTICAL_SPLIT,
-				structAndGridPane, metaDataView.getPanel());
-		structGridAndAttr.setDividerLocation(200);
+		JSplitPane structImagePane2 = new JSplitPane(JSplitPane.VERTICAL_SPLIT,
+				structAndGridPane, imageView2.getPanel());
+		structImagePane2.setDividerLocation(200);
+		
+		JSplitPane structImagePane3 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
+				structImagePane2, imageView3.getPanel());
+		structImagePane3.setDividerLocation(200);
+		
+		//JSplitPane structGridAndAttr = new JSplitPane(JSplitPane.VERTICAL_SPLIT,
+				//structAndGridPane, metaDataView.getPanel());
+		//structGridAndAttr.setDividerLocation(200);
 		
 		JSplitPane splitPaneWithImage = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
-				structGridAndAttr, imageView.getPanel());
+				structImagePane2, imageView.getPanel());
 		splitPaneWithImage.setDividerLocation(600);
 		
+		//frame.add(structImagePane2);
 		frame.add(splitPaneWithImage);
+		//frame.add(structImagePane3);
 		
 		guiController.setMainComponent(splitPaneWithImage);
+		//guiController.setMainComponent(structImagePane2);
+		//guiController.setMinorComponent(structImagePane3);
 		
 		JMenuBar menuBar = new JMenuBar();
 		frame.setJMenuBar(menuBar);
@@ -113,7 +131,7 @@ public class RunMVC {
 		saveStudy.setActionCommand("Save Study");
 		saveStudy.addActionListener(guiController);
 		
-		JMenuItem saveAsStudy = new JMenuItem("Save (Ctrl+Shift+S)");
+		JMenuItem saveAsStudy = new JMenuItem("Save as (Ctrl+Shift+S)");
 		saveAsStudy.setActionCommand("Save As Study");
 		saveAsStudy.addActionListener(guiController);
 		
@@ -122,8 +140,13 @@ public class RunMVC {
 		importDicom.setActionCommand("Import DICOM");
 		importDicom.addActionListener(guiController);
 		
-		//SaveContours to .txt
-		// TODO add shortcut?
+		JMenu view = new JMenu("View");
+		
+		JMenuItem zoom = new JMenuItem("Zoom");
+		
+		
+		JMenu contours = new JMenu("Contours");
+		
 		JMenuItem saveContours = new JMenuItem("Save Contours (.txt File)");
 		saveContours.setActionCommand("Save Contours");
 		saveContours.addActionListener(guiController);
@@ -132,14 +155,33 @@ public class RunMVC {
 		loadContours.setActionCommand("Load Contours");
 		loadContours.addActionListener(guiController);
 		
+		JMenuItem deleteContourAxis = new JMenuItem("Delete Contour Axis");
+		deleteContourAxis.setActionCommand("Delete Contour Axis");
+		deleteContourAxis.addActionListener(guiController);
+		
+		JMenuItem deleteContour = new JMenuItem("Delete Contour");
+		deleteContour.setActionCommand("Delete Contour");
+		deleteContour.addActionListener(guiController);
+		
+		JMenuItem deleteAllContours = new JMenuItem("Delete All Contours");
+		deleteAllContours.setActionCommand("Delete All Contours");
+		deleteAllContours.addActionListener(guiController);
+		
+		contours.add(saveContours);
+		contours.add(loadContours);
+		contours.add(deleteContourAxis);
+		contours.add(deleteContour);
+		contours.add(deleteAllContours);
+		view.add(zoom);
+		
+		menuBar.add(contours);
+		menuBar.add(view);
+		
 		fileMenu.add(newMenu);
 		fileMenu.add(openExisting);
 		fileMenu.add(saveStudy);
 		fileMenu.add(saveAsStudy);
 		fileMenu.add(importDicom);
-		fileMenu.add(saveContours);
-		fileMenu.add(loadContours);
-		
 		
 		guiController.setAppFrame(frame);
 		
