@@ -28,18 +28,6 @@ public class ImageDisplay extends SingleImagePanel {
 		//System.out.println("   " + e.getX()*2 + " " +e.getY()*2);
 		//System.out.print(this.getSelectedDrawingShapes());
 
-		if (currentContour != null) {
-			currentContour.addControlPoint(e.getX(), e.getY());
-
-			if(currentContour.getControlPoints().size() == 3)
-			{
-				System.out.println("Added contour");
-				//how to get back to DICOMImage??
-				contours.add(currentContour);
-				this.setPreDefinedShapes(contours);
-				this.revalidate();
-			}
-
 		if (currentContour != null)
 		{
 			currentContour.addControlPoint(e.getX(), e.getY());
@@ -52,8 +40,8 @@ public class ImageDisplay extends SingleImagePanel {
 			}
 			this.repaint();	
 		}
-		}
 	}
+	
 	
 	//Allows for imageView to set the contour that the clicks get added to
 	

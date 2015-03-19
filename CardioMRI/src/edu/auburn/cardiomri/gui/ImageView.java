@@ -67,25 +67,12 @@ public class ImageView implements java.util.Observer {
 
 			SingleImagePanel.deconstructAllSingleImagePanelsInContainer(this.panel);
 
-			//this.display.setContours(contours);
-			//TODO need changed when implement multiple contours on image?
-			if(dImage.getContours() == null) {
-				this.display.setContours(new Vector<Contour> ());
-			}
-			else {
-				this.display.setContours(dImage.getContours());
-				if (dImage.getContours().size() > 0) {
-					this.display.setCurrentContour(dImage.getContours().firstElement());
-				}
-				else {
-					this.display.setCurrentContour(new Contour(Type.DEFAULT));
-				}
-			}
 
 			this.panel.removeAll();
 
 			this.panel.add(display);
 			this.panel.revalidate();
+			
 		}
 		
 		if(obj instanceof Vector<?>)
