@@ -404,44 +404,37 @@ public class GUIController  implements java.awt.event.ActionListener, MouseListe
 		//TODO #7, 8. log error if type not found...
 		//TODO figure out how to separate control/generated points
 		Study study = this.studyStructModel.getStudy();
-
 		Vector<Contour> contours;
+		List<Point2D> controlPoints;
+		List<Point2D> generatedPoints;
+		
+		String sopInstanceUID;
+		String[] line = new String[2];
+		String lineCheck;
+		
+		int contourType;
+		int numPoints;
+		
 		fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		int returnVal = fileChooser.showOpenDialog(this.mainComponent);
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
 			File file = new File(fileChooser.getSelectedFile().getPath());
-			List<Point2D> controlPoints;
-			List<Point2D> generatedPoints;
 			try {
-				//int numLines;
 				BufferedReader reader = new BufferedReader(new FileReader(file));
-//				LineNumberReader lnr = new LineNumberReader(new FileReader(file));
-//				lnr.skip(Long.MAX_VALUE);
-//				numLines = lnr.getLineNumber() + 1; 
-//				lnr.close();
-
-				String sopInstanceUID = "";
-				int contourType;
-				int numPoints;
-				String[] line = new String[2];
-				String lineCheck;
-				boolean set = false;
-
 				while (reader.readLine() != null) { 
 					contours = new Vector<Contour>();
 					sopInstanceUID = reader.readLine();
 					System.out.println(sopInstanceUID);
+					contourType = Integer.parseInt(reader.readLine());
 					while ((lineCheck = reader.readLine()) != "-1") {
-						contourType = Integer.parseInt(lineCheck);
-						numPoints = Integer.parseInt(reader.readLine());
+						numPoints = Integer.parseInt(lineCheck);
 						System.out.println("type: " + contourType + "\nnum " + numPoints);
 						controlPoints = new Vector<Point2D>();
 						generatedPoints = new Vector<Point2D>();
 						while ((line = reader.readLine().split("\t")).length >= 2) {
 							float x = Float.parseFloat(line[0]);
 							float y = Float.parseFloat(line[1]);
-							//TODO could be adding a last control point because of if statement
-							if(x % Math.floor(x) == 0) {
+							if(x % Math.floor(x) == 0) { //adds first control point twice. remove?
 								controlPoints.add(new Point2D(x, y));
 							}
 							else {
@@ -452,17 +445,20 @@ public class GUIController  implements java.awt.event.ActionListener, MouseListe
 						contour.setControlPoints(controlPoints);
 						contour.setGeneratedPoints(generatedPoints);
 						contours.add(contour);
+						if (line[0].equals("-1")) {
+							break;
+						}
+						else {
+							contourType = Integer.parseInt(line[0]);
+						}
 					}
-					System.out.println("Reached end of first overlay....loading next set of contours.");
+					System.out.println("Reached end of overlay....loading next set of contours.");
 					DICOMImage image = study.getSOPInstanceUIDToDICOMImage().get(sopInstanceUID);
 					image.setContours(contours);
-					set = true;
 				}
-				
-				if (set) {System.out.println("Found the image corresponding to text file");}
-				else {System.out.println("Couldn't find the image from the text file");}
 				reader.close();
-			} catch (IOException x) {
+			}
+			catch (IOException x) {
 				System.err.format("IOException: %s%n", x);
 			}
 		}
@@ -643,9 +639,9 @@ public class GUIController  implements java.awt.event.ActionListener, MouseListe
 
 		this.metaDataModel.setCurrentImage(this.gIndex, this.sIndex, this.tIndex, this.iIndex);
 		this.imageModel.setCurrentImage(this.gIndex, this.sIndex, this.tIndex, this.iIndex);
-		this.imageModel.addContourToImage(new Contour(Contour.Type.DEFAULT));
+		//this.imageModel.addContourToImage(new Contour(Contour.Type.DEFAULT));
 		this.imageModel2.setCurrentImage(this.gIndex, this.sIndex, this.tIndex, this.iIndex);
-		this.imageModel2.addContourToImage(new Contour(Contour.Type.DEFAULT));
+		//this.imageModel2.addContourToImage(new Contour(Contour.Type.DEFAULT));
 	}
 
 	// Setters

@@ -199,7 +199,6 @@ public class RunMVC {
 		menuBar.add(contours);
 		menuBar.add(view);
 
-		
 		fileMenu.add(newMenu);
 		fileMenu.add(openExisting);
 		fileMenu.add(saveStudy);
