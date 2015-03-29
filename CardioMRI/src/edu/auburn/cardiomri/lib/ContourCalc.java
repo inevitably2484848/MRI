@@ -10,16 +10,26 @@ import toxi.geom.Spline2D;
 import toxi.geom.Vec2D;
 
 public final class ContourCalc {
-    private static int SEPARATION_DISTANCE = 1; // Distance between each of the
-                                                // generated points
+    /**
+     * Distance between each of the generated points
+     */
+    public static float SEPARATION_DISTANCE = 1.0f; // Distance between each of
+                                                    // the generated points
 
     /**
      * Calculates the centroid by averaging the x,y coordinates in the list
      *
-     * @param points
-     *            List of points used to find the centroid
+     * @param points List of points used to find the centroid
+     * @return The centroid of the points
      */
     public static Point2D calcCentroid(List<Point2D> points) {
+        if (points == null) {
+            throw new NullPointerException("List cannot be null");
+        }
+        if (points.size() == 0) {
+            throw new IllegalArgumentException(
+                    "List must have at least 1 point");
+        }
 
         double averageX = 0, averageY = 0;
         for (Point2D p : points) {
@@ -34,15 +44,18 @@ public final class ContourCalc {
     }
 
     /**
-     * Sort the points in radial(?) order. TODO: This doesn't actually work yet.
+     * Sort the points in clockwise order.
      *
-     * @param points
-     *            List of points to sort
+     * @param points List of points to sort
      */
     public static void sortPoints(List<Point2D> points) {
-        if (points == null || points.size() < 2) {
+        if (points == null) {
+            throw new NullPointerException("List cannot be null");
+        }
+        if (points.size() == 0) {
             return;
         }
+
         Point2D centroid = ContourCalc.calcCentroid(points);
 
         Collections.sort(points, new Comparator<Point2D>() {
@@ -57,12 +70,8 @@ public final class ContourCalc {
                         p1.getX() - centroid.getX());
                 double thetaP2 = Math.atan2(p2.getY() - centroid.getY(),
                         p2.getX() - centroid.getX());
-                double delta = thetaP1 - thetaP2;
-                double deltaDegrees = delta * 180 / Math.PI;
-                if (Math.abs(deltaDegrees) < 1) {
-                    return 0;
-                }
-                return (int) Math.signum(deltaDegrees);
+                double delta = thetaP2 - thetaP1;
+                return (int) Math.signum(delta);
             }
         });
     }
@@ -80,27 +89,17 @@ public final class ContourCalc {
      * curve.</li>
      * </ul>
      *
-     * @param controlPoints
-     *            List with the control points
-     * @param generatedPoints
-     *            List in which to put the generated points
-     * @param isClosed
-     *            Whether the curve should be closed or left open
+     * @param controlPoints List with the control points
+     * @param isClosed Whether the curve should be closed or left open
+     * @return new vector with the generated points
      */
-    public static void generate(List<Point2D> controlPoints,
-            List<Point2D> generatedPoints, boolean isClosed) {
+    public static List<Point2D> generate(List<Point2D> controlPoints,
+            boolean isClosed) {
         if (controlPoints == null) {
-            throw new NullPointerException("controlPoints list is null");
+            throw new NullPointerException("List cannot be null");
         }
-        if (generatedPoints == null) {
-            throw new NullPointerException("generatedPoints list is null");
-        }
-
-        // TODO: sortControlPoints()
-
-        generatedPoints.clear();
         if (controlPoints.size() < 2) {
-            return;
+            return new Vector<Point2D>(controlPoints);
         }
 
         ContourCalc.sortPoints(controlPoints);
@@ -122,28 +121,11 @@ public final class ContourCalc {
         List<Vec2D> genPoints = spline
                 .getDecimatedVertices(ContourCalc.SEPARATION_DISTANCE);
 
+        List<Point2D> generatedPoints = new Vector<Point2D>();
         for (Vec2D point : genPoints) {
             generatedPoints.add(new Point2D(point.x, point.y));
         }
-    }
 
-    /**
-     * Copies a list of points so that the order of the original list is
-     * preserved, but is repeated three times. This is used to create a curve
-     * that stays smooth through the first and last control points.
-     *
-     * @param points
-     *            Sorted list of control points
-     * @return A list three times the size of the input
-     */
-    public static List<Point2D> createRepeatedList(List<Point2D> points) {
-        int timesToRepeat = 1;
-        List<Point2D> allPoints = new Vector<Point2D>(points.size()
-                * timesToRepeat);
-
-        for (int i = 0; i < timesToRepeat; i++) {
-            allPoints.addAll(points);
-        }
-        return allPoints;
+        return generatedPoints;
     }
 }
