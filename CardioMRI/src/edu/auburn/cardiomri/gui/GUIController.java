@@ -54,32 +54,34 @@ import edu.auburn.cardiomri.lib.SerializationManager;
 
 
 public class GUIController  implements java.awt.event.ActionListener, MouseListener  {
-	
+
 	private JComponent mainComponent;
 	private JFrame appFrame;
-	
+
 	private int gIndex = 0, sIndex = 0, tIndex = 0, iIndex = 0;
-	
+
 	private StudyStructureModel studyStructModel;
 	private GridModel			gridModel;
 	private MetaDataModel 		metaDataModel;
 	private ImageModel			imageModel;
-	
+	private ImageModel			imageModel2;
+
 	private StudyStructureView	studyStructView;
 	private GridView			gridView;
 	private MetaDataView 		metaDataView;
 	private ImageView			imageView;
-	
+	private ImageView			imageView2;
+
 	private String				filename;
-	
+
 	private JFileChooser 		fileChooser = new JFileChooser();
-	
-	
+
+
 	// ActionListener methods
 	public void actionPerformed(java.awt.event.ActionEvent e) {
 
 		String actionCommand = e.getActionCommand();
-		
+
 //System.out.println("GUIController : actionPerformed - " + actionCommand);
 
 		if (actionCommand.equals("Create New Study")) {
@@ -96,7 +98,7 @@ public class GUIController  implements java.awt.event.ActionListener, MouseListe
 			}
 		}
 		else if (actionCommand.equals("Save Study")) {
-			this.saveStudy(); 
+			this.saveStudy();
 		}
 		else if (actionCommand.equals("Save As Study")) {
 			this.saveAsStudy();
@@ -126,16 +128,16 @@ public class GUIController  implements java.awt.event.ActionListener, MouseListe
 		}
 		else if (actionCommand.substring(0, 6).equals("Button")) {
 //System.out.println("GUIController : resetting focus");
-			
+
 			StringTokenizer tokenizer = new StringTokenizer(actionCommand.substring(7), ",");
 			String timeStr = tokenizer.nextToken();
 			String sliceStr = tokenizer.nextToken();
-			
+
 			int newTime = (Integer.parseInt(timeStr)-1);
 			int newSlice = (Integer.parseInt(sliceStr)-1);
-			
+
 //System.out.println(newTime + " " + newSlice);
-			
+
 			// Check if it is valid
 			if (newSlice != -1 && newTime != -1) {
 				if (newSlice < this.studyStructModel.getStudy().getGroups().get(this.gIndex).getSlices().size()) {
@@ -147,11 +149,11 @@ public class GUIController  implements java.awt.event.ActionListener, MouseListe
 					}
 				}
 			}
-			
+
 			this.mainComponent.requestFocusInWindow();
 		}
 	}
-	
+
 	// MouseListener methods
 	@Override
 	public void mouseClicked(MouseEvent e) {
@@ -159,7 +161,7 @@ public class GUIController  implements java.awt.event.ActionListener, MouseListe
 			TreePath treePath = this.studyStructView.getTree().getPathForLocation(e.getX(), e.getY());
 			if (treePath != null) {
 //System.out.println("GUIController : Detected StudyStructure selection");
-				
+
 				Object[] pathObjs = treePath.getPath();
 				if (pathObjs[pathObjs.length-1].getClass() == ImageTreeNode.class) {
 					int[] indices = ((ImageTreeNode)pathObjs[pathObjs.length-1]).getIndices();
@@ -167,7 +169,7 @@ public class GUIController  implements java.awt.event.ActionListener, MouseListe
 					this.sIndex = indices[1];
 					this.tIndex = indices[2];
 					this.iIndex = indices[3];
-					
+
 					this.updateNewDicom();
 					this.mainComponent.requestFocusInWindow();
 				}
@@ -199,32 +201,32 @@ public class GUIController  implements java.awt.event.ActionListener, MouseListe
 	public void mouseExited(MouseEvent e) {
 		// Unused
 	}
-	
+
 	// Action methods
 	/*
 	 * Opens a JFileChooser that allows the user to select a Directory,
 	 * which will then be iterated through to generate a new Study object.
-	 * 
+	 *
 	 * @param e : ActionEvent object that is was used to originally used to
 	 * 	call the GUIController's actionPerformed method. (currently unused)
 	 */
 	private void createNewStudy(ActionEvent e) {
 //System.out.println("GUIController : Create New Study");
-		
-		
+
+
 		fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-		
+
 		int returnVal = fileChooser.showOpenDialog(this.mainComponent);
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
 //System.out.println("FileChooser : Load File Structure");
-			
+
 			String directory = fileChooser.getSelectedFile().getAbsolutePath();
 			Path path = Paths.get(directory);
-			
+
 			DICOMFileTreeWalker fileTreeWalker = new DICOMFileTreeWalker();
-			
+
 			Study s = fileTreeWalker.addFileTreeToStudy(path, new Study());
-			
+
 			// update study structure Model
             this.updateNewStudy(s);
             this.updateNewDicom();
@@ -233,25 +235,25 @@ public class GUIController  implements java.awt.event.ActionListener, MouseListe
 //System.out.println("FileChooser : Canceled choosing directory");
 		}
 	}
-	
+
 	/*
-	 * Opens a JFileChooser that allows the user to select a Study model 
+	 * Opens a JFileChooser that allows the user to select a Study model
 	 * file (.smc).
-	 * 
+	 *
 	 * @param e : ActionEvent object that is was used to originally used to
 	 * 	call the GUIController's actionPerformed method. (currently unused)
 	 */
 	private void loadExistingStudy(ActionEvent e) {
 //System.out.println("GUIController : Load Existing Study");
-		
-				
+
+
 		FileFilter studyFilter = new FileNameExtensionFilter("Study file (.smc)", "smc");
 		fileChooser.setFileFilter(studyFilter);
-		
+
 		int response = fileChooser.showOpenDialog(this.mainComponent);
 		if (response == JFileChooser.APPROVE_OPTION) {
 			this.filename = fileChooser.getSelectedFile().getAbsolutePath();
-			
+
 			Study newStudy = null;
 			try {
 				newStudy = SerializationManager.load(filename);
@@ -260,45 +262,45 @@ public class GUIController  implements java.awt.event.ActionListener, MouseListe
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
-			
+
 			if (newStudy != null) {
 				this.updateNewStudy(newStudy);
 				this.updateNewDicom();
 			}
 		}
 	}
-	
+
 	/*
 	 * Opens a JFileChooser that allows the user to select a single Dicom file
 	 * and generate a Study object with the Dicom as the only image in it.
-	 * 
+	 *
 	 * @param e : ActionEvent object that is was used to originally used to
 	 * 	call the GUIController's actionPerformed method. (currently unused)
 	 */
 	private void loadSingleDicom(ActionEvent e) throws NotInStudyException {
 //System.out.println("GUIController : Load Single DICOM");
-		
-		
-		
+
+
+
 		FileFilter dicomType = new FileNameExtensionFilter("DICOM file (.dcm)",
                 "dcm");
         fileChooser.addChoosableFileFilter(dicomType);
-        
+
         int returnVal = fileChooser.showOpenDialog(this.mainComponent);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
-            
+
 //System.out.println("File selected");
-            
+
             // filechooser.getSelectedFile() returns a file object
-            String filename = fileChooser.getSelectedFile().getPath(); 
-            
+            String filename = fileChooser.getSelectedFile().getPath();
+
 //System.out.println("StudyStructureController : Chose file - " + filename);
-            
+
             DICOMImage dImage = DICOM3Importer.makeDICOMImageFromFile(filename);
-            
+
             Study s = new Study();
             s.addImage(dImage);
-            
+
             // update study structure Model
             this.updateNewStudy(s);
             this.updateNewDicom();
@@ -307,41 +309,41 @@ public class GUIController  implements java.awt.event.ActionListener, MouseListe
 //System.out.println("GUIController : Cancel choosing file");
         }
 	}
-	
+
 	/*
 	 * Opens a JFileChooser that allows the user to select a single Dicom file
 	 * and adds it to the existing Study object.
-	 * 
+	 *
 	 * @param e : ActionEvent object that is was used to originally used to
 	 * 	call the GUIController's actionPerformed method. (currently unused)
 	 */
 	private void importDicom(ActionEvent e) {
 //System.out.println("GUIController : Import DICOM");
-		
-		
+
+
 		FileFilter dicomFilter = new FileNameExtensionFilter("DICOM file (.dcm)",
                 "dcm");
         fileChooser.setFileFilter(dicomFilter);
-        
+
         int returnVal = fileChooser.showOpenDialog(this.mainComponent);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
-            
+
 //System.out.println("File selected");
-            
+
             // filechooser.getSelectedFile() returns a file object
-            String filename = fileChooser.getSelectedFile().getPath(); 
-            
+            String filename = fileChooser.getSelectedFile().getPath();
+
 //System.out.println("StudyStructureController : Chose file - " + filename);
-            
+
             DICOMImage dImage = DICOM3Importer.makeDICOMImageFromFile(filename);
-            
+
             Study existingStudy = this.getStudyStructModel().getStudy();
             try {
 				existingStudy.addImage(dImage);
 			} catch (NotInStudyException e1) {
 				e1.printStackTrace();
 			}
-            
+
             // update study structure Model
             this.updateNewStudy(existingStudy);
             this.updateNewDicom();
@@ -485,7 +487,7 @@ public class GUIController  implements java.awt.event.ActionListener, MouseListe
 			this.tIndex = this.studyStructModel.getStudy().getGroups().get(gIndex).getSlices().get(sIndex).getTimes().size()-1;
 		}
 	}
-	
+
 	/*
 	 * Increments the current time index and updates the models.
 	 */
@@ -525,7 +527,7 @@ public class GUIController  implements java.awt.event.ActionListener, MouseListe
 //System.out.println("GUIController : failed attempt to decrement slice");
 		}
 	}
-	
+
 	/*
 	 * Increments the current slice index and updates the models.
 	 */
@@ -547,7 +549,7 @@ public class GUIController  implements java.awt.event.ActionListener, MouseListe
 	}
 
 	/*
-	 * Saves the currently opened Study object as a .smc file at the 
+	 * Saves the currently opened Study object as a .smc file at the
 	 * previously used file path. If no file path was previously used
 	 * then it will call on saveAsStudy().
 	 */
@@ -566,7 +568,7 @@ public class GUIController  implements java.awt.event.ActionListener, MouseListe
 			}
 		}
 	}
-	
+
 	/*
 	 * Opens a JFileChooser that allows the user to select where they
 	 * would like to save the currently displayed Study object and what
@@ -575,15 +577,15 @@ public class GUIController  implements java.awt.event.ActionListener, MouseListe
 	private void saveAsStudy() {
 		if (this.studyStructModel.getStudy() != null) {
 //System.out.println("Saving Study As...");
-			
+
 			JFileChooser saveFC = fileChooser;
-			
+
 			FileFilter studyFileFilter = new FileNameExtensionFilter("Study file (.smc)",
 	                "smc");
 			saveFC.setFileFilter(studyFileFilter);
-			
+
 			int response = saveFC.showSaveDialog(this.mainComponent);
-			
+
 			if (response == JFileChooser.APPROVE_OPTION) {
 //System.out.println("Choose to save");
 				String newFilename = saveFC.getSelectedFile().getAbsolutePath();
@@ -604,7 +606,7 @@ public class GUIController  implements java.awt.event.ActionListener, MouseListe
 			}
 		}
 	}
-	
+
 	/*
 	 * Method that will close the GUIController's applicationFrame variable.
 	 */
@@ -612,40 +614,42 @@ public class GUIController  implements java.awt.event.ActionListener, MouseListe
 //System.out.println("Close Window");
 		this.appFrame.dispatchEvent(new WindowEvent(this.appFrame, WindowEvent.WINDOW_CLOSING));
 	}
-	
+
 	/*
 	 * Updates the GUIController's models with the a new Study object.
-	 * 
+	 *
 	 * @param s : Study object that will used as the currently displayed
 	 * 			Study.
 	 */
 	private void updateNewStudy(Study s) {
 //System.out.println("GUIController : updating new Study");
-		
+
 		this.studyStructModel.setStudy(s);
 		this.gridModel.setStudy(s);
 		this.metaDataModel.setStudy(s);
 		this.imageModel.setStudy(s);
+		this.imageModel2.setStudy(s);
 	}
-	
+
 	/*
 	 * Update the GUIController's models with the group, slice, time, and image indices.
 	 */
 	private void updateNewDicom() {
 //System.out.println("GUIController : updating new DICOM");
-		
+
 		this.studyStructModel.setCurrentImage(this.gIndex, this.sIndex, this.tIndex, this.iIndex);
 		this.gridModel.setCurrentImage(this.gIndex, this.sIndex, this.tIndex, this.iIndex);
 		this.metaDataModel.setCurrentImage(this.gIndex, this.sIndex, this.tIndex, this.iIndex);
 		this.imageModel.setCurrentImage(this.gIndex, this.sIndex, this.tIndex, this.iIndex);
-		//this.imageModel.addContourToImage(new Contour(Contour.Type.DEFAULT));
-
+		this.imageModel.addContourToImage(new Contour(Contour.Type.DEFAULT));
+		this.imageModel2.setCurrentImage(this.gIndex, this.sIndex, this.tIndex, this.iIndex);
+		this.imageModel2.addContourToImage(new Contour(Contour.Type.DEFAULT));
 	}
 
 	// Setters
 	/*
 	 * Sets the class' studyStructModel and studyStructView attributes.
-	 * 
+	 *
 	 *  @param ssm : StudyStructureModel object that will be set to the class'
 	 *   			studyStructModel attribute.
 	 *  @param ssv : StudyStructureView object that will be set to the class'
@@ -655,21 +659,21 @@ public class GUIController  implements java.awt.event.ActionListener, MouseListe
 		this.setStudyStructModel(ssm);
 		this.setStudyStructView(ssv);
 	}
-	
+
 	/*
 	 * Sets the class' studyStructModel attribute.
-	 * 
+	 *
 	 *  @param ssm : StudyStructureModel object that will be set to the class'
 	 *   			 studyStructModel attribute.
 	 */
 	public void setStudyStructModel(StudyStructureModel ssm) {
 		this.studyStructModel = ssm;
 	}
-	
+
 	/*
-	 * Sets the class' studyStructView attribute, and sets itself as a 
+	 * Sets the class' studyStructView attribute, and sets itself as a
 	 * MouseListener to the object.
-	 * 
+	 *
 	 *  @param ssv : StudyStructureView object that will be set to the class'
 	 * 				 studyStructView attribute.
 	 */
@@ -677,10 +681,10 @@ public class GUIController  implements java.awt.event.ActionListener, MouseListe
 		this.studyStructView = ssv;
 		this.studyStructView.setMouseListener(this);
 	}
-	
+
 	/*
 	 * Sets the class' gridModel and gridView attributes.
-	 * 
+	 *
 	 *  @param gm : GridModel object that will be set to the class' gridModel
 	 *  			attribute.
 	 *  @param gv : GridView object that will be set the class' gridView
@@ -690,20 +694,20 @@ public class GUIController  implements java.awt.event.ActionListener, MouseListe
 		this.setGridModel(gm);
 		this.setGridView(gv);
 	}
-	
+
 	/*
 	 * Sets the class' gridModel attribute.
-	 * 
+	 *
 	 *  @param gm : GridModel object that will be set to the class' gridModel
 	 *  			attribute.
 	 */
 	public void setGridModel(GridModel gm) {
 		this.gridModel = gm;
 	}
-	
+
 	/*
 	 * Sets the class' gridView attribute and sets itself as an ActionListener.
-	 * 
+	 *
 	 *  @param gv : GridView object that will be set to the class' gridView
 	 *  			attribute.
 	 */
@@ -711,10 +715,10 @@ public class GUIController  implements java.awt.event.ActionListener, MouseListe
 		this.gridView = gv;
 		this.gridView.setActionListener(this);
 	}
-	
+
 	/*
 	 * Sets the class' metaDataModel and metaDataView attributes.
-	 * 
+	 *
 	 *  @param mdm : MetaDataModel object that will be set to the class'
 	 *  			metaDataModel attribute.
 	 *  @param mdv : MetaDataView object that will be set to the class'
@@ -724,30 +728,30 @@ public class GUIController  implements java.awt.event.ActionListener, MouseListe
 		this.setMetaDataModel(mdm);
 		this.setMetaDataView(mdv);
 	}
-	
+
 	/*
 	 * Sets the class' metaDataModel attribute.
-	 * 
+	 *
 	 *  @param mdm : MetaDataModel object that will be set to the class'
 	 *  			metaDataModel attribute.
 	 */
 	public void setMetaDataModel(MetaDataModel mdm) {
 		this.metaDataModel = mdm;
 	}
-	
+
 	/*
 	 * Sets the class' metaDataView attribute.
-	 * 
+	 *
 	 *  @param mdv : MetaDataView object that will be set to the class'
 	 *  			metaDataView attribute.
 	 */
 	public void setMetaDataView(MetaDataView mdv) {
 		this.metaDataView = mdv;
 	}
-	
+
 	/*
 	 * Sets the class' imageModel and imageView attributes.
-	 * 
+	 *
 	 *  @param mdm : ImageModel object that will be set to the class'
 	 *  			imageModel attribute.
 	 *  @param mdv : ImageView object that will be set to the class'
@@ -758,20 +762,28 @@ public class GUIController  implements java.awt.event.ActionListener, MouseListe
 		this.setImageView(iv);
 	}
 
+	public void setImageViewer2(ImageModel im, ImageView iv) {
+		this.setImageModel2(im);
+		this.setImageView2(iv);
+	}
 	/*
 	 * Sets the class' imageModel attribute.
-	 * 
+	 *
 	 *  @param mdm : ImageModel object that will be set to the class'
 	 *  			imageModel attribute.
 	 */
 	public void setImageModel(ImageModel im) {
 		this.imageModel = im;
 	}
-	
+
+	public void setImageModel2(ImageModel im) {
+		this.imageModel2 = im;
+	}
+
 	/*
-	 * Sets the class' imageView attribute and sets itself as a 
+	 * Sets the class' imageView attribute and sets itself as a
 	 * MouseListener.
-	 * 
+	 *
 	 *  @param mdv : ImageView object that will be set to the class'
 	 *  			imageView attribute.
 	 */
@@ -779,207 +791,212 @@ public class GUIController  implements java.awt.event.ActionListener, MouseListe
 		this.imageView = iv;
 		this.imageView.setMouseListener(this);
 	}
-	
-	
+
+	public void setImageView2(ImageView iv) {
+		this.imageView2 = iv;
+		this.imageView2.setMouseListener(this);
+	}
+
+
 	/*
 	 * Sets the class' mainComponent attribute. The class' KeyBindings
 	 * will be attached to the mainComponent.
-	 * 
-	 *  @param c : JComponent object will be used as the class' 
-	 *  			mainComponent attribute.	
+	 *
+	 *  @param c : JComponent object will be used as the class'
+	 *  			mainComponent attribute.
 	 */
 	public void setMainComponent(JComponent c) {
 		this.mainComponent = c;
-		
+
 		this.addKeyBindings();
 	}
-	
+
 	/*
 	 * Sets the class' appFrame attribute.
-	 * 
+	 *
 	 *  @param f : JFrame object that will be used as the class' appFrame
 	 *  			attribute.
 	 */
 	public void setAppFrame(JFrame f) {
 		this.appFrame = f;
 	}
-	
+
 	/*
-	 * Adds common KeyBindings (Ctrl+S, Ctrl+Shift+S, Ctrl+O, etc.) to the 
+	 * Adds common KeyBindings (Ctrl+S, Ctrl+Shift+S, Ctrl+O, etc.) to the
 	 * class' mainComponent attribute.
 	 */
 	private void addKeyBindings() {
 		// Need to map KeyBindings
 		this.mainComponent.getInputMap().put(KeyStroke.getKeyStroke("LEFT"), "left");
 		this.mainComponent.getActionMap().put("left", new LeftKeyAction(this));
-				
+
 		this.mainComponent.getInputMap().put(KeyStroke.getKeyStroke("RIGHT"), "right");
 		this.mainComponent.getActionMap().put("right", new RightKeyAction(this));
-			
+
 		this.mainComponent.getInputMap().put(KeyStroke.getKeyStroke("DOWN"), "down");
 		this.mainComponent.getActionMap().put("down", new DownKeyAction(this));
-				
+
 		this.mainComponent.getInputMap().put(KeyStroke.getKeyStroke("UP"), "up");
 		this.mainComponent.getActionMap().put("up", new UpKeyAction(this));
-				
+
 		KeyStroke ctrlS = KeyStroke.getKeyStroke(KeyEvent.VK_S, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
 		this.mainComponent.getInputMap().put(ctrlS, "save");
 		this.mainComponent.getActionMap().put("save", new CtrlSAction(this));
-		
+
 		KeyStroke ctrlShiftS = KeyStroke.getKeyStroke(KeyEvent.VK_S, 21);
 		this.mainComponent.getInputMap().put(ctrlShiftS, "save as");
 		this.mainComponent.getActionMap().put("save as", new CtrlShiftSAction(this));
-		
+
 		KeyStroke ctrlO = KeyStroke.getKeyStroke(KeyEvent.VK_O, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
 		this.mainComponent.getInputMap().put(ctrlO, "open existing");
 		this.mainComponent.getActionMap().put("open existing", new CtrlOAction(this));
-				
+
 		KeyStroke ctrlW = KeyStroke.getKeyStroke(KeyEvent.VK_W, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
 		this.mainComponent.getInputMap().put(ctrlW, "close");
 		this.mainComponent.getActionMap().put("close", new CtrlWAction(this));
 	}
-	
+
 	// Getters
 	/*
 	 * Returns the class' studyStructModel attribute.
-	 * 
+	 *
 	 *  @return	The GUIController's studyStructModel attribute.
 	 */
 	public StudyStructureModel getStudyStructModel() { return this.studyStructModel; }
-	
+
 	/*
 	 * Returns the class' studyStructView attribute.
-	 * 
+	 *
 	 *  @return	The GUIController's studyStructView attribute.
 	 */
 	public StudyStructureView getStudyStructView() { return this.studyStructView; }
-	
+
 	/*
 	 * Returns the class' gridModel attribute.
-	 * 
+	 *
 	 *  @return	The GUIController's gridModel attribute.
 	 */
 	public GridModel getGridModel() { return this.gridModel; }
-	
+
 	/*
 	 * Returns the class' gridView attribute.
-	 * 
+	 *
 	 *  @return	The GUIController's gridView attribute.
 	 */
 	public GridView getGridView() { return this.gridView; }
-	
+
 	/*
 	 * Returns the class' metaDataModel attribute.
-	 * 
+	 *
 	 *  @return	The GUIController's metaDataModel attribute.
 	 */
 	public MetaDataModel getMetaDataModel() { return this.metaDataModel; }
-	
+
 	/*
 	 * Returns the class' metaDataViewattribute.
-	 * 
+	 *
 	 *  @return	The GUIController's metaDataView attribute.
 	 */
 	public MetaDataView getMetaDataView() { return this.metaDataView; }
-	
+
 	/*
 	 * Returns the class' imageModel attribute.
-	 * 
+	 *
 	 *  @return	The GUIController's imageModel attribute.
 	 */
 	public ImageModel getImageModel() { return this.imageModel; }
-	
+
 	/*
 	 * Returns the class' imageView attribute.
-	 * 
+	 *
 	 *  @return	The GUIController's imageView attribute.
 	 */
 	public ImageView getImageView() { return this.imageView; }
-	
+
 	/*
 	 * Returns the class' mainComponent attribute.
-	 * 
+	 *
 	 *  @return	The GUIController's mainComponent attribute.
 	 */
 	public JComponent getMainComponent() { return this.mainComponent; }
-	
+
 	// Default constructor
 	public GUIController() {
         fileChooser.setCurrentDirectory(new File(System.getProperty("user.dir")));
 //System.out.println("GUIController : GUIController()");
 	}
-	
-	
+
+
 	// Action classes
 	private class LeftKeyAction extends AbstractAction {
-		
+
 		private static final long serialVersionUID = 1L;
 		private GUIController controller;
-		
+
 		// AbstractAction methods
 		public void actionPerformed(ActionEvent e) {
 			this.controller.decrementTimeIndex();
 		}
-		
+
 		// Constructor
 		public LeftKeyAction(GUIController c) {
 			this.controller = c;
-		}	
+		}
 	}
 	private class RightKeyAction extends AbstractAction {
 
 		private static final long serialVersionUID = 1L;
 		private GUIController controller;
-		
+
 		// AbstractAction methods
 		public void actionPerformed(ActionEvent e) {
 			this.controller.incrementTimeIndex();
 		}
-		
+
 		// Constructor
 		public RightKeyAction(GUIController c) {
 			this.controller = c;
 		}
-		
+
 	}
 	private class UpKeyAction extends AbstractAction {
 		private static final long serialVersionUID = 1L;
 		private GUIController controller;
-		
+
 		// AbstractAction methods
 		public void actionPerformed(ActionEvent e) {
 			this.controller.decrementSliceIndex();
 		}
-		
+
 		// Constructor
 		public UpKeyAction(GUIController c) {
 			this.controller = c;
-		}	
+		}
 	}
 	private class DownKeyAction extends AbstractAction {
 		private static final long serialVersionUID = 1L;
 		private GUIController controller;
-		
+
 		// AbstractAction methods
 		public void actionPerformed(ActionEvent e) {
 			this.controller.incrementSliceIndex();
 		}
-		
+
 		// Constructor
 		public DownKeyAction(GUIController c) {
 			this.controller = c;
-		}	
+		}
 	}
-	
+
 	private class CtrlSAction extends AbstractAction {
 		private static final long serialVersionUID = 1L;
 		private GUIController controller;
-		
+
 		// AbstractAction methods
 		public void actionPerformed(ActionEvent e) {
 			this.controller.saveStudy();
 		}
-		
+
 		// Constructor
 		public CtrlSAction(GUIController c) {
 			this.controller = c;
@@ -988,42 +1005,42 @@ public class GUIController  implements java.awt.event.ActionListener, MouseListe
 	private class CtrlShiftSAction extends AbstractAction {
 		private static final long serialVersionUID = 1L;
 		private GUIController controller;
-		
+
 		// AbstractAction methods
 		public void actionPerformed(ActionEvent e) {
 			this.controller.saveAsStudy();
 		}
-		
+
 		// Constructor
 		public CtrlShiftSAction(GUIController c) {
 			this.controller = c;
 		}
 	}
-	
+
 	private class CtrlOAction extends AbstractAction {
 		private static final long serialVersionUID = 1L;
 		private GUIController controller;
-		
+
 		// AbstractAction methods
 		public void actionPerformed(ActionEvent e) {
 			this.controller.loadExistingStudy(e);;
 		}
-		
+
 		// Constructor
 		public CtrlOAction(GUIController c) {
 			this.controller = c;
 		}
 	}
-		
+
 	private class CtrlWAction extends AbstractAction {
 		private static final long serialVersionUID = 1L;
 		private GUIController controller;
-		
+
 		// AbstractAction methods
 		public void actionPerformed(ActionEvent e) {
 			this.controller.closeWindow();
 		}
-		
+
 		// Constructor
 		public CtrlWAction(GUIController c) {
 			this.controller = c;
