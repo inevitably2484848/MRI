@@ -1,18 +1,12 @@
 package edu.auburn.cardiomri.gui;
 
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.util.Arrays;
 import java.util.Observable;
 import java.util.Vector;
 
-import javax.swing.JFrame;
-import javax.swing.JLayeredPane;
+
 import javax.swing.JPanel;
 
-import com.pixelmed.dicom.AttributeList;
 import com.pixelmed.dicom.DicomException;
 import com.pixelmed.display.SingleImagePanel;
 
@@ -25,8 +19,8 @@ import edu.auburn.cardiomri.gui.ConstructImage;
 public class ImageView implements java.util.Observer {
 
 	private JPanel panel;
-
 	private ImageDisplay display = null;
+
 	private Vector<Contour> contours;
 	private Contour contourObject = new Contour(Contour.Type.DEFAULT), currentContour;
 
@@ -45,10 +39,11 @@ public class ImageView implements java.util.Observer {
 			DICOMImage dImage = ((DICOMImage) obj);
 		
 			ConstructImage sImg = null;
-			
+
 			try {
+
 				sImg = new ConstructImage(dImage);
-				
+
 				this.display = new ImageDisplay(sImg);
 				this.contours = dImage.getContours();
 				
@@ -63,6 +58,7 @@ public class ImageView implements java.util.Observer {
 			this.display.repaint();		
 			this.display.setContours(this.contours);
 			this.display.repaint();		
+
 		}
 		
 		if(obj instanceof Vector<?>)
