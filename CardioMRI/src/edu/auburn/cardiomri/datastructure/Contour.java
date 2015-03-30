@@ -4,23 +4,24 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.PathIterator;
-import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
+import javafx.geometry.Point2D;
 import edu.auburn.cardiomri.lib.ContourCalc;
 
 public class Contour implements Shape {
 
     // XY coordinates of points the user clicked
-    private List<javafx.geometry.Point2D> controlPoints;
+    private List<Point2D> controlPoints;
 
     // XY coordinates of points that look like a smooth curve is drawn between
     // each of the control points
-    private List<javafx.geometry.Point2D> generatedPoints;
+    private List<Point2D> generatedPoints;
 
     private Type contourType;
 
@@ -33,19 +34,40 @@ public class Contour implements Shape {
      * Sets controlPoints to a predefined set of points.
      */
     private Contour() {
-        this.controlPoints = new Vector<javafx.geometry.Point2D>();
-        this.generatedPoints = new Vector<javafx.geometry.Point2D>();
+        this.controlPoints = new Vector<Point2D>();
+        this.generatedPoints = new Vector<Point2D>();
     }
-    
-    public void setControlPoints(List<javafx.geometry.Point2D> points) {
-    	this.controlPoints = points;
+
+    public void setControlPoints(List<Point2D> points) {
+        if (points == null) {
+            throw new NullPointerException("List cannot be null");
+        }
+
+        List<Point2D> newList = new Vector<Point2D>();
+        for (Point2D point : points) {
+            validateCoordinates(point.getX(), point.getY());
+            newList.add(new Point2D(point.getX(), point.getY()));
+        }
+
+        this.controlPoints = newList;
     }
-    public void setGeneratedPoints(List<javafx.geometry.Point2D> points) {
-    	this.generatedPoints = points;
+
+    public void setGeneratedPoints(List<Point2D> points) {
+        if (points == null) {
+            throw new NullPointerException("List cannot be null");
+        }
+
+        List<Point2D> newList = new Vector<Point2D>();
+        for (Point2D point : points) {
+            validateCoordinates(point.getX(), point.getY());
+            newList.add(new Point2D(point.getX(), point.getY()));
+        }
+
+        this.generatedPoints = newList;
     }
 
     @Override
-    public boolean contains(Point2D p) {
+    public boolean contains(java.awt.geom.Point2D p) {
         // TODO Auto-generated method stub
         return false;
     }
@@ -75,7 +97,7 @@ public class Contour implements Shape {
         int maxX = Integer.MIN_VALUE;
         int maxY = Integer.MIN_VALUE;
 
-        for (javafx.geometry.Point2D point : this.controlPoints) {
+        for (Point2D point : this.controlPoints) {
             minX = (int) Math.floor(Math.min(point.getX(), minX));
             minY = (int) Math.floor(Math.min(point.getY(), minY));
             maxX = (int) Math.ceil(Math.max(point.getX(), maxX));
@@ -92,7 +114,7 @@ public class Contour implements Shape {
         double maxX = Double.MIN_VALUE;
         double maxY = Double.MIN_VALUE;
 
-        for (javafx.geometry.Point2D point : this.controlPoints) {
+        for (Point2D point : this.controlPoints) {
             minX = Math.min(point.getX(), minX);
             minY = Math.min(point.getY(), minY);
             maxX = Math.max(point.getX(), maxX);
@@ -108,8 +130,7 @@ public class Contour implements Shape {
         // System.out.println(at.getScaleY());
         // TODO Don't ignore the transform
 
-        ContourCalc.generate(this.controlPoints, this.generatedPoints,
-                this.isClosedCurve());
+        this.setGeneratedPoints(ContourCalc.generate(this.controlPoints, this.isClosedCurve()));
 
         return new PathIterator() {
             private int index = 0;
@@ -191,14 +212,27 @@ public class Contour implements Shape {
     /**
      * Adds a control point to the contour with the given coordinates
      *
-     * @param x
-     *            nonnegative double value
-     * @param y
-     *            nonnegative double value
+     * @param x nonnegative double value
+     * @param y nonnegative double value
      */
     public void addControlPoint(double x, double y) {
+        validateCoordinates(x, y);
+        this.controlPoints.add(new Point2D(x, y));
+    }
+
+    /**
+     * Throws IllegalArgumentException if x or y is less than zero
+     *
+     * @param x
+     * @param y
+     */
+    private void validateCoordinates(double x, double y) {
         if ((x >= 0) && (y >= 0)) {
-            this.controlPoints.add(new javafx.geometry.Point2D(x, y));
+            return;
+        } else {
+            String message = String.format(
+                    "Coordinates (%1$f, %2$f) must be nonnegative", x, y);
+            throw new IllegalArgumentException(message);
         }
     }
 
@@ -207,21 +241,21 @@ public class Contour implements Shape {
      *
      * @return copy of the internal list
      */
-    public List<javafx.geometry.Point2D> getControlPoints() {
-        return new Vector<javafx.geometry.Point2D>(this.controlPoints);
+    public List<Point2D> getControlPoints() {
+        return new Vector<Point2D>(this.controlPoints);
     }
 
     /**
      * Returns a copy list of the points generated to create a smooth curve. The
-     * {@link #generate} function is called before the points are returned.
+     * {@link ContourCalc#generate} function is called before the points are
+     * returned.
      *
      * @return copy of the internal list
      */
-    public List<javafx.geometry.Point2D> getGeneratedPoints() {
+    public List<Point2D> getGeneratedPoints() {
         // TODO Can this be changed so that it's only called when necessary?
-        ContourCalc.generate(this.controlPoints, this.generatedPoints,
-                this.isClosedCurve());
-        return new Vector<javafx.geometry.Point2D>(this.generatedPoints);
+        this.setGeneratedPoints(ContourCalc.generate(this.controlPoints, this.isClosedCurve()));
+        return new Vector<Point2D>(this.generatedPoints);
     }
 
     /**
@@ -236,44 +270,42 @@ public class Contour implements Shape {
     /**
      * Set the contour type
      *
-     * @param contourTypeIn
-     *            the type of contour
+     * @param contourTypeIn the type of contour
      */
     public void setContourType(Type contourTypeIn) {
         this.contourType = contourTypeIn;
     }
 
     public Type getContourType() {
-		return contourType;
-	}
+        return contourType;
+    }
 
+    public Integer getIntFromType() {
+        return Contour.TYPE_TO_INTEGER.get(getContourType());
+    }
 
-
-	public Integer getIntFromType() {
-		return Contour.TYPE_TO_INTEGER.get(getContourType());
-	}
-
-
-
-	public enum Type {
+    public enum Type {
         DEFAULT, DEFAULT_CLOSED, // Example of something that is always a closed
-        // contour
+                                 // contour
         DEFAULT_OPEN // Example of something that is always an open contour
     }
 
     public static final Map<Type, Boolean> IS_CLOSED_CONTOUR;
     public static final Map<Type, Integer> TYPE_TO_INTEGER;
-    static {
-        IS_CLOSED_CONTOUR = new HashMap<Type, Boolean>();
-        
-        Contour.IS_CLOSED_CONTOUR.put(Type.DEFAULT, Boolean.TRUE);
-        Contour.IS_CLOSED_CONTOUR.put(Type.DEFAULT_CLOSED, Boolean.TRUE);
-        Contour.IS_CLOSED_CONTOUR.put(Type.DEFAULT_OPEN, Boolean.FALSE);
 
-        TYPE_TO_INTEGER = new HashMap<Type, Integer>();
-        //TODO fine tune exact types/integer values
-        Contour.TYPE_TO_INTEGER.put(Type.DEFAULT, 7);
-        Contour.TYPE_TO_INTEGER.put(Type.DEFAULT_CLOSED, 8);
-        Contour.TYPE_TO_INTEGER.put(Type.DEFAULT_OPEN, 4);
+    static {
+        Map<Type, Boolean> tempIsClosedContour = new HashMap<Type, Boolean>();
+
+        tempIsClosedContour.put(Type.DEFAULT, Boolean.TRUE);
+        tempIsClosedContour.put(Type.DEFAULT_CLOSED, Boolean.TRUE);
+        tempIsClosedContour.put(Type.DEFAULT_OPEN, Boolean.FALSE);
+        IS_CLOSED_CONTOUR = Collections.unmodifiableMap(tempIsClosedContour);
+
+        Map<Type, Integer> tempTypeToInteger = new HashMap<Type, Integer>();
+        // TODO fine tune exact types/integer values
+        tempTypeToInteger.put(Type.DEFAULT, 7);
+        tempTypeToInteger.put(Type.DEFAULT_CLOSED, 8);
+        tempTypeToInteger.put(Type.DEFAULT_OPEN, 4);
+        TYPE_TO_INTEGER = Collections.unmodifiableMap(tempTypeToInteger);
     }
 }
