@@ -46,19 +46,19 @@ public class ImageView implements java.util.Observer {
 
 				this.display = new ImageDisplay(sImg);
 				this.contours = dImage.getContours();
+				this.display.setContours(this.contours);
 				
 
 			} catch (DicomException e) {
 				e.printStackTrace();
 			}
 			
-			this.panel.add(display);
-			this.panel.revalidate();
+			
 			this.display.revalidate();
-			this.display.repaint();		
-			this.display.setContours(this.contours);
-			this.display.repaint();		
-
+			this.display.repaint();	
+			this.panel.add(this.display);
+			this.panel.revalidate();
+			this.panel.repaint();
 		}
 		
 		if(obj instanceof Vector<?>)
@@ -67,10 +67,10 @@ public class ImageView implements java.util.Observer {
 			{
 				this.contours = (Vector<Contour>) obj;
 				if(this.display != null){
-					System.out.println("new list of contours");
 					this.display.setContours(contours);
 					this.display.setPreDefinedShapes(contours);
 					this.display.repaint();
+					this.panel.repaint();
 				}
 			}
 		}
@@ -80,6 +80,7 @@ public class ImageView implements java.util.Observer {
 			if(this.display != null){
 				this.display.setCurrentContour((Contour) obj);
 				this.display.repaint();
+				this.panel.repaint();
 			}
 			currentContour = (Contour) obj;
 		}
@@ -95,6 +96,12 @@ public class ImageView implements java.util.Observer {
 
 	public JPanel getPanel() { 
 		return this.panel; 
+	}
+	
+	public void refresh()
+	{
+		this.display.revalidate();
+		this.display.repaint();	
 	}
 	
 	// Constructors

@@ -84,5 +84,14 @@ public class ImageModel extends java.util.Observable {
 		this.dImage = null;
 	}
 	
+	public void refresh()
+	{
+		this.dImage = this.study.getGroups().get(g).getSlices().get(s).getTimes().get(t).getImages().get(i);
+		this.contours = this.dImage.getContours();
+
+		setChanged();
+		notifyObservers(this.dImage);
+	}
+	
 	
 }

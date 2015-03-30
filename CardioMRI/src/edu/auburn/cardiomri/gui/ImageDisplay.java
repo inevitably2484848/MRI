@@ -50,7 +50,6 @@ public class ImageDisplay extends SingleImagePanel {
 	public void setContours(Vector<Contour> contours) {
 		this.contours = contours;
 		this.setPreDefinedShapes(this.contours);
-		this.repaint();	
 	}
 }
 

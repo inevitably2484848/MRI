@@ -471,6 +471,7 @@ public class GUIController  implements java.awt.event.ActionListener, MouseListe
 				System.err.format("IOException: %s%n", x);
 			}
 		}
+		this.imageModel.refresh();
 	}
 
 	 
@@ -648,8 +649,8 @@ public class GUIController  implements java.awt.event.ActionListener, MouseListe
 		this.metaDataModel.setCurrentImage(this.gIndex, this.sIndex, this.tIndex, this.iIndex);
 		this.imageModel.setCurrentImage(this.gIndex, this.sIndex, this.tIndex, this.iIndex);
 		//this.imageModel.addContourToImage(new Contour(Contour.Type.DEFAULT));
-		this.imageModel2.setCurrentImage(this.gIndex, this.sIndex, this.tIndex, this.iIndex);
-		this.imageModel2.addContourToImage(new Contour(Contour.Type.DEFAULT));
+		//this.imageModel2.setCurrentImage(this.gIndex, this.sIndex, this.tIndex, this.iIndex);
+		//this.imageModel2.addContourToImage(new Contour(Contour.Type.DEFAULT));
 	}
 
 	// Setters
