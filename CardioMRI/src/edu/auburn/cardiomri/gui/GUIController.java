@@ -120,6 +120,15 @@ public class GUIController  implements java.awt.event.ActionListener, MouseListe
 				e1.printStackTrace();
 			}
 		}
+		else if (actionCommand.equals("Default Type")) {
+			this.imageModel.addContourToImage(new Contour(Type.DEFAULT));
+		}
+		else if (actionCommand.equals("Closed Type")) {
+			this.imageModel.addContourToImage(new Contour(Type.DEFAULT_CLOSED));
+		}
+		else if (actionCommand.equals("Open Type")) {
+			this.imageModel.addContourToImage(new Contour(Type.DEFAULT_OPEN));
+		}
 		else if (actionCommand.substring(0, 6).equals("Button")) {
 //System.out.println("GUIController : resetting focus");
 			
@@ -412,19 +421,40 @@ public class GUIController  implements java.awt.event.ActionListener, MouseListe
 				File file = fileChooser.getSelectedFile();
 				int numLines;
 				BufferedReader reader = new BufferedReader(new FileReader(file));
-				LineNumberReader lnr = new LineNumberReader(new FileReader(file));
-				lnr.skip(Long.MAX_VALUE);
-				numLines = lnr.getLineNumber() + 1; 
-				lnr.close();
-				
-				String[] inputs;
-				String line;
-				String sopInstanceUID;
-				
-				for (int i = 0; i < numLines; i++ ) {
-					while(Integer.parseInt(reader.readLine()) != -1) {
-						System.out.println(reader.readLine());
+				while (reader.readLine() != null) { 
+					contours = new Vector<Contour>();
+					sopInstanceUID = reader.readLine();
+					//System.out.println(sopInstanceUID);
+					contourType = Integer.parseInt(reader.readLine());
+					while ((lineCheck = reader.readLine()) != "-1") {
+						numPoints = Integer.parseInt(lineCheck);
+						//System.out.println("type: " + contourType + "\nnum " + numPoints);
+						controlPoints = new Vector<Point2D>();
+						generatedPoints = new Vector<Point2D>();
+						while ((line = reader.readLine().split("\t")).length >= 2) {
+							float x = Float.parseFloat(line[0]);
+							float y = Float.parseFloat(line[1]);
+							if(x % Math.floor(x) == 0) { //adds first control point twice. remove?
+								controlPoints.add(new Point2D(x, y));
+							}
+							else {
+								generatedPoints.add(new Point2D(x, y));
+							}
+						}
+						Contour contour = new Contour(Contour.getTypeFromInt(contourType));
+						contour.setControlPoints(controlPoints);
+						contour.setGeneratedPoints(generatedPoints);
+						contours.add(contour);
+						if (line[0].equals("-1")) {
+							break;
+						}
+						else {
+							contourType = Integer.parseInt(line[0]);
+						}
 					}
+					System.out.println("Reached end of overlay....loading next set of contours.");
+					DICOMImage image = study.getSOPInstanceUIDToDICOMImage().get(sopInstanceUID);
+					image.getContours().addAll(contours);
 				}
 			}
 			else {
