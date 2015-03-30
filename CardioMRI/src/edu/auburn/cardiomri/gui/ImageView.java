@@ -1,23 +1,15 @@
 package edu.auburn.cardiomri.gui;
 
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.util.Arrays;
 import java.util.Observable;
 import java.util.Vector;
 
-import javax.swing.JFrame;
-import javax.swing.JLayeredPane;
+
 import javax.swing.JPanel;
 
-import com.pixelmed.dicom.AttributeList;
 import com.pixelmed.dicom.DicomException;
 import com.pixelmed.display.SingleImagePanel;
-//import com.pixelmed.display.SourceImage;
-import com.pixelmed.display.SingleImagePanel;
-import com.pixelmed.display.SourceImage;
+
 
 import edu.auburn.cardiomri.datastructure.Contour;
 import edu.auburn.cardiomri.datastructure.DICOMImage;
@@ -26,12 +18,7 @@ import edu.auburn.cardiomri.gui.ConstructImage;
 
 public class ImageView implements java.util.Observer {
 
-	private JLayeredPane layeredPanel;
-	private JFrame jFrame;
 	private JPanel panel;
-	private JPanel glass;
-	private MouseListener mouseListener;
-
 	private ImageDisplay display = null;
 
 	private Vector<Contour> contours;
@@ -43,47 +30,47 @@ public class ImageView implements java.util.Observer {
 
 		if (obj.getClass() == DICOMImage.class) { 
 
-			this.panel.removeAll();
 			this.display = null;
-			DICOMImage dImage = ((DICOMImage) obj);
 			
-			this.contours = dImage.getContours();
+			SingleImagePanel.deconstructAllSingleImagePanelsInContainer(this.panel);
+
+			this.panel.removeAll();
+		
+			DICOMImage dImage = ((DICOMImage) obj);
 		
 			ConstructImage sImg = null;
 
 			try {
 
-				System.out.println("Image view reset Image");
 				sImg = new ConstructImage(dImage);
 
 				this.display = new ImageDisplay(sImg);
+				this.contours = dImage.getContours();
 				this.display.setContours(this.contours);
-
-				this.panel.revalidate();
+				
 
 			} catch (DicomException e) {
 				e.printStackTrace();
 			}
-
-			SingleImagePanel.deconstructAllSingleImagePanelsInContainer(this.panel);
-
-
-			this.panel.removeAll();
-
-			this.panel.add(display);
-			this.panel.revalidate();
 			
+			
+			this.display.revalidate();
+			this.display.repaint();	
+			this.panel.add(this.display);
+			this.panel.revalidate();
+			this.panel.repaint();
 		}
 		
 		if(obj instanceof Vector<?>)
 		{
-			if(((Vector<Contour>) obj).firstElement().getClass() == currentContour.getClass())
+			if(((Vector<Contour>) obj).firstElement().getClass() == contourObject.getClass())
 			{
 				this.contours = (Vector<Contour>) obj;
 				if(this.display != null){
 					this.display.setContours(contours);
 					this.display.setPreDefinedShapes(contours);
 					this.display.repaint();
+					this.panel.repaint();
 				}
 			}
 		}
@@ -93,21 +80,12 @@ public class ImageView implements java.util.Observer {
 			if(this.display != null){
 				this.display.setCurrentContour((Contour) obj);
 				this.display.repaint();
+				this.panel.repaint();
 			}
 			currentContour = (Contour) obj;
 		}
 	}
 
-	// Setters
-	/*
-	 * Sets the class' mouseListener attribute.
-	 *
-	 * @param mL : MouseListener object that is used as the class' mouseListener
-	 * attribute.
-	 */
-	public void setMouseListener(MouseListener mL) {
-		this.mouseListener = mL;
-	}
 
 	// Getters
 	/*
@@ -118,6 +96,12 @@ public class ImageView implements java.util.Observer {
 
 	public JPanel getPanel() { 
 		return this.panel; 
+	}
+	
+	public void refresh()
+	{
+		this.display.revalidate();
+		this.display.repaint();	
 	}
 	
 	// Constructors

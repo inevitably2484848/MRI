@@ -31,13 +31,6 @@ public class ImageDisplay extends SingleImagePanel {
 		if (currentContour != null)
 		{
 			currentContour.addControlPoint(e.getX(), e.getY());
-			if(currentContour.getControlPoints().size() == 3)
-			{
-		        //how to get back to DICOMImage??
-		        //contours.add(currentContour);
-				this.setPreDefinedShapes(contours);
-				this.revalidate();
-			}
 			this.repaint();	
 		}
 	}
@@ -55,7 +48,8 @@ public class ImageDisplay extends SingleImagePanel {
 	}
 	
 	public void setContours(Vector<Contour> contours) {
-	    this.contours = contours;
+		this.contours = contours;
+		this.setPreDefinedShapes(this.contours);
 	}
 }
 

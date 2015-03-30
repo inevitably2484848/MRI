@@ -430,9 +430,9 @@ public class GUIController  implements java.awt.event.ActionListener, MouseListe
 			else {
 	//System.out.println("FileChooser : Canceled choosing directory");
 			}
-		 
-	 }
-	 
+		this.mainImageModel.refresh();
+	}
+
 	 
 	 
 	 /*
@@ -613,6 +613,7 @@ public class GUIController  implements java.awt.event.ActionListener, MouseListe
 		this.imageModelSmallLeft.addContourToImage(new Contour(Contour.Type.DEFAULT));
 		this.imageModelSmallRight.setCurrentImage(this.gIndex, this.sIndex, this.tIndex, this.iIndex);
 		this.imageModelSmallRight.addContourToImage(new Contour(Contour.Type.DEFAULT));
+
 	}
 	
 
@@ -769,17 +770,14 @@ public class GUIController  implements java.awt.event.ActionListener, MouseListe
 	 */
 	public void setImageView(ImageView iv) {
 		this.mainImageView = iv;
-		this.mainImageView.setMouseListener(this);
 	}
 	
 	public void setImageViewSmallLeft(ImageView iv) {
 		this.imageViewSmallLeft = iv;
-		this.imageViewSmallLeft.setMouseListener(this);
 	}
 	
 	public void setImageViewSmallRight(ImageView iv) {
 		this.imageViewSmallRight = iv;
-		this.imageViewSmallRight.setMouseListener(this);
 	}
 	
 	/*
