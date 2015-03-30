@@ -51,16 +51,20 @@ public class RunMVC {
 		
 		// Image bit
 		ImageModel imageModel = new ImageModel();
-		ImageModel imageModel2 = new ImageModel();
+		ImageModel imageModelSmallLeft = new ImageModel();
+		ImageModel imageModelSmallRight = new ImageModel();
+		
 		ImageView imageView = new ImageView();
-		ImageView imageView2 = new ImageView();
-		ImageView imageView3 = new ImageView();
+		ImageView imageViewSmallLeft = new ImageView();
+		ImageView imageViewSmallRight = new ImageView();
 		
 		imageModel.addObserver(imageView);
-		imageModel2.addObserver(imageView2);
+		imageModelSmallLeft.addObserver(imageViewSmallLeft);
+		imageModelSmallRight.addObserver(imageViewSmallRight);
 		
 		guiController.setImageViewer(imageModel, imageView);
-		guiController.setImageViewer2(imageModel2,  imageView2);
+		guiController.setImageViewerSmallLeft(imageModelSmallLeft,  imageViewSmallLeft);
+		guiController.setImageViewerSmallRight(imageModelSmallRight, imageViewSmallRight);
 				
 		
 		//imageView.addController(guiController);
@@ -76,26 +80,30 @@ public class RunMVC {
 		
 		// set the size of the grid view
 		gridView.setSize(new Dimension(300, 200));
-		
-		JSplitPane structImagePane2 = new JSplitPane(JSplitPane.VERTICAL_SPLIT,
-				structAndGridPane, imageView2.getPanel());
-		structImagePane2.setDividerLocation(200);
-		
-		JSplitPane structImagePane3 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
-				structImagePane2, imageView3.getPanel());
-		structImagePane3.setDividerLocation(200);
-		
+
 		//JSplitPane structGridAndAttr = new JSplitPane(JSplitPane.VERTICAL_SPLIT,
 				//structAndGridPane, metaDataView.getPanel());
 		//structGridAndAttr.setDividerLocation(200);
+		
+		JSplitPane structImagePane2 = new JSplitPane(JSplitPane.VERTICAL_SPLIT,
+				structAndGridPane, imageViewSmallLeft.getPanel());
+		structImagePane2.setDividerLocation(200);
 		
 		JSplitPane splitPaneWithImage = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
 				structImagePane2, imageView.getPanel());
 		splitPaneWithImage.setDividerLocation(600);
 		
-		//frame.add(structImagePane2);
+		JSplitPane structImagePane3 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
+				splitPaneWithImage, imageViewSmallRight.getPanel());
+		//structImagePane3.setSize(new Dimension(300, 200));
+		//structImagePane3.setDividerLocation(300);
+		//structImagePane3.setLeftComponent(structImagePane2);
+		
+		
 		frame.add(splitPaneWithImage);
+		//frame.add(structImagePane2);
 		//frame.add(structImagePane3);
+		
 		
 		guiController.setMainComponent(splitPaneWithImage);
 		//guiController.setMainComponent(structImagePane2);
@@ -107,11 +115,6 @@ public class RunMVC {
 		JMenu fileMenu = new JMenu("File");
 		menuBar.add(fileMenu);
 		
-		JMenu add = new JMenu("Add"); //change to add shape later?
-		menuBar.add(add);
-		
-		JMenu addContour = new JMenu("Add Contour");
-		add.add(addContour);
 		// New menu
 		JMenu newMenu = new JMenu("New Study");
 		
@@ -159,22 +162,7 @@ public class RunMVC {
 		JMenuItem loadContours = new JMenuItem("Load Contours");
 		loadContours.setActionCommand("Load Contours");
 		loadContours.addActionListener(guiController);
-
-		JMenuItem defaultType = new JMenuItem("Default");
-		defaultType.setActionCommand("Default Type");
-		defaultType.addActionListener(guiController);
-		addContour.add(defaultType);
 		
-		JMenuItem closedType = new JMenuItem("Closed");
-		closedType.setActionCommand("Closed Type");
-		closedType.addActionListener(guiController);
-		addContour.add(closedType);
-		
-		JMenuItem openType = new JMenuItem("Open");
-		openType.setActionCommand("Open Type");
-		openType.addActionListener(guiController);
-		addContour.add(openType);
-
 		JMenuItem deleteContourAxis = new JMenuItem("Delete Contour Axis");
 		deleteContourAxis.setActionCommand("Delete Contour Axis");
 		deleteContourAxis.addActionListener(guiController);
@@ -196,15 +184,12 @@ public class RunMVC {
 		
 		menuBar.add(contours);
 		menuBar.add(view);
-
+		
 		fileMenu.add(newMenu);
 		fileMenu.add(openExisting);
 		fileMenu.add(saveStudy);
 		fileMenu.add(saveAsStudy);
 		fileMenu.add(importDicom);
-		fileMenu.add(saveContours);
-		fileMenu.add(loadContours);
-		
 		
 		guiController.setAppFrame(frame);
 		
