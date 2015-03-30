@@ -1,14 +1,17 @@
 package edu.auburn.cardiomri.gui;
 
 import java.awt.*;
+import java.awt.event.MouseListener;
 import java.util.Observable;
 import java.util.Vector;
+
 
 
 import javax.swing.JPanel;
 
 import com.pixelmed.dicom.DicomException;
 import com.pixelmed.display.SingleImagePanel;
+
 
 
 import edu.auburn.cardiomri.datastructure.Contour;
@@ -23,6 +26,7 @@ public class ImageView implements java.util.Observer {
 
 	private Vector<Contour> contours;
 	private Contour contourObject = new Contour(Contour.Type.DEFAULT), currentContour;
+    private MouseListener mouseListener;
 
 	// Observer methods
 	@Override
@@ -86,7 +90,17 @@ public class ImageView implements java.util.Observer {
 		}
 	}
 
-
+    // Setters
+    /*
+     * Sets the class' mouseListener attribute.
+     *
+     * @param mL : MouseListener object that is used as the class' mouseListener
+     * attribute.
+     */
+    public void setMouseListener(MouseListener mL) {
+        this.mouseListener = mL;
+    }
+    
 	// Getters
 	/*
 	 * Returns the class panel attribute.
