@@ -23,10 +23,11 @@ public class ImageDisplay extends SingleImagePanel {
 	//SingleImagePanel methods 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		
+
 		//System.out.println("Success");
 		//System.out.println("   " + e.getX()*2 + " " +e.getY()*2);
 		//System.out.print(this.getSelectedDrawingShapes());
+
 		if (currentContour != null)
 		{
 			currentContour.addControlPoint(e.getX(), e.getY());
@@ -40,6 +41,7 @@ public class ImageDisplay extends SingleImagePanel {
 			this.repaint();	
 		}
 	}
+	
 	
 	//Allows for imageView to set the contour that the clicks get added to
 	

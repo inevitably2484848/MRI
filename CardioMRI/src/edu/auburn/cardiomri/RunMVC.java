@@ -159,7 +159,7 @@ public class RunMVC {
 		JMenuItem loadContours = new JMenuItem("Load Contours");
 		loadContours.setActionCommand("Load Contours");
 		loadContours.addActionListener(guiController);
-		
+
 		JMenuItem defaultType = new JMenuItem("Default");
 		defaultType.setActionCommand("Default Type");
 		defaultType.addActionListener(guiController);
@@ -174,7 +174,7 @@ public class RunMVC {
 		openType.setActionCommand("Open Type");
 		openType.addActionListener(guiController);
 		addContour.add(openType);
-		
+
 		JMenuItem deleteContourAxis = new JMenuItem("Delete Contour Axis");
 		deleteContourAxis.setActionCommand("Delete Contour Axis");
 		deleteContourAxis.addActionListener(guiController);
@@ -196,7 +196,7 @@ public class RunMVC {
 		
 		menuBar.add(contours);
 		menuBar.add(view);
-		
+
 		fileMenu.add(newMenu);
 		fileMenu.add(openExisting);
 		fileMenu.add(saveStudy);

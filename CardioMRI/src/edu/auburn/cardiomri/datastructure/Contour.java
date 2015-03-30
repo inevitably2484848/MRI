@@ -290,6 +290,7 @@ public class Contour implements Shape {
         DEFAULT_OPEN // Example of something that is always an open contour
     }
 
+
     public static final Map<Type, Boolean> IS_CLOSED_CONTOUR;
     public static final Map<Type, Integer> TYPE_TO_INTEGER;
 
@@ -307,5 +308,6 @@ public class Contour implements Shape {
         tempTypeToInteger.put(Type.DEFAULT_CLOSED, 8);
         tempTypeToInteger.put(Type.DEFAULT_OPEN, 4);
         TYPE_TO_INTEGER = Collections.unmodifiableMap(tempTypeToInteger);
+
     }
 }

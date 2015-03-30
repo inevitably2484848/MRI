@@ -33,6 +33,7 @@ public class ImageView implements java.util.Observer {
 	private MouseListener mouseListener;
 
 	private ImageDisplay display = null;
+
 	private Vector<Contour> contours;
 	private Contour contourObject = new Contour(Contour.Type.DEFAULT), currentContour;
 
@@ -43,20 +44,18 @@ public class ImageView implements java.util.Observer {
 		if (obj.getClass() == DICOMImage.class) { 
 
 			this.panel.removeAll();
-
 			this.display = null;
-
 			DICOMImage dImage = ((DICOMImage) obj);
 			
 			this.contours = dImage.getContours();
 		
 			ConstructImage sImg = null;
-			
+
 			try {
-				
+
 				System.out.println("Image view reset Image");
 				sImg = new ConstructImage(dImage);
-				
+
 				this.display = new ImageDisplay(sImg);
 				this.display.setContours(this.contours);
 
@@ -67,12 +66,13 @@ public class ImageView implements java.util.Observer {
 			}
 
 			SingleImagePanel.deconstructAllSingleImagePanelsInContainer(this.panel);
-				//this.display.setContours(contours);
-				//TODO need changed when implement multiple contours on image?
+
+
 			this.panel.removeAll();
-			
+
 			this.panel.add(display);
 			this.panel.revalidate();
+			
 		}
 		
 		if(obj instanceof Vector<?>)

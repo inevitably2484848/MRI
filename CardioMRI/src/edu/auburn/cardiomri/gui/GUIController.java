@@ -364,7 +364,7 @@ public class GUIController  implements java.awt.event.ActionListener, MouseListe
 		//TODO Categorize points based on location (i.e. LA, RA, Endo, Epi, etc...
 		//TODO merge with save() in SerializableManager
 		Study study = this.studyStructModel.getStudy();
-		Vector<Contour> contours = new Vector<Contour>();
+		Vector<Contour> contours;
 		Writer writer = null;
 		String path = System.getProperty("user.dir") + File.separator + "contourPoints.txt";
 		File f = new File(path);
@@ -373,24 +373,26 @@ public class GUIController  implements java.awt.event.ActionListener, MouseListe
 			writer = new PrintWriter(new BufferedWriter(new FileWriter(f, false)));
 			for (DICOMImage image : study.getSOPInstanceUIDToDICOMImage().values()) {
 				contours = image.getContours();
-				if (contours == null || contours.isEmpty()) {
+				if (contours.size() <= 1) {
 					continue;
 				}
-				writer.write("\n" + image.getSopInstanceUID());
-				for (Contour c : contours) {
-					if (c.getControlPoints().size() > 0) {
-						int numPoints = c.getControlPoints().size() + c.getGeneratedPoints().size();
-						String header = "\n" + c.getIntFromType() + "\n" + numPoints + "\n";
-						writer.write(header);
-						for (javafx.geometry.Point2D point : c.getControlPoints()) {
-							writer.write(Double.toString(point.getX()) + "\t" + Double.toString(point.getY()) + "\n");
-						}
-						for (javafx.geometry.Point2D point : c.getGeneratedPoints()) {
-							writer.write(Double.toString(point.getX()) + "\t" + Double.toString(point.getY()) + "\n");
+				else {
+					writer.write("\n" + image.getSopInstanceUID() + "\n");
+					for (Contour c : contours) {
+						if (c.getControlPoints().size() > 0) {
+							int numPoints = c.getControlPoints().size() + c.getGeneratedPoints().size();
+							String header = c.getIntFromType() + "\n" + numPoints + "\n";
+							writer.write(header);
+							for (javafx.geometry.Point2D point : c.getControlPoints()) {
+								writer.write(Double.toString(point.getX()) + "\t" + Double.toString(point.getY()) + "\n");
+							}
+							for (javafx.geometry.Point2D point : c.getGeneratedPoints()) {
+								writer.write(Double.toString(point.getX()) + "\t" + Double.toString(point.getY()) + "\n");
+							}
 						}
 					}
+					writer.write((-1) + "\n");
 				}
-				writer.write((-1) + "\n");
 			}
 			writer.close();
 		} catch (IOException e) {
@@ -402,66 +404,61 @@ public class GUIController  implements java.awt.event.ActionListener, MouseListe
 		//TODO #7, 8. log error if type not found...
 		//TODO figure out how to separate control/generated points
 		Study study = this.studyStructModel.getStudy();
-
-		Vector<Contour> contours = new Vector<Contour>();
+		Vector<Contour> contours;
+		List<Point2D> controlPoints;
+		List<Point2D> generatedPoints;
+		
+		String sopInstanceUID;
+		String[] line = new String[2];
+		String lineCheck;
+		
+		int contourType;
+		int numPoints;
+		
 		fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		int returnVal = fileChooser.showOpenDialog(this.mainComponent);
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
 			File file = new File(fileChooser.getSelectedFile().getPath());
-			List<Point2D> controlPoints = new Vector<Point2D>();
-			List<Point2D> generatedPoints = new Vector<Point2D>();
 			try {
-				int numLines;
 				BufferedReader reader = new BufferedReader(new FileReader(file));
-				LineNumberReader lnr = new LineNumberReader(new FileReader(file));
-				lnr.skip(Long.MAX_VALUE);
-				numLines = lnr.getLineNumber() + 1; 
-				lnr.close();
-
-				String sopInstanceUID = "";
-				int contourType;
-				int numPoints;
-				String[] line = new String[2];
-				String lineCheck;
-
-				for (int i = 0; i < numLines; i++ ) {
-					reader.readLine(); //read blank line
+				while (reader.readLine() != null) { 
+					contours = new Vector<Contour>();
 					sopInstanceUID = reader.readLine();
 					System.out.println(sopInstanceUID);
-					
+					contourType = Integer.parseInt(reader.readLine());
 					while ((lineCheck = reader.readLine()) != "-1") {
-						if (lineCheck.length() == 1) {
-								
-								
-				
-								contourType = Integer.parseInt(line[0]);
-								numPoints = Integer.parseInt(line[1]);
-								System.out.println(contourType);
-								
-						}
-						else {
-							line = reader.readLine().split("\t");
+						numPoints = Integer.parseInt(lineCheck);
+						System.out.println("type: " + contourType + "\nnum " + numPoints);
+						controlPoints = new Vector<Point2D>();
+						generatedPoints = new Vector<Point2D>();
+						while ((line = reader.readLine().split("\t")).length >= 2) {
 							float x = Float.parseFloat(line[0]);
 							float y = Float.parseFloat(line[1]);
-							//control points
-							if(x % Math.floor(x) == 0) {
+							if(x % Math.floor(x) == 0) { //adds first control point twice. remove?
 								controlPoints.add(new Point2D(x, y));
 							}
 							else {
 								generatedPoints.add(new Point2D(x, y));
 							}
 						}
+						Contour contour = new Contour(Contour.Type.DEFAULT);
+						contour.setControlPoints(controlPoints);
+						contour.setGeneratedPoints(generatedPoints);
+						contours.add(contour);
+						if (line[0].equals("-1")) {
+							break;
+						}
+						else {
+							contourType = Integer.parseInt(line[0]);
+						}
 					}
-					System.out.println("Reached end of first overlay....loading next set of contours.");
+					System.out.println("Reached end of overlay....loading next set of contours.");
+					DICOMImage image = study.getSOPInstanceUIDToDICOMImage().get(sopInstanceUID);
+					image.setContours(contours);
 				}
-				boolean set = false;
-				DICOMImage image = study.getImage(sopInstanceUID);
-				image.setContours(contours);
-				set=true;
-				if (set) {System.out.println("Found the image corresponding to text file");}
-				else {System.out.println("Couldn't find the image from the text file");}
 				reader.close();
-			} catch (IOException x) {
+			}
+			catch (IOException x) {
 				System.err.format("IOException: %s%n", x);
 			}
 		}
@@ -641,7 +638,7 @@ public class GUIController  implements java.awt.event.ActionListener, MouseListe
 		this.gridModel.setCurrentImage(this.gIndex, this.sIndex, this.tIndex, this.iIndex);
 		this.metaDataModel.setCurrentImage(this.gIndex, this.sIndex, this.tIndex, this.iIndex);
 		this.imageModel.setCurrentImage(this.gIndex, this.sIndex, this.tIndex, this.iIndex);
-		this.imageModel.addContourToImage(new Contour(Contour.Type.DEFAULT));
+		//this.imageModel.addContourToImage(new Contour(Contour.Type.DEFAULT));
 		this.imageModel2.setCurrentImage(this.gIndex, this.sIndex, this.tIndex, this.iIndex);
 		this.imageModel2.addContourToImage(new Contour(Contour.Type.DEFAULT));
 	}
