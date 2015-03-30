@@ -777,7 +777,6 @@ public class GUIController  implements java.awt.event.ActionListener, MouseListe
 	 */
 	public void setImageView(ImageView iv) {
 		this.imageView = iv;
-		this.imageView.setMouseListener(this);
 	}
 	
 	
