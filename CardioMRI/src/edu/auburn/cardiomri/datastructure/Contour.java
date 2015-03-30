@@ -283,6 +283,10 @@ public class Contour implements Shape {
     public Integer getIntFromType() {
         return Contour.TYPE_TO_INTEGER.get(getContourType());
     }
+    
+    public static Type getTypeFromInt(int contourType) {
+    	return Contour.INTEGER_TO_TYPE.get(contourType);
+    }
 
     public enum Type {
         DEFAULT, DEFAULT_CLOSED, // Example of something that is always a closed
@@ -293,6 +297,7 @@ public class Contour implements Shape {
 
     public static final Map<Type, Boolean> IS_CLOSED_CONTOUR;
     public static final Map<Type, Integer> TYPE_TO_INTEGER;
+    public static final Map<Integer, Type> INTEGER_TO_TYPE;
 
     static {
         Map<Type, Boolean> tempIsClosedContour = new HashMap<Type, Boolean>();
@@ -308,6 +313,12 @@ public class Contour implements Shape {
         tempTypeToInteger.put(Type.DEFAULT_CLOSED, 8);
         tempTypeToInteger.put(Type.DEFAULT_OPEN, 4);
         TYPE_TO_INTEGER = Collections.unmodifiableMap(tempTypeToInteger);
+        
+        Map<Integer, Type> tempIntegerToType = new HashMap<Integer, Type>();
+        tempIntegerToType.put(7, Type.DEFAULT);
+        tempIntegerToType.put(4, Type.DEFAULT_OPEN);
+        tempIntegerToType.put(8, Type.DEFAULT_CLOSED);
+        INTEGER_TO_TYPE = Collections.unmodifiableMap(tempIntegerToType);
 
     }
 }

@@ -128,6 +128,12 @@ public class GUIController  implements java.awt.event.ActionListener, MouseListe
 		else if (actionCommand.equals("Default Type")) {
 			this.imageModel.addContourToImage(new Contour(Type.DEFAULT));
 		}
+		else if (actionCommand.equals("Closed Type")) {
+			this.imageModel.addContourToImage(new Contour(Type.DEFAULT_CLOSED));
+		}
+		else if (actionCommand.equals("Open Type")) {
+			this.imageModel.addContourToImage(new Contour(Type.DEFAULT_OPEN));
+		}
 		else if (actionCommand.substring(0, 6).equals("Button")) {
 //System.out.println("GUIController : resetting focus");
 
@@ -428,11 +434,11 @@ public class GUIController  implements java.awt.event.ActionListener, MouseListe
 				while (reader.readLine() != null) { 
 					contours = new Vector<Contour>();
 					sopInstanceUID = reader.readLine();
-					System.out.println(sopInstanceUID);
+					//System.out.println(sopInstanceUID);
 					contourType = Integer.parseInt(reader.readLine());
 					while ((lineCheck = reader.readLine()) != "-1") {
 						numPoints = Integer.parseInt(lineCheck);
-						System.out.println("type: " + contourType + "\nnum " + numPoints);
+						//System.out.println("type: " + contourType + "\nnum " + numPoints);
 						controlPoints = new Vector<Point2D>();
 						generatedPoints = new Vector<Point2D>();
 						while ((line = reader.readLine().split("\t")).length >= 2) {
@@ -445,7 +451,7 @@ public class GUIController  implements java.awt.event.ActionListener, MouseListe
 								generatedPoints.add(new Point2D(x, y));
 							}
 						}
-						Contour contour = new Contour(Contour.Type.DEFAULT);
+						Contour contour = new Contour(Contour.getTypeFromInt(contourType));
 						contour.setControlPoints(controlPoints);
 						contour.setGeneratedPoints(generatedPoints);
 						contours.add(contour);
@@ -458,12 +464,8 @@ public class GUIController  implements java.awt.event.ActionListener, MouseListe
 					}
 					System.out.println("Reached end of overlay....loading next set of contours.");
 					DICOMImage image = study.getSOPInstanceUIDToDICOMImage().get(sopInstanceUID);
-					if (image.getContours().size() > 1) {
-						image.getContours().addAll(contours);
-					}
-					else {
-						image.setContours(contours);
-					}
+					image.getContours().addAll(contours);
+					
 				}
 				reader.close();
 			}

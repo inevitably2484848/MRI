@@ -98,7 +98,7 @@ public final class ContourCalc {
         if (controlPoints == null) {
             throw new NullPointerException("List cannot be null");
         }
-        if (controlPoints.size() < 2) {
+        if (controlPoints.size() < 3) {
             return new Vector<Point2D>(controlPoints);
         }
 
