@@ -22,6 +22,8 @@ import java.io.LineNumberReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.Writer;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -384,10 +386,12 @@ public class GUIController  implements java.awt.event.ActionListener, MouseListe
 							String header = c.getIntFromType() + "\n" + numPoints + "\n";
 							writer.write(header);
 							for (javafx.geometry.Point2D point : c.getControlPoints()) {
-								writer.write(Double.toString(point.getX()) + "\t" + Double.toString(point.getY()) + "\n");
+								writer.write(BigDecimal.valueOf(point.getX()).setScale(4, BigDecimal.ROUND_UP) + 
+										"\t" + BigDecimal.valueOf(point.getY()).setScale(4, BigDecimal.ROUND_UP) + "\n");
 							}
 							for (javafx.geometry.Point2D point : c.getGeneratedPoints()) {
-								writer.write(Double.toString(point.getX()) + "\t" + Double.toString(point.getY()) + "\n");
+								writer.write(BigDecimal.valueOf(point.getX()).setScale(4, BigDecimal.ROUND_UP) + 
+										"\t" + BigDecimal.valueOf(point.getY()).setScale(4, BigDecimal.ROUND_UP) + "\n");
 							}
 						}
 					}
@@ -454,7 +458,12 @@ public class GUIController  implements java.awt.event.ActionListener, MouseListe
 					}
 					System.out.println("Reached end of overlay....loading next set of contours.");
 					DICOMImage image = study.getSOPInstanceUIDToDICOMImage().get(sopInstanceUID);
-					image.setContours(contours);
+					if (image.getContours().size() > 1) {
+						image.getContours().addAll(contours);
+					}
+					else {
+						image.setContours(contours);
+					}
 				}
 				reader.close();
 			}
