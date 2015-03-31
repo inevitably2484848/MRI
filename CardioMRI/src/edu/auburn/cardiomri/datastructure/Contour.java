@@ -27,15 +27,15 @@ public class Contour implements Shape {
 
     public Contour(Type contourTypeIn) {
         this();
-        this.contourType = contourTypeIn;
+        contourType = contourTypeIn;
     }
 
     /**
      * Sets controlPoints to a predefined set of points.
      */
     private Contour() {
-        this.controlPoints = new Vector<Point2D>();
-        this.generatedPoints = new Vector<Point2D>();
+        controlPoints = new Vector<Point2D>();
+        generatedPoints = new Vector<Point2D>();
     }
 
     public void setControlPoints(List<Point2D> points) {
@@ -49,7 +49,7 @@ public class Contour implements Shape {
             newList.add(new Point2D(point.getX(), point.getY()));
         }
 
-        this.controlPoints = newList;
+        controlPoints = newList;
     }
 
     public void setGeneratedPoints(List<Point2D> points) {
@@ -57,7 +57,7 @@ public class Contour implements Shape {
             throw new NullPointerException("List cannot be null");
         }
 
-        this.generatedPoints = new Vector<Point2D>(points);
+        generatedPoints = new Vector<Point2D>(points);
     }
 
     @Override
@@ -91,7 +91,7 @@ public class Contour implements Shape {
         int maxX = Integer.MIN_VALUE;
         int maxY = Integer.MIN_VALUE;
 
-        for (Point2D point : this.controlPoints) {
+        for (Point2D point : controlPoints) {
             minX = (int) Math.floor(Math.min(point.getX(), minX));
             minY = (int) Math.floor(Math.min(point.getY(), minY));
             maxX = (int) Math.ceil(Math.max(point.getX(), maxX));
@@ -108,7 +108,7 @@ public class Contour implements Shape {
         double maxX = Double.MIN_VALUE;
         double maxY = Double.MIN_VALUE;
 
-        for (Point2D point : this.controlPoints) {
+        for (Point2D point : controlPoints) {
             minX = Math.min(point.getX(), minX);
             minY = Math.min(point.getY(), minY);
             maxX = Math.max(point.getX(), maxX);
@@ -124,20 +124,20 @@ public class Contour implements Shape {
         // System.out.println(at.getScaleY());
         // TODO Don't ignore the transform
 
-        this.setGeneratedPoints(ContourCalc.generate(this.controlPoints, this.isClosedCurve()));
+        setGeneratedPoints(ContourCalc.generate(controlPoints, isClosedCurve()));
 
         return new PathIterator() {
             private int index = 0;
 
             @Override
             public void next() {
-                this.index += 1; // Is this right?
+                index += 1; // Is this right?
             }
 
             @Override
             public boolean isDone() {
                 // TODO Make sure controlPoints isn't null
-                return this.index >= Contour.this.generatedPoints.size();
+                return index >= generatedPoints.size();
             }
 
             @Override
@@ -147,17 +147,15 @@ public class Contour implements Shape {
 
             @Override
             public int currentSegment(double[] coords) {
-                if (this.index == 0) {
-                    coords[0] = Contour.this.generatedPoints.get(0).getX();
-                    coords[1] = Contour.this.generatedPoints.get(0).getY();
+                if (index == 0) {
+                    coords[0] = generatedPoints.get(0).getX();
+                    coords[1] = generatedPoints.get(0).getY();
                     return PathIterator.SEG_MOVETO;
-                } else if ((this.index > 0)) { // && (this.index <
-                                               // Contour.this.generatedPoints.size()))
-                                               // {
-                    coords[0] = Contour.this.generatedPoints.get(this.index)
-                            .getX();
-                    coords[1] = Contour.this.generatedPoints.get(this.index)
-                            .getY();
+                } else if ((index > 0)) { // && (this.index <
+                                          // Contour.this.generatedPoints.size()))
+                                          // {
+                    coords[0] = generatedPoints.get(index).getX();
+                    coords[1] = generatedPoints.get(index).getY();
                     return PathIterator.SEG_LINETO;
                 } else {
                     return PathIterator.SEG_CLOSE;
@@ -166,17 +164,13 @@ public class Contour implements Shape {
 
             @Override
             public int currentSegment(float[] coords) {
-                if (this.index == 0) {
-                    coords[0] = (float) Contour.this.generatedPoints.get(0)
-                            .getX();
-                    coords[1] = (float) Contour.this.generatedPoints.get(0)
-                            .getY();
+                if (index == 0) {
+                    coords[0] = (float) generatedPoints.get(0).getX();
+                    coords[1] = (float) generatedPoints.get(0).getY();
                     return PathIterator.SEG_MOVETO;
-                } else if (this.index > 0) {
-                    coords[0] = (float) Contour.this.generatedPoints.get(
-                            this.index).getX();
-                    coords[1] = (float) Contour.this.generatedPoints.get(
-                            this.index).getY();
+                } else if (index > 0) {
+                    coords[0] = (float) generatedPoints.get(index).getX();
+                    coords[1] = (float) generatedPoints.get(index).getY();
                     return PathIterator.SEG_LINETO;
                 } else {
                     return PathIterator.SEG_CLOSE;
@@ -211,7 +205,7 @@ public class Contour implements Shape {
      */
     public void addControlPoint(double x, double y) {
         validateCoordinates(x, y);
-        this.controlPoints.add(new Point2D(x, y));
+        controlPoints.add(new Point2D(x, y));
     }
 
     /**
@@ -241,7 +235,7 @@ public class Contour implements Shape {
      * @return copy of the internal list
      */
     public List<Point2D> getControlPoints() {
-        return new Vector<Point2D>(this.controlPoints);
+        return new Vector<Point2D>(controlPoints);
     }
 
     /**
@@ -253,8 +247,8 @@ public class Contour implements Shape {
      */
     public List<Point2D> getGeneratedPoints() {
         // TODO Can this be changed so that it's only called when necessary?
-        this.setGeneratedPoints(ContourCalc.generate(this.controlPoints, this.isClosedCurve()));
-        return new Vector<Point2D>(this.generatedPoints);
+        setGeneratedPoints(ContourCalc.generate(controlPoints, isClosedCurve()));
+        return new Vector<Point2D>(generatedPoints);
     }
 
     /**
@@ -263,7 +257,7 @@ public class Contour implements Shape {
      * @return boolean value is true if the curve is closed
      */
     public boolean isClosedCurve() {
-        return Contour.IS_CLOSED_CONTOUR.get(this.contourType);
+        return Contour.IS_CLOSED_CONTOUR.get(contourType);
     }
 
     /**
@@ -272,7 +266,7 @@ public class Contour implements Shape {
      * @param contourTypeIn the type of contour
      */
     public void setContourType(Type contourTypeIn) {
-        this.contourType = contourTypeIn;
+        contourType = contourTypeIn;
     }
 
     public Type getContourType() {
@@ -282,17 +276,16 @@ public class Contour implements Shape {
     public Integer getIntFromType() {
         return Contour.TYPE_TO_INTEGER.get(getContourType());
     }
-    
+
     public static Type getTypeFromInt(int contourType) {
-    	return Contour.INTEGER_TO_TYPE.get(contourType);
+        return Contour.INTEGER_TO_TYPE.get(contourType);
     }
 
     public enum Type {
         DEFAULT, DEFAULT_CLOSED, // Example of something that is always a closed
-                                 // contour
+        // contour
         DEFAULT_OPEN // Example of something that is always an open contour
     }
-
 
     public static final Map<Type, Boolean> IS_CLOSED_CONTOUR;
     public static final Map<Type, Integer> TYPE_TO_INTEGER;
@@ -312,7 +305,7 @@ public class Contour implements Shape {
         tempTypeToInteger.put(Type.DEFAULT_CLOSED, 8);
         tempTypeToInteger.put(Type.DEFAULT_OPEN, 4);
         TYPE_TO_INTEGER = Collections.unmodifiableMap(tempTypeToInteger);
-        
+
         Map<Integer, Type> tempIntegerToType = new HashMap<Integer, Type>();
         tempIntegerToType.put(7, Type.DEFAULT);
         tempIntegerToType.put(4, Type.DEFAULT_OPEN);
