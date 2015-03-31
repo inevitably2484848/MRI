@@ -78,8 +78,14 @@ public class ContourTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testAddControlPointThrowsIllegalArgumentExceptionWhenGivenNegativeCoordinates() {
+    public void testAddControlPointThrowsIllegalArgumentExceptionWhenGivenNegativeXCoordinate() {
         contour.addControlPoint(-1, 2);
+        fail("Exception not thrown");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testAddControlPointThrowsIllegalArgumentExceptionWhenGivenNegativeYCoordinate() {
+        contour.addControlPoint(1, -2);
         fail("Exception not thrown");
     }
 
