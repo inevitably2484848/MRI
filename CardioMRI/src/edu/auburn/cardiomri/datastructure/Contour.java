@@ -57,13 +57,7 @@ public class Contour implements Shape {
             throw new NullPointerException("List cannot be null");
         }
 
-        List<Point2D> newList = new Vector<Point2D>();
-        for (Point2D point : points) {
-            validateCoordinates(point.getX(), point.getY());
-            newList.add(new Point2D(point.getX(), point.getY()));
-        }
-
-        this.generatedPoints = newList;
+        this.generatedPoints = new Vector<Point2D>(points);
     }
 
     @Override
@@ -226,8 +220,13 @@ public class Contour implements Shape {
      * @param x
      * @param y
      */
-    private void validateCoordinates(double x, double y) {
+    protected void validateCoordinates(double x, double y) {
         if ((x >= 0) && (y >= 0)) {
+            if (controlPoints.contains(new Point2D(x, y))) {
+                String message = String.format(
+                        "Coordinates (%1$f, %2$f) must be unique", x, y);
+                throw new IllegalArgumentException(message);
+            }
             return;
         } else {
             String message = String.format(

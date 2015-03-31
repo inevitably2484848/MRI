@@ -78,20 +78,15 @@ public class ContourTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testSetGeneratedlPointsThrowsIllegalArgumentExceptionWhenGivenPointsWithNegativeCoordinates() {
-        List<Point2D> list = new Vector<Point2D>();
-
-        list.add(new Point2D(1, 2));
-        list.add(new Point2D(3, -4)); // The bad point
-        list.add(new Point2D(5, 6));
-
-        contour.setGeneratedPoints(list);
+    public void testAddControlPointThrowsIllegalArgumentExceptionWhenGivenNegativeCoordinates() {
+        contour.addControlPoint(-1, 2);
         fail("Exception not thrown");
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testAddControlPointThrowsIllegalArgumentExceptionWhenGivenNegativeCoordinates() {
-        contour.addControlPoint(-1, 2);
+    public void testAddControlPointThrowsIllegalArgumentExceptionWhenPointHasAlreadyBeenAdded() {
+        contour.addControlPoint(1, 2);
+        contour.addControlPoint(1, 2);
         fail("Exception not thrown");
     }
 
