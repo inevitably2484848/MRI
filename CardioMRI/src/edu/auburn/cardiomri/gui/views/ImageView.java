@@ -1,4 +1,4 @@
-package edu.auburn.cardiomri.gui;
+package edu.auburn.cardiomri.gui.views;
 
 import java.awt.Color;
 import java.awt.GridLayout;
@@ -12,6 +12,9 @@ import com.pixelmed.display.SingleImagePanel;
 
 import edu.auburn.cardiomri.datastructure.Contour;
 import edu.auburn.cardiomri.datastructure.DICOMImage;
+import edu.auburn.cardiomri.gui.ConstructImage;
+import edu.auburn.cardiomri.gui.ImageDisplay;
+import edu.auburn.cardiomri.gui.models.ImageModel;
 
 public class ImageView implements java.util.Observer {
     private JPanel panel;

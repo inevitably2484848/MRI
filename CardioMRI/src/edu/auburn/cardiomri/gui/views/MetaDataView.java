@@ -1,4 +1,4 @@
-package edu.auburn.cardiomri.gui;
+package edu.auburn.cardiomri.gui.views;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -13,11 +13,13 @@ import javax.swing.border.EtchedBorder;
 
 import edu.auburn.cardiomri.datastructure.DICOMImage;
 import edu.auburn.cardiomri.datastructure.Study;
+import edu.auburn.cardiomri.gui.models.MetaDataModel;
 
 public class MetaDataView implements java.util.Observer {
 	
 	private JPanel panel;
 	private JTable attrTable;
+	private MetaDataModel model;
 	
 	// Observer methods
 	public void update(Observable obs, Object obj) {
@@ -74,5 +76,13 @@ public class MetaDataView implements java.util.Observer {
 		this.panel.add("North", new Label("No DICOM has been imported"));
 		
 	}
+
+    public MetaDataModel getModel() {
+        return model;
+    }
+
+    public void setModel(MetaDataModel model) {
+        this.model = model;
+    }
 	
 }

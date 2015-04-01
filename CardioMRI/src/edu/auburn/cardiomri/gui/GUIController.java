@@ -48,10 +48,15 @@ import edu.auburn.cardiomri.datastructure.Slice;
 import edu.auburn.cardiomri.datastructure.Study;
 import edu.auburn.cardiomri.datastructure.Study.NotInStudyException;
 import edu.auburn.cardiomri.datastructure.Time;
-import edu.auburn.cardiomri.gui.MetaDataModel;
-import edu.auburn.cardiomri.gui.MetaDataView;
-import edu.auburn.cardiomri.gui.StudyStructureModel;
-import edu.auburn.cardiomri.gui.StudyStructureView;
+import edu.auburn.cardiomri.gui.models.GridModel;
+import edu.auburn.cardiomri.gui.models.ImageModel;
+import edu.auburn.cardiomri.gui.models.MetaDataModel;
+import edu.auburn.cardiomri.gui.models.StudyStructureModel;
+import edu.auburn.cardiomri.gui.nodes.ImageTreeNode;
+import edu.auburn.cardiomri.gui.views.GridView;
+import edu.auburn.cardiomri.gui.views.ImageView;
+import edu.auburn.cardiomri.gui.views.MetaDataView;
+import edu.auburn.cardiomri.gui.views.StudyStructureView;
 import edu.auburn.cardiomri.lib.SerializationManager;
 
 public class GUIController  implements java.awt.event.ActionListener, MouseListener  {
@@ -726,6 +731,7 @@ public class GUIController  implements java.awt.event.ActionListener, MouseListe
      */
     public void setGridView(GridView gv) {
         this.gridView = gv;
+        this.gridView.setModel(this.gridModel);
         this.gridView.setActionListener(this);
     }
 
@@ -760,6 +766,7 @@ public class GUIController  implements java.awt.event.ActionListener, MouseListe
      */
     public void setMetaDataView(MetaDataView mdv) {
         this.metaDataView = mdv;
+        this.metaDataView.setModel(this.metaDataModel);
     }
     
     /*

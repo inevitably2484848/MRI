@@ -72,7 +72,7 @@ import com.pixelmed.display.SourceImage;
 
 import edu.auburn.cardiomri.datastructure.DICOMImage;
 
-public class ConstructImage extends SourceImage{
+public class ConstructImage extends SourceImage {
 
 	/***/
 	private static final String identString = "@(#) $Header: /userland/cvs/pixelmed/imgbook/com/pixelmed/display/SourceImage.java,v 1.81 2014/06/22 12:25:18 dclunie Exp $";

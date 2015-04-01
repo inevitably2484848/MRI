@@ -1,12 +1,12 @@
-package edu.auburn.cardiomri.gui;
+package edu.auburn.cardiomri.gui.models;
 
 import edu.auburn.cardiomri.datastructure.DICOMImage;
 import edu.auburn.cardiomri.datastructure.Study;
 
-public class GridModel extends java.util.Observable {
+public class MetaDataModel extends java.util.Observable {
 	
 	private Study study;
-	private DICOMImage dImage;
+	private DICOMImage curImage;
 	private int g, s, t, i;
 	
 	
@@ -17,12 +17,9 @@ public class GridModel extends java.util.Observable {
 	 *  @param s : The object that the class will use as its study attribute.
 	 */
 	public void setStudy(Study s) {
-//System.out.println("GridModel : setStudy");
+//System.out.println("MetaDataModel : study set");
 		
 		this.study = s;
-		
-		setChanged();
-		notifyObservers(this.study);
 	}
 	
 	/*
@@ -35,39 +32,20 @@ public class GridModel extends java.util.Observable {
 	 *  @param groupIndex : New imageIndex.
 	 */
 	public void setCurrentImage(int groupIndex, int sliceIndex, int timeIndex, int imageIndex) {
-//System.out.println("GridModel : setCurrentImage");
-		
-		boolean newGroup = (this.g != groupIndex);
+//System.out.println("MetaDataModel : Current Image set");
 		
 		this.g = groupIndex;
 		this.s = sliceIndex;
 		this.t = timeIndex;
 		this.i = imageIndex;
 		
-		int[] indices = {this.g, this.s, this.t, this.i};
+		this.curImage = this.study.getGroups().get(g).getSlices().get(s).getTimes().get(t).getImages().get(i);
 		
 		setChanged();
-		// update new current image
-		notifyObservers(indices);
-		
-		if (newGroup) {
-			// then reset the grid
-//System.out.println("GridModel : new Group");
-			setChanged();
-			notifyObservers(this.study);
-		}
+		notifyObservers(this.curImage);
 	}
 	
 	// Getters
-	/*
-	 * Returns the class' study attribute.
-	 * 
-	 *  @return		The class' study attribute.
-	 */
-	public Study getStudy() {
-		return this.study;
-	}
-	
 	/*
 	 * Returns the currently selected DICOMImage object given the current
 	 * indices.
@@ -75,14 +53,18 @@ public class GridModel extends java.util.Observable {
 	 *  @return		The currently selected DICOMImage.
 	 */
 	public DICOMImage getImage() {
-		return this.dImage;
+		return this.study.getGroups().get(g).getSlices().get(s).
+				getTimes().get(t).getImages().get(i);
 	}
 	
-	// Constructors
-	public GridModel() {
-//System.out.println("GridModel()");
-		this.study = null;
-		this.dImage = null;
+	// Constructor(s)
+	public MetaDataModel() {
+//System.out.println("MetaDataModel()");
+		
+		this.g 	= 0;
+		this.s 	= 0;
+		this.t 	= 0;
+		this.i 	= 0;
 	}
-
+	
 }

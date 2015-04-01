@@ -1,4 +1,4 @@
-package edu.auburn.cardiomri.gui;
+package edu.auburn.cardiomri.gui.models;
 
 import java.util.Vector;
 

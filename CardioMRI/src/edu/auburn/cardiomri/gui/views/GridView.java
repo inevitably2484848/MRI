@@ -1,4 +1,4 @@
-package edu.auburn.cardiomri.gui;
+package edu.auburn.cardiomri.gui.views;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -13,6 +13,7 @@ import javax.swing.JScrollPane;
 
 import edu.auburn.cardiomri.datastructure.Slice;
 import edu.auburn.cardiomri.datastructure.Study;
+import edu.auburn.cardiomri.gui.models.GridModel;
 
 public class GridView implements java.util.Observer {
 
@@ -28,6 +29,8 @@ public class GridView implements java.util.Observer {
 	private JButton[][] buttons;
 	
 	private ActionListener actionListener;
+	
+	private GridModel model;
 	
 	// Observer methods
 	public void update(Observable obs, Object obj) {
@@ -229,5 +232,13 @@ public class GridView implements java.util.Observer {
 		this.t = 0;
 		this.i = 0;
 	}
+
+    public GridModel getModel() {
+        return model;
+    }
+
+    public void setModel(GridModel model) {
+        this.model = model;
+    }
 	
 }
