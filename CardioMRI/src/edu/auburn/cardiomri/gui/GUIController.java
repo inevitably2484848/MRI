@@ -812,17 +812,17 @@ public class GUIController  implements java.awt.event.ActionListener, MouseListe
      */
     public void setImageView(ImageView iv) {
         this.mainImageView = iv;
-        this.mainImageView.setMouseListener(this);
+        this.mainImageView.setModel(mainImageModel);
     }
     
     public void setImageViewSmallLeft(ImageView iv) {
         this.imageViewSmallLeft = iv;
-        this.imageViewSmallLeft.setMouseListener(this);
+        this.imageViewSmallLeft.setModel(imageModelSmallLeft);
     }
     
     public void setImageViewSmallRight(ImageView iv) {
         this.imageViewSmallRight = iv;
-        this.imageViewSmallRight.setMouseListener(this);
+        this.imageViewSmallRight.setModel(imageModelSmallRight);
     }
     
     /*
@@ -939,6 +939,14 @@ public class GUIController  implements java.awt.event.ActionListener, MouseListe
      *  @return The GUIController's imageView attribute.
      */
     public ImageView getImageView() { return this.mainImageView; }
+
+    public ImageView getImageViewSmallLeft() {
+        return imageViewSmallLeft;
+    }
+    
+    public ImageView getImageViewSmallRight() {
+        return imageViewSmallRight;
+    }
 
     /*
      * Returns the class' mainComponent attribute.

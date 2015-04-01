@@ -12,7 +12,6 @@ import edu.auburn.cardiomri.datastructure.Contour.Type;
 public class ImageDisplay extends SingleImagePanel {
 
 	private Contour currentContour = null;
-	private Vector<Contour> contours;
 	
 	//Constructor 
 	//Takes a image to be displayed
@@ -23,7 +22,6 @@ public class ImageDisplay extends SingleImagePanel {
 	//SingleImagePanel methods 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-
 		//System.out.println("Success");
 		//System.out.println("   " + e.getX()*2 + " " +e.getY()*2);
 		//System.out.print(this.getSelectedDrawingShapes());
@@ -32,6 +30,8 @@ public class ImageDisplay extends SingleImagePanel {
 		{
 			currentContour.addControlPoint(e.getX(), e.getY());
 			this.repaint();	
+		} else {
+		    // throw error, currentContour is null
 		}
 	}
 	
@@ -43,13 +43,8 @@ public class ImageDisplay extends SingleImagePanel {
 		currentContour = contour;
 	}
 	
-	public Vector<Contour> getContours() {
-		return this.contours;
-	}
-	
 	public void setContours(Vector<Contour> contours) {
-		this.contours = contours;
-		this.setPreDefinedShapes(this.contours);
+		this.setPreDefinedShapes(contours);
 	}
 }
 
