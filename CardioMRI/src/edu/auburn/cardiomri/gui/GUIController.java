@@ -454,7 +454,7 @@ public class GUIController  implements java.awt.event.ActionListener, MouseListe
                         }
                         Contour contour = new Contour(Contour.getTypeFromInt(contourType));
                         contour.setControlPoints(controlPoints);
-                        contour.setGeneratedPoints(generatedPoints);
+                        // contour.setGeneratedPoints(generatedPoints);
                         contours.add(contour);
                         if (line[0].equals("-1")) {
                             break;

@@ -50,14 +50,7 @@ public class Contour implements Shape {
         }
 
         controlPoints = newList;
-    }
-
-    public void setGeneratedPoints(List<Point2D> points) {
-        if (points == null) {
-            throw new NullPointerException("List cannot be null");
-        }
-
-        generatedPoints = new Vector<Point2D>(points);
+        generatedPoints = ContourCalc.generate(controlPoints, isClosedCurve());
     }
 
     @Override
@@ -123,8 +116,6 @@ public class Contour implements Shape {
         // System.out.println(at.getScaleX());
         // System.out.println(at.getScaleY());
         // TODO Don't ignore the transform
-
-        setGeneratedPoints(ContourCalc.generate(controlPoints, isClosedCurve()));
 
         return new PathIterator() {
             private int index = 0;
@@ -206,6 +197,7 @@ public class Contour implements Shape {
     public void addControlPoint(double x, double y) {
         validateCoordinates(x, y);
         controlPoints.add(new Point2D(x, y));
+        generatedPoints = ContourCalc.generate(controlPoints, isClosedCurve());
     }
 
     /**
@@ -239,15 +231,11 @@ public class Contour implements Shape {
     }
 
     /**
-     * Returns a copy list of the points generated to create a smooth curve. The
-     * {@link ContourCalc#generate} function is called before the points are
-     * returned.
+     * Returns a copy of the list of points generated to create a smooth curve.
      *
      * @return copy of the internal list
      */
     public List<Point2D> getGeneratedPoints() {
-        // TODO Can this be changed so that it's only called when necessary?
-        setGeneratedPoints(ContourCalc.generate(controlPoints, isClosedCurve()));
         return new Vector<Point2D>(generatedPoints);
     }
 
@@ -267,6 +255,7 @@ public class Contour implements Shape {
      */
     public void setContourType(Type contourTypeIn) {
         contourType = contourTypeIn;
+        generatedPoints = ContourCalc.generate(controlPoints, isClosedCurve());
     }
 
     public Type getContourType() {

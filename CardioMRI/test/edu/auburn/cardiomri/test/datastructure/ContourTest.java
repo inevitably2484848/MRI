@@ -2,6 +2,7 @@ package edu.auburn.cardiomri.test.datastructure;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.List;
@@ -66,15 +67,9 @@ public class ContourTest {
         contour.setControlPoints(list);
         List<Point2D> contourList = contour.getControlPoints();
 
-        for (int i = 0; i < list.size(); i++) {
-            assertEquals(list.get(i), contourList.get(i));
+        for (Point2D point : list) {
+            assertTrue(contourList.contains(point));
         }
-    }
-
-    @Test(expected = NullPointerException.class)
-    public void testSetGeneratedPointsThrowsNullPointerExceptionWhenGivenNullList() {
-        contour.setGeneratedPoints(null);
-        fail("Exception not thrown");
     }
 
     @Test(expected = IllegalArgumentException.class)
