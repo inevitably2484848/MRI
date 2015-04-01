@@ -75,7 +75,7 @@ public class GridView implements java.util.Observer {
      * accurately reflects the current Group's Slice and Time structure.
      * 
      * @param study : Study object that is used to reference as what the Group
-     * structure is like.
+     *            structure is like.
      */
     public void resetGrid(Study study) {
 
@@ -191,7 +191,7 @@ public class GridView implements java.util.Observer {
      * Sets the class' actionListener attribute.
      * 
      * @param aL : ActionListener object that is used as the class'
-     * actionListener attribute.
+     *            actionListener attribute.
      */
     public void setActionListener(ActionListener aL) {
         this.actionListener = aL;

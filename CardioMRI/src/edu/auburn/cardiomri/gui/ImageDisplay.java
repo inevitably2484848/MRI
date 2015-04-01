@@ -4,47 +4,46 @@ import java.awt.event.MouseEvent;
 import java.util.Vector;
 
 import com.pixelmed.display.SingleImagePanel;
-import com.pixelmed.display.SourceImage;
 
 import edu.auburn.cardiomri.datastructure.Contour;
-import edu.auburn.cardiomri.datastructure.Contour.Type;
 
 public class ImageDisplay extends SingleImagePanel {
 
-	private Contour currentContour = null;
-	
-	//Constructor 
-	//Takes a image to be displayed
-	public ImageDisplay(ConstructImage sImg) { //change from SourceImage to ConstructImage
-		super(sImg);
-	}
-	
-	//SingleImagePanel methods 
-	@Override
-	public void mouseClicked(MouseEvent e) {
-		//System.out.println("Success");
-		//System.out.println("   " + e.getX()*2 + " " +e.getY()*2);
-		//System.out.print(this.getSelectedDrawingShapes());
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -6920775905498293695L;
+    private Contour currentContour = null;
 
-		if (currentContour != null)
-		{
-			currentContour.addControlPoint(e.getX(), e.getY());
-			this.repaint();	
-		} else {
-		    // throw error, currentContour is null
-		}
-	}
-	
-	
-	//Allows for imageView to set the contour that the clicks get added to
-	
-	public void setCurrentContour(Contour contour)
-	{
-		currentContour = contour;
-	}
-	
-	public void setContours(Vector<Contour> contours) {
-		this.setPreDefinedShapes(contours);
-	}
+    // Constructor
+    // Takes a image to be displayed
+    public ImageDisplay(ConstructImage sImg) { // change from SourceImage to
+                                               // ConstructImage
+        super(sImg);
+    }
+
+    // SingleImagePanel methods
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        // System.out.println("Success");
+        // System.out.println("   " + e.getX()*2 + " " +e.getY()*2);
+        // System.out.print(this.getSelectedDrawingShapes());
+
+        if (currentContour != null) {
+            currentContour.addControlPoint(e.getX(), e.getY());
+            this.repaint();
+        } else {
+            // throw error, currentContour is null
+        }
+    }
+
+    // Allows for imageView to set the contour that the clicks get added to
+
+    public void setCurrentContour(Contour contour) {
+        currentContour = contour;
+    }
+
+    public void setContours(Vector<Contour> contours) {
+        this.setPreDefinedShapes(contours);
+    }
 }
-

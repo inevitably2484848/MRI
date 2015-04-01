@@ -5,6 +5,7 @@ import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.PathIterator;
 import java.awt.geom.Rectangle2D;
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -14,7 +15,8 @@ import java.util.Vector;
 import javafx.geometry.Point2D;
 import edu.auburn.cardiomri.lib.ContourCalc;
 
-public class Contour implements Shape {
+public class Contour implements Shape, Serializable {
+    private static final long serialVersionUID = 6179619427503035482L;
 
     // XY coordinates of points the user clicked
     private List<Point2D> controlPoints;

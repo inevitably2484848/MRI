@@ -1,9 +1,5 @@
 package edu.auburn.cardiomri.gui.views;
 
-import edu.auburn.cardiomri.datastructure.Study;
-import edu.auburn.cardiomri.gui.models.StudyStructureModel;
-import edu.auburn.cardiomri.gui.nodes.StudyTreeNode;
-
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionListener;
@@ -15,6 +11,10 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
 import javax.swing.tree.TreePath;
+
+import edu.auburn.cardiomri.datastructure.Study;
+import edu.auburn.cardiomri.gui.models.StudyStructureModel;
+import edu.auburn.cardiomri.gui.nodes.StudyTreeNode;
 
 public class StudyStructureView implements java.util.Observer {
 

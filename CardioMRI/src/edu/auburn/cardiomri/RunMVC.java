@@ -9,11 +9,11 @@ import javax.swing.JSplitPane;
 import edu.auburn.cardiomri.gui.GUIController;
 import edu.auburn.cardiomri.gui.models.GridModel;
 import edu.auburn.cardiomri.gui.models.ImageModel;
-import edu.auburn.cardiomri.gui.models.MetaDataModel;
+import edu.auburn.cardiomri.gui.models.MetadataModel;
 import edu.auburn.cardiomri.gui.models.StudyStructureModel;
 import edu.auburn.cardiomri.gui.views.GridView;
 import edu.auburn.cardiomri.gui.views.ImageView;
-import edu.auburn.cardiomri.gui.views.MetaDataView;
+import edu.auburn.cardiomri.gui.views.MetadataView;
 import edu.auburn.cardiomri.gui.views.StudyStructureView;
 
 public class RunMVC {
@@ -222,13 +222,13 @@ public class RunMVC {
         return imageView;
     }
 
-    private MetaDataView setUpMetaData(GUIController guiController) {
-        MetaDataModel metaDataModel = new MetaDataModel();
-        MetaDataView metaDataView = new MetaDataView();
-        metaDataModel.addObserver(metaDataView);
-        guiController.setMetaData(metaDataModel, metaDataView);
+    private MetadataView setUpMetaData(GUIController guiController) {
+        MetadataModel metadataModel = new MetadataModel();
+        MetadataView metadataView = new MetadataView();
+        metadataModel.addObserver(metadataView);
+        guiController.setMetadata(metadataModel, metadataView);
         // metaDataView.addController(guiController);
-        return metaDataView;
+        return metadataView;
     }
 
     private GridView setUpGrid(GUIController guiController) {
