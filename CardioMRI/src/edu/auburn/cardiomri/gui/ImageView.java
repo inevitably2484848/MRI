@@ -23,10 +23,9 @@ public class ImageView implements java.util.Observer {
 
 	private JPanel panel;
 	private ImageDisplay display = null;
-
 	private Vector<Contour> contours;
 	private Contour contourObject = new Contour(Contour.Type.DEFAULT), currentContour;
-    private MouseListener mouseListener;
+	private MouseListener mouseListener;
 
 	// Observer methods
 	@Override
@@ -35,13 +34,13 @@ public class ImageView implements java.util.Observer {
 		if (obj.getClass() == DICOMImage.class) { 
 
 			this.display = null;
-			
+
 			SingleImagePanel.deconstructAllSingleImagePanelsInContainer(this.panel);
 
 			this.panel.removeAll();
-		
+
 			DICOMImage dImage = ((DICOMImage) obj);
-		
+
 			ConstructImage sImg = null;
 
 			try {
@@ -51,20 +50,19 @@ public class ImageView implements java.util.Observer {
 				this.display = new ImageDisplay(sImg);
 				this.contours = dImage.getContours();
 				this.display.setContours(this.contours);
-				
 
 			} catch (DicomException e) {
 				e.printStackTrace();
 			}
-			
-			
+
 			this.display.revalidate();
 			this.display.repaint();	
 			this.panel.add(this.display);
 			this.panel.revalidate();
 			this.panel.repaint();
+
 		}
-		
+
 		if(obj instanceof Vector<?>)
 		{
 			if(((Vector<Contour>) obj).firstElement().getClass() == contourObject.getClass())
@@ -78,7 +76,7 @@ public class ImageView implements java.util.Observer {
 				}
 			}
 		}
-		
+
 		if(obj.getClass() == contourObject.getClass())
 		{
 			if(this.display != null){
@@ -90,17 +88,18 @@ public class ImageView implements java.util.Observer {
 		}
 	}
 
-    // Setters
-    /*
-     * Sets the class' mouseListener attribute.
-     *
-     * @param mL : MouseListener object that is used as the class' mouseListener
-     * attribute.
-     */
-    public void setMouseListener(MouseListener mL) {
-        this.mouseListener = mL;
-    }
-    
+
+	// Setters
+	/*
+	 * Sets the class' mouseListener attribute.
+	 *
+	 * @param mL : MouseListener object that is used as the class' mouseListener
+	 * attribute.
+	 */
+	public void setMouseListener(MouseListener mL) {
+		this.mouseListener = mL;
+	}
+
 	// Getters
 	/*
 	 * Returns the class panel attribute.
@@ -111,24 +110,25 @@ public class ImageView implements java.util.Observer {
 	public JPanel getPanel() { 
 		return this.panel; 
 	}
-	
+
 	public void refresh()
 	{
 		this.display.revalidate();
 		this.display.repaint();	
 	}
-	
+
 	// Constructors
 	public ImageView() {
 		//System.out.println("ImageView()");
-		
+
 		this.panel = new JPanel();
 		this.panel.setLayout(new GridLayout(1, 1));
 		this.panel.setBackground(Color.BLACK);
 		this.panel.setOpaque(true);
 		this.panel.setVisible(true);
+		
 	}
-	
+
 	public ImageDisplay getImageDisplay() {
 		return this.display;
 	}
