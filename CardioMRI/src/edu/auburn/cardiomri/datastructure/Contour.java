@@ -277,6 +277,22 @@ public class Contour implements Shape, Serializable {
         // contour
         DEFAULT_OPEN // Example of something that is always an open contour
     }
+    
+    public String toString() {
+    	//TODO change strings to more descriptive things...
+    	if (this.getContourType().equals(Type.DEFAULT)) {
+    		return "DEFAULT";
+    	}
+    	else if (this.getContourType().equals(Type.DEFAULT_CLOSED)) {
+    		return "CLOSED";
+    	}
+    	else if (this.getContourType().equals(Type.DEFAULT_OPEN)) {
+    		return "OPEN";
+    	}
+    	else {
+    		return "unknown type";
+    	}
+    }
 
     public static final Map<Type, Boolean> IS_CLOSED_CONTOUR;
     public static final Map<Type, Integer> TYPE_TO_INTEGER;

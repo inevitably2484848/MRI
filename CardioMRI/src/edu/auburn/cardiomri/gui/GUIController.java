@@ -125,9 +125,10 @@ public class GUIController implements java.awt.event.ActionListener,
         } else if (actionCommand.equals("Open Type")) {
             this.mainImageModel
                     .addContourToImage(new Contour(Type.DEFAULT_OPEN));
+        } else if (actionCommand.equals("Delete All Contours")) {
+            this.deleteAllContoursForImage();
         } else if (actionCommand.substring(0, 6).equals("Button")) {
             // System.out.println("GUIController : resetting focus");
-
             StringTokenizer tokenizer = new StringTokenizer(
                     actionCommand.substring(7), ",");
             String timeStr = tokenizer.nextToken();
@@ -351,12 +352,20 @@ public class GUIController implements java.awt.event.ActionListener,
     }
 
     /**
+     * deletes all of the Contours for the displayed image
+     */
+    private void deleteAllContoursForImage() {
+        DICOMImage dImage = this.studyStructModel.getImage();
+        dImage.getContours().clear();
+    }
+
+    /**
      * Saves current image's contour lines into a .txt file containing a header
      * and the X and Y coordinates of all the points along the contour
      * 
      * @param contour : Contour object to be saved
-     * 
      */
+
     private void saveContour() {
         // TODO Categorize points based on location (i.e. LA, RA, Endo, Epi,
         // etc...
@@ -416,6 +425,13 @@ public class GUIController implements java.awt.event.ActionListener,
         }
     }
 
+    /**
+     * reads in a text file containing lists of coordinates for Contour objects
+     * for one or more images and assigns the Contours to their corresponding
+     * images.
+     * 
+     * @throws IOException
+     */
     private void loadContour() throws IOException {
         // TODO #7, 8. log error if type not found...
         // TODO figure out how to separate control/generated points
