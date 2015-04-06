@@ -5,6 +5,8 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JSplitPane;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
 import edu.auburn.cardiomri.gui.GUIController;
 import edu.auburn.cardiomri.gui.models.GridModel;
@@ -18,9 +20,16 @@ import edu.auburn.cardiomri.gui.views.StudyStructureView;
 
 public class RunMVC {
     private static final int FRAME_WIDTH = 1200;
-    private static final int FRAME_HEIGHT = 600;
+    private static final int FRAME_HEIGHT = 800;
 
     public RunMVC() {
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (ClassNotFoundException | IllegalAccessException
+                | InstantiationException | UnsupportedLookAndFeelException e) {
+            e.printStackTrace();
+        }
+
         GUIController guiController = new GUIController();
 
         setUpStudyStructure(guiController);
@@ -46,11 +55,11 @@ public class RunMVC {
 
         JSplitPane structAndGridPane = new JSplitPane(
                 JSplitPane.HORIZONTAL_SPLIT, guiController.getStudyStructView()
-                        .getPanel(), guiController.getGridView().getPanel());
+                .getPanel(), guiController.getGridView().getPanel());
         JSplitPane smallImagesPane = new JSplitPane(
                 JSplitPane.HORIZONTAL_SPLIT, guiController
-                        .getImageViewSmallLeft().getPanel(), guiController
-                        .getImageViewSmallRight().getPanel());
+                .getImageViewSmallLeft().getPanel(), guiController
+                .getImageViewSmallRight().getPanel());
         JSplitPane structAndSmallImagesPane = new JSplitPane(
                 JSplitPane.VERTICAL_SPLIT, structAndGridPane, smallImagesPane);
         JSplitPane structAndSmallImagesAndMainImagePane = new JSplitPane(
@@ -59,8 +68,8 @@ public class RunMVC {
 
         structAndSmallImagesAndMainImagePane.setDividerLocation(frame
                 .getWidth() / 2);
-        structAndSmallImagesPane.setDividerLocation(frame.getHeight() / 2);
-        structAndGridPane.setDividerLocation(frame.getWidth() / 4);
+        structAndSmallImagesPane.setDividerLocation(frame.getHeight() / 3);
+        structAndGridPane.setDividerLocation(frame.getWidth() / 6);
         smallImagesPane.setDividerLocation(frame.getWidth() / 4);
 
         frame.add(structAndSmallImagesAndMainImagePane);

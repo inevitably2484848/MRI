@@ -642,8 +642,12 @@ public class GUIController implements java.awt.event.ActionListener,
         this.gridModel.setStudy(s);
         this.metadataModel.setStudy(s);
         this.mainImageModel.setStudy(s);
+
+        // TODO: Try and find 2CH 4CH images
         this.imageModelSmallLeft.setStudy(s);
+        // this.imageModelSmallLeft.setImage(g, s, t, i);
         this.imageModelSmallRight.setStudy(s);
+        // this.imageModelSmallLeft.setImage(g, s, t, i);
     }
 
     /**
@@ -661,16 +665,16 @@ public class GUIController implements java.awt.event.ActionListener,
                 this.tIndex, this.iIndex);
         this.mainImageModel.setCurrentImage(this.gIndex, this.sIndex,
                 this.tIndex, this.iIndex);
-        this.mainImageModel
-                .addContourToImage(new Contour(Contour.Type.DEFAULT));
+        // this.mainImageModel
+        // .addContourToImage(new Contour(Contour.Type.DEFAULT));
         this.imageModelSmallLeft.setCurrentImage(this.gIndex, this.sIndex,
                 this.tIndex, this.iIndex);
-        this.imageModelSmallLeft.addContourToImage(new Contour(
-                Contour.Type.DEFAULT));
+        // this.imageModelSmallLeft.addContourToImage(new Contour(
+        // Contour.Type.DEFAULT));
         this.imageModelSmallRight.setCurrentImage(this.gIndex, this.sIndex,
                 this.tIndex, this.iIndex);
-        this.imageModelSmallRight.addContourToImage(new Contour(
-                Contour.Type.DEFAULT));
+        // this.imageModelSmallRight.addContourToImage(new Contour(
+        // Contour.Type.DEFAULT));
     }
 
     /**
