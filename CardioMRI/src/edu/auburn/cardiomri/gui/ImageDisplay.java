@@ -1,5 +1,7 @@
 package edu.auburn.cardiomri.gui;
 
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.event.MouseEvent;
 import java.util.Vector;
 
@@ -45,5 +47,11 @@ public class ImageDisplay extends SingleImagePanel {
 
     public void setContours(Vector<Contour> contours) {
         this.setPreDefinedShapes(contours);
+    }
+    
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        Graphics2D g2d = (Graphics2D) g;
+        System.out.println("test");
     }
 }
