@@ -2,6 +2,7 @@ package edu.auburn.cardiomri.test.datastructure;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.List;
@@ -66,32 +67,27 @@ public class ContourTest {
         contour.setControlPoints(list);
         List<Point2D> contourList = contour.getControlPoints();
 
-        for (int i = 0; i < list.size(); i++) {
-            assertEquals(list.get(i), contourList.get(i));
+        for (Point2D point : list) {
+            assertTrue(contourList.contains(point));
         }
     }
 
-    @Test(expected = NullPointerException.class)
-    public void testSetGeneratedPointsThrowsNullPointerExceptionWhenGivenNullList() {
-        contour.setGeneratedPoints(null);
-        fail("Exception not thrown");
-    }
-
     @Test(expected = IllegalArgumentException.class)
-    public void testSetGeneratedlPointsThrowsIllegalArgumentExceptionWhenGivenPointsWithNegativeCoordinates() {
-        List<Point2D> list = new Vector<Point2D>();
-
-        list.add(new Point2D(1, 2));
-        list.add(new Point2D(3, -4)); // The bad point
-        list.add(new Point2D(5, 6));
-
-        contour.setGeneratedPoints(list);
-        fail("Exception not thrown");
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testAddControlPointThrowsIllegalArgumentExceptionWhenGivenNegativeCoordinates() {
+    public void testAddControlPointThrowsIllegalArgumentExceptionWhenGivenNegativeXCoordinate() {
         contour.addControlPoint(-1, 2);
+        fail("Exception not thrown");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testAddControlPointThrowsIllegalArgumentExceptionWhenGivenNegativeYCoordinate() {
+        contour.addControlPoint(1, -2);
+        fail("Exception not thrown");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testAddControlPointThrowsIllegalArgumentExceptionWhenPointHasAlreadyBeenAdded() {
+        contour.addControlPoint(1, 2);
+        contour.addControlPoint(1, 2);
         fail("Exception not thrown");
     }
 

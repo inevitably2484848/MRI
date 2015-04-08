@@ -174,14 +174,14 @@ public class ContourCalcTest {
     }
 
     @Test
-    public void testGenerateReturnsEmptyListWhenGivenZeroControlPoints() {
+    public void testGenerateReturnsEmptyListWhenGivenZeroControlPointsForOpenContour() {
         List<Point2D> generatedPoints = ContourCalc.generate(
                 new Vector<Point2D>(), false);
         assertEquals(0, generatedPoints.size());
     }
 
     @Test
-    public void testGenerateReturnsListOnePointWhenGivenOneControlPoint() {
+    public void testGenerateReturnsListWithSamePointWhenGivenOneControlPointForOpenContour() {
         Point2D controlPoint = new Point2D(1, 2);
         List<Point2D> controlPoints = new Vector<Point2D>();
         controlPoints.add(controlPoint);
@@ -194,6 +194,26 @@ public class ContourCalcTest {
                 generatedPoints.get(0));
     }
 
+    @Test
+    public void testGenerateReturnsListWithSameTwoPointsWhenGivenTwoControlPointsForOpenContour() {
+        Point2D p1 = new Point2D(1, 2);
+        Point2D p2 = new Point2D(1, 2);
+        List<Point2D> controlPoints = new Vector<Point2D>();
+        controlPoints.add(p1);
+        controlPoints.add(p2);
+        List<Point2D> generatedPoints = ContourCalc.generate(controlPoints,
+                false);
+
+        assertEquals("Generated list does not have exactly 2 points",
+                controlPoints.size(), generatedPoints.size());
+
+        for (Point2D controlPoint : controlPoints) {
+            for (Point2D generatedPoint : generatedPoints) {
+                assertEquals(controlPoint, generatedPoint);
+            }
+        }
+    }
+
     /**
      * Tests that each of the generated points is within 1 unit (pixel?) from
      * the next point in the list. When this test passes, and
@@ -201,7 +221,7 @@ public class ContourCalcTest {
      * points with a straight line will give the appearance of a smooth curve.
      */
     @Test
-    public void testGenerateReturnsListInWhichAllPointsAreCloseToEachOther() {
+    public void testGenerateReturnsListInWhichAllPointsAreCloseToEachOtherForOpenContour() {
         List<Point2D> controlPoints = new Vector<Point2D>();
         controlPoints.add(new Point2D(1, 2));
         controlPoints.add(new Point2D(3, 4));
@@ -228,7 +248,7 @@ public class ContourCalcTest {
      * curve (almost) intersects each of the control points.
      */
     @Test
-    public void testGenerateReturnsListInWhichAllControlPointsAreCloseToSomeGeneratedPoint() {
+    public void testGenerateReturnsListInWhichAllControlPointsAreCloseToSomeGeneratedPointForOpenContour() {
         List<Point2D> controlPoints = new Vector<Point2D>();
         controlPoints.add(new Point2D(1, 2));
         controlPoints.add(new Point2D(3, 4));
@@ -257,7 +277,7 @@ public class ContourCalcTest {
      * not close back on itself.
      */
     @Test
-    public void testGenerateReturnsListInWhichFirstAndLastPointsAreNotCloseToEachOther() {
+    public void testGenerateReturnsListInWhichFirstAndLastPointsAreNotCloseToEachOtherForOpenContour() {
         List<Point2D> controlPoints = new Vector<Point2D>();
         controlPoints.add(new Point2D(1, 2));
         controlPoints.add(new Point2D(3, 4));
@@ -274,13 +294,135 @@ public class ContourCalcTest {
                 actualDistance > ContourCalc.SEPARATION_DISTANCE + MAX_DELTA);
     }
 
+    @Test
+    public void testGenerateReturnsEmptyListWhenGivenZeroControlPointsForClosedContour() {
+        List<Point2D> generatedPoints = ContourCalc.generate(
+                new Vector<Point2D>(), true);
+        assertEquals(0, generatedPoints.size());
+    }
+
+    @Test
+    public void testGenerateReturnsListWithSamePointWhenGivenOneControlPointForClosedContour() {
+        Point2D controlPoint = new Point2D(1, 2);
+        List<Point2D> controlPoints = new Vector<Point2D>();
+        controlPoints.add(controlPoint);
+        List<Point2D> generatedPoints = ContourCalc.generate(controlPoints,
+                true);
+
+        assertEquals("Generated list does not have exactly 1 point",
+                controlPoints.size(), generatedPoints.size());
+        assertEquals("The points are not the same", controlPoints.get(0),
+                generatedPoints.get(0));
+    }
+
+    @Test
+    public void testGenerateReturnsListWithSameTwoPointsWhenGivenTwoControlPointsForClosedContour() {
+        Point2D p1 = new Point2D(1, 2);
+        Point2D p2 = new Point2D(1, 2);
+        List<Point2D> controlPoints = new Vector<Point2D>();
+        controlPoints.add(p1);
+        controlPoints.add(p2);
+        List<Point2D> generatedPoints = ContourCalc.generate(controlPoints,
+                true);
+
+        assertEquals("Generated list does not have exactly 2 points",
+                controlPoints.size(), generatedPoints.size());
+
+        for (Point2D controlPoint : controlPoints) {
+            for (Point2D generatedPoint : generatedPoints) {
+                assertEquals(controlPoint, generatedPoint);
+            }
+        }
+    }
+
+    @Test
+    public void testGenerateReturnsListWithMoreThanThreePointsWhenGivenThreeControlPointsForOpenContour() {
+        List<Point2D> controlPoints = new Vector<Point2D>();
+        controlPoints.add(new Point2D(1, 2));
+        controlPoints.add(new Point2D(3, 4));
+        controlPoints.add(new Point2D(5, 6));
+        List<Point2D> generatedPoints = ContourCalc.generate(controlPoints,
+                false);
+
+        assertTrue(generatedPoints.size() > 3);
+    }
+
+    @Test
+    public void testGenerateReturnsListWithMoreThanThreePointsWhenGivenThreeControlPointsForClosedContour() {
+        List<Point2D> controlPoints = new Vector<Point2D>();
+        controlPoints.add(new Point2D(1, 2));
+        controlPoints.add(new Point2D(3, 4));
+        controlPoints.add(new Point2D(5, 6));
+        List<Point2D> generatedPoints = ContourCalc.generate(controlPoints,
+                true);
+
+        assertTrue(generatedPoints.size() > 3);
+    }
+
+    /**
+     * Tests that each of the generated points is within 1 unit (pixel?) from
+     * the next point in the list. When this test passes, and
+     * SEPARATION_DISTANCE is small, you know that connecting the generated
+     * points with a straight line will give the appearance of a smooth curve.
+     */
+    @Test
+    public void testGenerateReturnsListInWhichAllPointsAreCloseToEachOtherForClosedContour() {
+        List<Point2D> controlPoints = new Vector<Point2D>();
+        controlPoints.add(new Point2D(1, 2));
+        controlPoints.add(new Point2D(3, 4));
+        controlPoints.add(new Point2D(5, 6));
+        List<Point2D> generatedPoints = ContourCalc.generate(controlPoints,
+                true);
+
+        for (int i = 1; i < generatedPoints.size(); i++) {
+            double actualDistance = generatedPoints.get(i - 1).distance(
+                    generatedPoints.get(i));
+            String errorMessage = String
+                    .format("Expected distance <= %1$f. Actual distance was %2$f",
+                            ContourCalc.SEPARATION_DISTANCE + MAX_DELTA,
+                            actualDistance);
+            assertTrue(errorMessage,
+                    actualDistance <= ContourCalc.SEPARATION_DISTANCE
+                            + MAX_DELTA);
+        }
+    }
+
+    /**
+     * Test that each of the control points is within 1 unit from one of the
+     * points in the generated list. When this test passes, you know that the
+     * curve (almost) intersects each of the control points.
+     */
+    @Test
+    public void testGenerateReturnsListInWhichAllControlPointsAreCloseToSomeGeneratedPointForClosedContour() {
+        List<Point2D> controlPoints = new Vector<Point2D>();
+        controlPoints.add(new Point2D(1, 2));
+        controlPoints.add(new Point2D(3, 4));
+        controlPoints.add(new Point2D(5, 6));
+        List<Point2D> generatedPoints = ContourCalc.generate(controlPoints,
+                true);
+
+        for (Point2D controlPoint : controlPoints) {
+            double minDistance = Double.MAX_VALUE;
+            for (Point2D generatedPoint : generatedPoints) {
+                minDistance = Math.min(minDistance,
+                        controlPoint.distance(generatedPoint));
+            }
+
+            String errorMessage = String.format(
+                    "Expected distance <= %1$f. Actual distance was %2$f",
+                    ContourCalc.SEPARATION_DISTANCE + MAX_DELTA, minDistance);
+            assertTrue(errorMessage,
+                    minDistance <= ContourCalc.SEPARATION_DISTANCE + MAX_DELTA);
+        }
+    }
+
     /**
      * Test that the first and last points in the generated list are within 1
      * unit of each other. When this test passes you know that the curve closes
      * back on itself.
      */
     @Test
-    public void testGenerateReturnsListInWhichFirstAndLastPointsAreCloseToEachOther() {
+    public void testGenerateReturnsListInWhichFirstAndLastPointsAreCloseToEachOtherForClosedContour() {
         List<Point2D> controlPoints = new Vector<Point2D>();
         controlPoints.add(new Point2D(1, 2));
         controlPoints.add(new Point2D(3, 4));
