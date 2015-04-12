@@ -1,5 +1,6 @@
 package edu.auburn.cardiomri.gui;
 
+import java.awt.GridBagLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
@@ -28,6 +29,11 @@ import javax.swing.AbstractAction;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
+import javax.swing.JSplitPane;
 import javax.swing.KeyStroke;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -65,15 +71,15 @@ public class GUIController implements java.awt.event.ActionListener,
     private GridModel gridModel;
     private MetadataModel metadataModel;
     private ImageModel mainImageModel;
-    private ImageModel imageModelSmallLeft;
-    private ImageModel imageModelSmallRight;
+    private ImageModel imageModelTwoChamber;
+    private ImageModel imageModelFourChamber;
 
     private StudyStructureView studyStructView;
     private GridView gridView;
     private MetadataView metadataView;
     private ImageView mainImageView;
-    private ImageView imageViewSmallLeft;
-    private ImageView imageViewSmallRight;
+    private ImageView imageViewTwoChamber;
+    private ImageView imageViewFourChamber;
 
     private String filename;
 
@@ -206,6 +212,149 @@ public class GUIController implements java.awt.event.ActionListener,
         // Unused
     }
 
+    public void setUpMainView(){
+    	//Delete everything on screen
+    	appFrame.getContentPane().removeAll();
+    	appFrame.validate();
+    	
+    	//Screen Re-size
+    	appFrame.setSize(1200, 800);
+    	appFrame.setLayout(new GridBagLayout());
+    	
+    	//Split Screen into three main areas
+    	JSplitPane smallImagesPane = new JSplitPane(
+	            JSplitPane.HORIZONTAL_SPLIT, this.getImageViewTwoChamber().getPanel(), this.getImageViewFourChamber().getPanel());
+    	
+    	JSplitPane imagePanes  = new JSplitPane(
+    			JSplitPane.VERTICAL_SPLIT,this.getImageView().getPanel(), smallImagesPane);
+    	
+	    JSplitPane gridPane = new JSplitPane(
+	            JSplitPane.HORIZONTAL_SPLIT,  this.getGridView().getPanel(), new JPanel());
+	   
+	    JSplitPane allPanes = new JSplitPane(
+	            JSplitPane.VERTICAL_SPLIT, gridPane,imagePanes);
+	
+	    smallImagesPane.setDividerLocation(appFrame.getHeight() / 4);
+	    imagePanes.setDividerLocation(appFrame.getWidth() / 3);
+	    gridPane.setDividerLocation(appFrame.getWidth() / 2);
+	    allPanes.setDividerLocation(appFrame.getWidth() / 4);
+	    
+	    appFrame.add(smallImagesPane);
+	    appFrame.add(imagePanes);
+	    appFrame.add(gridPane);
+	    appFrame.add(allPanes);
+    	
+    	//appFrame.add(this.getImageView().getPanel());
+	    
+	    // -------------------- Menu Bar -------------------------------
+     
+        //----- File ------- 
+        JMenu fileMenu = new JMenu("File");
+        
+	        // New Submenu
+	        JMenu newMenu = new JMenu("New Study");
+	
+	        JMenuItem newFromSingle = new JMenuItem("From Single DICOM");
+	        newFromSingle.setActionCommand("Load Single DICOM");
+	        newFromSingle.addActionListener(this);
+	        newMenu.add(newFromSingle);
+	
+	        JMenuItem newFromFileStruct = new JMenuItem("From File Structure");
+	        newFromFileStruct.setActionCommand("Create New Study");
+	        newFromFileStruct.addActionListener(this);
+	        newMenu.add(newFromFileStruct);
+
+	    fileMenu.add(newMenu);
+	    
+        JMenuItem openExisting = new JMenuItem("Open Existing (Ctrl+O)");
+        openExisting.setActionCommand("Load Existing Study");
+        openExisting.addActionListener(this);
+        fileMenu.add(openExisting);
+
+        JMenuItem saveStudy = new JMenuItem("Save (Ctrl+S)");
+        saveStudy.setActionCommand("Save Study");
+        saveStudy.addActionListener(this);
+        fileMenu.add(saveStudy);
+
+        JMenuItem saveAsStudy = new JMenuItem("Save as (Ctrl+Shift+S)");
+        saveAsStudy.setActionCommand("Save As Study");
+        saveAsStudy.addActionListener(this);
+        fileMenu.add(saveAsStudy);
+        
+        JMenuItem importDicom = new JMenuItem("Import DICOM");
+        importDicom.setActionCommand("Import DICOM");
+        importDicom.addActionListener(this);
+        fileMenu.add(importDicom);
+        
+        //----- Add ------
+        JMenu add = new JMenu("Add"); // change to add shape later?
+        
+	        //Contour Submenu
+	        JMenu addContour = new JMenu("Add Contour");
+	
+	        JMenuItem defaultType = new JMenuItem("Default");
+	        defaultType.setActionCommand("Default Type");
+	        defaultType.addActionListener(this);
+	        addContour.add(defaultType);
+	
+	        JMenuItem closedType = new JMenuItem("Closed");
+	        closedType.setActionCommand("Closed Type");
+	        closedType.addActionListener(this);
+	        addContour.add(closedType);
+	
+	        JMenuItem openType = new JMenuItem("Open");
+	        openType.setActionCommand("Open Type");
+	        openType.addActionListener(this);
+	        addContour.add(openType);
+	        add.add(addContour);
+	        
+        //----- Contour ------
+        JMenu contours = new JMenu("Contours");
+        JMenuItem saveContours = new JMenuItem("Save Contours (.txt File)");
+        saveContours.setActionCommand("Save Contours");
+        saveContours.addActionListener(this);
+        contours.add(saveContours);
+
+        JMenuItem loadContours = new JMenuItem("Load Contours");
+        loadContours.setActionCommand("Load Contours");
+        loadContours.addActionListener(this);
+        contours.add(loadContours);
+
+        JMenuItem deleteContourAxis = new JMenuItem("Delete Contour Axis");
+        deleteContourAxis.setActionCommand("Delete Contour Axis");
+        deleteContourAxis.addActionListener(this);
+        contours.add(deleteContourAxis);
+
+        JMenuItem deleteContour = new JMenuItem("Delete Contour");
+        deleteContour.setActionCommand("Delete Contour");
+        deleteContour.addActionListener(this);
+        contours.add(deleteContour);
+
+        JMenuItem deleteAllContours = new JMenuItem("Delete All Contours");
+        deleteAllContours.setActionCommand("Delete All Contours");
+        deleteAllContours.addActionListener(this);
+        contours.add(deleteAllContours);
+	        
+        //----- View -----
+        JMenu view = new JMenu("View");
+        JMenuItem zoom = new JMenuItem("Zoom");
+        view.add(zoom);
+	        
+        //----- Main Menu -----
+	    JMenuBar menuBar = new JMenuBar();
+        
+        //Add each sub menu to the top menu Bar
+        menuBar.add(fileMenu);
+        menuBar.add(add);
+        menuBar.add(contours);
+        menuBar.add(view);
+        
+        appFrame.setJMenuBar(menuBar);
+        appFrame.revalidate();
+        appFrame.repaint();
+    }
+    
+    
     /**
      * Opens a JFileChooser that allows the user to select a Directory, which
      * will then be iterated through to generate a new Study object.
@@ -215,7 +364,8 @@ public class GUIController implements java.awt.event.ActionListener,
      */
     private void createNewStudy(ActionEvent e) {
         // System.out.println("GUIController : Create New Study");
-
+    	
+    	
         fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 
         int returnVal = fileChooser.showOpenDialog(this.mainComponent);
@@ -228,7 +378,10 @@ public class GUIController implements java.awt.event.ActionListener,
             DICOMFileTreeWalker fileTreeWalker = new DICOMFileTreeWalker();
 
             Study s = fileTreeWalker.addFileTreeToStudy(path, new Study());
-
+            
+            //Upadte view
+            setUpMainView();
+            
             // update study structure Model
             this.updateNewStudy(s);
             this.updateNewDicom();
@@ -246,7 +399,8 @@ public class GUIController implements java.awt.event.ActionListener,
      */
     private void loadExistingStudy(ActionEvent e) {
         // System.out.println("GUIController : Load Existing Study");
-
+    	setUpMainView();
+    	
         FileFilter studyFilter = new FileNameExtensionFilter(
                 "Study file (.smc)", "smc");
         fileChooser.setFileFilter(studyFilter);
@@ -280,7 +434,9 @@ public class GUIController implements java.awt.event.ActionListener,
      */
     private void loadSingleDicom(ActionEvent e) throws NotInStudyException {
         // System.out.println("GUIController : Load Single DICOM");
-
+    	
+    	setUpMainView();
+    	
         FileFilter dicomType = new FileNameExtensionFilter("DICOM file (.dcm)",
                 "dcm");
         fileChooser.addChoosableFileFilter(dicomType);
@@ -660,9 +816,9 @@ public class GUIController implements java.awt.event.ActionListener,
         this.mainImageModel.setStudy(s);
 
         // TODO: Try and find 2CH 4CH images
-        this.imageModelSmallLeft.setStudy(s);
+        this.imageModelTwoChamber.setStudy(s);
         // this.imageModelSmallLeft.setImage(g, s, t, i);
-        this.imageModelSmallRight.setStudy(s);
+        this.imageModelFourChamber.setStudy(s);
         // this.imageModelSmallLeft.setImage(g, s, t, i);
     }
 
@@ -683,11 +839,11 @@ public class GUIController implements java.awt.event.ActionListener,
                 this.tIndex, this.iIndex);
         // this.mainImageModel
         // .addContourToImage(new Contour(Contour.Type.DEFAULT));
-        this.imageModelSmallLeft.setCurrentImage(this.gIndex, this.sIndex,
+        this.imageModelTwoChamber.setCurrentImage(this.gIndex, this.sIndex,
                 this.tIndex, this.iIndex);
         // this.imageModelSmallLeft.addContourToImage(new Contour(
         // Contour.Type.DEFAULT));
-        this.imageModelSmallRight.setCurrentImage(this.gIndex, this.sIndex,
+        this.imageModelFourChamber.setCurrentImage(this.gIndex, this.sIndex,
                 this.tIndex, this.iIndex);
         // this.imageModelSmallRight.addContourToImage(new Contour(
         // Contour.Type.DEFAULT));
@@ -810,14 +966,14 @@ public class GUIController implements java.awt.event.ActionListener,
         this.setImageView(iv);
     }
 
-    public void setImageViewerSmallLeft(ImageModel im, ImageView iv) {
-        this.setImageModelSmallLeft(im);
-        this.setImageViewSmallLeft(iv);
+    public void setImageViewerTwoChamber(ImageModel im, ImageView iv) {
+        this.setImageModelTwoChamber(im);
+        this.setImageViewTwoChamber(iv);
     }
 
-    public void setImageViewerSmallRight(ImageModel im, ImageView iv) {
-        this.setImageModelSmallRight(im);
-        this.setImageViewSmallRight(iv);
+    public void setImageViewerFourChamber(ImageModel im, ImageView iv) {
+        this.setImageModelFourChamber(im);
+        this.setImageViewFourChamber(iv);
     }
 
     /**
@@ -830,12 +986,12 @@ public class GUIController implements java.awt.event.ActionListener,
         this.mainImageModel = im;
     }
 
-    public void setImageModelSmallLeft(ImageModel im) {
-        this.imageModelSmallLeft = im;
+    public void setImageModelTwoChamber(ImageModel im) {
+        this.imageModelTwoChamber = im;
     }
 
-    public void setImageModelSmallRight(ImageModel im) {
-        this.imageModelSmallRight = im;
+    public void setImageModelFourChamber(ImageModel im) {
+        this.imageModelFourChamber = im;
     }
 
     /**
@@ -849,14 +1005,14 @@ public class GUIController implements java.awt.event.ActionListener,
         this.mainImageView.setModel(mainImageModel);
     }
 
-    public void setImageViewSmallLeft(ImageView iv) {
-        this.imageViewSmallLeft = iv;
-        this.imageViewSmallLeft.setModel(imageModelSmallLeft);
+    public void setImageViewTwoChamber(ImageView iv) {
+        this.imageViewTwoChamber = iv;
+        this.imageViewTwoChamber.setModel(imageModelTwoChamber);
     }
 
-    public void setImageViewSmallRight(ImageView iv) {
-        this.imageViewSmallRight = iv;
-        this.imageViewSmallRight.setModel(imageModelSmallRight);
+    public void setImageViewFourChamber(ImageView iv) {
+        this.imageViewFourChamber = iv;
+        this.imageViewFourChamber.setModel(imageModelFourChamber);
     }
 
     /**
@@ -999,12 +1155,12 @@ public class GUIController implements java.awt.event.ActionListener,
         return this.mainImageView;
     }
 
-    public ImageView getImageViewSmallLeft() {
-        return imageViewSmallLeft;
+    public ImageView getImageViewTwoChamber() {
+        return imageViewTwoChamber;
     }
 
-    public ImageView getImageViewSmallRight() {
-        return imageViewSmallRight;
+    public ImageView getImageViewFourChamber() {
+        return imageViewFourChamber;
     }
 
     /**
@@ -1018,8 +1174,7 @@ public class GUIController implements java.awt.event.ActionListener,
 
     // Default constructor
     public GUIController() {
-        fileChooser
-                .setCurrentDirectory(new File(System.getProperty("user.dir")));
+        fileChooser.setCurrentDirectory(new File(System.getProperty("user.dir")));
         // System.out.println("GUIController : GUIController()");
     }
 

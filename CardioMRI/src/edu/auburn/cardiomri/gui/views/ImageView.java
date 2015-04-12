@@ -99,6 +99,7 @@ public class ImageView implements java.util.Observer {
         // System.out.println("ImageView()");
 
         this.panel = new JPanel();
+        this.panel.setSize(200, 200);
         this.panel.setLayout(new GridLayout(1, 1));
         this.panel.setBackground(Color.BLACK);
         this.panel.setOpaque(true);
