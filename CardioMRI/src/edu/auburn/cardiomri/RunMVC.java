@@ -64,7 +64,6 @@ public class RunMVC {
         newStudy.addActionListener(guiController);
         frame.add(newStudy);
         
-        
         JButton existingStudy = new JButton("Existing Study");
         existingStudy.setActionCommand("Load Existing Study");
         existingStudy.addActionListener(guiController);

@@ -1,6 +1,8 @@
 package edu.auburn.cardiomri.gui;
 
+import java.awt.Color;
 import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
@@ -73,6 +75,7 @@ public class GUIController implements java.awt.event.ActionListener,
     private ImageModel mainImageModel;
     private ImageModel imageModelTwoChamber;
     private ImageModel imageModelFourChamber;
+    private JPanel panel;
 
     private StudyStructureView studyStructView;
     private GridView gridView;
@@ -214,37 +217,44 @@ public class GUIController implements java.awt.event.ActionListener,
 
     public void setUpMainView(){
     	//Delete everything on screen
-    	appFrame.getContentPane().removeAll();
-    	appFrame.validate();
-    	
-    	//Screen Re-size
-    	appFrame.setSize(1200, 800);
-    	appFrame.setLayout(new GridBagLayout());
+    	appFrame.dispose();
+    	JFrame frame = new JFrame("Cardio MRI");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(1200, 800);
+    	setAppFrame(frame);
+        frame.setVisible(true);
+        
+        this.panel = new JPanel();
+        this.panel.setSize(200, 200);
+        this.panel.setLayout(new GridLayout(1, 1));
+        this.panel.setBackground(Color.WHITE);
+        this.panel.setOpaque(true);
+        this.panel.setVisible(true);
     	
     	//Split Screen into three main areas
     	JSplitPane smallImagesPane = new JSplitPane(
-	            JSplitPane.HORIZONTAL_SPLIT, this.getImageViewTwoChamber().getPanel(), this.getImageViewFourChamber().getPanel());
+	            JSplitPane.VERTICAL_SPLIT, true,this.getImageViewTwoChamber().getPanel(), this.getImageViewFourChamber().getPanel());
+  	
+    	JSplitPane rightSideOfWindow = new JSplitPane(
+	            JSplitPane.VERTICAL_SPLIT, true,smallImagesPane, this.panel);
     	
     	JSplitPane imagePanes  = new JSplitPane(
-    			JSplitPane.VERTICAL_SPLIT,this.getImageView().getPanel(), smallImagesPane);
+    			JSplitPane.HORIZONTAL_SPLIT,true, this.getImageView().getPanel(), rightSideOfWindow);
     	
 	    JSplitPane gridPane = new JSplitPane(
-	            JSplitPane.HORIZONTAL_SPLIT,  this.getGridView().getPanel(), new JPanel());
+	            JSplitPane.VERTICAL_SPLIT, true,  this.getGridView().getPanel(), this.panel);
 	   
 	    JSplitPane allPanes = new JSplitPane(
-	            JSplitPane.VERTICAL_SPLIT, gridPane,imagePanes);
+	            JSplitPane.HORIZONTAL_SPLIT,true, gridPane,imagePanes);
 	
-	    smallImagesPane.setDividerLocation(appFrame.getHeight() / 4);
-	    imagePanes.setDividerLocation(appFrame.getWidth() / 3);
-	    gridPane.setDividerLocation(appFrame.getWidth() / 2);
+	    smallImagesPane.setDividerLocation(appFrame.getHeight()/4);
+	    rightSideOfWindow.setDividerLocation(appFrame.getHeight()/2);
+	    imagePanes.setDividerLocation(2*appFrame.getWidth()/4);
+	    gridPane.setDividerLocation(appFrame.getHeight() / 2);
 	    allPanes.setDividerLocation(appFrame.getWidth() / 4);
 	    
-	    appFrame.add(smallImagesPane);
-	    appFrame.add(imagePanes);
-	    appFrame.add(gridPane);
 	    appFrame.add(allPanes);
-    	
-    	//appFrame.add(this.getImageView().getPanel());
+
 	    
 	    // -------------------- Menu Bar -------------------------------
      
@@ -379,7 +389,7 @@ public class GUIController implements java.awt.event.ActionListener,
 
             Study s = fileTreeWalker.addFileTreeToStudy(path, new Study());
             
-            //Upadte view
+            //Upadte view -- Should be the pick three different groups pane
             setUpMainView();
             
             // update study structure Model
