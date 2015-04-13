@@ -35,8 +35,11 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JSlider;
 import javax.swing.JSplitPane;
 import javax.swing.KeyStroke;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.tree.TreePath;
@@ -62,7 +65,7 @@ import edu.auburn.cardiomri.gui.views.StudyStructureView;
 import edu.auburn.cardiomri.lib.SerializationManager;
 
 public class GUIController implements java.awt.event.ActionListener,
-        MouseListener {
+        MouseListener, ChangeListener {
 
     private JComponent mainComponent;
     private JFrame appFrame;
@@ -75,7 +78,9 @@ public class GUIController implements java.awt.event.ActionListener,
     private ImageModel mainImageModel;
     private ImageModel imageModelTwoChamber;
     private ImageModel imageModelFourChamber;
-    private JPanel panel;
+    private JPanel gridControlPanel;
+    private JPanel multipleImagesPanel;
+    private JPanel imageContourPanel;
 
     private StudyStructureView studyStructView;
     private GridView gridView;
@@ -224,34 +229,59 @@ public class GUIController implements java.awt.event.ActionListener,
     	setAppFrame(frame);
         frame.setVisible(true);
         
-        this.panel = new JPanel();
-        this.panel.setSize(200, 200);
-        this.panel.setLayout(new GridLayout(1, 1));
-        this.panel.setBackground(Color.WHITE);
-        this.panel.setOpaque(true);
-        this.panel.setVisible(true);
+        this.imageContourPanel = new JPanel();
+        this.imageContourPanel.setSize(200, 200);
+        this.imageContourPanel.setLayout(new GridLayout(1, 1));
+        this.imageContourPanel.setBackground(Color.BLUE);
+        this.imageContourPanel.setOpaque(true);
+        this.imageContourPanel.setVisible(true);
+        
+        this.gridControlPanel = new JPanel();
+        this.gridControlPanel.setSize(200, 200);
+        this.gridControlPanel.setLayout(new GridLayout(1, 1));
+        this.gridControlPanel.setBackground(Color.ORANGE);
+        this.gridControlPanel.setOpaque(true);
+        this.gridControlPanel.setVisible(true);
+        
+        
+        JSlider framesPerSecond = new JSlider(JSlider.HORIZONTAL,
+                0, 20, 1);
+        framesPerSecond.addChangeListener(this);
+        
+        this.gridControlPanel.add(framesPerSecond);
+        
+        this.multipleImagesPanel = new JPanel();
+        this.multipleImagesPanel.setSize(200, 200);
+        this.multipleImagesPanel.setLayout(new GridLayout(1, 1));
+        this.multipleImagesPanel.setBackground(Color.YELLOW);
+        this.multipleImagesPanel.setOpaque(true);
+        this.multipleImagesPanel.setVisible(true);
     	
     	//Split Screen into three main areas
     	JSplitPane smallImagesPane = new JSplitPane(
 	            JSplitPane.VERTICAL_SPLIT, true,this.getImageViewTwoChamber().getPanel(), this.getImageViewFourChamber().getPanel());
   	
     	JSplitPane rightSideOfWindow = new JSplitPane(
-	            JSplitPane.VERTICAL_SPLIT, true,smallImagesPane, this.panel);
+	            JSplitPane.VERTICAL_SPLIT, true, smallImagesPane, this.imageContourPanel);
     	
     	JSplitPane imagePanes  = new JSplitPane(
     			JSplitPane.HORIZONTAL_SPLIT,true, this.getImageView().getPanel(), rightSideOfWindow);
-    	
-	    JSplitPane gridPane = new JSplitPane(
-	            JSplitPane.VERTICAL_SPLIT, true,  this.getGridView().getPanel(), this.panel);
 	   
-	    JSplitPane allPanes = new JSplitPane(
-	            JSplitPane.HORIZONTAL_SPLIT,true, gridPane,imagePanes);
+    	JSplitPane gridPane = new JSplitPane(
+	            JSplitPane.VERTICAL_SPLIT, true,  this.getGridView().getPanel(), this.gridControlPanel);
+	   
+    	JSplitPane leftSideOfWindow = new JSplitPane(
+	            JSplitPane.VERTICAL_SPLIT, true, gridPane, this.multipleImagesPanel );
+	   
+    	JSplitPane allPanes = new JSplitPane(
+	            JSplitPane.HORIZONTAL_SPLIT,true, leftSideOfWindow,imagePanes);
 	
 	    smallImagesPane.setDividerLocation(appFrame.getHeight()/4);
 	    rightSideOfWindow.setDividerLocation(appFrame.getHeight()/2);
-	    imagePanes.setDividerLocation(2*appFrame.getWidth()/4);
-	    gridPane.setDividerLocation(appFrame.getHeight() / 2);
-	    allPanes.setDividerLocation(appFrame.getWidth() / 4);
+	    imagePanes.setDividerLocation(11*appFrame.getWidth()/20);
+	    gridPane.setDividerLocation(appFrame.getHeight()/4);
+	    leftSideOfWindow.setDividerLocation(appFrame.getHeight()/2);
+	    allPanes.setDividerLocation(appFrame.getWidth()/4);
 	    
 	    appFrame.add(allPanes);
 
@@ -364,6 +394,13 @@ public class GUIController implements java.awt.event.ActionListener,
         appFrame.repaint();
     }
     
+    public void stateChanged(ChangeEvent e) {
+        JSlider source = (JSlider)e.getSource();
+        if (!source.getValueIsAdjusting()) {
+            int fps = (int)source.getValue();
+                System.out.println(fps);
+        }
+    }
     
     /**
      * Opens a JFileChooser that allows the user to select a Directory, which
