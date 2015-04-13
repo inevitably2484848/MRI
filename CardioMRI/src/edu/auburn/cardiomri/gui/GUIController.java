@@ -166,6 +166,11 @@ public class GUIController implements java.awt.event.ActionListener,
                     }
                 }
             }
+            if( newSlice == -1 && newTime != -1)
+            {
+            	
+            	System.out.println("This is button: "+ newTime);
+            }
 
             this.mainComponent.requestFocusInWindow();
         }

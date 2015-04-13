@@ -25,6 +25,9 @@ public class GridView implements java.util.Observer {
     private JPanel panel;
     private JPanel gridPanel;
     private Dimension size;
+    
+    private Color endSystole = Color.BLUE; //Lowest volume
+    private Color endDiastole = Color.ORANGE;//Completely full
 
     private JButton[][] buttons;
 
