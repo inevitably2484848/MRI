@@ -5,6 +5,8 @@ import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.PathIterator;
 import java.awt.geom.Rectangle2D;
+import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -14,7 +16,8 @@ import java.util.Vector;
 import javafx.geometry.Point2D;
 import edu.auburn.cardiomri.lib.ContourCalc;
 
-public class Contour implements Shape {
+public class Contour implements Shape, Serializable {
+    private static final long serialVersionUID = 6179619427503035482L;
 
     // XY coordinates of points the user clicked
     private List<Point2D> controlPoints;
@@ -36,6 +39,13 @@ public class Contour implements Shape {
     private Contour() {
         controlPoints = new Vector<Point2D>();
         generatedPoints = new Vector<Point2D>();
+    }
+    
+    public boolean isNearControlPoint() {
+    	//call method in contourCalc to obtain spline object. 
+    	//get length of spline object.
+    	
+    	return false;
     }
 
     public void setControlPoints(List<Point2D> points) {
@@ -278,18 +288,22 @@ public class Contour implements Shape {
     
     public String toString() {
     	//TODO change strings to more descriptive things...
+    	String output = "";
     	if (this.getContourType().equals(Type.DEFAULT)) {
-    		return "DEFAULT";
+    		output += "DEFAULT";
     	}
     	else if (this.getContourType().equals(Type.DEFAULT_CLOSED)) {
-    		return "CLOSED";
+    		output += "CLOSED";
     	}
     	else if (this.getContourType().equals(Type.DEFAULT_OPEN)) {
-    		return "OPEN";
+    		output += "OPEN";
     	}
     	else {
-    		return "unknown type";
+    		output += "unknown type";
     	}
+    	
+    	output += Arrays.deepToString(controlPoints.toArray());
+    	return output;
     }
 
     public static final Map<Type, Boolean> IS_CLOSED_CONTOUR;
