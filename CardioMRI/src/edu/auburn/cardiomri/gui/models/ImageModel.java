@@ -13,6 +13,8 @@ public class ImageModel extends java.util.Observable {
     private int g, s, t, i;
     private Vector<Contour> contours;
     private Contour currentContour;
+    private Contour selectedContour;
+    private Vector<Contour> hiddenContours = new Vector<Contour>();
 
     // Setters
     /*
@@ -118,4 +120,18 @@ public class ImageModel extends java.util.Observable {
         setChanged();
         notifyObservers(this.dImage);
     }
+    
+    public void setSelectedContour(Contour c) {
+    	this.selectedContour = c;
+    	System.out.println(c.toString());
+    }
+
+	public Contour getSelectedContour() {
+		return this.selectedContour;
+	}
+	
+	public Vector<Contour> getHiddenContours() {
+		return this.hiddenContours;
+	}
+	
 }

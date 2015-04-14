@@ -113,12 +113,33 @@ public class RunMVC {
         JMenuItem deleteAllContours = new JMenuItem("Delete All Contours");
         deleteAllContours.setActionCommand("Delete All Contours");
         deleteAllContours.addActionListener(guiController);
+        
+        JMenuItem deleteSelectedContour = new JMenuItem("Delete Selected Contour");
+        deleteSelectedContour.setActionCommand("Delete Selected Contour");
+        deleteSelectedContour.addActionListener(guiController);
+        
+        JMenuItem hideSelectedContour = new JMenuItem("Hide Selected Contour");
+        hideSelectedContour.setActionCommand("Hide Selected Contour");
+        hideSelectedContour.addActionListener(guiController);
+        
+        JMenuItem hideContours = new JMenuItem("Hide Contours");
+        hideContours.setActionCommand("Hide Contours");
+        hideContours.addActionListener(guiController);
+        
+        JMenuItem showContours = new JMenuItem("Show Contours");
+        showContours.setActionCommand("Show Contours");
+        showContours.addActionListener(guiController);
 
         contours.add(saveContours);
         contours.add(loadContours);
         contours.add(deleteContourAxis);
         contours.add(deleteContour);
         contours.add(deleteAllContours);
+        contours.add(deleteSelectedContour);
+        contours.add(hideSelectedContour);
+        contours.add(hideContours);
+        contours.add(showContours);
+        
         return contours;
     }
 
@@ -228,6 +249,7 @@ public class RunMVC {
         ImageView imageView = new ImageView();
         imageModel.addObserver(imageView);
         guiController.setImageViewer(imageModel, imageView);
+        imageView.setGuiController(guiController);
         return imageView;
     }
 

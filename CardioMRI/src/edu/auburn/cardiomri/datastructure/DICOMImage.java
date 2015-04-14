@@ -120,6 +120,11 @@ public class DICOMImage implements Serializable {
     public void setPixelRepresentation(Integer pixelRepresentation) {
         this.pixelRepresentation = pixelRepresentation;
     }
+    
+    public DICOMImage() {
+    	this.contours.add(new Contour(Contour.Type.DEFAULT));
+    	//used for testing involving just contours associated with image
+    }
 
     public DICOMImage(HashMap<String, String> header, short[] pixelData)
             throws MissingParameterException {
