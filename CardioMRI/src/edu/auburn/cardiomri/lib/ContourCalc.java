@@ -102,7 +102,22 @@ public final class ContourCalc {
             return new Vector<Point2D>(controlPoints);
         }
 
-        ContourCalc.sortPoints(controlPoints);
+        Spline2D spline = getSplineFromControlPoints(controlPoints, isClosed);
+        
+        List<Vec2D> genPoints = spline
+                .getDecimatedVertices(ContourCalc.SEPARATION_DISTANCE);
+
+        List<Point2D> generatedPoints = new Vector<Point2D>();
+        for (Vec2D point : genPoints) {
+            generatedPoints.add(new Point2D(point.x, point.y));
+        }
+
+        return generatedPoints;
+    }
+
+	public static Spline2D getSplineFromControlPoints(
+			List<Point2D> controlPoints, boolean isClosed) {
+		ContourCalc.sortPoints(controlPoints);
 
         List<Point2D> rawPoints = new Vector<Point2D>(controlPoints);
         if (isClosed) {
@@ -118,14 +133,6 @@ public final class ContourCalc {
         }
 
         Spline2D spline = new Spline2D(points);
-        List<Vec2D> genPoints = spline
-                .getDecimatedVertices(ContourCalc.SEPARATION_DISTANCE);
-
-        List<Point2D> generatedPoints = new Vector<Point2D>();
-        for (Vec2D point : genPoints) {
-            generatedPoints.add(new Point2D(point.x, point.y));
-        }
-
-        return generatedPoints;
-    }
+		return spline;
+	}
 }
