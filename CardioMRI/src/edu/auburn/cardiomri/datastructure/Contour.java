@@ -121,23 +121,29 @@ public class Contour implements Shape, Serializable {
         return new Rectangle2D.Double(minX, minY, (maxX - minX), (maxY - minY));
     }
 
+    private Point2D transformCoordinates(AffineTransform at, Point2D source) {
+        java.awt.geom.Point2D transformed = new java.awt.geom.Point2D.Double();
+        at.deltaTransform(new java.awt.geom.Point2D.Double(source.getX(), source.getY()), transformed);
+        return new Point2D(transformed.getX() , transformed.getY());
+    }
+
     @Override
     public PathIterator getPathIterator(AffineTransform at) {
-        // System.out.println(at.getScaleX());
-        // System.out.println(at.getScaleY());
-        // TODO Don't ignore the transform
-
+        List<Point2D> transformedControlPoints = new Vector<Point2D>();
+        for (Point2D p : controlPoints) {
+            transformedControlPoints.add(transformCoordinates(at, p));
+        }
+        generatedPoints = ContourCalc.generate(transformedControlPoints, isClosedCurve());
         return new PathIterator() {
             private int index = 0;
 
             @Override
             public void next() {
-                index += 1; // Is this right?
+                index += 1;
             }
 
             @Override
             public boolean isDone() {
-                // TODO Make sure controlPoints isn't null
                 return index >= generatedPoints.size();
             }
 
@@ -149,14 +155,14 @@ public class Contour implements Shape, Serializable {
             @Override
             public int currentSegment(double[] coords) {
                 if (index == 0) {
-                    coords[0] = generatedPoints.get(0).getX();
-                    coords[1] = generatedPoints.get(0).getY();
+                    Point2D point = generatedPoints.get(0);
+                    coords[0] = point.getX();
+                    coords[1] = point.getY();
                     return PathIterator.SEG_MOVETO;
-                } else if ((index > 0)) { // && (this.index <
-                                          // Contour.this.generatedPoints.size()))
-                                          // {
-                    coords[0] = generatedPoints.get(index).getX();
-                    coords[1] = generatedPoints.get(index).getY();
+                } else if ((index > 0)) {
+                    Point2D point = generatedPoints.get(index);
+                    coords[0] = point.getX();
+                    coords[1] = point.getY();
                     return PathIterator.SEG_LINETO;
                 } else {
                     return PathIterator.SEG_CLOSE;
@@ -166,12 +172,14 @@ public class Contour implements Shape, Serializable {
             @Override
             public int currentSegment(float[] coords) {
                 if (index == 0) {
-                    coords[0] = (float) generatedPoints.get(0).getX();
-                    coords[1] = (float) generatedPoints.get(0).getY();
+                    Point2D point = generatedPoints.get(0);
+                    coords[0] = (float) point.getX();
+                    coords[1] = (float) point.getY();
                     return PathIterator.SEG_MOVETO;
-                } else if (index > 0) {
-                    coords[0] = (float) generatedPoints.get(index).getX();
-                    coords[1] = (float) generatedPoints.get(index).getY();
+                } else if ((index > 0)) {
+                    Point2D point = generatedPoints.get(index);
+                    coords[0] = (float) point.getX();
+                    coords[1] = (float) point.getY();
                     return PathIterator.SEG_LINETO;
                 } else {
                     return PathIterator.SEG_CLOSE;

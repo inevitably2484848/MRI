@@ -1,9 +1,13 @@
 package edu.auburn.cardiomri.gui;
 
 import java.awt.Graphics;
-import java.awt.Graphics2D;
+import java.awt.Shape;
 import java.awt.event.MouseEvent;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Ellipse2D;
 import java.util.Vector;
+
+import javafx.geometry.Point2D;
 
 import javax.swing.SwingUtilities;
 
@@ -20,6 +24,7 @@ public class ImageDisplay extends SingleImagePanel {
     private Contour currentContour = null;
     public MouseEvent e;
     private GUIController guiController;
+    protected AffineTransform imageToWindowCoordinateTransform;
 
     // Constructor
     // Takes a image to be displayed
@@ -39,7 +44,8 @@ public class ImageDisplay extends SingleImagePanel {
         }
 
         else if (currentContour != null) {
-            currentContour.addControlPoint(e.getX(), e.getY());
+            java.awt.geom.Point2D point = getImageCoordinateFromWindowCoordinate(e.getX(), e.getY());
+            currentContour.addControlPoint(point.getX(), point.getY());
             this.repaint();
         } else {
             // throw error, currentContour is null
@@ -57,9 +63,17 @@ public class ImageDisplay extends SingleImagePanel {
     }
 
     public void paintComponent(Graphics g) {
+        Vector<Shape> allControlPoints = new Vector<Shape>();
+        for (Shape s : preDefinedShapes) {
+//            DrawingUtilities.drawShadowedShape(s, g2d);
+            for (Point2D controlPoint : ((Contour) s).getControlPoints()) {
+                Ellipse2D ellipse = new Ellipse2D.Double(controlPoint.getX(), controlPoint.getY(), 1, 1);
+                allControlPoints.add(ellipse);
+            }
+        }
+        this.setPersistentDrawingShapes(allControlPoints);
         super.paintComponent(g);
-        Graphics2D g2d = (Graphics2D) g;
-        System.out.println("test");
+        System.out.println(allControlPoints.size());
     }
 
     public void setGuiController(GUIController guiController) {
