@@ -3,7 +3,7 @@ package edu.auburn.cardiomri.test.datastructure;
 import java.io.IOException;
 
 import edu.auburn.cardiomri.datastructure.*;
-import edu.auburn.cardiomri.lib.SerializationManager;
+import edu.auburn.cardiomri.util.SerializationManager;
 
 
 /**

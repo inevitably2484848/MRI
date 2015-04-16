@@ -14,7 +14,7 @@ import java.util.Map;
 import java.util.Vector;
 
 import javafx.geometry.Point2D;
-import edu.auburn.cardiomri.lib.ContourCalc;
+import edu.auburn.cardiomri.util.ContourCalc;
 
 public class Contour implements Shape, Serializable {
     private static final long serialVersionUID = 6179619427503035482L;

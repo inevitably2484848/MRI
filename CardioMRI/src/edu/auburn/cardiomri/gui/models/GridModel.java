@@ -3,11 +3,19 @@ package edu.auburn.cardiomri.gui.models;
 import edu.auburn.cardiomri.datastructure.DICOMImage;
 import edu.auburn.cardiomri.datastructure.Study;
 
-public class GridModel extends java.util.Observable {
+public class GridModel extends Model {
+    protected Study study;
+    protected DICOMImage dImage;
+    protected ImageModel mainImageModel;
+    protected int g, s, t, i;
 
-    private Study study;
-    private DICOMImage dImage;
-    private int g, s, t, i;
+    public ImageModel getImageModel() {
+        return mainImageModel;
+    }
+
+    public void setImageModel(ImageModel imageModel) {
+        this.mainImageModel = imageModel;
+    }
 
     /**
      * Sets the class' study attribute and notifies its Observers.
@@ -51,6 +59,10 @@ public class GridModel extends java.util.Observable {
         setChanged();
         // update new current image
         notifyObservers(indices);
+
+        this.dImage = this.study.getGroups().get(g).getSlices().get(s)
+                .getTimes().get(t).getImages().get(i);
+        mainImageModel.setCurrentImage(dImage);
 
         if (newGroup) {
             // then reset the grid

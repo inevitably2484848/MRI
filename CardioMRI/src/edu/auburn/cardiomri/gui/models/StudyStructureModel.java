@@ -3,7 +3,7 @@ package edu.auburn.cardiomri.gui.models;
 import edu.auburn.cardiomri.datastructure.DICOMImage;
 import edu.auburn.cardiomri.datastructure.Study;
 
-public class StudyStructureModel extends java.util.Observable {
+public class StudyStructureModel extends Model {
     private Study study;
     private int g, s, t, i;
     private DICOMImage currentImage;

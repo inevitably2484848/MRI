@@ -5,7 +5,6 @@ import java.awt.GridLayout;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Observable;
 import java.util.Vector;
 
@@ -24,9 +23,9 @@ import edu.auburn.cardiomri.gui.ConstructImage;
 import edu.auburn.cardiomri.gui.GUIController;
 import edu.auburn.cardiomri.gui.ImageDisplay;
 import edu.auburn.cardiomri.gui.models.ImageModel;
-import edu.auburn.cardiomri.lib.ContourCalc;
+import edu.auburn.cardiomri.util.ContourCalc;
 
-public class ImageView implements java.util.Observer {
+public class ImageView extends View {
 	private JPanel panel;
 	private ImageDisplay display = null;
 	private ImageModel model;

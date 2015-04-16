@@ -4,8 +4,9 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
-import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 import java.util.Observable;
+import java.util.StringTokenizer;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -15,22 +16,38 @@ import edu.auburn.cardiomri.datastructure.Slice;
 import edu.auburn.cardiomri.datastructure.Study;
 import edu.auburn.cardiomri.gui.models.GridModel;
 
-public class GridView implements java.util.Observer {
+public class GridView extends View {
 
     private int g = 0;
     private int s = 0;
     private int t = 0;
     private int i = 0;
 
-    private JPanel panel;
     private JPanel gridPanel;
     private Dimension size;
-
     private JButton[][] buttons;
+    protected GridModel model;
 
-    private ActionListener actionListener;
+    public void actionPerformed(ActionEvent e) {
+        String actionCommand = e.getActionCommand();
 
-    private GridModel model;
+        if (actionCommand.substring(0, 6).equals("Button")) {
+            // System.out.println("GUIController : resetting focus");
+            StringTokenizer tokenizer = new StringTokenizer(
+                    actionCommand.substring(7), ",");
+            String timeStr = tokenizer.nextToken();
+            String sliceStr = tokenizer.nextToken();
+
+            int newTime = (Integer.parseInt(timeStr) - 1);
+            int newSlice = (Integer.parseInt(sliceStr) - 1);
+
+            this.t = newTime;
+            this.s = newSlice;
+            this.model.setCurrentImage(g, s, t, i);
+
+            // this.mainComponent.requestFocusInWindow();
+        }
+    }
 
     // Observer methods
     public void update(Observable obs, Object obj) {
@@ -120,7 +137,7 @@ public class GridView implements java.util.Observer {
         for (int i = 0; i < numSlices + 1; i++) {
             for (int j = 0; j < maxTime + 1; j++) {
                 JButton button = new JButton();
-                button.addActionListener(this.actionListener);
+                button.addActionListener(this);
                 button.setActionCommand(new String("Button " + j + "," + i));
                 button.setPreferredSize(new Dimension(20, 20));
                 // first take care of the labeled row and column
@@ -188,25 +205,6 @@ public class GridView implements java.util.Observer {
     }
 
     /**
-     * Sets the class' actionListener attribute.
-     * 
-     * @param aL : ActionListener object that is used as the class'
-     *            actionListener attribute.
-     */
-    public void setActionListener(ActionListener aL) {
-        this.actionListener = aL;
-    }
-
-    /**
-     * Returns the class' panel attribute.
-     * 
-     * @return The class' panel attribute.
-     */
-    public JPanel getPanel() {
-        return this.panel;
-    }
-
-    /**
      * Returns the class' g attribute.
      * 
      * @return The class' g attribute.
@@ -244,20 +242,12 @@ public class GridView implements java.util.Observer {
 
     public GridView() {
         // System.out.println("GridView()");
-        this.panel = new JPanel();
+        super();
         this.panel.setFocusable(false);
 
         this.g = 0;
         this.s = 0;
         this.t = 0;
         this.i = 0;
-    }
-
-    public GridModel getModel() {
-        return model;
-    }
-
-    public void setModel(GridModel model) {
-        this.model = model;
     }
 }

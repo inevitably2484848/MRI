@@ -30,8 +30,6 @@ public class RunMVC {
             e.printStackTrace();
         }
 
-        GUIController guiController = new GUIController();
-
         setUpStudyStructure(guiController);
         setUpGrid(guiController);
         setUpMetaData(guiController);
@@ -55,11 +53,11 @@ public class RunMVC {
 
         JSplitPane structAndGridPane = new JSplitPane(
                 JSplitPane.HORIZONTAL_SPLIT, guiController.getStudyStructView()
-                .getPanel(), guiController.getGridView().getPanel());
+                        .getPanel(), guiController.getGridView().getPanel());
         JSplitPane smallImagesPane = new JSplitPane(
                 JSplitPane.HORIZONTAL_SPLIT, guiController
-                .getImageViewSmallLeft().getPanel(), guiController
-                .getImageViewSmallRight().getPanel());
+                        .getImageViewSmallLeft().getPanel(), guiController
+                        .getImageViewSmallRight().getPanel());
         JSplitPane structAndSmallImagesPane = new JSplitPane(
                 JSplitPane.VERTICAL_SPLIT, structAndGridPane, smallImagesPane);
         JSplitPane structAndSmallImagesAndMainImagePane = new JSplitPane(
@@ -113,19 +111,20 @@ public class RunMVC {
         JMenuItem deleteAllContours = new JMenuItem("Delete All Contours");
         deleteAllContours.setActionCommand("Delete All Contours");
         deleteAllContours.addActionListener(guiController);
-        
-        JMenuItem deleteSelectedContour = new JMenuItem("Delete Selected Contour");
+
+        JMenuItem deleteSelectedContour = new JMenuItem(
+                "Delete Selected Contour");
         deleteSelectedContour.setActionCommand("Delete Selected Contour");
         deleteSelectedContour.addActionListener(guiController);
-        
+
         JMenuItem hideSelectedContour = new JMenuItem("Hide Selected Contour");
         hideSelectedContour.setActionCommand("Hide Selected Contour");
         hideSelectedContour.addActionListener(guiController);
-        
+
         JMenuItem hideContours = new JMenuItem("Hide Contours");
         hideContours.setActionCommand("Hide Contours");
         hideContours.addActionListener(guiController);
-        
+
         JMenuItem showContours = new JMenuItem("Show Contours");
         showContours.setActionCommand("Show Contours");
         showContours.addActionListener(guiController);
@@ -139,7 +138,7 @@ public class RunMVC {
         contours.add(hideSelectedContour);
         contours.add(hideContours);
         contours.add(showContours);
-        
+
         return contours;
     }
 

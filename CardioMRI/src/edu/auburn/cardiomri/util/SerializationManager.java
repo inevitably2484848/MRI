@@ -1,4 +1,4 @@
-package edu.auburn.cardiomri.lib;
+package edu.auburn.cardiomri.util;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;

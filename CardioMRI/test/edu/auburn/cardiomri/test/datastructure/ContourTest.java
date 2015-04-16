@@ -15,7 +15,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import edu.auburn.cardiomri.datastructure.Contour;
-import edu.auburn.cardiomri.lib.ContourCalc;
+import edu.auburn.cardiomri.util.ContourCalc;
 
 public class ContourTest {
 
