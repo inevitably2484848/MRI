@@ -40,12 +40,12 @@ public class Contour implements Shape, Serializable {
         controlPoints = new Vector<Point2D>();
         generatedPoints = new Vector<Point2D>();
     }
-    
+
     public boolean isNearControlPoint() {
-    	//call method in contourCalc to obtain spline object. 
-    	//get length of spline object.
-    	
-    	return false;
+        // call method in contourCalc to obtain spline object.
+        // get length of spline object.
+
+        return false;
     }
 
     public void setControlPoints(List<Point2D> points) {
@@ -123,17 +123,14 @@ public class Contour implements Shape, Serializable {
 
     private Point2D transformCoordinates(AffineTransform at, Point2D source) {
         java.awt.geom.Point2D transformed = new java.awt.geom.Point2D.Double();
-        at.deltaTransform(new java.awt.geom.Point2D.Double(source.getX(), source.getY()), transformed);
-        return new Point2D(transformed.getX() , transformed.getY());
+        at.transform(
+                new java.awt.geom.Point2D.Double(source.getX(), source.getY()),
+                transformed);
+        return new Point2D(transformed.getX(), transformed.getY());
     }
 
     @Override
     public PathIterator getPathIterator(AffineTransform at) {
-        List<Point2D> transformedControlPoints = new Vector<Point2D>();
-        for (Point2D p : controlPoints) {
-            transformedControlPoints.add(transformCoordinates(at, p));
-        }
-        generatedPoints = ContourCalc.generate(transformedControlPoints, isClosedCurve());
         return new PathIterator() {
             private int index = 0;
 
@@ -155,12 +152,14 @@ public class Contour implements Shape, Serializable {
             @Override
             public int currentSegment(double[] coords) {
                 if (index == 0) {
-                    Point2D point = generatedPoints.get(0);
+                    Point2D point = transformCoordinates(at,
+                            generatedPoints.get(0));
                     coords[0] = point.getX();
                     coords[1] = point.getY();
                     return PathIterator.SEG_MOVETO;
                 } else if ((index > 0)) {
-                    Point2D point = generatedPoints.get(index);
+                    Point2D point = transformCoordinates(at,
+                            generatedPoints.get(index));
                     coords[0] = point.getX();
                     coords[1] = point.getY();
                     return PathIterator.SEG_LINETO;
@@ -171,19 +170,15 @@ public class Contour implements Shape, Serializable {
 
             @Override
             public int currentSegment(float[] coords) {
-                if (index == 0) {
-                    Point2D point = generatedPoints.get(0);
-                    coords[0] = (float) point.getX();
-                    coords[1] = (float) point.getY();
-                    return PathIterator.SEG_MOVETO;
-                } else if ((index > 0)) {
-                    Point2D point = generatedPoints.get(index);
-                    coords[0] = (float) point.getX();
-                    coords[1] = (float) point.getY();
-                    return PathIterator.SEG_LINETO;
-                } else {
-                    return PathIterator.SEG_CLOSE;
+                int size = coords.length;
+                double[] doubleCoords = new double[size];
+                int returnValue = currentSegment(doubleCoords);
+
+                for (int i = 0; i < size; i++) {
+                    coords[i] = (float) doubleCoords[i];
                 }
+
+                return returnValue;
             }
         };
     }
@@ -293,25 +288,22 @@ public class Contour implements Shape, Serializable {
         // contour
         DEFAULT_OPEN // Example of something that is always an open contour
     }
-    
+
     public String toString() {
-    	//TODO change strings to more descriptive things...
-    	String output = "";
-    	if (this.getContourType().equals(Type.DEFAULT)) {
-    		output += "DEFAULT";
-    	}
-    	else if (this.getContourType().equals(Type.DEFAULT_CLOSED)) {
-    		output += "CLOSED";
-    	}
-    	else if (this.getContourType().equals(Type.DEFAULT_OPEN)) {
-    		output += "OPEN";
-    	}
-    	else {
-    		output += "unknown type";
-    	}
-    	
-    	output += Arrays.deepToString(controlPoints.toArray());
-    	return output;
+        // TODO change strings to more descriptive things...
+        String output = "";
+        if (this.getContourType().equals(Type.DEFAULT)) {
+            output += "DEFAULT";
+        } else if (this.getContourType().equals(Type.DEFAULT_CLOSED)) {
+            output += "CLOSED";
+        } else if (this.getContourType().equals(Type.DEFAULT_OPEN)) {
+            output += "OPEN";
+        } else {
+            output += "unknown type";
+        }
+
+        output += Arrays.deepToString(controlPoints.toArray());
+        return output;
     }
 
     public static final Map<Type, Boolean> IS_CLOSED_CONTOUR;
