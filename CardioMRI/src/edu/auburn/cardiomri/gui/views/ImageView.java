@@ -67,7 +67,8 @@ public class ImageView extends SingleImagePanel implements ViewInterface, Observ
 		try {
 			ConstructImage sImg = new ConstructImage(dImage);
 			//TODO:update image for single image panel
-			 super(sImg);
+			dirtySource(sImg);
+			this.repaint();
 
 		} catch (DicomException e) {
 			e.printStackTrace();
