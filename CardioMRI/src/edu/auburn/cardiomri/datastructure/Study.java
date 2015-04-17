@@ -21,7 +21,8 @@ public class Study implements Serializable {
 
     public static final double GROUP_COMPARISON_EPSILON = 0.00001;
 
-    private Map<String, DICOMImage> SOPInstanceUIDtoDICOMImage = new HashMap<String, DICOMImage>();
+    private Map<String, DICOMImage> uidToImage = new HashMap<String, DICOMImage>();
+    private DICOMImage currentImage;
     private String version;
     private String userID;
     private String studyID;
@@ -220,7 +221,7 @@ public class Study implements Serializable {
                 // groupStackUnitVector.getZ()) > GROUP_COMPARISON_EPSILON)
                 // continue;
                 group.addImage(image);
-                SOPInstanceUIDtoDICOMImage
+                uidToImage
                         .put(image.getSopInstanceUID(), image);
                 return;
             }
@@ -233,7 +234,7 @@ public class Study implements Serializable {
         group.addImage(image);
         groups.add(group);
         Collections.sort(groups, new GroupComparator());
-        SOPInstanceUIDtoDICOMImage.put(image.getSopInstanceUID(), image);
+        uidToImage.put(image.getSopInstanceUID(), image);
         return;
     }
 
@@ -244,7 +245,7 @@ public class Study implements Serializable {
      * @return DICOMImage mapped to the UID
      */
     public DICOMImage getImage(String SOPInstanceUID) {
-        return this.SOPInstanceUIDtoDICOMImage.get(SOPInstanceUID);
+        return this.uidToImage.get(SOPInstanceUID);
     }
 
     /**
@@ -262,8 +263,20 @@ public class Study implements Serializable {
         }
     }
 
-    public Map<String, DICOMImage> getSOPInstanceUIDToDICOMImage() {
-        return this.SOPInstanceUIDtoDICOMImage;
-        // e
+    public Map<String, DICOMImage> getUIDToImage() {
+        return this.uidToImage;
+    }
+    
+    /**
+     * Gets the first element in the uidToImage map and returns it.
+     * 
+     * @return
+     */
+    public DICOMImage getCurrentImage() {
+        if (currentImage == null) {
+            currentImage = getUIDToImage().values().iterator().next();
+        }
+
+        return currentImage;
     }
 }

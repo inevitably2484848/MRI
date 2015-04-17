@@ -112,6 +112,7 @@ public abstract class View implements Observer, ViewInterface, MouseListener,
     @Override
     public void setModel(Model model) {
         this.model = model;
+        model.addObserver(this);
     }
 
 }

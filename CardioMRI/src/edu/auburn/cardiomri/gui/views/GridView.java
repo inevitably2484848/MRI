@@ -12,30 +12,21 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSlider;
-import javax.swing.JSplitPane;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import edu.auburn.cardiomri.datastructure.Group;
 import edu.auburn.cardiomri.datastructure.Slice;
-import edu.auburn.cardiomri.datastructure.Study;
 import edu.auburn.cardiomri.gui.models.GridModel;
 
 public class GridView extends View implements ChangeListener {
 
-    private int g = 0;
     private int s = 0;
     private int t = 0;
     private int i = 0;
 
-    private JPanel gridPanel;
     private Dimension size;
     private JButton[][] buttons;
-    protected GridModel model;
-    
-    protected JPanel multipleImagesPanel, gridControlPanel;
-    
-    private static final int FRAME_WIDTH = 1200;
-    private static final int FRAME_HEIGHT = 800;
 
     public void actionPerformed(ActionEvent e) {
         String actionCommand = e.getActionCommand();
@@ -52,7 +43,7 @@ public class GridView extends View implements ChangeListener {
 
             this.t = newTime;
             this.s = newSlice;
-            this.model.setCurrentImage(g, s, t, i);
+            getGridModel().setCurrentImage(s, t, i);
 
             // this.mainComponent.requestFocusInWindow();
         }
@@ -71,7 +62,6 @@ public class GridView extends View implements ChangeListener {
 
             // then, set the new stuff
             int[] indices = (int[]) obj;
-            this.g = indices[0];
             this.s = indices[1];
             this.t = indices[2];
             this.i = indices[3];
@@ -83,16 +73,7 @@ public class GridView extends View implements ChangeListener {
             this.buttons[this.t][this.s].setOpaque(true);
             this.buttons[this.t][this.s].setBorderPainted(false);
 
-            this.gridPanel.revalidate();
-        }
-
-        if (obj.getClass() == Study.class) {
-            // System.out.println("GridView : updating Study");
-            this.gridPanel.removeAll();
-
-            this.resetGrid(((Study) obj));
-
-            this.gridPanel.revalidate();
+            this.panel.revalidate();
         }
     }
 
@@ -100,17 +81,17 @@ public class GridView extends View implements ChangeListener {
      * Reinitializes the class' array of JButton objects and ensures that it
      * accurately reflects the current Group's Slice and Time structure.
      * 
-     * @param study : Study object that is used to reference as what the Group
-     *            structure is like.
+     * @param group
+     * 
      */
-    public void resetGrid(Study study) {
+    public void setupGrid(Group group) {
 
         // System.out.println("GridView : reseting the Grid");
 
         // Figure out the size of the grid : time x slice
         int maxTime = 0;
         int numSlices = 0;
-        for (Slice s : study.getGroups().get(this.g).getSlices()) {
+        for (Slice s : group.getSlices()) {
             if (maxTime < s.getTimes().size()) {
                 maxTime = s.getTimes().size();
             }
@@ -137,9 +118,9 @@ public class GridView extends View implements ChangeListener {
         panelGrid.setHgap(1);
         panelGrid.setVgap(1);
 
-        this.gridPanel = new JPanel(panelGrid);
+        this.panel = new JPanel(panelGrid);
 
-        this.gridPanel.setFocusable(false);
+        this.panel.setFocusable(false);
 
         // i - y axis (Slice)
         // j - x axis (Time)
@@ -167,21 +148,19 @@ public class GridView extends View implements ChangeListener {
                         button.setOpaque(true);
                         button.setBorderPainted(false);
                     } else {
-                        if (j > study.getGroups().get(this.g).getSlices()
-                                .get(this.s).getTimes().size()) {
+                        if (j > group.getSlices().get(this.s).getTimes().size()) {
                             button.setBorderPainted(false);
-                        } else if (i > study.getGroups().get(this.g)
-                                .getSlices().size()) {
+                        } else if (i > group.getSlices().size()) {
                             button.setBorderPainted(false);
                         }
                     }
                 }
-                gridPanel.add(button);
+                panel.add(button);
             }
         }
 
         // Set the size of the scroll panel
-        JScrollPane gridContainer = new JScrollPane(gridPanel);
+        JScrollPane gridContainer = new JScrollPane(panel);
         if (this.size != null) {
             gridContainer.setMinimumSize(new Dimension(this.size.width,
                     this.size.height - 15));
@@ -193,7 +172,7 @@ public class GridView extends View implements ChangeListener {
         }
 
         // Add grid to main panel
-        this.gridPanel.add(gridContainer, BorderLayout.CENTER);
+        this.panel.add(gridContainer, BorderLayout.CENTER);
 
         // Set grid view scroll bars
         gridContainer
@@ -211,15 +190,6 @@ public class GridView extends View implements ChangeListener {
      */
     public void setSize(Dimension s) {
         this.size = s;
-    }
-
-    /**
-     * Returns the class' g attribute.
-     * 
-     * @return The class' g attribute.
-     */
-    public int getGroupIndex() {
-        return this.g;
     }
 
     /**
@@ -249,58 +219,59 @@ public class GridView extends View implements ChangeListener {
         return this.i;
     }
 
-    public GridView() {
+    public GridView(Group group) {
         // System.out.println("GridView()");
         super();
-        this.gridPanel.setFocusable(false);
-        
-        setupGridView();
+        this.panel.setFocusable(false);
 
-        this.g = 0;
+        // setupGridView();
+        setupGrid(group);
         this.s = 0;
         this.t = 0;
         this.i = 0;
     }
-    
-    private void setupGridView()
-    {   
-        this.gridControlPanel = new JPanel();
-        this.gridControlPanel.setSize(200, 200);
-        this.gridControlPanel.setLayout(new GridLayout(1, 1));
-        this.gridControlPanel.setBackground(Color.ORANGE);
-        this.gridControlPanel.setOpaque(true);
-        this.gridControlPanel.setVisible(true);
-    	
-        this.multipleImagesPanel = new JPanel();
-        this.multipleImagesPanel.setSize(200, 200);
-        this.multipleImagesPanel.setLayout(new GridLayout(1, 1));
-        this.multipleImagesPanel.setBackground(Color.YELLOW);
-        this.multipleImagesPanel.setOpaque(true);
-        this.multipleImagesPanel.setVisible(true);
-    	
-    	JSlider framesPerSecond = new JSlider(JSlider.HORIZONTAL,0, 20, 1);
-        framesPerSecond.addChangeListener(this);
-        
-        this.gridControlPanel.add(framesPerSecond);
-        
-        
-       	JSplitPane gridPane = new JSplitPane(
-	            JSplitPane.VERTICAL_SPLIT, true, this.gridPanel, this.gridControlPanel);
-	   
-    	JSplitPane leftSideOfWindow = new JSplitPane(
-	            JSplitPane.VERTICAL_SPLIT, true, gridPane, this.multipleImagesPanel );
-    	
-	    gridPane.setDividerLocation(FRAME_HEIGHT/4);
-	    leftSideOfWindow.setDividerLocation(FRAME_HEIGHT/2);
-	    
-	    this.panel.add(leftSideOfWindow);
+
+    /*
+     * private void setupGridView() { this.gridControlPanel = new JPanel();
+     * this.gridControlPanel.setSize(200, 200);
+     * this.gridControlPanel.setLayout(new GridLayout(1, 1));
+     * this.gridControlPanel.setBackground(Color.ORANGE);
+     * this.gridControlPanel.setOpaque(true);
+     * this.gridControlPanel.setVisible(true);
+     * 
+     * this.multipleImagesPanel = new JPanel();
+     * this.multipleImagesPanel.setSize(200, 200);
+     * this.multipleImagesPanel.setLayout(new GridLayout(1, 1));
+     * this.multipleImagesPanel.setBackground(Color.YELLOW);
+     * this.multipleImagesPanel.setOpaque(true);
+     * this.multipleImagesPanel.setVisible(true);
+     * 
+     * JSlider framesPerSecond = new JSlider(JSlider.HORIZONTAL,0, 20, 1);
+     * framesPerSecond.addChangeListener(this);
+     * 
+     * this.gridControlPanel.add(framesPerSecond);
+     * 
+     * 
+     * JSplitPane gridPane = new JSplitPane( JSplitPane.VERTICAL_SPLIT, true,
+     * this.panel, this.gridControlPanel);
+     * 
+     * JSplitPane leftSideOfWindow = new JSplitPane( JSplitPane.VERTICAL_SPLIT,
+     * true, gridPane, this.multipleImagesPanel );
+     * 
+     * gridPane.setDividerLocation(FRAME_HEIGHT/4);
+     * leftSideOfWindow.setDividerLocation(FRAME_HEIGHT/2);
+     * 
+     * this.panel.add(leftSideOfWindow); }
+     */
+    public GridModel getGridModel() {
+        return (GridModel) model;
     }
-    
+
     public void stateChanged(ChangeEvent e) {
-        JSlider source = (JSlider)e.getSource();
+        JSlider source = (JSlider) e.getSource();
         if (!source.getValueIsAdjusting()) {
-            int fps = (int)source.getValue();
-                System.out.println(fps);
+            int fps = (int) source.getValue();
+            System.out.println(fps);
         }
     }
 }

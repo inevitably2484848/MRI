@@ -140,9 +140,13 @@ public class ConstructImage extends SourceImage {
 
     protected BufferedImageSource bufferedImageSource = null;
 
-    public ConstructImage(DICOMImage image) throws DicomException {
+    public ConstructImage(DICOMImage image) {
         if (image != null) {
-            constructSourceImage(image);
+            try {
+                constructSourceImage(image);
+            } catch (DicomException e) {
+                e.printStackTrace();
+            }
         }
     }
 

@@ -32,7 +32,7 @@ import edu.auburn.cardiomri.util.ContourCalc;
 
 public class ImageView extends SingleImagePanel implements ViewInterface, Observer {
 	private JPanel panel;
-	private ImageModel model;
+	protected Model model;
     private static final int FRAME_WIDTH = 1200;
     private static final int FRAME_HEIGHT = 800;
 	protected JPanel imageContourPanel;
@@ -86,20 +86,22 @@ public class ImageView extends SingleImagePanel implements ViewInterface, Observ
 		 this.setPreDefinedShapes(contours);
 		panel.repaint();
 	}
-	public void setModel(Model model)
-	{
-		this.model = (ImageModel) model;
-	}
 	
-	public void setModel(ImageModel imageModel)
-	{
-		this.model = imageModel;
-		//TODO: set models of other views
-	}
+	/**
+	 * This is copy/pasted from the View class.
+	 */
+	public void setModel(Model model) {
+        this.model = model;
+        this.model.addObserver(this);
+    }
 
-	public ImageModel getModel() {
-		return this.model;
-	}
+    public ImageModel getImageModel() {
+        return (ImageModel) this.model;
+    }
+
+    public Model getModel() {
+        return this.model;
+    }
 
 	public JPanel getPanel() {
 		return this.panel;
@@ -117,7 +119,7 @@ public class ImageView extends SingleImagePanel implements ViewInterface, Observ
 	}
 
 	public void selectContour(Point2D p) {
-		DICOMImage dImage = this.model.getImage();
+		DICOMImage dImage = getImageModel().getImage();
 		Spline2D spline1, spline2;
 		float length1, length2, deltaLength;
 		List<Point2D> controlPoints;
@@ -147,7 +149,7 @@ public class ImageView extends SingleImagePanel implements ViewInterface, Observ
 				minDelta = entry;
 			}
 		}
-		this.model.setSelectedContour(minDelta.getKey());
+		getImageModel().setSelectedContour(minDelta.getKey());
 	}
 
 	

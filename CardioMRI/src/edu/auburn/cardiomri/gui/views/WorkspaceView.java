@@ -10,9 +10,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Observable;
 import java.util.Vector;
 
 import javax.swing.AbstractAction;
@@ -22,40 +21,96 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.JPanel;
+import javax.swing.JSplitPane;
 import javax.swing.KeyStroke;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import edu.auburn.cardiomri.dataimporter.DICOM3Importer;
-import edu.auburn.cardiomri.dataimporter.DICOMFileTreeWalker;
 import edu.auburn.cardiomri.datastructure.Contour;
+import edu.auburn.cardiomri.datastructure.Contour.Type;
 import edu.auburn.cardiomri.datastructure.DICOMImage;
 import edu.auburn.cardiomri.datastructure.Slice;
 import edu.auburn.cardiomri.datastructure.Study;
-import edu.auburn.cardiomri.datastructure.Time;
-import edu.auburn.cardiomri.datastructure.Contour.Type;
 import edu.auburn.cardiomri.datastructure.Study.NotInStudyException;
+import edu.auburn.cardiomri.datastructure.Time;
+import edu.auburn.cardiomri.gui.ConstructImage;
+import edu.auburn.cardiomri.gui.models.GridModel;
 import edu.auburn.cardiomri.gui.models.ImageModel;
+import edu.auburn.cardiomri.gui.models.StartModel;
+import edu.auburn.cardiomri.gui.models.WorkspaceModel;
+import edu.auburn.cardiomri.gui.models.WorkspaceModel.State;
 import edu.auburn.cardiomri.util.SerializationManager;
-import edu.auburn.cardiomri.util.StudyUtilities;
 
 /**
  * @author Moniz
  *
  */
 public class WorkspaceView extends View {
+    private static final int WORKSPACE_WIDTH = 1200;
+    private static final int WORKSPACE_HEIGHT = 800;
     protected JFileChooser fileChooser;
     protected JComponent mainComponent;
     protected JFrame appFrame;
-    private ImageModel imageModel;
+    protected GridView gridView;
+    protected ImageModel imageView;
 
     public WorkspaceView() {
         super();
         fileChooser = new JFileChooser();
         fileChooser
                 .setCurrentDirectory(new File(System.getProperty("user.dir")));
-        setMenu();
+        createFrame();
+    }
+
+    public void update(Observable obs, Object obj) {
+        if (obj.getClass() == State.class) {
+            State currentState = (State) obj;
+            if (currentState == State.START) {
+                this.disposeFrame();
+                this.createFrame();
+
+                StartView startView = new StartView();
+                startView.setModel(new StartModel());
+                appFrame.setSize(600, 400);
+                this.appFrame.add(startView.getPanel());
+                appFrame.setVisible(true);
+            } else if (currentState == State.GROUP_SELECTION) {
+
+            } else if (currentState == State.WORKSPACE) {
+                this.disposeFrame();
+                this.createFrame();
+
+                Study study = getWorkspaceModel().getStudy();
+                
+
+                ImageModel imageModel = new ImageModel();
+                ConstructImage sImg = new ConstructImage(study.getCurrentImage());
+                ImageView imageView = new ImageView(sImg);
+                imageView.setModel(imageModel);
+
+                GridModel gridModel = new GridModel();
+                GridView gridView = new GridView();
+                gridView.setModel(gridModel);
+                gridModel.setImageModel(imageModel);
+
+                imageModel.addObserver(this);
+                gridModel.addObserver(this);
+
+                appFrame.setSize(WORKSPACE_WIDTH, WORKSPACE_HEIGHT);
+
+                JSplitPane allPanes = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
+                        true, gridView.getPanel(), imageView.getPanel());
+
+                allPanes.setDividerLocation(WORKSPACE_WIDTH / 4);
+
+                this.appFrame.add(allPanes);
+                setMenu();
+                appFrame.setVisible(true);
+            }
+        } else if (obj.getClass() == Study.class) {
+            getWorkspaceModel().setStudy((Study) obj);
+        }
     }
 
     /**
@@ -68,26 +123,14 @@ public class WorkspaceView extends View {
         this.appFrame = f;
     }
 
-    public void addView(View view) {
-        this.appFrame.add(view.getPanel());
+    public void createFrame() {
+        this.appFrame = new JFrame("Cardio MRI");
+        this.appFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
-    public void add(Component comp) {
-        appFrame.add(comp);
-    }
-
-    public void deleteView() {
-        // Deletes the app frame
-        this.appFrame.dispose();
-    }
-
-    public void clearView() {
+    public void disposeFrame() {
         // Removes everthing from frame
-        this.appFrame.removeAll();
-    }
-
-    public void setImageModel(ImageModel imageModel) {
-        this.imageModel = imageModel;
+        this.appFrame.dispose();
     }
 
     /**
@@ -110,6 +153,10 @@ public class WorkspaceView extends View {
      */
     public JComponent getMainComponent() {
         return this.mainComponent;
+    }
+
+    public WorkspaceModel getWorkspaceModel() {
+        return (WorkspaceModel) this.model;
     }
 
     // ActionListener methods
@@ -378,7 +425,7 @@ public class WorkspaceView extends View {
         String path = System.getProperty("user.dir") + File.separator
                 + "contourPoints.txt";
         writeContoursToFile(this.studyStructModel.getStudy()
-                .getSOPInstanceUIDToDICOMImage(), path);
+                .getUIDToImage(), path);
 
     }
 
@@ -396,7 +443,7 @@ public class WorkspaceView extends View {
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             File file = new File(fileChooser.getSelectedFile().getPath());
             loadContour(file, this.studyStructModel.getStudy()
-                    .getSOPInstanceUIDToDICOMImage());
+                    .getUIDToImage());
         }
     }
 
@@ -449,8 +496,7 @@ public class WorkspaceView extends View {
 
         this.mainComponent.getInputMap().put(KeyStroke.getKeyStroke("RIGHT"),
                 "right");
-        this.mainComponent.getActionMap()
-                .put("right", new RightKeyAction());
+        this.mainComponent.getActionMap().put("right", new RightKeyAction());
 
         this.mainComponent.getInputMap().put(KeyStroke.getKeyStroke("DOWN"),
                 "down");
@@ -467,8 +513,8 @@ public class WorkspaceView extends View {
 
         KeyStroke ctrlShiftS = KeyStroke.getKeyStroke(KeyEvent.VK_S, 21);
         this.mainComponent.getInputMap().put(ctrlShiftS, "save as");
-        this.mainComponent.getActionMap().put("save as",
-                new CtrlShiftSAction());
+        this.mainComponent.getActionMap()
+                .put("save as", new CtrlShiftSAction());
 
         KeyStroke ctrlO = KeyStroke.getKeyStroke(KeyEvent.VK_O, Toolkit
                 .getDefaultToolkit().getMenuShortcutKeyMask());

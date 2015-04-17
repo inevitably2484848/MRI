@@ -113,9 +113,10 @@ public class StartView extends View {
     /**
      * Opens a JFileChooser that allows the user to select a single Dicom file
      * and generate a Study object with the Dicom as the only image in it.
-     *
+     * 
+     * @throws NotInStudyException 
      */
-    private void loadSingleDicom() throws NotInStudyException {
+    public void loadSingleDicom() throws NotInStudyException {
 
         FileFilter dicomType = new FileNameExtensionFilter("DICOM file (.dcm)","dcm");
         fileChooser.addChoosableFileFilter(dicomType);

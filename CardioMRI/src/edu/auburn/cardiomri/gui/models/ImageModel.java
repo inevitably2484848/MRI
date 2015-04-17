@@ -4,7 +4,6 @@ import java.util.Vector;
 
 import edu.auburn.cardiomri.datastructure.Contour;
 import edu.auburn.cardiomri.datastructure.DICOMImage;
-import edu.auburn.cardiomri.datastructure.Study;
 
 public class ImageModel extends Model {
 
@@ -36,7 +35,7 @@ public class ImageModel extends Model {
     }
 
     /**
-     * Setter for currentContour. Objervers are notified.
+     * Setter for currentContour. Observers are notified.
      * 
      * @param contour
      */
@@ -72,12 +71,12 @@ public class ImageModel extends Model {
     // Constructors
     public ImageModel() {
         this.dImage = null;
-      //Start other three models (2,4, and contour panel)
+        // Start other three models (2,4, and contour panel)
     }
 
     public void refresh() {
-//        this.dImage = this.study.getGroups().get(g).getSlices().get(s)
-//                .getTimes().get(t).getImages().get(i);
+        // this.dImage = this.study.getGroups().get(g).getSlices().get(s)
+        // .getTimes().get(t).getImages().get(i);
         this.contours = this.dImage.getContours();
 
         setChanged();
