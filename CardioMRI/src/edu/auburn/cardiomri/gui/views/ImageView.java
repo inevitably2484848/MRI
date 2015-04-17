@@ -67,7 +67,7 @@ public class ImageView extends SingleImagePanel implements ViewInterface, Observ
 		try {
 			ConstructImage sImg = new ConstructImage(dImage);
 			//TODO:update image for single image panel
-			 super(sImg);
+			 dirty(sImg);
 
 		} catch (DicomException e) {
 			e.printStackTrace();
@@ -194,7 +194,8 @@ public class ImageView extends SingleImagePanel implements ViewInterface, Observ
         // System.out.print(this.getSelectedDrawingShapes());
         if (SwingUtilities.isRightMouseButton(e)) {
         	//The code in this method needs to be moved here, I couldn't find it.
-            guiController.getImageDisplayClick(e);
+            Point2D p = new Point2D(e.getX(), e.getY());
+            selectContour(p);
         }
 
         else if (currentContour != null) {
