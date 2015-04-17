@@ -1,4 +1,4 @@
-package edu.auburn.cardiomri.test.datastructure;
+package edu.auburn.cardiomri.datastructure;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
