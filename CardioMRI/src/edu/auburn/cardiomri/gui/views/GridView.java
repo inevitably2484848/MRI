@@ -11,12 +11,16 @@ import java.util.StringTokenizer;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSlider;
+import javax.swing.JSplitPane;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import edu.auburn.cardiomri.datastructure.Slice;
 import edu.auburn.cardiomri.datastructure.Study;
 import edu.auburn.cardiomri.gui.models.GridModel;
 
-public class GridView extends View {
+public class GridView extends View implements ChangeListener {
 
     private int g = 0;
     private int s = 0;
@@ -27,6 +31,11 @@ public class GridView extends View {
     private Dimension size;
     private JButton[][] buttons;
     protected GridModel model;
+    
+    protected JPanel multipleImagesPanel, gridControlPanel;
+    
+    private static final int FRAME_WIDTH = 1200;
+    private static final int FRAME_HEIGHT = 800;
 
     public void actionPerformed(ActionEvent e) {
         String actionCommand = e.getActionCommand();
@@ -74,16 +83,16 @@ public class GridView extends View {
             this.buttons[this.t][this.s].setOpaque(true);
             this.buttons[this.t][this.s].setBorderPainted(false);
 
-            this.panel.revalidate();
+            this.gridPanel.revalidate();
         }
 
         if (obj.getClass() == Study.class) {
             // System.out.println("GridView : updating Study");
-            this.panel.removeAll();
+            this.gridPanel.removeAll();
 
             this.resetGrid(((Study) obj));
 
-            this.panel.revalidate();
+            this.gridPanel.revalidate();
         }
     }
 
@@ -184,7 +193,7 @@ public class GridView extends View {
         }
 
         // Add grid to main panel
-        this.panel.add(gridContainer, BorderLayout.CENTER);
+        this.gridPanel.add(gridContainer, BorderLayout.CENTER);
 
         // Set grid view scroll bars
         gridContainer
@@ -243,11 +252,55 @@ public class GridView extends View {
     public GridView() {
         // System.out.println("GridView()");
         super();
-        this.panel.setFocusable(false);
+        this.gridPanel.setFocusable(false);
+        
+        setupGridView();
 
         this.g = 0;
         this.s = 0;
         this.t = 0;
         this.i = 0;
+    }
+    
+    private void setupGridView()
+    {   
+        this.gridControlPanel = new JPanel();
+        this.gridControlPanel.setSize(200, 200);
+        this.gridControlPanel.setLayout(new GridLayout(1, 1));
+        this.gridControlPanel.setBackground(Color.ORANGE);
+        this.gridControlPanel.setOpaque(true);
+        this.gridControlPanel.setVisible(true);
+    	
+        this.multipleImagesPanel = new JPanel();
+        this.multipleImagesPanel.setSize(200, 200);
+        this.multipleImagesPanel.setLayout(new GridLayout(1, 1));
+        this.multipleImagesPanel.setBackground(Color.YELLOW);
+        this.multipleImagesPanel.setOpaque(true);
+        this.multipleImagesPanel.setVisible(true);
+    	
+    	JSlider framesPerSecond = new JSlider(JSlider.HORIZONTAL,0, 20, 1);
+        framesPerSecond.addChangeListener(this);
+        
+        this.gridControlPanel.add(framesPerSecond);
+        
+        
+       	JSplitPane gridPane = new JSplitPane(
+	            JSplitPane.VERTICAL_SPLIT, true, this.gridPanel, this.gridControlPanel);
+	   
+    	JSplitPane leftSideOfWindow = new JSplitPane(
+	            JSplitPane.VERTICAL_SPLIT, true, gridPane, this.multipleImagesPanel );
+    	
+	    gridPane.setDividerLocation(FRAME_HEIGHT/4);
+	    leftSideOfWindow.setDividerLocation(FRAME_HEIGHT/2);
+	    
+	    this.panel.add(leftSideOfWindow);
+    }
+    
+    public void stateChanged(ChangeEvent e) {
+        JSlider source = (JSlider)e.getSource();
+        if (!source.getValueIsAdjusting()) {
+            int fps = (int)source.getValue();
+                System.out.println(fps);
+        }
     }
 }

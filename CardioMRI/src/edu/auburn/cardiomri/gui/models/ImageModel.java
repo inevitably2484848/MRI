@@ -72,6 +72,7 @@ public class ImageModel extends Model {
     // Constructors
     public ImageModel() {
         this.dImage = null;
+      //Start other three models (2,4, and contour panel)
     }
 
     public void refresh() {

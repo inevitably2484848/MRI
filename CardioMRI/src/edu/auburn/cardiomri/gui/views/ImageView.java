@@ -1,16 +1,22 @@
 package edu.auburn.cardiomri.gui.views;
 
 import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.GridLayout;
+import java.awt.event.MouseEvent;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Observable;
+import java.util.Observer;
 import java.util.Vector;
 
 import javafx.geometry.Point2D;
 
 import javax.swing.JPanel;
+import javax.swing.JSplitPane;
+import javax.swing.SwingUtilities;
 
 import toxi.geom.Spline2D;
 
@@ -23,17 +29,24 @@ import edu.auburn.cardiomri.gui.ConstructImage;
 import edu.auburn.cardiomri.gui.GUIController;
 import edu.auburn.cardiomri.gui.ImageDisplay;
 import edu.auburn.cardiomri.gui.models.ImageModel;
+import edu.auburn.cardiomri.gui.models.Model;
 import edu.auburn.cardiomri.util.ContourCalc;
 
-public class ImageView extends View {
+public class ImageView extends SingleImagePanel implements ViewInterface, Observer {
 	private JPanel panel;
 	private ImageDisplay display = null;
 	private ImageModel model;
-	private GUIController guiController;
+    private static final int FRAME_WIDTH = 1200;
+    private static final int FRAME_HEIGHT = 800;
+	protected JPanel imageContourPanel;
+	private static final long serialVersionUID = -6920775905498293695L;
+	private Contour currentContour = null;
+	
+	//TODO: make them a different view
+	private ImageView imageViewFourChamber;
+	private ImageView imageViewTwoChamber;
 
-	// Observer methods
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	@Override
+	
 	public void update(Observable obs, Object obj) {
 		if (obj.getClass() == DICOMImage.class) {
 			updateImage((DICOMImage) obj);
@@ -49,49 +62,41 @@ public class ImageView extends View {
 	}
 
 	private void updateImage(DICOMImage dImage) {
-		display = null;
-		SingleImagePanel.deconstructAllSingleImagePanelsInContainer(panel);
-		panel.removeAll();
 
+		SingleImagePanel.deconstructAllSingleImagePanelsInContainer(this);
 		try {
 			ConstructImage sImg = new ConstructImage(dImage);
-			display = new ImageDisplay(sImg);
-			display.setGuiController(guiController);
+			//TODO:update image for single image panel
+			 super(sImg);
 
 		} catch (DicomException e) {
 			e.printStackTrace();
 		}
-
-		display.revalidate();
-		display.repaint();
-
-		panel.add(display);
+		
+		//TODO: re-look at this because panel is now not only the main image but everything else
+		//panel.add(display);
 		panel.revalidate();
 		panel.repaint();
 	}
 
 	private void updateCurrentContour(Contour contour) {
-		if (display != null) {
-			display.setCurrentContour(contour);
-			display.repaint();
-			panel.repaint();
-		} else {
-			// throw error?
-		}
+		currentContour = contour;
+		panel.repaint();
 	}
 
 	private void updateContours(Vector<Contour> contours) {
-		if (this.display != null) {
-			display.setContours(contours);
-			display.repaint();
-			panel.repaint();
-		} else {
-			// throw error?
-		}
+		 this.setPreDefinedShapes(contours);
+		panel.repaint();
 	}
-
-	public void setModel(ImageModel model) {
-		this.model = model;
+	public void setModel(Model model)
+	{
+		this.model = (ImageModel) model;
+	}
+	
+	public void setModel(ImageModel imageModel)
+	{
+		this.model = imageModel;
+		//TODO: set models of other views
 	}
 
 	public ImageModel getModel() {
@@ -103,22 +108,14 @@ public class ImageView extends View {
 	}
 
 	public void refresh() {
-		this.display.revalidate();
-		this.display.repaint();
+		this.revalidate();
+		this.repaint();
 	}
 
-	public ImageView() {
-		// System.out.println("ImageView()");
-
-		this.panel = new JPanel();
-		this.panel.setLayout(new GridLayout(1, 1));
-		this.panel.setBackground(Color.BLACK);
-		this.panel.setOpaque(true);
-		this.panel.setVisible(true);
-	}
-
-	public ImageDisplay getImageDisplay() {
-		return this.display;
+	public ImageView(ConstructImage sImg) {
+		super(sImg);
+		setUpMainPanel();
+		//TODO: create other three views views here 
 	}
 
 	public void selectContour(Point2D p) {
@@ -155,7 +152,64 @@ public class ImageView extends View {
 		this.model.setSelectedContour(minDelta.getKey());
 	}
 
-	public void setGuiController(GUIController guiController) {
-		this.guiController = guiController;
+	
+	private void setUpMainPanel()
+	{   
+		this.panel = new JPanel();
+		this.panel.setLayout(new GridLayout(1, 1));
+		this.panel.setBackground(Color.BLACK);
+		this.panel.setOpaque(true);
+		this.panel.setVisible(true);
+		
+    	this.imageContourPanel = new JPanel();
+        this.imageContourPanel.setSize(200, 200);
+        this.imageContourPanel.setLayout(new GridLayout(1, 1));
+        this.imageContourPanel.setBackground(Color.BLUE);
+        this.imageContourPanel.setOpaque(true);
+        this.imageContourPanel.setVisible(true);
+
+    	//Split Screen into three main areas
+    	JSplitPane smallImagesPane = new JSplitPane(
+	            JSplitPane.VERTICAL_SPLIT, true, this.imageViewTwoChamber.getPanel(), this.imageViewFourChamber.getPanel());
+  	
+    	JSplitPane rightSideOfWindow = new JSplitPane(
+	            JSplitPane.VERTICAL_SPLIT, true, smallImagesPane, this.imageContourPanel);
+    	
+    	JSplitPane imagePanes  = new JSplitPane(
+    			JSplitPane.HORIZONTAL_SPLIT,true, this, rightSideOfWindow);
+	   
+
+	    smallImagesPane.setDividerLocation(FRAME_HEIGHT/4);
+	    rightSideOfWindow.setDividerLocation(FRAME_HEIGHT/2);
+	    imagePanes.setDividerLocation(11*FRAME_WIDTH/20);
+	    
+	    this.panel.add(imagePanes);
 	}
+	
+	// SingleImagePanel methods
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        // System.out.println("Success");
+        // System.out.println("   " + e.getX()*2 + " " +e.getY()*2);
+        // System.out.print(this.getSelectedDrawingShapes());
+        if (SwingUtilities.isRightMouseButton(e)) {
+        	//The code in this method needs to be moved here, I couldn't find it.
+            guiController.getImageDisplayClick(e);
+        }
+
+        else if (currentContour != null) {
+            currentContour.addControlPoint(e.getX(), e.getY());
+            this.repaint();
+        } else {
+            // throw error, currentContour is null
+        }
+    }
+
+    // Allows for imageView to set the contour that the clicks get added to
+
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        Graphics2D g2d = (Graphics2D) g;
+        System.out.println("test");
+    }
 }
