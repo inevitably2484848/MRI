@@ -26,15 +26,12 @@ import com.pixelmed.display.SingleImagePanel;
 import edu.auburn.cardiomri.datastructure.Contour;
 import edu.auburn.cardiomri.datastructure.DICOMImage;
 import edu.auburn.cardiomri.gui.ConstructImage;
-import edu.auburn.cardiomri.gui.GUIController;
-import edu.auburn.cardiomri.gui.ImageDisplay;
 import edu.auburn.cardiomri.gui.models.ImageModel;
 import edu.auburn.cardiomri.gui.models.Model;
 import edu.auburn.cardiomri.util.ContourCalc;
 
 public class ImageView extends SingleImagePanel implements ViewInterface, Observer {
 	private JPanel panel;
-	private ImageDisplay display = null;
 	private ImageModel model;
     private static final int FRAME_WIDTH = 1200;
     private static final int FRAME_HEIGHT = 800;

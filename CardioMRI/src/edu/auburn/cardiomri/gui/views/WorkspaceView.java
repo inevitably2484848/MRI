@@ -36,7 +36,6 @@ import edu.auburn.cardiomri.datastructure.Study;
 import edu.auburn.cardiomri.datastructure.Time;
 import edu.auburn.cardiomri.datastructure.Contour.Type;
 import edu.auburn.cardiomri.datastructure.Study.NotInStudyException;
-import edu.auburn.cardiomri.gui.GUIController;
 import edu.auburn.cardiomri.gui.models.ImageModel;
 import edu.auburn.cardiomri.util.SerializationManager;
 import edu.auburn.cardiomri.util.StudyUtilities;
