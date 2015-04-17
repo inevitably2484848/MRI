@@ -48,12 +48,13 @@ public class WorkspaceView extends View {
     protected JFileChooser fileChooser;
     protected JComponent mainComponent;
     protected JFrame appFrame;
-	private ImageModel imageModel;
+    private ImageModel imageModel;
 
     public WorkspaceView() {
         super();
         fileChooser = new JFileChooser();
-        fileChooser.setCurrentDirectory(new File(System.getProperty("user.dir")));
+        fileChooser
+                .setCurrentDirectory(new File(System.getProperty("user.dir")));
         setMenu();
     }
 
@@ -70,24 +71,25 @@ public class WorkspaceView extends View {
     public void addView(View view) {
         this.appFrame.add(view.getPanel());
     }
-    public void add(Component comp)
-    {
-    	appFrame.add(comp);
+
+    public void add(Component comp) {
+        appFrame.add(comp);
     }
-    public void deleteView()
-    {
-    	//Deletes the app frame
-    	this.appFrame.dispose(); 
+
+    public void deleteView() {
+        // Deletes the app frame
+        this.appFrame.dispose();
     }
-    public void clearView()
-    {
-    	//Removes everthing from frame
-    	this.appFrame.removeAll(); 
+
+    public void clearView() {
+        // Removes everthing from frame
+        this.appFrame.removeAll();
     }
-    public void setImageModel(ImageModel imageModel)
-    {
-    	this.imageModel = imageModel;
+
+    public void setImageModel(ImageModel imageModel) {
+        this.imageModel = imageModel;
     }
+
     /**
      * Sets the class' mainComponent attribute. The class' KeyBindings will be
      * attached to the mainComponent.
@@ -118,7 +120,7 @@ public class WorkspaceView extends View {
         // System.out.println("GUIController : actionPerformed - " +
         // actionCommand);
 
-       if (actionCommand.equals("Save Study")) {
+        if (actionCommand.equals("Save Study")) {
             this.saveStudy();
         } else if (actionCommand.equals("Save As Study")) {
             this.saveAsStudy();
@@ -141,8 +143,7 @@ public class WorkspaceView extends View {
         } else if (actionCommand.equals("Default Type")) {
             this.imageModel.addContourToImage(new Contour(Type.DEFAULT));
         } else if (actionCommand.equals("Closed Type")) {
-            this.imageModel.addContourToImage(new Contour(
-                    Type.DEFAULT_CLOSED));
+            this.imageModel.addContourToImage(new Contour(Type.DEFAULT_CLOSED));
         } else if (actionCommand.equals("Open Type")) {
             this.imageModel.addContourToImage(new Contour(Type.DEFAULT_OPEN));
         } else if (actionCommand.equals("Delete All Contours")) {
@@ -160,28 +161,27 @@ public class WorkspaceView extends View {
         }
     }
 
-    public void setMenu()
-    {
-	    // -------------------- Menu Bar -------------------------------
-        
-        //----- File ------- 
-        JMenu fileMenu = new JMenu("File");
-        
-	        // New Submenu
-	        JMenu newMenu = new JMenu("New Study");
-	
-	        JMenuItem newFromSingle = new JMenuItem("From Single DICOM");
-	        newFromSingle.setActionCommand("Load Single DICOM");
-	        newFromSingle.addActionListener(this);
-	        newMenu.add(newFromSingle);
-	
-	        JMenuItem newFromFileStruct = new JMenuItem("From File Structure");
-	        newFromFileStruct.setActionCommand("Create New Study");
-	        newFromFileStruct.addActionListener(this);
-	        newMenu.add(newFromFileStruct);
+    public void setMenu() {
+        // -------------------- Menu Bar -------------------------------
 
-	    fileMenu.add(newMenu);
-	    
+        // ----- File -------
+        JMenu fileMenu = new JMenu("File");
+
+        // New Submenu
+        JMenu newMenu = new JMenu("New Study");
+
+        JMenuItem newFromSingle = new JMenuItem("From Single DICOM");
+        newFromSingle.setActionCommand("Load Single DICOM");
+        newFromSingle.addActionListener(this);
+        newMenu.add(newFromSingle);
+
+        JMenuItem newFromFileStruct = new JMenuItem("From File Structure");
+        newFromFileStruct.setActionCommand("Create New Study");
+        newFromFileStruct.addActionListener(this);
+        newMenu.add(newFromFileStruct);
+
+        fileMenu.add(newMenu);
+
         JMenuItem openExisting = new JMenuItem("Open Existing (Ctrl+O)");
         openExisting.setActionCommand("Load Existing Study");
         openExisting.addActionListener(this);
@@ -196,35 +196,35 @@ public class WorkspaceView extends View {
         saveAsStudy.setActionCommand("Save As Study");
         saveAsStudy.addActionListener(this);
         fileMenu.add(saveAsStudy);
-        
+
         JMenuItem importDicom = new JMenuItem("Import DICOM");
         importDicom.setActionCommand("Import DICOM");
         importDicom.addActionListener(this);
         fileMenu.add(importDicom);
-        
-        //----- Add ------
+
+        // ----- Add ------
         JMenu add = new JMenu("Add"); // change to add shape later?
-        
-	        //Contour Submenu
-	        JMenu addContour = new JMenu("Add Contour");
-	
-	        JMenuItem defaultType = new JMenuItem("Default");
-	        defaultType.setActionCommand("Default Type");
-	        defaultType.addActionListener(this);
-	        addContour.add(defaultType);
-	
-	        JMenuItem closedType = new JMenuItem("Closed");
-	        closedType.setActionCommand("Closed Type");
-	        closedType.addActionListener(this);
-	        addContour.add(closedType);
-	
-	        JMenuItem openType = new JMenuItem("Open");
-	        openType.setActionCommand("Open Type");
-	        openType.addActionListener(this);
-	        addContour.add(openType);
-	        add.add(addContour);
-	        
-        //----- Contour ------
+
+        // Contour Submenu
+        JMenu addContour = new JMenu("Add Contour");
+
+        JMenuItem defaultType = new JMenuItem("Default");
+        defaultType.setActionCommand("Default Type");
+        defaultType.addActionListener(this);
+        addContour.add(defaultType);
+
+        JMenuItem closedType = new JMenuItem("Closed");
+        closedType.setActionCommand("Closed Type");
+        closedType.addActionListener(this);
+        addContour.add(closedType);
+
+        JMenuItem openType = new JMenuItem("Open");
+        openType.setActionCommand("Open Type");
+        openType.addActionListener(this);
+        addContour.add(openType);
+        add.add(addContour);
+
+        // ----- Contour ------
         JMenu contours = new JMenu("Contours");
         JMenuItem saveContours = new JMenuItem("Save Contours (.txt File)");
         saveContours.setActionCommand("Save Contours");
@@ -250,26 +250,26 @@ public class WorkspaceView extends View {
         deleteAllContours.setActionCommand("Delete All Contours");
         deleteAllContours.addActionListener(this);
         contours.add(deleteAllContours);
-	        
-        //----- View -----
+
+        // ----- View -----
         JMenu view = new JMenu("View");
         JMenuItem zoom = new JMenuItem("Zoom");
         view.add(zoom);
-	        
-        //----- Main Menu -----
-	    JMenuBar menuBar = new JMenuBar();
-        
-        //Add each sub menu to the top menu Bar
+
+        // ----- Main Menu -----
+        JMenuBar menuBar = new JMenuBar();
+
+        // Add each sub menu to the top menu Bar
         menuBar.add(fileMenu);
         menuBar.add(add);
         menuBar.add(contours);
         menuBar.add(view);
-        
+
         appFrame.setJMenuBar(menuBar);
         appFrame.revalidate();
         appFrame.repaint();
     }
-    
+
     /**
      * Method that will close the GUIController's applicationFrame variable.
      */
@@ -566,7 +566,7 @@ public class WorkspaceView extends View {
      */
     private void loadExistingStudy() {
         // TODO Auto-generated method stub
-        
+
     }
 
     /**
@@ -574,17 +574,17 @@ public class WorkspaceView extends View {
      */
     private void saveStudy() {
         // TODO Auto-generated method stub
-        
+
     }
-    
+
     /**
      * 
      */
     private void saveAsStudy() {
         // TODO Auto-generated method stub
-        
+
     }
-    
+
     // Action classes
     private class LeftKeyAction extends AbstractAction {
         private static final long serialVersionUID = 6612132766001531904L;
