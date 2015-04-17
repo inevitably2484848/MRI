@@ -3,6 +3,7 @@
  */
 package edu.auburn.cardiomri.gui.views;
 
+import java.awt.Component;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
@@ -18,6 +19,10 @@ import javax.swing.AbstractAction;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -32,6 +37,7 @@ import edu.auburn.cardiomri.datastructure.Time;
 import edu.auburn.cardiomri.datastructure.Contour.Type;
 import edu.auburn.cardiomri.datastructure.Study.NotInStudyException;
 import edu.auburn.cardiomri.gui.GUIController;
+import edu.auburn.cardiomri.gui.models.ImageModel;
 import edu.auburn.cardiomri.util.SerializationManager;
 import edu.auburn.cardiomri.util.StudyUtilities;
 
@@ -43,12 +49,13 @@ public class WorkspaceView extends View {
     protected JFileChooser fileChooser;
     protected JComponent mainComponent;
     protected JFrame appFrame;
+	private ImageModel imageModel;
 
     public WorkspaceView() {
         super();
         fileChooser = new JFileChooser();
-        fileChooser
-                .setCurrentDirectory(new File(System.getProperty("user.dir")));
+        fileChooser.setCurrentDirectory(new File(System.getProperty("user.dir")));
+        setMenu();
     }
 
     /**
@@ -62,9 +69,26 @@ public class WorkspaceView extends View {
     }
 
     public void addView(View view) {
-        // panel.add(view)
+        this.appFrame.add(view.getPanel());
     }
-
+    public void add(Component comp)
+    {
+    	appFrame.add(comp);
+    }
+    public void deleteView()
+    {
+    	//Deletes the app frame
+    	this.appFrame.dispose(); 
+    }
+    public void clearView()
+    {
+    	//Removes everthing from frame
+    	this.appFrame.removeAll(); 
+    }
+    public void setImageModel(ImageModel imageModel)
+    {
+    	this.imageModel = imageModel;
+    }
     /**
      * Sets the class' mainComponent attribute. The class' KeyBindings will be
      * attached to the mainComponent.
@@ -95,17 +119,7 @@ public class WorkspaceView extends View {
         // System.out.println("GUIController : actionPerformed - " +
         // actionCommand);
 
-        if (actionCommand.equals("Create New Study")) {
-            this.createNewStudy(e);
-        } else if (actionCommand.equals("Load Existing Study")) {
-            this.loadExistingStudy(e);
-        } else if (actionCommand.equals("Load Single DICOM")) {
-            try {
-                this.loadSingleDicom(e);
-            } catch (NotInStudyException e1) {
-                e1.printStackTrace();
-            }
-        } else if (actionCommand.equals("Save Study")) {
+       if (actionCommand.equals("Save Study")) {
             this.saveStudy();
         } else if (actionCommand.equals("Save As Study")) {
             this.saveAsStudy();
@@ -126,13 +140,12 @@ public class WorkspaceView extends View {
                 e1.printStackTrace();
             }
         } else if (actionCommand.equals("Default Type")) {
-            this.mainImageModel.addContourToImage(new Contour(Type.DEFAULT));
+            this.imageModel.addContourToImage(new Contour(Type.DEFAULT));
         } else if (actionCommand.equals("Closed Type")) {
-            this.mainImageModel.addContourToImage(new Contour(
+            this.imageModel.addContourToImage(new Contour(
                     Type.DEFAULT_CLOSED));
         } else if (actionCommand.equals("Open Type")) {
-            this.mainImageModel
-                    .addContourToImage(new Contour(Type.DEFAULT_OPEN));
+            this.imageModel.addContourToImage(new Contour(Type.DEFAULT_OPEN));
         } else if (actionCommand.equals("Delete All Contours")) {
             this.deleteAllContoursForImage();
         } else if (actionCommand.equals("Delete Selected Contour")) {
@@ -148,6 +161,116 @@ public class WorkspaceView extends View {
         }
     }
 
+    public void setMenu()
+    {
+	    // -------------------- Menu Bar -------------------------------
+        
+        //----- File ------- 
+        JMenu fileMenu = new JMenu("File");
+        
+	        // New Submenu
+	        JMenu newMenu = new JMenu("New Study");
+	
+	        JMenuItem newFromSingle = new JMenuItem("From Single DICOM");
+	        newFromSingle.setActionCommand("Load Single DICOM");
+	        newFromSingle.addActionListener(this);
+	        newMenu.add(newFromSingle);
+	
+	        JMenuItem newFromFileStruct = new JMenuItem("From File Structure");
+	        newFromFileStruct.setActionCommand("Create New Study");
+	        newFromFileStruct.addActionListener(this);
+	        newMenu.add(newFromFileStruct);
+
+	    fileMenu.add(newMenu);
+	    
+        JMenuItem openExisting = new JMenuItem("Open Existing (Ctrl+O)");
+        openExisting.setActionCommand("Load Existing Study");
+        openExisting.addActionListener(this);
+        fileMenu.add(openExisting);
+
+        JMenuItem saveStudy = new JMenuItem("Save (Ctrl+S)");
+        saveStudy.setActionCommand("Save Study");
+        saveStudy.addActionListener(this);
+        fileMenu.add(saveStudy);
+
+        JMenuItem saveAsStudy = new JMenuItem("Save as (Ctrl+Shift+S)");
+        saveAsStudy.setActionCommand("Save As Study");
+        saveAsStudy.addActionListener(this);
+        fileMenu.add(saveAsStudy);
+        
+        JMenuItem importDicom = new JMenuItem("Import DICOM");
+        importDicom.setActionCommand("Import DICOM");
+        importDicom.addActionListener(this);
+        fileMenu.add(importDicom);
+        
+        //----- Add ------
+        JMenu add = new JMenu("Add"); // change to add shape later?
+        
+	        //Contour Submenu
+	        JMenu addContour = new JMenu("Add Contour");
+	
+	        JMenuItem defaultType = new JMenuItem("Default");
+	        defaultType.setActionCommand("Default Type");
+	        defaultType.addActionListener(this);
+	        addContour.add(defaultType);
+	
+	        JMenuItem closedType = new JMenuItem("Closed");
+	        closedType.setActionCommand("Closed Type");
+	        closedType.addActionListener(this);
+	        addContour.add(closedType);
+	
+	        JMenuItem openType = new JMenuItem("Open");
+	        openType.setActionCommand("Open Type");
+	        openType.addActionListener(this);
+	        addContour.add(openType);
+	        add.add(addContour);
+	        
+        //----- Contour ------
+        JMenu contours = new JMenu("Contours");
+        JMenuItem saveContours = new JMenuItem("Save Contours (.txt File)");
+        saveContours.setActionCommand("Save Contours");
+        saveContours.addActionListener(this);
+        contours.add(saveContours);
+
+        JMenuItem loadContours = new JMenuItem("Load Contours");
+        loadContours.setActionCommand("Load Contours");
+        loadContours.addActionListener(this);
+        contours.add(loadContours);
+
+        JMenuItem deleteContourAxis = new JMenuItem("Delete Contour Axis");
+        deleteContourAxis.setActionCommand("Delete Contour Axis");
+        deleteContourAxis.addActionListener(this);
+        contours.add(deleteContourAxis);
+
+        JMenuItem deleteContour = new JMenuItem("Delete Contour");
+        deleteContour.setActionCommand("Delete Contour");
+        deleteContour.addActionListener(this);
+        contours.add(deleteContour);
+
+        JMenuItem deleteAllContours = new JMenuItem("Delete All Contours");
+        deleteAllContours.setActionCommand("Delete All Contours");
+        deleteAllContours.addActionListener(this);
+        contours.add(deleteAllContours);
+	        
+        //----- View -----
+        JMenu view = new JMenu("View");
+        JMenuItem zoom = new JMenuItem("Zoom");
+        view.add(zoom);
+	        
+        //----- Main Menu -----
+	    JMenuBar menuBar = new JMenuBar();
+        
+        //Add each sub menu to the top menu Bar
+        menuBar.add(fileMenu);
+        menuBar.add(add);
+        menuBar.add(contours);
+        menuBar.add(view);
+        
+        appFrame.setJMenuBar(menuBar);
+        appFrame.revalidate();
+        appFrame.repaint();
+    }
+    
     /**
      * Method that will close the GUIController's applicationFrame variable.
      */
@@ -192,93 +315,6 @@ public class WorkspaceView extends View {
             } else if (response == JFileChooser.CANCEL_OPTION) {
                 // System.out.println("Choose to Cancel");
             }
-        }
-    }
-
-    /**
-     * Opens a JFileChooser that allows the user to select a Study model file
-     * (.smc).
-     */
-    public void loadStudy() {
-        FileFilter studyFilter = new FileNameExtensionFilter(
-                "Study file (.smc)", "smc");
-        fileChooser.setFileFilter(studyFilter);
-
-        int response = fileChooser.showOpenDialog(this.mainComponent);
-        if (response == JFileChooser.APPROVE_OPTION) {
-            String fileName = fileChooser.getSelectedFile().getAbsolutePath();
-
-            Study study = StudyUtilities.loadStudy(fileName);
-            // TODO: Send this to the grid view/model
-        }
-    }
-
-    /**
-     * Opens a JFileChooser that allows the user to select a Directory, which
-     * will then be iterated through to generate a new Study object.
-     *
-     * @param e : ActionEvent object that is was used to originally used to call
-     *            the GUIController's actionPerformed method. (currently unused)
-     */
-    public void createNewStudy(ActionEvent e) {
-        // System.out.println("GUIController : Create New Study");
-
-        fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-
-        int returnVal = fileChooser.showOpenDialog(this.mainComponent);
-        if (returnVal == JFileChooser.APPROVE_OPTION) {
-            // System.out.println("FileChooser : Load File Structure");
-
-            String directory = fileChooser.getSelectedFile().getAbsolutePath();
-            Path path = Paths.get(directory);
-
-            DICOMFileTreeWalker fileTreeWalker = new DICOMFileTreeWalker();
-
-            Study s = fileTreeWalker.addFileTreeToStudy(path, new Study());
-
-            // update study structure Model
-            this.updateNewStudy(s);
-            this.updateNewDicom();
-        } else {
-            // System.out.println("FileChooser : Canceled choosing directory");
-        }
-    }
-
-    /**
-     * Opens a JFileChooser that allows the user to select a single Dicom file
-     * and generate a Study object with the Dicom as the only image in it.
-     *
-     * @param e : ActionEvent object that is was used to originally used to call
-     *            the GUIController's actionPerformed method. (currently unused)
-     */
-    private void loadSingleDicom(ActionEvent e) throws NotInStudyException {
-        // System.out.println("GUIController : Load Single DICOM");
-
-        FileFilter dicomType = new FileNameExtensionFilter("DICOM file (.dcm)",
-                "dcm");
-        fileChooser.addChoosableFileFilter(dicomType);
-
-        int returnVal = fileChooser.showOpenDialog(this.mainComponent);
-        if (returnVal == JFileChooser.APPROVE_OPTION) {
-
-            // System.out.println("File selected");
-
-            // filechooser.getSelectedFile() returns a file object
-            String filename = fileChooser.getSelectedFile().getPath();
-
-            // System.out.println("StudyStructureController : Chose file - " +
-            // filename);
-
-            DICOMImage dImage = DICOM3Importer.makeDICOMImageFromFile(filename);
-
-            Study s = new Study();
-            s.addImage(dImage);
-
-            // update study structure Model
-            this.updateNewStudy(s);
-            this.updateNewDicom();
-        } else {
-            // System.out.println("GUIController : Cancel choosing file");
         }
     }
 
@@ -367,30 +403,30 @@ public class WorkspaceView extends View {
 
     private void hideSelectedContour() {
         DICOMImage dImage = this.studyStructModel.getImage();
-        Contour selected = this.mainImageModel.getSelectedContour();
+        Contour selected = this.imageModel.getSelectedContour();
         dImage.getContours().remove(selected);
-        this.mainImageModel.getHiddenContours().add(selected);
+        this.imageModel.getHiddenContours().add(selected);
 
     }
 
     private void hideContours() {
         DICOMImage dImage = this.studyStructModel.getImage();
-        this.mainImageModel.getHiddenContours().addAll(dImage.getContours());
+        this.imageModel.getHiddenContours().addAll(dImage.getContours());
         dImage.getContours().clear();
     }
 
     private void showContours() {
-        if (this.mainImageModel.getHiddenContours().size() != 0) {
+        if (this.imageModel.getHiddenContours().size() != 0) {
             DICOMImage dImage = this.studyStructModel.getImage();
             dImage.getContours().addAll(
-                    (Vector<Contour>) this.mainImageModel.getHiddenContours());
-            this.mainImageModel.getHiddenContours().clear();
+                    (Vector<Contour>) this.imageModel.getHiddenContours());
+            this.imageModel.getHiddenContours().clear();
         }
     }
 
     private void deleteSelectedContour() {
         DICOMImage dImage = this.studyStructModel.getImage();
-        dImage.getContours().remove(this.mainImageModel.getSelectedContour());
+        dImage.getContours().remove(this.imageModel.getSelectedContour());
     }
 
     // TODO: move key binding to GridView
