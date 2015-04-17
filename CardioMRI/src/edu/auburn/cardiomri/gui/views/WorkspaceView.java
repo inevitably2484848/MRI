@@ -561,128 +561,92 @@ public class WorkspaceView extends View {
         }
     }
 
+    /**
+     * 
+     */
+    private void loadExistingStudy() {
+        // TODO Auto-generated method stub
+        
+    }
+
+    /**
+     * 
+     */
+    private void saveStudy() {
+        // TODO Auto-generated method stub
+        
+    }
+    
+    /**
+     * 
+     */
+    private void saveAsStudy() {
+        // TODO Auto-generated method stub
+        
+    }
+    
     // Action classes
     private class LeftKeyAction extends AbstractAction {
+        private static final long serialVersionUID = 6612132766001531904L;
 
-        private static final long serialVersionUID = 1L;
-        private GUIController controller;
-
-        // AbstractAction methods
         public void actionPerformed(ActionEvent e) {
-            this.controller.decrementTimeIndex();
-        }
-
-        // Constructor
-        public LeftKeyAction(GUIController c) {
-            this.controller = c;
+            decrementTimeIndex();
         }
     }
 
     private class RightKeyAction extends AbstractAction {
+        private static final long serialVersionUID = 6824940022077838332L;
 
-        private static final long serialVersionUID = 1L;
-        private GUIController controller;
-
-        // AbstractAction methods
         public void actionPerformed(ActionEvent e) {
-            this.controller.incrementTimeIndex();
+            incrementTimeIndex();
         }
-
-        // Constructor
-        public RightKeyAction(GUIController c) {
-            this.controller = c;
-        }
-
     }
 
     private class UpKeyAction extends AbstractAction {
-        private static final long serialVersionUID = 1L;
-        private GUIController controller;
+        private static final long serialVersionUID = 4942341424740412096L;
 
-        // AbstractAction methods
         public void actionPerformed(ActionEvent e) {
-            this.controller.decrementSliceIndex();
-        }
-
-        // Constructor
-        public UpKeyAction(GUIController c) {
-            this.controller = c;
+            decrementSliceIndex();
         }
     }
 
     private class DownKeyAction extends AbstractAction {
-        private static final long serialVersionUID = 1L;
-        private GUIController controller;
+        private static final long serialVersionUID = -7183889255252949565L;
 
-        // AbstractAction methods
         public void actionPerformed(ActionEvent e) {
-            this.controller.incrementSliceIndex();
-        }
-
-        // Constructor
-        public DownKeyAction(GUIController c) {
-            this.controller = c;
+            incrementSliceIndex();
         }
     }
 
     private class CtrlSAction extends AbstractAction {
-        private static final long serialVersionUID = 1L;
-        private GUIController controller;
+        private static final long serialVersionUID = 8688937617331716060L;
 
-        // AbstractAction methods
         public void actionPerformed(ActionEvent e) {
-            this.controller.saveStudy();
-        }
-
-        // Constructor
-        public CtrlSAction(GUIController c) {
-            this.controller = c;
+            saveStudy();
         }
     }
 
     private class CtrlShiftSAction extends AbstractAction {
-        private static final long serialVersionUID = 1L;
-        private GUIController controller;
+        private static final long serialVersionUID = -2543127413774012188L;
 
-        // AbstractAction methods
         public void actionPerformed(ActionEvent e) {
-            this.controller.saveAsStudy();
-        }
-
-        // Constructor
-        public CtrlShiftSAction(GUIController c) {
-            this.controller = c;
+            saveAsStudy();
         }
     }
 
     private class CtrlOAction extends AbstractAction {
-        private static final long serialVersionUID = 1L;
-        private GUIController controller;
+        private static final long serialVersionUID = 764073195702399357L;
 
-        // AbstractAction methods
         public void actionPerformed(ActionEvent e) {
-            this.controller.loadExistingStudy(e);
-            ;
-        }
-
-        // Constructor
-        public CtrlOAction(GUIController c) {
-            this.controller = c;
+            loadExistingStudy();
         }
     }
 
     private class CtrlWAction extends AbstractAction {
-        private static final long serialVersionUID = 1L;
-        private GUIController controller;
+        private static final long serialVersionUID = 8234348834457453793L;
 
-        // AbstractAction methods
         public void actionPerformed(ActionEvent e) {
-            this.controller.closeWindow();
-        }
-
-        // Constructor
-        public CtrlWAction(GUIController c) {
-            this.controller = c;
+            closeWindow();
         }
     }
 }
