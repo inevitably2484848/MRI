@@ -445,41 +445,41 @@ public class WorkspaceView extends View {
         // Need to map KeyBindings
         this.mainComponent.getInputMap().put(KeyStroke.getKeyStroke("LEFT"),
                 "left");
-        this.mainComponent.getActionMap().put("left", new LeftKeyAction(this));
+        this.mainComponent.getActionMap().put("left", new LeftKeyAction());
 
         this.mainComponent.getInputMap().put(KeyStroke.getKeyStroke("RIGHT"),
                 "right");
         this.mainComponent.getActionMap()
-                .put("right", new RightKeyAction(this));
+                .put("right", new RightKeyAction());
 
         this.mainComponent.getInputMap().put(KeyStroke.getKeyStroke("DOWN"),
                 "down");
-        this.mainComponent.getActionMap().put("down", new DownKeyAction(this));
+        this.mainComponent.getActionMap().put("down", new DownKeyAction());
 
         this.mainComponent.getInputMap()
                 .put(KeyStroke.getKeyStroke("UP"), "up");
-        this.mainComponent.getActionMap().put("up", new UpKeyAction(this));
+        this.mainComponent.getActionMap().put("up", new UpKeyAction());
 
         KeyStroke ctrlS = KeyStroke.getKeyStroke(KeyEvent.VK_S, Toolkit
                 .getDefaultToolkit().getMenuShortcutKeyMask());
         this.mainComponent.getInputMap().put(ctrlS, "save");
-        this.mainComponent.getActionMap().put("save", new CtrlSAction(this));
+        this.mainComponent.getActionMap().put("save", new CtrlSAction());
 
         KeyStroke ctrlShiftS = KeyStroke.getKeyStroke(KeyEvent.VK_S, 21);
         this.mainComponent.getInputMap().put(ctrlShiftS, "save as");
         this.mainComponent.getActionMap().put("save as",
-                new CtrlShiftSAction(this));
+                new CtrlShiftSAction());
 
         KeyStroke ctrlO = KeyStroke.getKeyStroke(KeyEvent.VK_O, Toolkit
                 .getDefaultToolkit().getMenuShortcutKeyMask());
         this.mainComponent.getInputMap().put(ctrlO, "open existing");
         this.mainComponent.getActionMap().put("open existing",
-                new CtrlOAction(this));
+                new CtrlOAction());
 
         KeyStroke ctrlW = KeyStroke.getKeyStroke(KeyEvent.VK_W, Toolkit
                 .getDefaultToolkit().getMenuShortcutKeyMask());
         this.mainComponent.getInputMap().put(ctrlW, "close");
-        this.mainComponent.getActionMap().put("close", new CtrlWAction(this));
+        this.mainComponent.getActionMap().put("close", new CtrlWAction());
     }
 
     /**
