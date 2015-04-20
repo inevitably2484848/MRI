@@ -3,18 +3,18 @@ package edu.auburn.cardiomri.gui.models;
 import edu.auburn.cardiomri.datastructure.DICOMImage;
 import edu.auburn.cardiomri.datastructure.Study;
 
-public class StudyStructureModel extends Model {
+public class SelectModel extends Model {
     private Study study;
     private int g, s, t, i;
     private DICOMImage currentImage;
 
+    
     /**
      * Sets the class' study attribute and notifies its Observers.
      * 
      * @param s : The object that the class will use as its study attribute.
      */
     public void setStudy(Study s) {
-        // System.out.println("StudyStructureModel : setStudy");
         this.study = s;
         this.currentImage = this.study.getGroups().get(0).getSlices().get(0)
                 .getTimes().get(0).getImages().get(0);
@@ -32,8 +32,7 @@ public class StudyStructureModel extends Model {
      * @param timeIndex : New timeIndex.
      * @param imageIndex : New imageIndex.
      */
-    public void setCurrentImage(int groupIndex, int sliceIndex, int timeIndex,
-            int imageIndex) {
+    public void setCurrentImage(int groupIndex, int sliceIndex, int timeIndex, int imageIndex) {
         this.g = groupIndex;
         this.s = sliceIndex;
         this.t = timeIndex;
@@ -47,6 +46,7 @@ public class StudyStructureModel extends Model {
         setChanged();
         notifyObservers(indices);
     }
+    
 
     /**
      * Returns the class' study attribute.
@@ -67,8 +67,7 @@ public class StudyStructureModel extends Model {
         return this.currentImage;
     }
 
-    public StudyStructureModel() {
-        // System.out.println("StudyStructureModel()");
+    public SelectModel() {
         this.study = null;
     }
 }

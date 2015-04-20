@@ -12,7 +12,7 @@ public class StartModel extends Model {
 		super();
 	}
 	
-	public void setMVC(RunMVC mvc )
+	public void setMVC(RunMVC mvc)
 	{
 		this.mvc = mvc;
 	}

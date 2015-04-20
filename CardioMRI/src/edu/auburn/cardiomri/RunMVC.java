@@ -40,6 +40,9 @@ public class RunMVC {
         startView = new StartView();
         startView.setModel(startModel);
         
+        // Set up select view
+        
+        
         // hand over to workspaceView 
         JFrame frame = new JFrame("Cardio MRI");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -92,8 +95,8 @@ public class RunMVC {
 	        }
     	
     	//If it is a new study
-    	StudyStructureModel studyStructModel = new StudyStructureModel();
-        StudyStructureView studyStructView = new StudyStructureView();
+    	SelectModel studyStructModel = new SelectModel();
+        SelectView studyStructView = new SelectView();
         studyStructModel.addObserver(studyStructView);
     }
 }
