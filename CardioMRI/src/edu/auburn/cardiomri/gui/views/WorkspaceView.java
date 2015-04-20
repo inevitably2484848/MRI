@@ -70,9 +70,12 @@ public class WorkspaceView extends View {
             if (currentState == State.START) {
                 this.disposeFrame();
                 this.createFrame();
-
+                
+                StartModel startModel = new StartModel();
                 StartView startView = new StartView();
-                startView.setModel(new StartModel());
+                startView.setModel(startModel);
+                startModel.addObserver(this);
+                
                 
                 appFrame.setSize(600, 400);
                 this.appFrame.add(startView.getPanel());
@@ -213,13 +216,6 @@ public class WorkspaceView extends View {
             this.saveStudy();
         } else if (actionCommand.equals("Save As Study")) {
             this.saveAsStudy();
-        } else if (actionCommand.equals("Import DICOM")) {
-            // Check to see if there is a Study to add things to
-            if (this.studyStructModel.getStudy() != null) {
-                this.importDicom(e);
-            } else {
-                // System.out.println("GUIController : failed attempt to import DICOM");
-            }
         } else if (actionCommand.equals("Save Contours")) {
             this.saveContour();
         } else if (actionCommand.equals("Load Contours")) {
@@ -374,86 +370,35 @@ public class WorkspaceView extends View {
      * like to give it.
      */
     public void saveAsStudy(Study study) {
-        if (study != null) {
-            // System.out.println("Saving Study As...");
+        JFileChooser saveFC = fileChooser;
 
-            JFileChooser saveFC = fileChooser;
+        FileFilter studyFileFilter = new FileNameExtensionFilter("Study file (.smc)", "smc");
+        saveFC.setFileFilter(studyFileFilter);
 
-            FileFilter studyFileFilter = new FileNameExtensionFilter(
-                    "Study file (.smc)", "smc");
-            saveFC.setFileFilter(studyFileFilter);
+        int response = saveFC.showSaveDialog(this.mainComponent);
 
-            int response = saveFC.showSaveDialog(this.mainComponent);
-
-            if (response == JFileChooser.APPROVE_OPTION) {
-                // System.out.println("Choose to save");
-                String newFilename = saveFC.getSelectedFile().getAbsolutePath();
-                // Incorrect file extension
-                if (!newFilename.endsWith(".smc")) {
-                    newFilename = newFilename.concat(".smc");
-                }
-                // System.out.println("filename : " + newFilename);
-                try {
-                    SerializationManager.save(this.studyStructModel.getStudy(),
-                            newFilename);
-                    this.filename = newFilename;
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            } else if (response == JFileChooser.CANCEL_OPTION) {
-                // System.out.println("Choose to Cancel");
+        if (response == JFileChooser.APPROVE_OPTION) {
+            String newFilename = saveFC.getSelectedFile().getAbsolutePath();
+            
+            if (!newFilename.endsWith(".smc")) {
+                newFilename = newFilename.concat(".smc");
             }
+            
+            this.getWorkspaceModel().saveStudy(newFilename);
+            
+        } else if (response == JFileChooser.CANCEL_OPTION) {
+            // System.out.println("Choose to Cancel");
         }
     }
 
-    /**
-     * Opens a JFileChooser that allows the user to select a single Dicom file
-     * and adds it to the existing Study object.
-     *
-     * @param e : ActionEvent object that is was used to originally used to call
-     *            the GUIController's actionPerformed method. (currently unused)
-     */
-    private void importDicom(ActionEvent e) {
-        // System.out.println("GUIController : Import DICOM");
 
-        FileFilter dicomFilter = new FileNameExtensionFilter(
-                "DICOM file (.dcm)", "dcm");
-        fileChooser.setFileFilter(dicomFilter);
-
-        int returnVal = fileChooser.showOpenDialog(this.mainComponent);
-        if (returnVal == JFileChooser.APPROVE_OPTION) {
-
-            // System.out.println("File selected");
-
-            // filechooser.getSelectedFile() returns a file object
-            String filename = fileChooser.getSelectedFile().getPath();
-
-            // System.out.println("StudyStructureController : Chose file - " +
-            // filename);
-
-            DICOMImage dImage = DICOM3Importer.makeDICOMImageFromFile(filename);
-
-            Study existingStudy = this.getStudyStructModel().getStudy();
-            try {
-                existingStudy.addImage(dImage);
-            } catch (NotInStudyException e1) {
-                e1.printStackTrace();
-            }
-
-            // update study structure Model
-            this.updateNewStudy(existingStudy);
-            this.updateNewDicom();
-        } else {
-            // System.out.println("GUIController : Cancel choosing file");
-        }
-    }
 
     /**
      * deletes all of the Contours for the displayed image
      */
     private void deleteAllContoursForImage() {
-        DICOMImage dImage = this.studyStructModel.getImage();
-        dImage.getContours().clear();
+//        DICOMImage dImage = this.studyStructModel.getImage();
+//        dImage.getContours().clear();
     }
 
     /**
@@ -464,10 +409,10 @@ public class WorkspaceView extends View {
      */
 
     public void saveContour() {
-        String path = System.getProperty("user.dir") + File.separator
-                + "contourPoints.txt";
-        writeContoursToFile(this.studyStructModel.getStudy()
-                .getUIDToImage(), path);
+//        String path = System.getProperty("user.dir") + File.separator
+//                + "contourPoints.txt";
+//        writeContoursToFile(this.studyStructModel.getStudy()
+//                .getUIDToImage(), path);
 
     }
 
@@ -480,41 +425,41 @@ public class WorkspaceView extends View {
      */
 
     public void setUpLoad() throws IOException {
-        fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-        int returnVal = fileChooser.showOpenDialog(this.mainComponent);
-        if (returnVal == JFileChooser.APPROVE_OPTION) {
-            File file = new File(fileChooser.getSelectedFile().getPath());
-            loadContour(file, this.studyStructModel.getStudy()
-                    .getUIDToImage());
-        }
+//        fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+//        int returnVal = fileChooser.showOpenDialog(this.mainComponent);
+//        if (returnVal == JFileChooser.APPROVE_OPTION) {
+//            File file = new File(fileChooser.getSelectedFile().getPath());
+//            loadContour(file, this.studyStructModel.getStudy()
+//                    .getUIDToImage());
+//        }
     }
 
     private void hideSelectedContour() {
-        DICOMImage dImage = this.studyStructModel.getImage();
-        Contour selected = this.mainImageModel.getSelectedContour();
-        dImage.getContours().remove(selected);
-        this.mainImageModel.getHiddenContours().add(selected);
+//        DICOMImage dImage = this.studyStructModel.getImage();
+//        Contour selected = this.mainImageModel.getSelectedContour();
+//        dImage.getContours().remove(selected);
+//        this.mainImageModel.getHiddenContours().add(selected);
 
     }
 
     private void hideContours() {
-        DICOMImage dImage = this.studyStructModel.getImage();
-        this.mainImageModel.getHiddenContours().addAll(dImage.getContours());
-        dImage.getContours().clear();
+//        DICOMImage dImage = this.studyStructModel.getImage();
+//        this.mainImageModel.getHiddenContours().addAll(dImage.getContours());
+//        dImage.getContours().clear();
     }
 
     private void showContours() {
-        if (this.mainImageModel.getHiddenContours().size() != 0) {
-            DICOMImage dImage = this.studyStructModel.getImage();
-            dImage.getContours().addAll(
-                    (Vector<Contour>) this.mainImageModel.getHiddenContours());
-            this.mainImageModel.getHiddenContours().clear();
-        }
+//        if (this.mainImageModel.getHiddenContours().size() != 0) {
+//            DICOMImage dImage = this.studyStructModel.getImage();
+//            dImage.getContours().addAll(
+//                    (Vector<Contour>) this.mainImageModel.getHiddenContours());
+//            this.mainImageModel.getHiddenContours().clear();
+//        }
     }
 
     private void deleteSelectedContour() {
-        DICOMImage dImage = this.studyStructModel.getImage();
-        dImage.getContours().remove(this.mainImageModel.getSelectedContour());
+//        DICOMImage dImage = this.studyStructModel.getImage();
+//        dImage.getContours().remove(this.mainImageModel.getSelectedContour());
     }
 
     // TODO: move key binding to GridView
@@ -574,19 +519,19 @@ public class WorkspaceView extends View {
      * Decrements the current time index and updates the models.
      */
     private void decrementTimeIndex() {
-        // Check to see if it is possible
-        if (this.studyStructModel.getStudy() == null) {
-            return;
-        }
-        if ((this.tIndex - 1) >= 0) {
-            // then decrement
-            // System.out.println("GUIController : decrement time index");
-            this.tIndex--;
-            this.updateNewDicom();
-        } else {
-            this.tIndex = this.studyStructModel.getStudy().getGroups()
-                    .get(gIndex).getSlices().get(sIndex).getTimes().size() - 1;
-        }
+//        // Check to see if it is possible
+//        if (this.studyStructModel.getStudy() == null) {
+//            return;
+//        }
+//        if ((this.tIndex - 1) >= 0) {
+//            // then decrement
+//            // System.out.println("GUIController : decrement time index");
+//            this.tIndex--;
+//            this.updateNewDicom();
+//        } else {
+//            this.tIndex = this.studyStructModel.getStudy().getGroups()
+//                    .get(gIndex).getSlices().get(sIndex).getTimes().size() - 1;
+//        }
     }
 
     /**
@@ -594,20 +539,20 @@ public class WorkspaceView extends View {
      */
     private void incrementTimeIndex() {
         // Check to see if it is possible
-        if (this.studyStructModel.getStudy() == null) {
-            return;
-        }
-        ArrayList<Time> curTimes = this.studyStructModel.getStudy().getGroups()
-                .get(gIndex).getSlices().get(sIndex).getTimes();
-        if ((this.tIndex + 1) < curTimes.size()) {
-            // then increment
-            // System.out.println("GUIController : increment time index");
-            this.tIndex++;
-            this.updateNewDicom();
-        } else {
-            // Loop
-            this.tIndex = 0;
-        }
+//        if (this.studyStructModel.getStudy() == null) {
+//            return;
+//        }
+//        ArrayList<Time> curTimes = this.studyStructModel.getStudy().getGroups()
+//                .get(gIndex).getSlices().get(sIndex).getTimes();
+//        if ((this.tIndex + 1) < curTimes.size()) {
+//            // then increment
+//            // System.out.println("GUIController : increment time index");
+//            this.tIndex++;
+//            this.updateNewDicom();
+//        } else {
+//            // Loop
+//            this.tIndex = 0;
+//        }
     }
 
     /**
@@ -615,17 +560,17 @@ public class WorkspaceView extends View {
      */
     private void decrementSliceIndex() {
         // Check to see if it is possible
-        if (this.studyStructModel.getStudy() == null) {
-            return;
-        }
-        if (this.sIndex > 0) {
-            // then increment
-            // System.out.println("GUIController : decrement slice index");
-            this.sIndex--;
-            this.updateNewDicom();
-        } else {
-            // System.out.println("GUIController : failed attempt to decrement slice");
-        }
+//        if (this.studyStructModel.getStudy() == null) {
+//            return;
+//        }
+//        if (this.sIndex > 0) {
+//            // then increment
+//            // System.out.println("GUIController : decrement slice index");
+//            this.sIndex--;
+//            this.updateNewDicom();
+//        } else {
+//            // System.out.println("GUIController : failed attempt to decrement slice");
+//        }
     }
 
     /**
@@ -633,20 +578,20 @@ public class WorkspaceView extends View {
      */
     private void incrementSliceIndex() {
         // Check to see if it is possible
-        if (this.studyStructModel.getStudy() == null) {
-            return;
-        }
-        ArrayList<Slice> curSlices = this.studyStructModel.getStudy()
-                .getGroups().get(gIndex).getSlices();
-        if ((this.sIndex + 1) < curSlices.size()) {
-            // then increment
-            // System.out.println("GUIController : increment slice index " +
-            // curSlices.size());
-            this.sIndex++;
-            this.updateNewDicom();
-        } else {
-            // System.out.println("GUIController : failed attempt to increment slice");
-        }
+//        if (this.studyStructModel.getStudy() == null) {
+//            return;
+//        }
+//        ArrayList<Slice> curSlices = this.studyStructModel.getStudy()
+//                .getGroups().get(gIndex).getSlices();
+//        if ((this.sIndex + 1) < curSlices.size()) {
+//            // then increment
+//            // System.out.println("GUIController : increment slice index " +
+//            // curSlices.size());
+//            this.sIndex++;
+//            this.updateNewDicom();
+//        } else {
+//            // System.out.println("GUIController : failed attempt to increment slice");
+//        }
     }
 
     /**

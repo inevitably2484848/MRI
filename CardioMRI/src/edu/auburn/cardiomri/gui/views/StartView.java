@@ -22,7 +22,6 @@ import edu.auburn.cardiomri.util.StudyUtilities;
 public class StartView extends View {
 
 	protected JFileChooser fileChooser;
-	protected StartModel model;
 	
 	public StartView()
 	{
@@ -58,7 +57,7 @@ public class StartView extends View {
 	    if (actionCommand.equals("Create New Study")) {
 	        this.createNewStudy();
 	    } else if (actionCommand.equals("Load Existing Study")) {
-	        this.loadStudy();
+	    	this.loadStudy();
 	    } else if (actionCommand.equals("Load Single DICOM")) {
 	        try {
 	            this.loadSingleDicom();
@@ -82,7 +81,7 @@ public class StartView extends View {
             String fileName = fileChooser.getSelectedFile().getAbsolutePath();
 
             Study study = StudyUtilities.loadStudy(fileName);
-            this.model.setStudy(study);
+            this.getStartModel().setStudy(study);
         }
     }
 
@@ -104,7 +103,7 @@ public class StartView extends View {
 
             Study study = fileTreeWalker.addFileTreeToStudy(path, new Study());
 
-            this.model.setStudy(study);
+            this.getStartModel().setStudy(study);
         } else {
             // System.out.println("FileChooser : Canceled choosing directory");
         }
@@ -130,9 +129,14 @@ public class StartView extends View {
             Study study = new Study();
             study.addImage(dImage);
 
-            this.model.setStudy(study);
+            this.getStartModel().setStudy(study);
         } else {
             // System.out.println("GUIController : Cancel choosing file");
         }
+    }
+    
+    public StartModel getStartModel()
+    {
+    	return (StartModel) this.model;
     }
 }

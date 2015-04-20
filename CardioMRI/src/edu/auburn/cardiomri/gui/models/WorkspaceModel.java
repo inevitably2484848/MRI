@@ -4,6 +4,7 @@
 package edu.auburn.cardiomri.gui.models;
 
 import edu.auburn.cardiomri.datastructure.Study;
+import edu.auburn.cardiomri.util.StudyUtilities;
 
 /**
  * @author Moniz
@@ -23,7 +24,6 @@ public class WorkspaceModel extends Model {
 
     public void setStudy(Study study) {
         this.study = study;
-
         // TODO: decide which state to go to next
         setCurrentState(State.WORKSPACE);
     }
@@ -40,5 +40,10 @@ public class WorkspaceModel extends Model {
 
     public enum State {
         UNDEFINED, START, GROUP_SELECTION, WORKSPACE
+    }
+    
+    public void saveStudy(String fileName)
+    {
+    	StudyUtilities.saveStudy(this.study, fileName);
     }
 }
