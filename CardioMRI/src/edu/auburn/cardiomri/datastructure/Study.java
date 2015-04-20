@@ -21,6 +21,7 @@ public class Study implements Serializable {
 
     public static final double GROUP_COMPARISON_EPSILON = 0.00001;
 
+
     private Map<String, DICOMImage> uidToImage = new HashMap<String, DICOMImage>();
     private DICOMImage currentImage;
     private String version;
@@ -29,6 +30,9 @@ public class Study implements Serializable {
     // TODO: check numerical types Java vs MATLAB
     private int EDTimeFrame;
     private int ESTimeFrame;
+    private int saFiesta = 0;
+    private int twoChamber = 1;
+    private int fourChamber = 2;
     private double SystolicBloodPressure; // mmHg
     private double DiastolicBloodPressure; // mmHg
 
@@ -125,7 +129,39 @@ public class Study implements Serializable {
     public void setESTimeFrame(int eSTimeFrame) {
         ESTimeFrame = eSTimeFrame;
     }
-
+    
+    /**
+     * 
+     * @return
+     */
+    public int getSAFiesta() {
+    	return saFiesta;
+    }
+    
+    /**
+     * 
+     * @param SAFIESTA
+     */
+    public void setSAFiesta(int SAFIESTA) {
+    	saFiesta = SAFIESTA;
+    }
+    
+    public int getTwoChamber() {
+    	return twoChamber;
+    }
+    
+    public void setTwoChamber(int TWOCHAMBER) {
+    	twoChamber = TWOCHAMBER;
+    }
+    
+    public int getFourChamber() {
+    	return fourChamber;
+    }
+    
+    public void setFourChamber(int FOURCHAMBER) {
+    	fourChamber = FOURCHAMBER;
+    }
+    
     /**
      * Returns SystolicBloodPressure
      * 
