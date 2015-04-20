@@ -53,7 +53,8 @@ public class WorkspaceView extends View {
     protected JComponent mainComponent;
     protected JFrame appFrame;
     protected GridView gridView;
-    protected ImageModel imageView;
+    protected ImageModel mainImageModel, twoChamberModel, fourChamberModel;
+    protected ImageView  mainImageView, twoChamberView, fourChamberView;
 
     public WorkspaceView() {
         super();
@@ -84,23 +85,49 @@ public class WorkspaceView extends View {
                 Study study = getWorkspaceModel().getStudy();
                 
 
-                ImageModel imageModel = new ImageModel();
+                this.mainImageModel = new ImageModel();
                 ConstructImage sImg = new ConstructImage(study.getCurrentImage());
-                ImageView imageView = new ImageView(sImg);
-                imageView.setModel(imageModel);
+                this.mainImageView = new ImageView(sImg);
+                mainImageView.setModel(mainImageModel);
 
                 GridModel gridModel = new GridModel();
-                GridView gridView = new GridView();
+                GridView gridView = new GridView(); //study.SAFESTA 
                 gridView.setModel(gridModel);
-                gridModel.setImageModel(imageModel);
-
-                imageModel.addObserver(this);
+                gridModel.setImageModel(mainImageModel);
+                
+                mainImageModel.addObserver(this);
                 gridModel.addObserver(this);
-
+                
+                //Setup the left panel
+                GridControlView gridControl = new GridControlView();
+                gridControl.setModel(gridModel);
+                
+                MultipleImageView multipleImages = new MultipleImageView();
+                multipleImages.setModel(gridModel);
+                
+                LeftPanel leftPanel = new LeftPanel(gridView, gridControl, multipleImages, WORKSPACE_WIDTH, WORKSPACE_HEIGHT);
+                                
+                //Setup the right panel
+                this.twoChamberModel = new ImageModel();
+                ConstructImage twoChambersImg = new ConstructImage(study.getCurrentImage()); //TODO: study.getTwoChamberImage()
+                ImageView twoChamberView = new ImageView(twoChambersImg);
+                twoChamberView.setModel(twoChamberModel);
+                
+                this.fourChamberModel = new ImageModel();
+                ConstructImage fourChambersImg = new ConstructImage(study.getCurrentImage()); //TODO: study.getTwoChamberImage()
+                ImageView fourChamberView = new ImageView(fourChambersImg);
+                fourChamberView.setModel(fourChamberModel);
+                
+                ContourControlView contourControl = new ContourControlView();
+                contourControl.setModel(mainImageModel);
+                
+                RightPanel rightPanel = new RightPanel(mainImageView, twoChamberView, fourChamberView, contourControl, WORKSPACE_WIDTH, WORKSPACE_HEIGHT);
+                
+                //add to appFrame
                 appFrame.setSize(WORKSPACE_WIDTH, WORKSPACE_HEIGHT);
 
                 JSplitPane allPanes = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
-                        true, gridView.getPanel(), imageView.getPanel());
+                        true, leftPanel.getPanel(), rightPanel.getPanel());
 
                 allPanes.setDividerLocation(WORKSPACE_WIDTH / 4);
 
@@ -188,11 +215,11 @@ public class WorkspaceView extends View {
                 e1.printStackTrace();
             }
         } else if (actionCommand.equals("Default Type")) {
-            this.imageModel.addContourToImage(new Contour(Type.DEFAULT));
+            this.mainImageModel.addContourToImage(new Contour(Type.DEFAULT));
         } else if (actionCommand.equals("Closed Type")) {
-            this.imageModel.addContourToImage(new Contour(Type.DEFAULT_CLOSED));
+            this.mainImageModel.addContourToImage(new Contour(Type.DEFAULT_CLOSED));
         } else if (actionCommand.equals("Open Type")) {
-            this.imageModel.addContourToImage(new Contour(Type.DEFAULT_OPEN));
+            this.mainImageModel.addContourToImage(new Contour(Type.DEFAULT_OPEN));
         } else if (actionCommand.equals("Delete All Contours")) {
             this.deleteAllContoursForImage();
         } else if (actionCommand.equals("Delete Selected Contour")) {
@@ -449,30 +476,30 @@ public class WorkspaceView extends View {
 
     private void hideSelectedContour() {
         DICOMImage dImage = this.studyStructModel.getImage();
-        Contour selected = this.imageModel.getSelectedContour();
+        Contour selected = this.mainImageModel.getSelectedContour();
         dImage.getContours().remove(selected);
-        this.imageModel.getHiddenContours().add(selected);
+        this.mainImageModel.getHiddenContours().add(selected);
 
     }
 
     private void hideContours() {
         DICOMImage dImage = this.studyStructModel.getImage();
-        this.imageModel.getHiddenContours().addAll(dImage.getContours());
+        this.mainImageModel.getHiddenContours().addAll(dImage.getContours());
         dImage.getContours().clear();
     }
 
     private void showContours() {
-        if (this.imageModel.getHiddenContours().size() != 0) {
+        if (this.mainImageModel.getHiddenContours().size() != 0) {
             DICOMImage dImage = this.studyStructModel.getImage();
             dImage.getContours().addAll(
-                    (Vector<Contour>) this.imageModel.getHiddenContours());
-            this.imageModel.getHiddenContours().clear();
+                    (Vector<Contour>) this.mainImageModel.getHiddenContours());
+            this.mainImageModel.getHiddenContours().clear();
         }
     }
 
     private void deleteSelectedContour() {
         DICOMImage dImage = this.studyStructModel.getImage();
-        dImage.getContours().remove(this.imageModel.getSelectedContour());
+        dImage.getContours().remove(this.mainImageModel.getSelectedContour());
     }
 
     // TODO: move key binding to GridView

@@ -59,20 +59,12 @@ public class ImageView extends SingleImagePanel implements ViewInterface, Observ
 	}
 
 	private void updateImage(DICOMImage dImage) {
-
-		SingleImagePanel.deconstructAllSingleImagePanelsInContainer(this);
-		try {
-			ConstructImage sImg = new ConstructImage(dImage);
-			//TODO:update image for single image panel
-            dirtySource(sImg);
-            this.repaint();
-
-		} catch (DicomException e) {
-			e.printStackTrace();
-		}
+		SingleImagePanel.deconstructAllSingleImagePanelsInContainer(this.panel);
 		
-		//TODO: re-look at this because panel is now not only the main image but everything else
-		//panel.add(display);
+		ConstructImage sImg = new ConstructImage(dImage);
+        dirtySource(sImg);
+        
+        panel.add(this);
 		panel.revalidate();
 		panel.repaint();
 	}
@@ -114,8 +106,7 @@ public class ImageView extends SingleImagePanel implements ViewInterface, Observ
 
 	public ImageView(ConstructImage sImg) {
 		super(sImg);
-		setUpMainPanel();
-		//TODO: create other three views views here 
+		this.panel.add(this);
 	}
 
 	public void selectContour(Point2D p) {
@@ -150,40 +141,6 @@ public class ImageView extends SingleImagePanel implements ViewInterface, Observ
 			}
 		}
 		getImageModel().setSelectedContour(minDelta.getKey());
-	}
-
-	
-	private void setUpMainPanel()
-	{   
-		this.panel = new JPanel();
-		this.panel.setLayout(new GridLayout(1, 1));
-		this.panel.setBackground(Color.BLACK);
-		this.panel.setOpaque(true);
-		this.panel.setVisible(true);
-		
-    	this.imageContourPanel = new JPanel();
-        this.imageContourPanel.setSize(200, 200);
-        this.imageContourPanel.setLayout(new GridLayout(1, 1));
-        this.imageContourPanel.setBackground(Color.BLUE);
-        this.imageContourPanel.setOpaque(true);
-        this.imageContourPanel.setVisible(true);
-
-    	//Split Screen into three main areas
-    	JSplitPane smallImagesPane = new JSplitPane(
-	            JSplitPane.VERTICAL_SPLIT, true, this.imageViewTwoChamber.getPanel(), this.imageViewFourChamber.getPanel());
-  	
-    	JSplitPane rightSideOfWindow = new JSplitPane(
-	            JSplitPane.VERTICAL_SPLIT, true, smallImagesPane, this.imageContourPanel);
-    	
-    	JSplitPane imagePanes  = new JSplitPane(
-    			JSplitPane.HORIZONTAL_SPLIT,true, this, rightSideOfWindow);
-	   
-
-	    smallImagesPane.setDividerLocation(FRAME_HEIGHT/4);
-	    rightSideOfWindow.setDividerLocation(FRAME_HEIGHT/2);
-	    imagePanes.setDividerLocation(11*FRAME_WIDTH/20);
-	    
-	    this.panel.add(imagePanes);
 	}
 	
 	// SingleImagePanel methods

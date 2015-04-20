@@ -19,7 +19,7 @@ import edu.auburn.cardiomri.datastructure.Group;
 import edu.auburn.cardiomri.datastructure.Slice;
 import edu.auburn.cardiomri.gui.models.GridModel;
 
-public class GridView extends View implements ChangeListener {
+public class GridView extends View {
 
     private int s = 0;
     private int t = 0;
@@ -224,54 +224,14 @@ public class GridView extends View implements ChangeListener {
         super();
         this.panel.setFocusable(false);
 
-        // setupGridView();
         setupGrid(group);
         this.s = 0;
         this.t = 0;
         this.i = 0;
     }
 
-    /*
-     * private void setupGridView() { this.gridControlPanel = new JPanel();
-     * this.gridControlPanel.setSize(200, 200);
-     * this.gridControlPanel.setLayout(new GridLayout(1, 1));
-     * this.gridControlPanel.setBackground(Color.ORANGE);
-     * this.gridControlPanel.setOpaque(true);
-     * this.gridControlPanel.setVisible(true);
-     * 
-     * this.multipleImagesPanel = new JPanel();
-     * this.multipleImagesPanel.setSize(200, 200);
-     * this.multipleImagesPanel.setLayout(new GridLayout(1, 1));
-     * this.multipleImagesPanel.setBackground(Color.YELLOW);
-     * this.multipleImagesPanel.setOpaque(true);
-     * this.multipleImagesPanel.setVisible(true);
-     * 
-     * JSlider framesPerSecond = new JSlider(JSlider.HORIZONTAL,0, 20, 1);
-     * framesPerSecond.addChangeListener(this);
-     * 
-     * this.gridControlPanel.add(framesPerSecond);
-     * 
-     * 
-     * JSplitPane gridPane = new JSplitPane( JSplitPane.VERTICAL_SPLIT, true,
-     * this.panel, this.gridControlPanel);
-     * 
-     * JSplitPane leftSideOfWindow = new JSplitPane( JSplitPane.VERTICAL_SPLIT,
-     * true, gridPane, this.multipleImagesPanel );
-     * 
-     * gridPane.setDividerLocation(FRAME_HEIGHT/4);
-     * leftSideOfWindow.setDividerLocation(FRAME_HEIGHT/2);
-     * 
-     * this.panel.add(leftSideOfWindow); }
-     */
     public GridModel getGridModel() {
         return (GridModel) model;
     }
 
-    public void stateChanged(ChangeEvent e) {
-        JSlider source = (JSlider) e.getSource();
-        if (!source.getValueIsAdjusting()) {
-            int fps = (int) source.getValue();
-            System.out.println(fps);
-        }
-    }
 }
