@@ -93,6 +93,7 @@ public class SelectView extends View implements ActionListener {
     }
     
     private AxisType selectedAxis(Group s) {
+		return null;
     	//String selected[] = s.getSeriesDescription();
     }
 
