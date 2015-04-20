@@ -179,6 +179,12 @@ public class Study implements Serializable {
     public void setGroups(ArrayList<Group> groups) {
         this.groups = groups;
     }
+    
+    public Group getShortAxisGroup()
+    {
+    	//TODO: Change this to the short Axis group
+    	return this.groups.get(0);
+    }
 
     /**
      * Adds a DICOMImage to the Study. Determines which group the DICOMImage

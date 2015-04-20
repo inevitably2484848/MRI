@@ -73,17 +73,33 @@ public class WorkspaceView extends View {
 
                 StartView startView = new StartView();
                 startView.setModel(new StartModel());
+                
                 appFrame.setSize(600, 400);
                 this.appFrame.add(startView.getPanel());
                 appFrame.setVisible(true);
+                
             } else if (currentState == State.GROUP_SELECTION) {
-
+            	this.disposeFrame();
+                this.createFrame();
+                
+            	Study study = getWorkspaceModel().getStudy();
+            	//make a select view 
+            	//make a select model
+            	//view.setModel(model) 
+            	//send study to model
+            	//model will update view
+            	
+            	//selectModel.addObserver(this);
+            	
+            	appFrame.setSize(WORKSPACE_WIDTH, WORKSPACE_HEIGHT);
+                //this.appFrame.add(selectView.getPanel());
+                appFrame.setVisible(true);
+                
             } else if (currentState == State.WORKSPACE) {
                 this.disposeFrame();
                 this.createFrame();
 
                 Study study = getWorkspaceModel().getStudy();
-                
 
                 this.mainImageModel = new ImageModel();
                 ConstructImage sImg = new ConstructImage(study.getCurrentImage());
@@ -91,9 +107,8 @@ public class WorkspaceView extends View {
                 mainImageView.setModel(mainImageModel);
 
                 GridModel gridModel = new GridModel();
-                GridView gridView = new GridView(); //study.SAFESTA 
+                GridView gridView = new GridView(study.getShortAxisGroup()); //TODO: Change the implementation of getSAGroup 
                 gridView.setModel(gridModel);
-                gridModel.setImageModel(mainImageModel);
                 
                 mainImageModel.addObserver(this);
                 gridModel.addObserver(this);
