@@ -1,6 +1,5 @@
 package edu.auburn.cardiomri.gui.views;
 
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridLayout;
@@ -33,15 +32,11 @@ import edu.auburn.cardiomri.util.ContourCalc;
 
 public class ImageView extends SingleImagePanel implements ActionListener, ViewInterface, Observer {
 	protected Model model;
-    private static final int FRAME_WIDTH = 1200;
-    private static final int FRAME_HEIGHT = 800;
 	protected JPanel imageContourPanel;
 	private static final long serialVersionUID = -6920775905498293695L;
 	private Contour currentContour = null;
 	
 	//TODO: make them a different view
-	private ImageView imageViewFourChamber;
-	private ImageView imageViewTwoChamber;
 
 	
 	public void update(Observable obs, Object obj) {
@@ -171,7 +166,6 @@ public class ImageView extends SingleImagePanel implements ActionListener, ViewI
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
-        System.out.println("test");
     }
 
     /**
@@ -187,9 +181,9 @@ public class ImageView extends SingleImagePanel implements ActionListener, ViewI
             getImageModel().addContourToImage(new Contour(Type.DEFAULT_CLOSED));
         } else if (actionCommand.equals("Open Type")) {
             getImageModel().addContourToImage(new Contour(Type.DEFAULT_OPEN));
-        } else if (actionCommand.equals("Delete Selected Contour")) {
+        } else if (actionCommand.equals("Delete Contour")) {
             getImageModel().deleteSelectedContour();
-        } else if (actionCommand.equals("Hide Selected Contour")) {
+        } else if (actionCommand.equals("Hide Contour")) {
             getImageModel().hideSelectedContour();
         } else if (actionCommand.equals("Hide Contours")) {
             getImageModel().hideContours();

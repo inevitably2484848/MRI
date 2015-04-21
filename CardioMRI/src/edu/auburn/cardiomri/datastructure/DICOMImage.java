@@ -122,7 +122,7 @@ public class DICOMImage implements Serializable {
     }
     
     public DICOMImage() {
-    	this.contours.add(new Contour(Contour.Type.DEFAULT));
+    	//this.contours.add(new Contour(Contour.Type.DEFAULT));
     	//used for testing involving just contours associated with image
     }
 
@@ -138,7 +138,7 @@ public class DICOMImage implements Serializable {
         this.instanceNumber = getIntValue(header.get("InstanceNumber"));
 
         this.sopInstanceUID = header.get("SOPInstanceUID");
-        this.contours.add(new Contour(Contour.Type.DEFAULT));
+        //this.contours.add(new Contour(Contour.Type.DEFAULT));
 
         /*
          * Check that all required information (SliceThickness,

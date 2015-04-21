@@ -58,11 +58,15 @@ public class ImageModel extends Model {
     public void hideSelectedContour() {
         dImage.getContours().remove(selectedContour);
         hiddenContours.add(selectedContour);
+        setChanged();
+        notifyObservers(dImage);
     }
 
     public void hideContours() {
         hiddenContours.addAll(dImage.getContours());
         dImage.getContours().clear();
+        setChanged();
+        notifyObservers(dImage);
     }
 
     public void showContours() {
@@ -70,10 +74,14 @@ public class ImageModel extends Model {
             dImage.getContours().addAll(hiddenContours);
             hiddenContours.clear();
         }
+        setChanged();
+        notifyObservers(dImage);
     }
 
     public void deleteSelectedContour() {
         dImage.getContours().remove(selectedContour);
+        setChanged();
+        notifyObservers(dImage);
     }
 
     /**
@@ -123,6 +131,8 @@ public class ImageModel extends Model {
 
     public void deleteAllContours() {
         dImage.getContours().clear();
+        setChanged();
+        notifyObservers(dImage);
     }
 
 }

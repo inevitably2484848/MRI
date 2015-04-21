@@ -315,6 +315,16 @@ public class WorkspaceView extends View {
         deleteAllContours.setActionCommand("Delete All Contours");
         deleteAllContours.addActionListener(mainImageView);
         contours.add(deleteAllContours);
+        
+        JMenuItem hideContour = new JMenuItem("Hide Contour");
+        hideContour.setActionCommand("Hide Contour");
+        hideContour.addActionListener(mainImageView);
+        contours.add(hideContour);
+        
+        JMenuItem showContors = new JMenuItem("Show Contours");
+        showContors.setActionCommand("Show Contours");
+        showContors.addActionListener(mainImageView);
+        contours.add(showContors);
 
         // ----- View -----
         JMenu view = new JMenu("View");
