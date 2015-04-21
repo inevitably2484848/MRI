@@ -18,7 +18,6 @@ import edu.auburn.cardiomri.datastructure.Slice;
 import edu.auburn.cardiomri.gui.models.GridModel;
 
 public class GridView extends View {
-
     private int s = 0;
     private int t = 0;
     private int i = 0;
@@ -82,9 +81,8 @@ public class GridView extends View {
      * @param group
      * 
      */
-    public void setupGrid(Group group) {
-
-        // System.out.println("GridView : reseting the Grid");
+    public void setupGrid() {
+        Group group = getGridModel().getGroup();
 
         // Figure out the size of the grid : time x slice
         int maxTime = 0;
@@ -158,7 +156,7 @@ public class GridView extends View {
         }
 
         // Set the size of the scroll panel
-        JScrollPane gridContainer = new JScrollPane(panel);
+        JScrollPane gridContainer = new JScrollPane();
         if (this.size != null) {
             gridContainer.setMinimumSize(new Dimension(this.size.width,
                     this.size.height - 15));
@@ -217,12 +215,11 @@ public class GridView extends View {
         return this.i;
     }
 
-    public GridView(Group group) {
+    public GridView() {
         // System.out.println("GridView()");
         super();
         this.panel.setFocusable(false);
 
-        setupGrid(group);
         this.s = 0;
         this.t = 0;
         this.i = 0;

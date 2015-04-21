@@ -29,7 +29,7 @@ public class WorkspaceModel extends Model {
             setCurrentState(State.START);
         } else if (study.getUIDToImage().size() < 1) {
             setCurrentState(State.START);
-        } else if (!hasValidIndices(study)) {
+        } else if (!hasValidIndices()) {
             setCurrentState(State.GROUP_SELECTION);
         } else {
             setCurrentState(State.WORKSPACE);
@@ -39,10 +39,29 @@ public class WorkspaceModel extends Model {
     /**
      * Check that each of the three indices is >= 0 and that they can be used to
      * locate a Group.
+     * @return 
      */
-    public boolean hasValidIndices(Study study) {
-        // TODO Auto-generated method stub
-        return true;
+    public boolean hasValidIndices() {
+        boolean isValid = true;
+
+        if (study.getShortAxis() < 0 || study.getShortAxis() >= study.getGroups().size()) {
+            isValid = false;
+        }
+        if (study.getTwoChamber() < 0 || study.getTwoChamber() >= study.getGroups().size()) {
+            isValid = false;
+        }
+        if (study.getFourChamber() < 0
+                || study.getFourChamber() >= study.getGroups().size()) {
+            isValid = false;
+        }
+
+        if (study.getShortAxis() == study.getTwoChamber()
+                || study.getShortAxis() == study.getFourChamber()
+                || study.getTwoChamber() == study.getFourChamber()) {
+            isValid = false;
+        }
+        
+        return isValid;
     }
 
     public State getCurrentState() {

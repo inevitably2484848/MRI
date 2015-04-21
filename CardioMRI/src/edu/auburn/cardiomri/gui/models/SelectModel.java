@@ -57,10 +57,7 @@ public class SelectModel extends Model {
      * @return true if observers were notified, false if indices were invalid
      */
     public boolean validateStudy() {
-        // TODO Auto-generated method stub
         boolean isValid = true;
-        
-        System.out.println("SA: " +getShortAxis() + " 2Ch: " +getTwoChamber() + " 4Ch: "+getFourChamber() + "Size: "+study.getGroups().size() );
 
         if (getShortAxis() < 0 || getShortAxis() >= study.getGroups().size()) {
             isValid = false;
@@ -80,10 +77,9 @@ public class SelectModel extends Model {
         }
 
         if (isValid) {
-        	study.setSAFiesta(getShortAxis());
-        	study.setTwoChamber(getTwoChamber());
-        	study.setFourChamber(getFourChamber());
-        	System.out.println("SA: " +getShortAxis() + " 2Ch: " +getTwoChamber() + " 4Ch: "+getFourChamber() + "Size: "+study.getGroups().size() );
+            study.setShortAxis(getShortAxis());
+            study.setTwoChamber(getTwoChamber());
+            study.setFourChamber(getFourChamber());
             setChanged();
             notifyObservers(study);
             return true;

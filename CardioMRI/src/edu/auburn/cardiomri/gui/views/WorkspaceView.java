@@ -97,13 +97,15 @@ public class WorkspaceView extends View {
                 mainImageView.setModel(mainImageModel);
 
                 GridModel gridModel = new GridModel();
-                GridView gridView = new GridView(study.getShortAxisGroup()); // TODO:
+                GridView gridView = new GridView();
                                                                              // Change
                                                                              // the
                                                                              // implementation
                                                                              // of
                                                                              // getSAGroup
                 gridView.setModel(gridModel);
+                gridModel.setGroup(study.getShortAxisGroup());
+                gridView.setupGrid();
 
                 mainImageModel.addObserver(this);
                 gridModel.addObserver(this);
