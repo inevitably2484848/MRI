@@ -39,8 +39,8 @@ public class RightPanel extends View {
     	JSplitPane imagePanes  = new JSplitPane(
     			JSplitPane.HORIZONTAL_SPLIT,true, this.mainImageView.getPanel(), rightSideOfWindow);
 
-        smallImagesPane.setDividerLocation(workSpaceHeight/3);
-        rightSideOfWindow.setDividerLocation(2*workSpaceHeight/3);
+        smallImagesPane.setDividerLocation(workSpaceHeight/4);
+        rightSideOfWindow.setDividerLocation(2*workSpaceHeight/4);
         imagePanes.setDividerLocation(11*workSpaceWidth/20);
         
 	    this.panel.add(imagePanes);

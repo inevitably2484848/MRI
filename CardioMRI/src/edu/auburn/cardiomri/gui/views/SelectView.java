@@ -1,5 +1,6 @@
 package edu.auburn.cardiomri.gui.views;
 
+import java.awt.Component;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -7,7 +8,10 @@ import java.util.Observable;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.ListCellRenderer;
 
 import edu.auburn.cardiomri.datastructure.Group;
 import edu.auburn.cardiomri.datastructure.Group.AxisType;
@@ -27,10 +31,16 @@ public class SelectView extends View {
         this.panel.setLayout(new GridBagLayout());
 
         JComboBox<String> axisTypeSA = new JComboBox<String>(seriesDescriptions);
+        axisTypeSA.setRenderer(new ComboBoxRenderer("ShortAxis"));
+        axisTypeSA.setSelectedIndex(-1);
         JComboBox<String> axisType2CH = new JComboBox<String>(
                 seriesDescriptions);
+        axisType2CH.setRenderer(new ComboBoxRenderer("Two Chamber"));
+        axisType2CH.setSelectedIndex(-1);
         JComboBox<String> axisType4CH = new JComboBox<String>(
                 seriesDescriptions);
+        axisType4CH.setRenderer(new ComboBoxRenderer("Four Chamber"));
+        axisType4CH.setSelectedIndex(-1);
 
         axisTypeSA.setActionCommand(SHORT_AXIS);
         axisType2CH.setActionCommand(TWO_CHAMBER);
@@ -73,5 +83,32 @@ public class SelectView extends View {
 
     public SelectModel getModel() {
         return (SelectModel) this.model;
+    }
+    
+    /**
+     * This is just for showing the drop down titles 
+     * 
+     * http://stackoverflow.com/questions/23882640/how-to-set-the-title-of-a-jcombobox-when-nothing-is-selected
+     * 
+     *@author bengustafson
+     */
+    
+    public class ComboBoxRenderer extends JLabel implements ListCellRenderer
+    {
+        private String title;
+
+        public ComboBoxRenderer(String title)
+        {
+            this.title = title;
+        }
+
+        @Override
+        public Component getListCellRendererComponent(JList list, Object value,
+                int index, boolean isSelected, boolean hasFocus)
+        {
+            if (index == -1 && value == null) setText(title);
+            else setText(value.toString());
+            return this;
+        }
     }
 }

@@ -29,7 +29,7 @@ public class GridView extends View {
         String actionCommand = e.getActionCommand();
 
         if (actionCommand.substring(0, 6).equals("Button")) {
-            // System.out.println("GUIController : resetting focus");
+        	
             StringTokenizer tokenizer = new StringTokenizer(
                     actionCommand.substring(7), ",");
             String timeStr = tokenizer.nextToken();
@@ -41,8 +41,6 @@ public class GridView extends View {
             this.t = newTime;
             this.s = newSlice;
             getGridModel().setCurrentImage(s, t, i);
-
-            // this.mainComponent.requestFocusInWindow();
         }
     }
 
