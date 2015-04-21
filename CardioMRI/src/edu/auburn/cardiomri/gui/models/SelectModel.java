@@ -59,6 +59,8 @@ public class SelectModel extends Model {
     public boolean validateStudy() {
         // TODO Auto-generated method stub
         boolean isValid = true;
+        
+        System.out.println("SA: " +getShortAxis() + " 2Ch: " +getTwoChamber() + " 4Ch: "+getFourChamber() + "Size: "+study.getGroups().size() );
 
         if (getShortAxis() < 0 || getShortAxis() >= study.getGroups().size()) {
             isValid = false;
@@ -78,6 +80,10 @@ public class SelectModel extends Model {
         }
 
         if (isValid) {
+        	study.setSAFiesta(getShortAxis());
+        	study.setTwoChamber(getTwoChamber());
+        	study.setFourChamber(getFourChamber());
+        	System.out.println("SA: " +getShortAxis() + " 2Ch: " +getTwoChamber() + " 4Ch: "+getFourChamber() + "Size: "+study.getGroups().size() );
             setChanged();
             notifyObservers(study);
             return true;

@@ -30,9 +30,9 @@ public class Study implements Serializable {
     // TODO: check numerical types Java vs MATLAB
     private int EDTimeFrame;
     private int ESTimeFrame;
-    private int saFiesta = 0;
-    private int twoChamber = 1;
-    private int fourChamber = 2;
+    private int saFiesta = -1;
+    private int twoChamber = -1;
+    private int fourChamber = -1;
     private double SystolicBloodPressure; // mmHg
     private double DiastolicBloodPressure; // mmHg
 

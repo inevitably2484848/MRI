@@ -65,11 +65,11 @@ public class SelectView extends View {
             JComboBox<String> comboBox = (JComboBox<String>) event.getSource();
 
             if (actionCommand.equals(SHORT_AXIS)) {
-                getModel().setShortAxis(comboBox.getSelectedIndex());
+                getModel().setShortAxis(comboBox.getSelectedIndex()-1);
             } else if (actionCommand.equals(TWO_CHAMBER)) {
-                getModel().setTwoChamber(comboBox.getSelectedIndex());
+                getModel().setTwoChamber(comboBox.getSelectedIndex()-1);
             } else if (actionCommand.equals(FOUR_CHAMBER)) {
-                getModel().setFourChamber(comboBox.getSelectedIndex());
+                getModel().setFourChamber(comboBox.getSelectedIndex()-1);
             }
         }
 

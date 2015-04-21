@@ -1,7 +1,9 @@
 package edu.auburn.cardiomri.gui.views;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -30,7 +32,6 @@ import edu.auburn.cardiomri.gui.models.Model;
 import edu.auburn.cardiomri.util.ContourCalc;
 
 public class ImageView extends SingleImagePanel implements ActionListener, ViewInterface, Observer {
-	private JPanel panel;
 	protected Model model;
     private static final int FRAME_WIDTH = 1200;
     private static final int FRAME_HEIGHT = 800;
@@ -58,25 +59,24 @@ public class ImageView extends SingleImagePanel implements ActionListener, ViewI
 	}
 
 	private void updateImage(DICOMImage dImage) {
-		SingleImagePanel.deconstructAllSingleImagePanelsInContainer(this.panel);
+		SingleImagePanel.deconstructAllSingleImagePanelsInContainer(this);
 		
 		ConstructImage sImg = new ConstructImage(dImage);
         dirtySource(sImg);
         updateContours(getImageModel().getContours());
         
-        panel.add(this);
-		panel.revalidate();
-		panel.repaint();
+		this.revalidate();
+		this.repaint();
 	}
 
 	private void updateCurrentContour(Contour contour) {
 		currentContour = contour;
-		panel.repaint();
+		this.repaint();
 	}
 
 	private void updateContours(Vector<Contour> contours) {
 		 this.setPreDefinedShapes(contours);
-		panel.repaint();
+		this.repaint();
 	}
 	
 	/**
@@ -96,7 +96,9 @@ public class ImageView extends SingleImagePanel implements ActionListener, ViewI
     }
 
 	public JPanel getPanel() {
-		return this.panel;
+		JPanel panel = new JPanel();
+		panel.add(this);
+		return panel;
 	}
 
 	public void refresh() {
@@ -106,7 +108,6 @@ public class ImageView extends SingleImagePanel implements ActionListener, ViewI
 
 	public ImageView(ConstructImage sImg) {
 		super(sImg);
-		this.panel.add(this);
 	}
 
 	public void selectContour(Point2D p) {

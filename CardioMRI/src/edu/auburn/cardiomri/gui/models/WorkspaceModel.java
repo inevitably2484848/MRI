@@ -42,7 +42,7 @@ public class WorkspaceModel extends Model {
      */
     public boolean hasValidIndices(Study study) {
         // TODO Auto-generated method stub
-        return false;
+        return true;
     }
 
     public State getCurrentState() {
