@@ -59,9 +59,9 @@ public class GridView extends View {
 
             // then, set the new stuff
             int[] indices = (int[]) obj;
-            this.s = indices[1];
-            this.t = indices[2];
-            this.i = indices[3];
+            this.s = indices[0];
+            this.t = indices[1];
+            this.i = indices[2];
 
             // System.out.println("G:" + this.g + " S:" + this.s + " T:" +
             // this.t + " I:" + this.i);
