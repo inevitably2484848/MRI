@@ -141,6 +141,8 @@ public class WorkspaceView extends View {
                 RightPanel rightPanel = new RightPanel(mainImageView,
                         twoChamberView, fourChamberView, contourControl,
                         WORKSPACE_WIDTH, WORKSPACE_HEIGHT);
+                
+                //TODO: Add models to workspace model
 
                 // add to appFrame
                 appFrame.setSize(WORKSPACE_WIDTH, WORKSPACE_HEIGHT);

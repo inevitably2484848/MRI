@@ -114,9 +114,9 @@ public class GridView extends View {
         panelGrid.setHgap(1);
         panelGrid.setVgap(1);
 
-        this.panel = new JPanel(panelGrid);
+        JPanel buttonPanel = new JPanel(panelGrid);
 
-        this.panel.setFocusable(false);
+        buttonPanel.setFocusable(false);
 
         // i - y axis (Slice)
         // j - x axis (Time)
@@ -151,12 +151,12 @@ public class GridView extends View {
                         }
                     }
                 }
-                panel.add(button);
+                buttonPanel.add(button);
             }
         }
 
         // Set the size of the scroll panel
-        JScrollPane gridContainer = new JScrollPane();
+        JScrollPane gridContainer = new JScrollPane(buttonPanel);
         if (this.size != null) {
             gridContainer.setMinimumSize(new Dimension(this.size.width,
                     this.size.height - 15));
