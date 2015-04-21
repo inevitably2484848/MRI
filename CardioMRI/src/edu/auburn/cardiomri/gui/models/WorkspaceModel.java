@@ -3,7 +3,13 @@
  */
 package edu.auburn.cardiomri.gui.models;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import edu.auburn.cardiomri.datastructure.Group;
+import edu.auburn.cardiomri.datastructure.Slice;
 import edu.auburn.cardiomri.datastructure.Study;
+import edu.auburn.cardiomri.datastructure.Time;
 import edu.auburn.cardiomri.util.StudyUtilities;
 
 /**
@@ -13,10 +19,12 @@ import edu.auburn.cardiomri.util.StudyUtilities;
 public class WorkspaceModel extends Model {
     protected State currentState;
     protected Study study;
-    protected ImageModel shortAxis, twoChamber, fourChamber;
+    protected Map<ImageModel, Group> imageToGroup;
 
     public WorkspaceModel() {
+        super();
         currentState = State.UNDEFINED;
+        imageToGroup = new HashMap<ImageModel, Group>();
     }
 
     public Study getStudy() {
@@ -39,15 +47,18 @@ public class WorkspaceModel extends Model {
     /**
      * Check that each of the three indices is >= 0 and that they can be used to
      * locate a Group.
-     * @return 
+     * 
+     * @return
      */
     public boolean hasValidIndices() {
         boolean isValid = true;
 
-        if (study.getShortAxis() < 0 || study.getShortAxis() >= study.getGroups().size()) {
+        if (study.getShortAxis() < 0
+                || study.getShortAxis() >= study.getGroups().size()) {
             isValid = false;
         }
-        if (study.getTwoChamber() < 0 || study.getTwoChamber() >= study.getGroups().size()) {
+        if (study.getTwoChamber() < 0
+                || study.getTwoChamber() >= study.getGroups().size()) {
             isValid = false;
         }
         if (study.getFourChamber() < 0
@@ -60,7 +71,7 @@ public class WorkspaceModel extends Model {
                 || study.getTwoChamber() == study.getFourChamber()) {
             isValid = false;
         }
-        
+
         return isValid;
     }
 
@@ -74,16 +85,38 @@ public class WorkspaceModel extends Model {
         notifyObservers(currentState);
     }
 
-    public void setShortAxis(ImageModel shortAxis) {
-        this.shortAxis = shortAxis;
+    public void addImage(ImageModel imageModel, Group group) {
+        if (imageModel == null) {
+            return;
+        }
+        if (group == null) {
+            return;
+        }
+
+        imageToGroup.put(imageModel, group);
     }
 
-    public void setTwoChamber(ImageModel twoChamber) {
-        this.twoChamber = twoChamber;
-    }
-
-    public void setFourChamber(ImageModel fourChamber) {
-        this.fourChamber = fourChamber;
+    public void setIndices(int sliceIndex, int timeIndex, int imageIndex) {
+        for (ImageModel imageModel : imageToGroup.keySet()) {
+            Group group = imageToGroup.get(imageModel);
+            
+            if (sliceIndex < 0 || sliceIndex >= group.getSlices().size()) {
+                System.err.println("slice index out of bounds");
+                return;
+            }
+            
+            Slice slice = group.getSlices().get(sliceIndex);
+            if (timeIndex < 0 || timeIndex >= slice.getTimes().size()) {
+                System.err.println("time index out of bounds");
+            }
+            
+            Time time = slice.getTimes().get(timeIndex);
+            if (imageIndex < 0 || imageIndex >= time.getImages().size()) {
+                System.err.println("image index out of bounds");
+            }
+            
+            imageModel.setCurrentImage(time.getImages().get(imageIndex));
+        }
     }
 
     public enum State {

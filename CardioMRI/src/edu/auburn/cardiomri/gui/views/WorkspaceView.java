@@ -91,58 +91,54 @@ public class WorkspaceView extends View {
                 ImageView mainImageView, twoChamberView, fourChamberView;
 
                 mainImageModel = new ImageModel();
-                ConstructImage sImg = new ConstructImage(
-                        study.getCurrentImage());
-                mainImageView = new ImageView(sImg);
+                twoChamberModel = new ImageModel();
+                fourChamberModel = new ImageModel();
+
+                mainImageView = new ImageView(new ConstructImage(
+                        study.getCurrentImage()));
+                twoChamberView = new ImageView(new ConstructImage(
+                        study.getCurrentImage()));
+                fourChamberView = new ImageView(new ConstructImage(
+                        study.getCurrentImage()));
+
                 mainImageView.setModel(mainImageModel);
+                twoChamberView.setModel(twoChamberModel);
+                fourChamberView.setModel(fourChamberModel);
 
                 GridModel gridModel = new GridModel();
                 GridView gridView = new GridView();
-                                                                             // Change
-                                                                             // the
-                                                                             // implementation
-                                                                             // of
-                                                                             // getSAGroup
                 gridView.setModel(gridModel);
-                gridModel.setGroup(study.getShortAxisGroup());
-                gridView.setupGrid();
 
-                mainImageModel.addObserver(this);
-                gridModel.addObserver(this);
-
-                // Setup the left panel
                 GridControlView gridControl = new GridControlView();
                 gridControl.setModel(gridModel);
 
                 MultipleImageView multipleImages = new MultipleImageView();
                 multipleImages.setModel(gridModel);
 
-                LeftPanel leftPanel = new LeftPanel(gridView, gridControl,
-                        multipleImages, WORKSPACE_WIDTH, WORKSPACE_HEIGHT);
-
-                // Setup the right panel
-                twoChamberModel = new ImageModel();
-                ConstructImage twoChambersImg = new ConstructImage(
-                        study.getCurrentImage()); // TODO:
-                                                  // study.getTwoChamberImage()
-                twoChamberView = new ImageView(twoChambersImg);
-                twoChamberView.setModel(twoChamberModel);
-
-                fourChamberModel = new ImageModel();
-                ConstructImage fourChambersImg = new ConstructImage(
-                        study.getCurrentImage()); // TODO:
-                                                  // study.getTwoChamberImage()
-                fourChamberView = new ImageView(fourChambersImg);
-                fourChamberView.setModel(fourChamberModel);
-
                 ContourControlView contourControl = new ContourControlView();
                 contourControl.setModel(mainImageModel);
+
+                getWorkspaceModel().addImage(mainImageModel,
+                        study.getShortAxisGroup());
+                getWorkspaceModel().addImage(twoChamberModel,
+                        study.getTwoChamberGroup());
+                getWorkspaceModel().addImage(fourChamberModel,
+                        study.getFourChamberGroup());
+
+                mainImageModel.addObserver(this);
+                gridModel.addObserver(this);
+
+                gridModel.setGroup(study.getShortAxisGroup());
+                gridView.setupGrid();
+
+                getWorkspaceModel().setIndices(0, 0, 0);
+
+                LeftPanel leftPanel = new LeftPanel(gridView, gridControl,
+                        multipleImages, WORKSPACE_WIDTH, WORKSPACE_HEIGHT);
 
                 RightPanel rightPanel = new RightPanel(mainImageView,
                         twoChamberView, fourChamberView, contourControl,
                         WORKSPACE_WIDTH, WORKSPACE_HEIGHT);
-                
-                //TODO: Add models to workspace model
 
                 // add to appFrame
                 appFrame.setSize(WORKSPACE_WIDTH, WORKSPACE_HEIGHT);
@@ -155,12 +151,15 @@ public class WorkspaceView extends View {
 
                 mainComponent = allPanes;
                 this.addKeyBindings(gridView);
-                this.appFrame.add(mainComponent);
                 setMenu(mainImageView);
+                this.appFrame.add(mainComponent);
                 appFrame.setVisible(true);
             }
         } else if (obj.getClass() == Study.class) {
             getWorkspaceModel().setStudy((Study) obj);
+        } else if (obj.getClass() == int[].class) {
+            int[] indices = (int[]) obj;
+            getWorkspaceModel().setIndices(indices[0], indices[1], indices[2]);
         }
     }
 

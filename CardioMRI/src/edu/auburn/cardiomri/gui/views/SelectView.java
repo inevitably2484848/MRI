@@ -15,10 +15,6 @@ import edu.auburn.cardiomri.datastructure.Study;
 import edu.auburn.cardiomri.gui.models.SelectModel;
 
 public class SelectView extends View {
-
-    /**
-     * 
-     */
     private static final String CONTINUE = "Continue";
     private static final String SHORT_AXIS = "Short Axis";
     private static final String TWO_CHAMBER = "Two Chamber";

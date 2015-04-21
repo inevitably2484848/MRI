@@ -59,7 +59,7 @@ public class ImageView extends SingleImagePanel implements ActionListener, ViewI
 	}
 
 	private void updateImage(DICOMImage dImage) {
-		SingleImagePanel.deconstructAllSingleImagePanelsInContainer(this);
+//		SingleImagePanel.deconstructAllSingleImagePanelsInContainer(this);
 		
 		ConstructImage sImg = new ConstructImage(dImage);
         dirtySource(sImg);
@@ -75,7 +75,7 @@ public class ImageView extends SingleImagePanel implements ActionListener, ViewI
 	}
 
 	private void updateContours(Vector<Contour> contours) {
-		 this.setPreDefinedShapes(contours);
+		this.setPreDefinedShapes(contours);
 		this.repaint();
 	}
 	
@@ -97,6 +97,7 @@ public class ImageView extends SingleImagePanel implements ActionListener, ViewI
 
 	public JPanel getPanel() {
 		JPanel panel = new JPanel();
+		panel.setSize(200, 200);
 		panel.add(this);
 		return panel;
 	}

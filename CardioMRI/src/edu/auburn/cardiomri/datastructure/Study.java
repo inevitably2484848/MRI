@@ -222,6 +222,20 @@ public class Study implements Serializable {
         return this.groups.get(getShortAxis());
     }
 
+    public Group getTwoChamberGroup() {
+        if (getTwoChamber() < 0) {
+            // TODO: throw new error
+        }
+        return this.groups.get(getTwoChamber());
+    }
+
+    public Group getFourChamberGroup() {
+        if (getFourChamber() < 0) {
+            // TODO: throw new error
+        }
+        return this.groups.get(getFourChamber());
+    }
+
     /**
      * Adds a DICOMImage to the Study. Determines which group the DICOMImage
      * belongs to.

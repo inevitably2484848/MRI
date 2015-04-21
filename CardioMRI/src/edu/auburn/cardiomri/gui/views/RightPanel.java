@@ -1,5 +1,7 @@
 package edu.auburn.cardiomri.gui.views;
 
+import java.awt.Dimension;
+
 import javax.swing.JSplitPane;
 
 /** This class will house the main image panel, and the right most column of panels
@@ -38,13 +40,24 @@ public class RightPanel extends View {
     	
     	JSplitPane imagePanes  = new JSplitPane(
     			JSplitPane.HORIZONTAL_SPLIT,true, this.mainImageView.getPanel(), rightSideOfWindow);
-	   
 
-	    smallImagesPane.setDividerLocation(this.workSpaceHeight/4);
-	    rightSideOfWindow.setDividerLocation(this.workSpaceHeight/2);
-	    imagePanes.setDividerLocation(11*this.workSpaceWidth/20);
-	    
+        twoChamberView.setMinimumSize(new Dimension(10, 10));
+        fourChamberView.setMinimumSize(new Dimension(10, 10));
+        smallImagesPane.setResizeWeight(0.5);
+        imagePanes.setResizeWeight(0.5);
+        smallImagesPane.setMinimumSize(new Dimension(512, 512));
+        imagePanes.setMinimumSize(new Dimension(512, 512));
+        mainImageView.setVisible(true);
+        twoChamberView.setVisible(true);
+        fourChamberView.setVisible(true);
+        imagePanes.revalidate();
+
+        smallImagesPane.setDividerLocation(0.25);
+        rightSideOfWindow.setDividerLocation(0.5);
+        imagePanes.setDividerLocation(0.5);
+        imagePanes.setPreferredSize(new Dimension(512, 512));
 	    this.panel.add(imagePanes);
+	    this.panel.revalidate();
 	}
 	
 }
