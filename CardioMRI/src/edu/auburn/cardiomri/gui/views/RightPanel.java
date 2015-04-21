@@ -1,7 +1,5 @@
 package edu.auburn.cardiomri.gui.views;
 
-import java.awt.Dimension;
-
 import javax.swing.JSplitPane;
 
 /** This class will house the main image panel, and the right most column of panels
@@ -13,8 +11,10 @@ public class RightPanel extends View {
 	
 	protected ImageView  mainImageView, twoChamberView, fourChamberView;
 	protected ContourControlView contourControl;
+	
+	//Default values
     private int workSpaceWidth = 1200;
-    private int workSpaceHeight = 800;
+    private int workSpaceHeight = 800; 
 	
 	public RightPanel(ImageView mainImage, ImageView twoChamber, ImageView fourChamber, ContourControlView contourControl, int width, int height)
 	{
@@ -30,8 +30,6 @@ public class RightPanel extends View {
 	
 	private void SetupPanel()
 	{
-		
-    	//Split Screen into three main areas
     	JSplitPane smallImagesPane = new JSplitPane(
 	            JSplitPane.VERTICAL_SPLIT, true, this.twoChamberView.getPanel(), this.fourChamberView.getPanel());
   	
@@ -41,21 +39,10 @@ public class RightPanel extends View {
     	JSplitPane imagePanes  = new JSplitPane(
     			JSplitPane.HORIZONTAL_SPLIT,true, this.mainImageView.getPanel(), rightSideOfWindow);
 
-        twoChamberView.setMinimumSize(new Dimension(10, 10));
-        fourChamberView.setMinimumSize(new Dimension(10, 10));
-        smallImagesPane.setResizeWeight(0.5);
-        imagePanes.setResizeWeight(0.5);
-        smallImagesPane.setMinimumSize(new Dimension(512, 512));
-        imagePanes.setMinimumSize(new Dimension(512, 512));
-        mainImageView.setVisible(true);
-        twoChamberView.setVisible(true);
-        fourChamberView.setVisible(true);
-        imagePanes.revalidate();
-
-        smallImagesPane.setDividerLocation(0.25);
-        rightSideOfWindow.setDividerLocation(0.5);
-        imagePanes.setDividerLocation(0.5);
-        imagePanes.setPreferredSize(new Dimension(512, 512));
+        smallImagesPane.setDividerLocation(workSpaceHeight/3);
+        rightSideOfWindow.setDividerLocation(2*workSpaceHeight/3);
+        imagePanes.setDividerLocation(11*workSpaceWidth/20);
+        
 	    this.panel.add(imagePanes);
 	    this.panel.revalidate();
 	}

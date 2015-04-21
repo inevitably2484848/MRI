@@ -98,6 +98,7 @@ public class ImageView extends SingleImagePanel implements ActionListener, ViewI
 	public JPanel getPanel() {
 		JPanel panel = new JPanel();
 		panel.setSize(200, 200);
+		panel.setLayout(new GridLayout(1, 1));
 		panel.add(this);
 		return panel;
 	}

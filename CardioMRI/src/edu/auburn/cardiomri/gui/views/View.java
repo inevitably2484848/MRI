@@ -3,6 +3,7 @@
  */
 package edu.auburn.cardiomri.gui.views;
 
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -25,6 +26,8 @@ public abstract class View implements Observer, ViewInterface, MouseListener,
 
     public View() {
         panel = new JPanel();
+		panel.setSize(200, 200);
+		panel.setLayout(new GridLayout(1, 1));
     }
     
     /**
