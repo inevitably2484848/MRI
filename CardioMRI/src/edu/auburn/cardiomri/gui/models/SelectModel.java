@@ -1,73 +1,89 @@
 package edu.auburn.cardiomri.gui.models;
 
-import edu.auburn.cardiomri.datastructure.DICOMImage;
+import java.util.ArrayList;
+import java.util.List;
+
+import edu.auburn.cardiomri.datastructure.Group;
 import edu.auburn.cardiomri.datastructure.Study;
 
 public class SelectModel extends Model {
-    private Study study;
-    private int g, s, t, i;
-    private DICOMImage currentImage;
+    protected Study study;
+    protected int shortAxis, twoChamber, fourChamber;
 
-    
-    /**
-     * Sets the class' study attribute and notifies its Observers.
-     * 
-     * @param s : The object that the class will use as its study attribute.
-     */
-    public void setStudy(Study s) {
-        this.study = s;
-        this.currentImage = this.study.getGroups().get(0).getSlices().get(0)
-                .getTimes().get(0).getImages().get(0);
+    public int getShortAxis() {
+        return shortAxis;
+    }
 
-        setChanged();
-        notifyObservers(this.study);
+    public void setShortAxis(int shortAxis) {
+        this.shortAxis = shortAxis;
+    }
+
+    public int getTwoChamber() {
+        return twoChamber;
+    }
+
+    public void setTwoChamber(int twoChamber) {
+        this.twoChamber = twoChamber;
+    }
+
+    public int getFourChamber() {
+        return fourChamber;
+    }
+
+    public void setFourChamber(int fourChamber) {
+        this.fourChamber = fourChamber;
+    }
+
+    public SelectModel(Study study) {
+        super();
+        this.study = study;
+        shortAxis = twoChamber = fourChamber = -1;
+    }
+
+    public String[] getSeriesDescriptions() {
+        List<String> descriptions = new ArrayList<String>(study.getGroups()
+                .size());
+
+        for (Group group : study.getGroups()) {
+            descriptions.add(group.getSeriesDescription());
+        }
+
+        return descriptions.toArray(new String[descriptions.size()]);
     }
 
     /**
-     * Sets the class' currently selected Dicom indices and then updates its
-     * Observers.
+     * Validate the SA, 2CH and 4CH indices, then notifyObservers(study)
      * 
-     * @param groupIndex : New groupIndex.
-     * @param sliceIndex : New sliceIndex.
-     * @param timeIndex : New timeIndex.
-     * @param imageIndex : New imageIndex.
+     * @return true if observers were notified, false if indices were invalid
      */
-    public void setCurrentImage(int groupIndex, int sliceIndex, int timeIndex, int imageIndex) {
-        this.g = groupIndex;
-        this.s = sliceIndex;
-        this.t = timeIndex;
-        this.i = imageIndex;
+    public boolean validateStudy() {
+        // TODO Auto-generated method stub
+        boolean isValid = true;
 
-        this.currentImage = this.study.getGroups().get(g).getSlices().get(s)
-                .getTimes().get(t).getImages().get(i);
+        if (getShortAxis() < 0 || getShortAxis() >= study.getGroups().size()) {
+            isValid = false;
+        }
+        if (getTwoChamber() < 0 || getTwoChamber() >= study.getGroups().size()) {
+            isValid = false;
+        }
+        if (getFourChamber() < 0
+                || getFourChamber() >= study.getGroups().size()) {
+            isValid = false;
+        }
 
-        int indices[] = { this.g, this.s, this.t, this.i };
+        if (getShortAxis() == getTwoChamber()
+                || getShortAxis() == getFourChamber()
+                || getTwoChamber() == getFourChamber()) {
+            isValid = false;
+        }
 
-        setChanged();
-        notifyObservers(indices);
-    }
-    
-
-    /**
-     * Returns the class' study attribute.
-     * 
-     * @return The class' study attribute.
-     */
-    public Study getStudy() {
-        return this.study;
-    }
-
-    /**
-     * Returns the currently selected DICOMImage object given the current
-     * indices.
-     * 
-     * @return The currently selected DICOMImage.
-     */
-    public DICOMImage getImage() {
-        return this.currentImage;
+        if (isValid) {
+            setChanged();
+            notifyObservers(study);
+            return true;
+        } else {
+            return false;
+        }
     }
 
-    public SelectModel() {
-        this.study = null;
-    }
 }

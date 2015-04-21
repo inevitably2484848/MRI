@@ -1,9 +1,9 @@
 package edu.auburn.cardiomri.gui.views;
 
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.util.HashMap;
 import java.util.List;
@@ -15,22 +15,21 @@ import java.util.Vector;
 import javafx.geometry.Point2D;
 
 import javax.swing.JPanel;
-import javax.swing.JSplitPane;
 import javax.swing.SwingUtilities;
 
 import toxi.geom.Spline2D;
 
-import com.pixelmed.dicom.DicomException;
 import com.pixelmed.display.SingleImagePanel;
 
 import edu.auburn.cardiomri.datastructure.Contour;
+import edu.auburn.cardiomri.datastructure.Contour.Type;
 import edu.auburn.cardiomri.datastructure.DICOMImage;
 import edu.auburn.cardiomri.gui.ConstructImage;
 import edu.auburn.cardiomri.gui.models.ImageModel;
 import edu.auburn.cardiomri.gui.models.Model;
 import edu.auburn.cardiomri.util.ContourCalc;
 
-public class ImageView extends SingleImagePanel implements ViewInterface, Observer {
+public class ImageView extends SingleImagePanel implements ActionListener, ViewInterface, Observer {
 	private JPanel panel;
 	protected Model model;
     private static final int FRAME_WIDTH = 1200;
@@ -63,6 +62,7 @@ public class ImageView extends SingleImagePanel implements ViewInterface, Observ
 		
 		ConstructImage sImg = new ConstructImage(dImage);
         dirtySource(sImg);
+        updateContours(getImageModel().getContours());
         
         panel.add(this);
 		panel.revalidate();
@@ -169,5 +169,31 @@ public class ImageView extends SingleImagePanel implements ViewInterface, Observ
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
         System.out.println("test");
+    }
+
+    /**
+     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+     */
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        String actionCommand = e.getActionCommand();
+        
+        if (actionCommand.equals("Default Type")) {
+            getImageModel().addContourToImage(new Contour(Type.DEFAULT));
+        } else if (actionCommand.equals("Closed Type")) {
+            getImageModel().addContourToImage(new Contour(Type.DEFAULT_CLOSED));
+        } else if (actionCommand.equals("Open Type")) {
+            getImageModel().addContourToImage(new Contour(Type.DEFAULT_OPEN));
+        } else if (actionCommand.equals("Delete Selected Contour")) {
+            getImageModel().deleteSelectedContour();
+        } else if (actionCommand.equals("Hide Selected Contour")) {
+            getImageModel().hideSelectedContour();
+        } else if (actionCommand.equals("Hide Contours")) {
+            getImageModel().hideContours();
+        } else if (actionCommand.equals("Show Contours")) {
+            getImageModel().showContours();
+        } else if (actionCommand.equals("Delete All Contours")) {
+            getImageModel().deleteAllContours();
+        }
     }
 }

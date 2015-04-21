@@ -8,12 +8,10 @@ import java.awt.event.ActionEvent;
 import java.util.Observable;
 import java.util.StringTokenizer;
 
+import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JSlider;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 import edu.auburn.cardiomri.datastructure.Group;
 import edu.auburn.cardiomri.datastructure.Slice;
@@ -234,4 +232,35 @@ public class GridView extends View {
         return (GridModel) model;
     }
 
+    public class LeftKeyAction extends AbstractAction {
+        private static final long serialVersionUID = 6612132766001531904L;
+
+        public void actionPerformed(ActionEvent e) {
+            getGridModel().decrementTimeIndex();
+        }
+    }
+
+    public class RightKeyAction extends AbstractAction {
+        private static final long serialVersionUID = 6824940022077838332L;
+
+        public void actionPerformed(ActionEvent e) {
+            getGridModel().incrementTimeIndex();
+        }
+    }
+
+    public class UpKeyAction extends AbstractAction {
+        private static final long serialVersionUID = 4942341424740412096L;
+
+        public void actionPerformed(ActionEvent e) {
+            getGridModel().decrementSliceIndex();
+        }
+    }
+
+    public class DownKeyAction extends AbstractAction {
+        private static final long serialVersionUID = -7183889255252949565L;
+
+        public void actionPerformed(ActionEvent e) {
+            getGridModel().incrementSliceIndex();
+        }
+    }
 }

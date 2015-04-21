@@ -6,9 +6,7 @@ import edu.auburn.cardiomri.datastructure.Contour;
 import edu.auburn.cardiomri.datastructure.DICOMImage;
 
 public class ImageModel extends Model {
-
     private DICOMImage dImage;
-    private Vector<Contour> contours;
     private Contour currentContour;
     private Contour selectedContour;
     private Vector<Contour> hiddenContours = new Vector<Contour>();
@@ -25,11 +23,11 @@ public class ImageModel extends Model {
             // throw NPE?
         }
 
-        this.contours = contourList;
+        dImage.setContours(contourList);
         setChanged();
-        notifyObservers(contours);
+        notifyObservers(contourList);
 
-        if (contours.size() > 0) {
+        if (contourList.size() > 0) {
             setCurrentContour(contourList.lastElement());
         }
     }
@@ -49,13 +47,33 @@ public class ImageModel extends Model {
     }
 
     public Vector<Contour> getContours() {
-        return this.contours;
+        return dImage.getContours();
     }
 
     public void addContourToImage(Contour contour) {
         this.dImage.addContour(contour);
-        this.contours = this.dImage.getContours();
         setCurrentContour(contour);
+    }
+
+    public void hideSelectedContour() {
+        dImage.getContours().remove(selectedContour);
+        hiddenContours.add(selectedContour);
+    }
+
+    public void hideContours() {
+        hiddenContours.addAll(dImage.getContours());
+        dImage.getContours().clear();
+    }
+
+    public void showContours() {
+        if (hiddenContours.size() != 0) {
+            dImage.getContours().addAll(hiddenContours);
+            hiddenContours.clear();
+        }
+    }
+
+    public void deleteSelectedContour() {
+        dImage.getContours().remove(selectedContour);
     }
 
     /**
@@ -75,10 +93,6 @@ public class ImageModel extends Model {
     }
 
     public void refresh() {
-        // this.dImage = this.study.getGroups().get(g).getSlices().get(s)
-        // .getTimes().get(t).getImages().get(i);
-        this.contours = this.dImage.getContours();
-
         setChanged();
         notifyObservers(this.dImage);
     }
@@ -105,6 +119,10 @@ public class ImageModel extends Model {
         setContourList(dImage.getContours());
         setChanged();
         notifyObservers(dImage);
+    }
+
+    public void deleteAllContours() {
+        dImage.getContours().clear();
     }
 
 }

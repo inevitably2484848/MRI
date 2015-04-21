@@ -3,16 +3,13 @@
  */
 package edu.auburn.cardiomri.gui.views;
 
-import java.awt.Component;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Observable;
-import java.util.Vector;
 
 import javax.swing.AbstractAction;
 import javax.swing.JComponent;
@@ -26,21 +23,15 @@ import javax.swing.KeyStroke;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-import edu.auburn.cardiomri.dataimporter.DICOM3Importer;
-import edu.auburn.cardiomri.datastructure.Contour;
-import edu.auburn.cardiomri.datastructure.Contour.Type;
-import edu.auburn.cardiomri.datastructure.DICOMImage;
-import edu.auburn.cardiomri.datastructure.Slice;
 import edu.auburn.cardiomri.datastructure.Study;
-import edu.auburn.cardiomri.datastructure.Study.NotInStudyException;
-import edu.auburn.cardiomri.datastructure.Time;
 import edu.auburn.cardiomri.gui.ConstructImage;
 import edu.auburn.cardiomri.gui.models.GridModel;
 import edu.auburn.cardiomri.gui.models.ImageModel;
+import edu.auburn.cardiomri.gui.models.SelectModel;
 import edu.auburn.cardiomri.gui.models.StartModel;
 import edu.auburn.cardiomri.gui.models.WorkspaceModel;
 import edu.auburn.cardiomri.gui.models.WorkspaceModel.State;
-import edu.auburn.cardiomri.util.SerializationManager;
+import edu.auburn.cardiomri.util.ContourUtilities;
 
 /**
  * @author Moniz
@@ -52,9 +43,6 @@ public class WorkspaceView extends View {
     protected JFileChooser fileChooser;
     protected JComponent mainComponent;
     protected JFrame appFrame;
-    protected GridView gridView;
-    protected ImageModel mainImageModel, twoChamberModel, fourChamberModel;
-    protected ImageView  mainImageView, twoChamberView, fourChamberView;
 
     public WorkspaceView() {
         super();
@@ -70,87 +58,101 @@ public class WorkspaceView extends View {
             if (currentState == State.START) {
                 this.disposeFrame();
                 this.createFrame();
-                
+
                 StartModel startModel = new StartModel();
                 StartView startView = new StartView();
                 startView.setModel(startModel);
                 startModel.addObserver(this);
-                
-                
+
                 appFrame.setSize(600, 400);
                 this.appFrame.add(startView.getPanel());
                 appFrame.setVisible(true);
-                
+
             } else if (currentState == State.GROUP_SELECTION) {
-            	this.disposeFrame();
+                this.disposeFrame();
                 this.createFrame();
-                
-            	Study study = getWorkspaceModel().getStudy();
-            	//make a select view 
-            	//make a select model
-            	//view.setModel(model) 
-            	//send study to model
-            	//model will update view
-            	
-            	//selectModel.addObserver(this);
-            	
-            	appFrame.setSize(WORKSPACE_WIDTH, WORKSPACE_HEIGHT);
-                //this.appFrame.add(selectView.getPanel());
+
+                Study study = getWorkspaceModel().getStudy();
+                SelectModel selectModel = new SelectModel(study);
+                SelectView selectView = new SelectView(selectModel);
+                selectView.setModel(selectModel);
+                selectModel.addObserver(this);
+
+                appFrame.setSize(WORKSPACE_WIDTH, WORKSPACE_HEIGHT);
+                this.appFrame.add(selectView.getPanel());
                 appFrame.setVisible(true);
-                
+
             } else if (currentState == State.WORKSPACE) {
                 this.disposeFrame();
                 this.createFrame();
 
                 Study study = getWorkspaceModel().getStudy();
+                ImageModel mainImageModel, twoChamberModel, fourChamberModel;
+                ImageView mainImageView, twoChamberView, fourChamberView;
 
-                this.mainImageModel = new ImageModel();
-                ConstructImage sImg = new ConstructImage(study.getCurrentImage());
-                this.mainImageView = new ImageView(sImg);
+                mainImageModel = new ImageModel();
+                ConstructImage sImg = new ConstructImage(
+                        study.getCurrentImage());
+                mainImageView = new ImageView(sImg);
                 mainImageView.setModel(mainImageModel);
 
                 GridModel gridModel = new GridModel();
-                GridView gridView = new GridView(study.getShortAxisGroup()); //TODO: Change the implementation of getSAGroup 
+                GridView gridView = new GridView(study.getShortAxisGroup()); // TODO:
+                                                                             // Change
+                                                                             // the
+                                                                             // implementation
+                                                                             // of
+                                                                             // getSAGroup
                 gridView.setModel(gridModel);
-                
+
                 mainImageModel.addObserver(this);
                 gridModel.addObserver(this);
-                
-                //Setup the left panel
+
+                // Setup the left panel
                 GridControlView gridControl = new GridControlView();
                 gridControl.setModel(gridModel);
-                
+
                 MultipleImageView multipleImages = new MultipleImageView();
                 multipleImages.setModel(gridModel);
-                
-                LeftPanel leftPanel = new LeftPanel(gridView, gridControl, multipleImages, WORKSPACE_WIDTH, WORKSPACE_HEIGHT);
-                                
-                //Setup the right panel
-                this.twoChamberModel = new ImageModel();
-                ConstructImage twoChambersImg = new ConstructImage(study.getCurrentImage()); //TODO: study.getTwoChamberImage()
-                ImageView twoChamberView = new ImageView(twoChambersImg);
+
+                LeftPanel leftPanel = new LeftPanel(gridView, gridControl,
+                        multipleImages, WORKSPACE_WIDTH, WORKSPACE_HEIGHT);
+
+                // Setup the right panel
+                twoChamberModel = new ImageModel();
+                ConstructImage twoChambersImg = new ConstructImage(
+                        study.getCurrentImage()); // TODO:
+                                                  // study.getTwoChamberImage()
+                twoChamberView = new ImageView(twoChambersImg);
                 twoChamberView.setModel(twoChamberModel);
-                
-                this.fourChamberModel = new ImageModel();
-                ConstructImage fourChambersImg = new ConstructImage(study.getCurrentImage()); //TODO: study.getTwoChamberImage()
-                ImageView fourChamberView = new ImageView(fourChambersImg);
+
+                fourChamberModel = new ImageModel();
+                ConstructImage fourChambersImg = new ConstructImage(
+                        study.getCurrentImage()); // TODO:
+                                                  // study.getTwoChamberImage()
+                fourChamberView = new ImageView(fourChambersImg);
                 fourChamberView.setModel(fourChamberModel);
-                
+
                 ContourControlView contourControl = new ContourControlView();
                 contourControl.setModel(mainImageModel);
-                
-                RightPanel rightPanel = new RightPanel(mainImageView, twoChamberView, fourChamberView, contourControl, WORKSPACE_WIDTH, WORKSPACE_HEIGHT);
-                
-                //add to appFrame
+
+                RightPanel rightPanel = new RightPanel(mainImageView,
+                        twoChamberView, fourChamberView, contourControl,
+                        WORKSPACE_WIDTH, WORKSPACE_HEIGHT);
+
+                // add to appFrame
                 appFrame.setSize(WORKSPACE_WIDTH, WORKSPACE_HEIGHT);
 
-                JSplitPane allPanes = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
-                        true, leftPanel.getPanel(), rightPanel.getPanel());
+                JSplitPane allPanes = new JSplitPane(
+                        JSplitPane.HORIZONTAL_SPLIT, true,
+                        leftPanel.getPanel(), rightPanel.getPanel());
 
                 allPanes.setDividerLocation(WORKSPACE_WIDTH / 4);
 
-                this.appFrame.add(allPanes);
-                setMenu();
+                mainComponent = allPanes;
+                this.addKeyBindings(gridView);
+                this.appFrame.add(mainComponent);
+                setMenu(mainImageView);
                 appFrame.setVisible(true);
             }
         } else if (obj.getClass() == Study.class) {
@@ -187,8 +189,6 @@ public class WorkspaceView extends View {
      */
     public void setMainComponent(JComponent c) {
         this.mainComponent = c;
-
-        this.addKeyBindings();
     }
 
     /**
@@ -225,28 +225,10 @@ public class WorkspaceView extends View {
                 // TODO Auto-generated catch block
                 e1.printStackTrace();
             }
-        } else if (actionCommand.equals("Default Type")) {
-            this.mainImageModel.addContourToImage(new Contour(Type.DEFAULT));
-        } else if (actionCommand.equals("Closed Type")) {
-            this.mainImageModel.addContourToImage(new Contour(Type.DEFAULT_CLOSED));
-        } else if (actionCommand.equals("Open Type")) {
-            this.mainImageModel.addContourToImage(new Contour(Type.DEFAULT_OPEN));
-        } else if (actionCommand.equals("Delete All Contours")) {
-            this.deleteAllContoursForImage();
-        } else if (actionCommand.equals("Delete Selected Contour")) {
-            this.deleteSelectedContour();
-        } else if (actionCommand.equals("Hide Selected Contour")) {
-            this.hideSelectedContour();
-        } else if (actionCommand.equals("Hide Contours")) {
-            this.hideContours();
-        } else if (actionCommand.equals("Delete All Contours")) {
-            this.deleteAllContoursForImage();
-        } else if (actionCommand.equals("Show Contours")) {
-            this.showContours();
         }
     }
 
-    public void setMenu() {
+    public void setMenu(ImageView mainImageView) {
         // -------------------- Menu Bar -------------------------------
 
         // ----- File -------
@@ -282,11 +264,6 @@ public class WorkspaceView extends View {
         saveAsStudy.addActionListener(this);
         fileMenu.add(saveAsStudy);
 
-        JMenuItem importDicom = new JMenuItem("Import DICOM");
-        importDicom.setActionCommand("Import DICOM");
-        importDicom.addActionListener(this);
-        fileMenu.add(importDicom);
-
         // ----- Add ------
         JMenu add = new JMenu("Add"); // change to add shape later?
 
@@ -295,17 +272,17 @@ public class WorkspaceView extends View {
 
         JMenuItem defaultType = new JMenuItem("Default");
         defaultType.setActionCommand("Default Type");
-        defaultType.addActionListener(this);
+        defaultType.addActionListener(mainImageView);
         addContour.add(defaultType);
 
         JMenuItem closedType = new JMenuItem("Closed");
         closedType.setActionCommand("Closed Type");
-        closedType.addActionListener(this);
+        closedType.addActionListener(mainImageView);
         addContour.add(closedType);
 
         JMenuItem openType = new JMenuItem("Open");
         openType.setActionCommand("Open Type");
-        openType.addActionListener(this);
+        openType.addActionListener(mainImageView);
         addContour.add(openType);
         add.add(addContour);
 
@@ -328,12 +305,12 @@ public class WorkspaceView extends View {
 
         JMenuItem deleteContour = new JMenuItem("Delete Contour");
         deleteContour.setActionCommand("Delete Contour");
-        deleteContour.addActionListener(this);
+        deleteContour.addActionListener(mainImageView);
         contours.add(deleteContour);
 
         JMenuItem deleteAllContours = new JMenuItem("Delete All Contours");
         deleteAllContours.setActionCommand("Delete All Contours");
-        deleteAllContours.addActionListener(this);
+        deleteAllContours.addActionListener(mainImageView);
         contours.add(deleteAllContours);
 
         // ----- View -----
@@ -372,33 +349,24 @@ public class WorkspaceView extends View {
     public void saveAsStudy(Study study) {
         JFileChooser saveFC = fileChooser;
 
-        FileFilter studyFileFilter = new FileNameExtensionFilter("Study file (.smc)", "smc");
+        FileFilter studyFileFilter = new FileNameExtensionFilter(
+                "Study file (.smc)", "smc");
         saveFC.setFileFilter(studyFileFilter);
 
         int response = saveFC.showSaveDialog(this.mainComponent);
 
         if (response == JFileChooser.APPROVE_OPTION) {
             String newFilename = saveFC.getSelectedFile().getAbsolutePath();
-            
+
             if (!newFilename.endsWith(".smc")) {
                 newFilename = newFilename.concat(".smc");
             }
-            
+
             this.getWorkspaceModel().saveStudy(newFilename);
-            
+
         } else if (response == JFileChooser.CANCEL_OPTION) {
             // System.out.println("Choose to Cancel");
         }
-    }
-
-
-
-    /**
-     * deletes all of the Contours for the displayed image
-     */
-    private void deleteAllContoursForImage() {
-//        DICOMImage dImage = this.studyStructModel.getImage();
-//        dImage.getContours().clear();
     }
 
     /**
@@ -409,10 +377,10 @@ public class WorkspaceView extends View {
      */
 
     public void saveContour() {
-//        String path = System.getProperty("user.dir") + File.separator
-//                + "contourPoints.txt";
-//        writeContoursToFile(this.studyStructModel.getStudy()
-//                .getUIDToImage(), path);
+        String path = System.getProperty("user.dir") + File.separator
+                + "contourPoints.txt";
+        ContourUtilities.writeContoursToFile(getWorkspaceModel().getStudy()
+                .getUIDToImage(), path);
 
     }
 
@@ -425,41 +393,13 @@ public class WorkspaceView extends View {
      */
 
     public void setUpLoad() throws IOException {
-//        fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-//        int returnVal = fileChooser.showOpenDialog(this.mainComponent);
-//        if (returnVal == JFileChooser.APPROVE_OPTION) {
-//            File file = new File(fileChooser.getSelectedFile().getPath());
-//            loadContour(file, this.studyStructModel.getStudy()
-//                    .getUIDToImage());
-//        }
-    }
-
-    private void hideSelectedContour() {
-//        DICOMImage dImage = this.studyStructModel.getImage();
-//        Contour selected = this.mainImageModel.getSelectedContour();
-//        dImage.getContours().remove(selected);
-//        this.mainImageModel.getHiddenContours().add(selected);
-
-    }
-
-    private void hideContours() {
-//        DICOMImage dImage = this.studyStructModel.getImage();
-//        this.mainImageModel.getHiddenContours().addAll(dImage.getContours());
-//        dImage.getContours().clear();
-    }
-
-    private void showContours() {
-//        if (this.mainImageModel.getHiddenContours().size() != 0) {
-//            DICOMImage dImage = this.studyStructModel.getImage();
-//            dImage.getContours().addAll(
-//                    (Vector<Contour>) this.mainImageModel.getHiddenContours());
-//            this.mainImageModel.getHiddenContours().clear();
-//        }
-    }
-
-    private void deleteSelectedContour() {
-//        DICOMImage dImage = this.studyStructModel.getImage();
-//        dImage.getContours().remove(this.mainImageModel.getSelectedContour());
+        fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        int returnVal = fileChooser.showOpenDialog(this.mainComponent);
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            File file = new File(fileChooser.getSelectedFile().getPath());
+            ContourUtilities.loadContour(file, getWorkspaceModel().getStudy()
+                    .getUIDToImage());
+        }
     }
 
     // TODO: move key binding to GridView
@@ -475,23 +415,26 @@ public class WorkspaceView extends View {
      * Adds common KeyBindings (Ctrl+S, Ctrl+Shift+S, Ctrl+O, etc.) to the
      * class' mainComponent attribute.
      */
-    private void addKeyBindings() {
+    private void addKeyBindings(GridView gridView) {
         // Need to map KeyBindings
         this.mainComponent.getInputMap().put(KeyStroke.getKeyStroke("LEFT"),
                 "left");
-        this.mainComponent.getActionMap().put("left", new LeftKeyAction());
+        this.mainComponent.getActionMap().put("left",
+                gridView.new LeftKeyAction());
 
         this.mainComponent.getInputMap().put(KeyStroke.getKeyStroke("RIGHT"),
                 "right");
-        this.mainComponent.getActionMap().put("right", new RightKeyAction());
+        this.mainComponent.getActionMap().put("right",
+                gridView.new RightKeyAction());
 
         this.mainComponent.getInputMap().put(KeyStroke.getKeyStroke("DOWN"),
                 "down");
-        this.mainComponent.getActionMap().put("down", new DownKeyAction());
+        this.mainComponent.getActionMap().put("down",
+                gridView.new DownKeyAction());
 
         this.mainComponent.getInputMap()
                 .put(KeyStroke.getKeyStroke("UP"), "up");
-        this.mainComponent.getActionMap().put("up", new UpKeyAction());
+        this.mainComponent.getActionMap().put("up", gridView.new UpKeyAction());
 
         KeyStroke ctrlS = KeyStroke.getKeyStroke(KeyEvent.VK_S, Toolkit
                 .getDefaultToolkit().getMenuShortcutKeyMask());
@@ -513,85 +456,6 @@ public class WorkspaceView extends View {
                 .getDefaultToolkit().getMenuShortcutKeyMask());
         this.mainComponent.getInputMap().put(ctrlW, "close");
         this.mainComponent.getActionMap().put("close", new CtrlWAction());
-    }
-
-    /**
-     * Decrements the current time index and updates the models.
-     */
-    private void decrementTimeIndex() {
-//        // Check to see if it is possible
-//        if (this.studyStructModel.getStudy() == null) {
-//            return;
-//        }
-//        if ((this.tIndex - 1) >= 0) {
-//            // then decrement
-//            // System.out.println("GUIController : decrement time index");
-//            this.tIndex--;
-//            this.updateNewDicom();
-//        } else {
-//            this.tIndex = this.studyStructModel.getStudy().getGroups()
-//                    .get(gIndex).getSlices().get(sIndex).getTimes().size() - 1;
-//        }
-    }
-
-    /**
-     * Increments the current time index and updates the models.
-     */
-    private void incrementTimeIndex() {
-        // Check to see if it is possible
-//        if (this.studyStructModel.getStudy() == null) {
-//            return;
-//        }
-//        ArrayList<Time> curTimes = this.studyStructModel.getStudy().getGroups()
-//                .get(gIndex).getSlices().get(sIndex).getTimes();
-//        if ((this.tIndex + 1) < curTimes.size()) {
-//            // then increment
-//            // System.out.println("GUIController : increment time index");
-//            this.tIndex++;
-//            this.updateNewDicom();
-//        } else {
-//            // Loop
-//            this.tIndex = 0;
-//        }
-    }
-
-    /**
-     * Decrements the current slice index and updates the models.
-     */
-    private void decrementSliceIndex() {
-        // Check to see if it is possible
-//        if (this.studyStructModel.getStudy() == null) {
-//            return;
-//        }
-//        if (this.sIndex > 0) {
-//            // then increment
-//            // System.out.println("GUIController : decrement slice index");
-//            this.sIndex--;
-//            this.updateNewDicom();
-//        } else {
-//            // System.out.println("GUIController : failed attempt to decrement slice");
-//        }
-    }
-
-    /**
-     * Increments the current slice index and updates the models.
-     */
-    private void incrementSliceIndex() {
-        // Check to see if it is possible
-//        if (this.studyStructModel.getStudy() == null) {
-//            return;
-//        }
-//        ArrayList<Slice> curSlices = this.studyStructModel.getStudy()
-//                .getGroups().get(gIndex).getSlices();
-//        if ((this.sIndex + 1) < curSlices.size()) {
-//            // then increment
-//            // System.out.println("GUIController : increment slice index " +
-//            // curSlices.size());
-//            this.sIndex++;
-//            this.updateNewDicom();
-//        } else {
-//            // System.out.println("GUIController : failed attempt to increment slice");
-//        }
     }
 
     /**
@@ -619,38 +483,6 @@ public class WorkspaceView extends View {
     }
 
     // Action classes
-    private class LeftKeyAction extends AbstractAction {
-        private static final long serialVersionUID = 6612132766001531904L;
-
-        public void actionPerformed(ActionEvent e) {
-            decrementTimeIndex();
-        }
-    }
-
-    private class RightKeyAction extends AbstractAction {
-        private static final long serialVersionUID = 6824940022077838332L;
-
-        public void actionPerformed(ActionEvent e) {
-            incrementTimeIndex();
-        }
-    }
-
-    private class UpKeyAction extends AbstractAction {
-        private static final long serialVersionUID = 4942341424740412096L;
-
-        public void actionPerformed(ActionEvent e) {
-            decrementSliceIndex();
-        }
-    }
-
-    private class DownKeyAction extends AbstractAction {
-        private static final long serialVersionUID = -7183889255252949565L;
-
-        public void actionPerformed(ActionEvent e) {
-            incrementSliceIndex();
-        }
-    }
-
     private class CtrlSAction extends AbstractAction {
         private static final long serialVersionUID = 8688937617331716060L;
 
