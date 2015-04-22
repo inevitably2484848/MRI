@@ -1,5 +1,6 @@
 package edu.auburn.cardiomri.gui.views;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridLayout;
@@ -95,6 +96,7 @@ public class ImageView extends SingleImagePanel implements ActionListener, ViewI
         JPanel panel = new JPanel();
         panel.setSize(200, 200);
         panel.setLayout(new GridLayout(1, 1));
+        panel.setBackground(Color.BLACK);
         panel.add(this);
         return panel;
     }
