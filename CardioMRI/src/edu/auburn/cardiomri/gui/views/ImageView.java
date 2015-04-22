@@ -2,11 +2,12 @@ package edu.auburn.cardiomri.gui.views;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.GridLayout;
+import java.awt.Shape;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
+import java.awt.geom.Ellipse2D;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,14 +33,14 @@ import edu.auburn.cardiomri.gui.models.ImageModel;
 import edu.auburn.cardiomri.gui.models.Model;
 import edu.auburn.cardiomri.util.ContourCalc;
 
-public class ImageView extends SingleImagePanel implements ActionListener, ViewInterface, Observer {
+public class ImageView extends SingleImagePanel implements ActionListener,
+        ViewInterface, Observer {
     protected Model model;
     protected JPanel imageContourPanel;
     private static final long serialVersionUID = -6920775905498293695L;
     private Contour currentContour = null;
 
-    //TODO: make them a different view
-
+    // TODO: make them a different view
 
     public void update(Observable obs, Object obj) {
         if (obj.getClass() == DICOMImage.class) {
@@ -56,7 +57,7 @@ public class ImageView extends SingleImagePanel implements ActionListener, ViewI
     }
 
     private void updateImage(DICOMImage dImage) {
-        //		SingleImagePanel.deconstructAllSingleImagePanelsInContainer(this);
+        // SingleImagePanel.deconstructAllSingleImagePanelsInContainer(this);
 
         ConstructImage sImg = new ConstructImage(dImage);
         dirtySource(sImg);
@@ -117,15 +118,17 @@ public class ImageView extends SingleImagePanel implements ActionListener, ViewI
         List<Point2D> controlPoints;
         HashMap<Contour, Float> deltaList = new HashMap<Contour, Float>();
         for (Contour c : dImage.getContours()) {
-            if (c.getControlPoints().size() == 0) 
+            if (c.getControlPoints().size() == 0)
                 continue;
             else {
-                spline1 = ContourCalc.getSplineFromControlPoints(c.getControlPoints(), c.isClosedCurve());
+                spline1 = ContourCalc.getSplineFromControlPoints(
+                        c.getControlPoints(), c.isClosedCurve());
                 spline1.computeVertices(50);
                 length1 = spline1.getEstimatedArcLength();
                 controlPoints = c.getControlPoints();
                 controlPoints.add(p);
-                spline2 = ContourCalc.getSplineFromControlPoints(controlPoints, c.isClosedCurve());
+                spline2 = ContourCalc.getSplineFromControlPoints(controlPoints,
+                        c.isClosedCurve());
                 spline2.computeVertices(50);
                 length2 = spline2.getEstimatedArcLength();
                 deltaLength = length2 - length1;
@@ -135,12 +138,13 @@ public class ImageView extends SingleImagePanel implements ActionListener, ViewI
         }
 
         Map.Entry<Contour, Float> minDelta = null;
-        for(Map.Entry<Contour, Float> entry : deltaList.entrySet()) {
-            if (minDelta == null || entry.getValue().compareTo(minDelta.getValue()) < 0)
-            {
+        for (Map.Entry<Contour, Float> entry : deltaList.entrySet()) {
+            if (minDelta == null
+                    || entry.getValue().compareTo(minDelta.getValue()) < 0) {
                 minDelta = entry;
             }
         }
+        currentContour = minDelta.getKey();
         getImageModel().setSelectedContour(minDelta.getKey());
     }
 
@@ -151,24 +155,34 @@ public class ImageView extends SingleImagePanel implements ActionListener, ViewI
         // System.out.println("   " + e.getX()*2 + " " +e.getY()*2);
         // System.out.print(this.getSelectedDrawingShapes());
         if (SwingUtilities.isRightMouseButton(e)) {
-            //The code in this method needs to be moved here, I couldn't find it.
+            // The code in this method needs to be moved here, I couldn't find
+            // it.
             Point2D p = new Point2D(e.getX(), e.getY());
             selectContour(p);
-        }
-
-        else if (currentContour != null) {
-            currentContour.addControlPoint(e.getX(), e.getY());
+        } else if (currentContour != null) {
+            java.awt.geom.Point2D point = getImageCoordinateFromWindowCoordinate(e.getX(), e.getY());
+            currentContour.addControlPoint(point.getX(), point.getY());
             this.repaint();
         } else {
-            // throw error, currentContour is null
+            System.err.println("currentContour is null");
         }
     }
 
     // Allows for imageView to set the contour that the clicks get added to
 
     public void paintComponent(Graphics g) {
+        Vector<Shape> allControlPoints = new Vector<Shape>();
+        if (currentContour != null) {
+            // DrawingUtilities.drawShadowedShape(s, g2d);
+            for (Point2D controlPoint : currentContour.getControlPoints()) {
+                Ellipse2D ellipse = new Ellipse2D.Double(controlPoint.getX(),
+                        controlPoint.getY(), 2, 2);
+                allControlPoints.add(ellipse);
+            }
+        }
+        this.setPersistentDrawingShapes(allControlPoints);
         super.paintComponent(g);
-        Graphics2D g2d = (Graphics2D) g;
+        // System.out.println(allControlPoints.size());
     }
 
     /**
@@ -186,37 +200,40 @@ public class ImageView extends SingleImagePanel implements ActionListener, ViewI
             getImageModel().addContourToImage(new Contour(Type.DEFAULT_OPEN));
         } else if (actionCommand.equals("Delete Contour")) {
             if (getImageModel().getSelectedContour() == null) {
-                JOptionPane.showMessageDialog(imageContourPanel, "Please select a contour to delete.");
-            }
-            else{
+                JOptionPane.showMessageDialog(imageContourPanel,
+                        "Please select a contour to delete.");
+            } else {
                 getImageModel().deleteSelectedContour();
             }
         } else if (actionCommand.equals("Hide Contour")) {
             if (getImageModel().getSelectedContour() == null) {
-                JOptionPane.showMessageDialog(imageContourPanel, "Please select a contour to hide.");
-            }
-            else {
+                JOptionPane.showMessageDialog(imageContourPanel,
+                        "Please select a contour to hide.");
+            } else {
                 getImageModel().hideSelectedContour();
             }
         } else if (actionCommand.equals("Hide Contours")) {
-            if (getImageModel().getContours() == null || getImageModel().getContours().size() == 0) {
-                JOptionPane.showMessageDialog(imageContourPanel, "There are no contours to hide.");
-            }
-            else {
+            if (getImageModel().getContours() == null
+                    || getImageModel().getContours().size() == 0) {
+                JOptionPane.showMessageDialog(imageContourPanel,
+                        "There are no contours to hide.");
+            } else {
                 getImageModel().hideContours();
             }
         } else if (actionCommand.equals("Show Contours")) {
-            if (getImageModel().getHiddenContours() == null || getImageModel().getHiddenContours().size() == 0) {
-                JOptionPane.showMessageDialog(imageContourPanel, "There are no contours to show.");
-            }
-            else {
+            if (getImageModel().getHiddenContours() == null
+                    || getImageModel().getHiddenContours().size() == 0) {
+                JOptionPane.showMessageDialog(imageContourPanel,
+                        "There are no contours to show.");
+            } else {
                 getImageModel().showContours();
             }
         } else if (actionCommand.equals("Delete All Contours")) {
-            if (getImageModel().getContours() == null || getImageModel().getContours().size() == 0) {
-                JOptionPane.showMessageDialog(imageContourPanel, "There are no contours to delete.");
-            }
-            else {
+            if (getImageModel().getContours() == null
+                    || getImageModel().getContours().size() == 0) {
+                JOptionPane.showMessageDialog(imageContourPanel,
+                        "There are no contours to delete.");
+            } else {
                 getImageModel().deleteAllContours();
             }
         }
