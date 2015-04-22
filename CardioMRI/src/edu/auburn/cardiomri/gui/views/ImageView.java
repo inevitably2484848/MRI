@@ -73,7 +73,7 @@ public class ImageView extends SingleImagePanel implements ActionListener,
     }
 
     private void updateContours(Vector<Contour> contours) {
-        this.setPreDefinedShapes(contours);
+        this.setSelectedDrawingShapes(contours);
         this.repaint();
     }
 
@@ -180,7 +180,7 @@ public class ImageView extends SingleImagePanel implements ActionListener,
                 allControlPoints.add(ellipse);
             }
         }
-        this.setPersistentDrawingShapes(allControlPoints);
+        this.setPreDefinedShapes(allControlPoints);
         super.paintComponent(g);
         // System.out.println(allControlPoints.size());
     }
