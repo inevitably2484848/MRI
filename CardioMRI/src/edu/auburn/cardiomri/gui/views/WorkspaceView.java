@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.util.Observable;
 
 import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -300,6 +301,11 @@ public class WorkspaceView extends View {
         loadContours.setActionCommand("Load Contours");
         loadContours.addActionListener(this);
         contours.add(loadContours);
+        
+        JMenuItem selectContour = new JMenuItem("Select Contour");
+        selectContour.setActionCommand("Select Contour");
+        selectContour.addActionListener(mainImageView);
+        contours.add(selectContour);
 
         JMenuItem deleteContourAxis = new JMenuItem("Delete Contour Axis");
         deleteContourAxis.setActionCommand("Delete Contour Axis");
@@ -321,10 +327,12 @@ public class WorkspaceView extends View {
         hideContour.addActionListener(mainImageView);
         contours.add(hideContour);
         
-        JMenuItem showContors = new JMenuItem("Show Contours");
-        showContors.setActionCommand("Show Contours");
-        showContors.addActionListener(mainImageView);
-        contours.add(showContors);
+        JMenuItem showContours = new JMenuItem("Show Contours");
+        showContours.setActionCommand("Show Contours");
+        showContours.addActionListener(mainImageView);
+        contours.add(showContours);
+        
+        
 
         // ----- View -----
         JMenu view = new JMenu("View");
@@ -469,7 +477,9 @@ public class WorkspaceView extends View {
                 .getDefaultToolkit().getMenuShortcutKeyMask());
         this.mainComponent.getInputMap().put(ctrlW, "close");
         this.mainComponent.getActionMap().put("close", new CtrlWAction());
+        
     }
+  
 
     /**
      * 
@@ -527,4 +537,5 @@ public class WorkspaceView extends View {
             closeWindow();
         }
     }
+    
 }

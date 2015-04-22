@@ -291,19 +291,22 @@ public class Contour implements Shape, Serializable {
 
     public String toString() {
         // TODO change strings to more descriptive things...
-        String output = "";
-        if (this.getContourType().equals(Type.DEFAULT)) {
-            output += "DEFAULT";
-        } else if (this.getContourType().equals(Type.DEFAULT_CLOSED)) {
-            output += "CLOSED";
-        } else if (this.getContourType().equals(Type.DEFAULT_OPEN)) {
-            output += "OPEN";
-        } else {
-            output += "unknown type";
-        }
-
-        output += Arrays.deepToString(controlPoints.toArray());
-        return output;
+    	String output = "";
+    	if (this.getContourType().equals(Type.DEFAULT)) {
+    		output += "DEFAULT";
+    	}
+    	else if (this.getContourType().equals(Type.DEFAULT_CLOSED)) {
+    		output += "CLOSED";
+    	}
+    	else if (this.getContourType().equals(Type.DEFAULT_OPEN)) {
+    		output += "OPEN";
+    	}
+    	else {
+    		output += "unknown type";
+    	}
+    	
+    	//output += Arrays.deepToString(controlPoints.toArray());
+    	return output;
     }
 
     public static final Map<Type, Boolean> IS_CLOSED_CONTOUR;

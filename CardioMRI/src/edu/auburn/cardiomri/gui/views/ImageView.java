@@ -54,6 +54,7 @@ public class ImageView extends SingleImagePanel implements ActionListener,
         } else if (obj.getClass() == Contour.class) {
             updateCurrentContour((Contour) obj);
         }
+
     }
 
     private void updateImage(DICOMImage dImage) {
@@ -101,7 +102,7 @@ public class ImageView extends SingleImagePanel implements ActionListener,
         panel.add(this);
         return panel;
     }
-
+    
     public void refresh() {
         this.revalidate();
         this.repaint();
@@ -212,6 +213,10 @@ public class ImageView extends SingleImagePanel implements ActionListener,
             } else {
                 getImageModel().hideSelectedContour();
             }
+
+        } else if(actionCommand.equals("Select Contour")) {
+            getImageModel().selectContour(imageContourPanel);
+
         } else if (actionCommand.equals("Hide Contours")) {
             if (getImageModel().getContours() == null
                     || getImageModel().getContours().size() == 0) {
@@ -237,5 +242,7 @@ public class ImageView extends SingleImagePanel implements ActionListener,
                 getImageModel().deleteAllContours();
             }
         }
+
     }
+
 }

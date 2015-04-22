@@ -2,6 +2,9 @@ package edu.auburn.cardiomri.gui.models;
 
 import java.util.Vector;
 
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+
 import edu.auburn.cardiomri.datastructure.Contour;
 import edu.auburn.cardiomri.datastructure.DICOMImage;
 
@@ -119,6 +122,29 @@ public class ImageModel extends Model {
 
     public Vector<Contour> getHiddenContours() {
         return this.hiddenContours;
+    }
+    
+    public void selectContour(JPanel imageContourPanel) {
+        Object[] possibilities = dImage.getContours().toArray();
+        Contour[] contours = new Contour[possibilities.length];
+        
+        int i = 0;
+        for (Object c : possibilities) {
+            contours[i] = (Contour)c;
+            i++;
+        }
+        Contour c = (Contour)JOptionPane.showInputDialog(
+                imageContourPanel,
+                            "Select Contour: ",
+                            "Contours", JOptionPane.PLAIN_MESSAGE,
+                            null,
+                            contours,
+                            "ham");
+
+        if (c != null) {
+            this.selectedContour = c;
+        }
+
     }
 
     /**
