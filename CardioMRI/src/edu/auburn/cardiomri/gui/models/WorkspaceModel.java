@@ -102,7 +102,7 @@ public class WorkspaceModel extends Model {
             
             if (sliceIndex < 0 || sliceIndex >= group.getSlices().size()) {
                 System.err.println("slice index out of bounds");
-                return;
+                continue;
             }
             
             Slice slice = group.getSlices().get(sliceIndex);
@@ -114,7 +114,7 @@ public class WorkspaceModel extends Model {
             if (imageIndex < 0 || imageIndex >= time.getImages().size()) {
                 System.err.println("image index out of bounds");
             }
-            
+
             imageModel.setCurrentImage(time.getImages().get(imageIndex));
         }
     }
