@@ -23,6 +23,10 @@ public class GridView extends View {
     private int i = 0;
 
     private Dimension size;
+    
+    private Color endSystole = Color.BLUE; //Lowest volume
+    private Color endDiastole = Color.ORANGE;//Completely full
+
     private JButton[][] buttons;
 
     public void actionPerformed(ActionEvent e) {

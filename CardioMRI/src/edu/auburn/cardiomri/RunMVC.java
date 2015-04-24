@@ -11,11 +11,13 @@ import edu.auburn.cardiomri.gui.views.StartView;
 import edu.auburn.cardiomri.gui.views.WorkspaceView;
 
 public class RunMVC {
+
     protected WorkspaceView workspaceView;
     protected WorkspaceModel workspaceModel;
     protected StartView startView;
     protected StartModel startModel;
     protected Study study;
+
 
     public RunMVC() {
         try {
