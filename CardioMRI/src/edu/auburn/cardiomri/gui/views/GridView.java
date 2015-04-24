@@ -42,17 +42,13 @@ public class GridView extends View {
             int newTime = (Integer.parseInt(timeStr) - 1);
             int newSlice = (Integer.parseInt(sliceStr) - 1);
 
-            this.t = newTime;
-            this.s = newSlice;
-            getGridModel().setCurrentImage(s, t, i);
+            getGridModel().setCurrentImage(newSlice, newTime, i);
         }
     }
 
-    // Observer methods
     public void update(Observable obs, Object obj) {
-        // Updating the current DICOM image.
+    	
         if (obj.getClass() == int[].class) {
-            // System.out.println("GridView : set new image");
 
             // first, set current back to regular
             this.buttons[this.t][this.s].setBorderPainted(true);
