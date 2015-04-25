@@ -24,16 +24,35 @@ public class WorkspaceModel extends Model {
     protected Study study;
     protected Map<ImageModel, Group> imageToGroup;
 
+    /**
+     * Constructor for WorkspaceModel. The currentState is initialized to
+     * UNDEFINED.
+     */
     public WorkspaceModel() {
         super();
         currentState = State.UNDEFINED;
         imageToGroup = new HashMap<ImageModel, Group>();
     }
 
+    /**
+     * Getter for the current study.
+     * 
+     * @return
+     */
     public Study getStudy() {
         return study;
     }
 
+    /**
+     * Setter for the current study. If the study is null or contains less than
+     * 1 image, then it we can't do any work on it. The START state is set so
+     * the user can select a new study. If the study does not have valid group
+     * indices for short axis, two chamber, and four chamber, then the
+     * GROUP_SELECTION state is set. If the study does have valid group indices,
+     * then the WORKSPACE state is set.
+     * 
+     * @param study
+     */
     public void setStudy(Study study) {
         this.study = study;
         if (study == null) {
@@ -78,16 +97,33 @@ public class WorkspaceModel extends Model {
         return isValid;
     }
 
+    /**
+     * Getter for the current state.
+     * 
+     * @return
+     */
     public State getCurrentState() {
         return currentState;
     }
 
+    /**
+     * Updates the current state and notifies observers with the change.
+     * 
+     * @param currentState
+     */
     public void setCurrentState(State currentState) {
         this.currentState = currentState;
         setChanged();
         notifyObservers(currentState);
     }
 
+    /**
+     * Adds the ImageModel, Group pair to the internal map. When WorkspaceView
+     * gets an update with new indices, all of the added pairs are updated.
+     * 
+     * @param imageModel
+     * @param group
+     */
     public void addImage(ImageModel imageModel, Group group) {
         if (imageModel == null) {
             return;
