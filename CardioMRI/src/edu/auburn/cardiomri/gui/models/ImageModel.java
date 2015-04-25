@@ -3,11 +3,10 @@ package edu.auburn.cardiomri.gui.models;
 import java.util.List;
 import java.util.Vector;
 
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-
+import javafx.geometry.Point2D;
 import edu.auburn.cardiomri.datastructure.Contour;
 import edu.auburn.cardiomri.datastructure.DICOMImage;
+import edu.auburn.cardiomri.util.ContourCalc;
 
 public class ImageModel extends Model {
     protected DICOMImage dImage;
@@ -19,47 +18,57 @@ public class ImageModel extends Model {
         hiddenContours = new Vector<Contour>();
     }
 
-    /**
-     * Setter for the internal contour list. If the list has at least one
-     * element, currentContour is set to the last element. Observers are
-     * notified.
-     * 
-     * @param contourList
-     */
-    public void setContourList(Vector<Contour> contourList) {
-        if (contourList == null) {
+    public void setCurrentImage(DICOMImage dImage) {
+        if (dImage == null) {
             // throw NPE?
+            System.err.println("dImage is null");
+            return;
         }
 
-        dImage.setContours(contourList);
+        this.dImage = dImage;
         selected = null;
         hiddenContours.clear();
 
         setChanged();
         notifyObservers(dImage);
-
-        if (contourList.size() > 0) {
-            setCurrentContour(contourList.lastElement());
-        }
     }
 
     /**
-     * Setter for currentContour. Observers are notified. Note: Null parameter
-     * is allowed.
+     * Adds a control point to the currently selected contour. If no contour is
+     * selected, returns false.
      * 
-     * @param contour
+     * @param x
+     * @param y
+     * @return true if point was added, false otherwise
      */
-    public void setCurrentContour(Contour contour) {
-        selected = contour;
+    public boolean addControlPoint(double x, double y) {
+        if (selected == null) {
+            return false;
+        }
+
+        selected.addControlPoint(x, y);
+        setChanged();
+        notifyObservers(dImage);
+        return true;
+    }
+
+    /**
+     * Delete all of the visible and hidden contours
+     */
+    public void deleteAllContours() {
+        dImage.getContours().clear();
+        selected = null;
+        hiddenContours.clear();
 
         setChanged();
         notifyObservers(dImage);
     }
 
-    public Vector<Contour> getContours() {
-        return dImage.getContours();
-    }
-
+    /**
+     * Get the list of contours that should be drawn onto the screen.
+     * 
+     * @return List of contours with the hidden ones removed.
+     */
     public Vector<Contour> getVisibleContours() {
         Vector<Contour> visibleContours = new Vector<Contour>();
 
@@ -72,9 +81,14 @@ public class ImageModel extends Model {
         return visibleContours;
     }
 
+    /**
+     * Adds a contour to the image and sets it as the selected contour.
+     * 
+     * @param contour
+     */
     public void addContourToImage(Contour contour) {
         this.dImage.addContour(contour);
-        setCurrentContour(contour);
+        setSelectedContour(contour);
     }
 
     /**
@@ -93,6 +107,9 @@ public class ImageModel extends Model {
         notifyObservers(dImage);
     }
 
+    /**
+     * Sets all contours as hidden.
+     */
     public void hideAllContours() {
         hiddenContours.addAll(getVisibleContours());
         selected = null;
@@ -101,6 +118,9 @@ public class ImageModel extends Model {
         notifyObservers(dImage);
     }
 
+    /**
+     * Sets all contours as visible.
+     */
     public void showAllContours() {
         hiddenContours.clear();
 
@@ -108,7 +128,15 @@ public class ImageModel extends Model {
         notifyObservers(dImage);
     }
 
+    /**
+     * Removes the selected contour from the list of all contours.
+     */
     public void deleteSelectedContour() {
+        if (selected == null) {
+            // throw error?
+            return;
+        }
+
         dImage.getContours().remove(selected);
         setSelectedContour(null);
 
@@ -117,22 +145,47 @@ public class ImageModel extends Model {
     }
 
     /**
-     * Returns the currently selected DICOMImage object given the current
-     * indices.
+     * Selects the contour closest to the given coordinates. The closest contour
+     * is determined by iterating over each of the visible contours, calculating
+     * the change in arc length if a point was added to it, then picking the
+     * contour for which the change in arc length was the least.
      * 
-     * @return The currently selected DICOMImage.
+     * @param x
+     * @param y
      */
+    public void selectContour(double x, double y) {
+        Point2D pointClicked = new Point2D(x, y);
+        float delta = Float.MAX_VALUE;
+        Contour closest = null;
+
+        for (Contour contour : getVisibleContours()) {
+            if (contour.getControlPoints().size() == 0) {
+                continue;
+            }
+
+            float newDelta = ContourCalc.getDeltaArcLength(contour,
+                    pointClicked);
+            if (newDelta < delta) {
+                delta = newDelta;
+                closest = contour;
+            }
+        }
+
+        setSelectedContour(closest);
+    }
+
     public DICOMImage getImage() {
         return this.dImage;
     }
 
-    public void refresh() {
+    public void setSelectedContour(Contour contour) {
+        selected = contour;
         setChanged();
         notifyObservers(dImage);
     }
 
-    public void setSelectedContour(Contour contour) {
-        selected = contour;
+    public Vector<Contour> getContours() {
+        return dImage.getContours();
     }
 
     public Contour getSelectedContour() {
@@ -143,61 +196,8 @@ public class ImageModel extends Model {
         return this.hiddenContours;
     }
 
-    public boolean addControlPoint(double x, double y) {
-        if (selected == null) {
-            return false;
-        }
-
-        selected.addControlPoint(x, y);
-        setChanged();
-        notifyObservers(dImage);
-        return true;
-    }
-
-    public void selectContour(JPanel imageContourPanel) {
-        Object[] possibilities = dImage.getContours().toArray();
-        Contour[] contours = new Contour[possibilities.length];
-
-        int i = 0;
-        for (Object c : possibilities) {
-            contours[i] = (Contour) c;
-            i++;
-        }
-        Contour c = (Contour) JOptionPane.showInputDialog(imageContourPanel,
-                "Select Contour: ", "Contours", JOptionPane.PLAIN_MESSAGE,
-                null, contours, "ham");
-
-        if (c != null) {
-            this.selected = c;
-        }
-
-    }
-
-    /**
-     * @param dImage
-     */
-    public void setCurrentImage(DICOMImage dImage) {
-        if (dImage == null) {
-            // throw NPE?
-            System.err.println("dImage is null");
-            return;
-        }
-
-        this.dImage = dImage;
-        selected = null;
-        hiddenContours.clear();
-
+    public void refresh() {
         setChanged();
         notifyObservers(dImage);
     }
-
-    public void deleteAllContours() {
-        dImage.getContours().clear();
-        selected = null;
-        hiddenContours.clear();
-
-        setChanged();
-        notifyObservers(dImage);
-    }
-
 }
