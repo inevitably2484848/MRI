@@ -1,7 +1,7 @@
 package edu.auburn.cardiomri.gui.views;
 
 /**
- * This view is the bottom right hand panel of the gui. 
+ * This view is the bottom right panel of the main workspace window. 
  * Eventually all contour information from the main image panel will be displayed on here.
  * 	The ideal setup would be to list all the contours, and be able to show, hide, edit, and delete them easily.  
  * 
@@ -12,8 +12,6 @@ package edu.auburn.cardiomri.gui.views;
 public class ContourControlView extends View {
 	
 	/**
-	 * Public constructor
-	 * 
 	 * Simply sets panel to visible for filler space
 	 * 
 	 */
