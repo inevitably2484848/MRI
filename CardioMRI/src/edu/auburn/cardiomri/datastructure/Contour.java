@@ -47,7 +47,7 @@ public class Contour implements Shape, Serializable {
 
         return false;
     }
-
+    
     public void setControlPoints(List<Point2D> points) {
         if (points == null) {
             throw new NullPointerException("List cannot be null");

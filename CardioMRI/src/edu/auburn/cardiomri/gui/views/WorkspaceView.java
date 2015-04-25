@@ -1,6 +1,3 @@
-/**
- * 
- */
 package edu.auburn.cardiomri.gui.views;
 
 import java.awt.Toolkit;
@@ -12,7 +9,6 @@ import java.io.IOException;
 import java.util.Observable;
 
 import javax.swing.AbstractAction;
-import javax.swing.Action;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -36,7 +32,9 @@ import edu.auburn.cardiomri.util.ContourUtilities;
 
 /**
  * @author Moniz
- *
+ * 
+ * This view owns and manages all other views. It houses the menu
+ * as well as the various panels for the GUI.
  */
 public class WorkspaceView extends View {
     private static final int WORKSPACE_WIDTH = 1200;
@@ -44,7 +42,11 @@ public class WorkspaceView extends View {
     protected JFileChooser fileChooser;
     protected JComponent mainComponent;
     protected JFrame appFrame;
-
+    
+    /**
+     * Class constructor. Sets the current working directory and
+     * creates the working frame.
+     */
     public WorkspaceView() {
         super();
         fileChooser = new JFileChooser();
@@ -52,7 +54,32 @@ public class WorkspaceView extends View {
                 .setCurrentDirectory(new File(System.getProperty("user.dir")));
         createFrame();
     }
-
+   
+    /**
+     * If the object parameter is a state of the WorkspaceModel, 
+     * this method adds the required panels to the frame and creates
+     *  the necessary views and models based on the state.
+     * <p>
+     * If in the START state, the start view and model are created and the
+     * starting options are displayed.
+     * <p>
+     * If in the GROUP_SELECTION state, the select view and model are created 
+     * so the user can choose which groups to display where.
+     * <p>
+     * If in the WORKSPACE state, the main image, two chamber, and four chamber
+     * models and views are created and the appropriate images are displayed. 
+     * The grid view and model are set up and all of the panes are added to the
+     * frame. 
+     * <p>
+     * If the object is a study, setStudy() is called to update the study.
+     * <p>
+     * If the object is an int array, the indices within the workspace 
+     * model are updated accordingly so that the various images are 
+     * correctly updated.
+     * 
+     * @param obs  the class calling notifyObservers()
+     * @param obj  the object that has been changed, thus signaling this method
+     */
     public void update(Observable obs, Object obj) {
         if (obj.getClass() == State.class) {
             State currentState = (State) obj;
@@ -174,6 +201,9 @@ public class WorkspaceView extends View {
         this.appFrame = f;
     }
 
+    /**
+     * Creates the main JFrame with the appropriate title. 
+     */
     public void createFrame() {
         this.appFrame = new JFrame("Cardio MRI");
         this.appFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -208,7 +238,12 @@ public class WorkspaceView extends View {
         return (WorkspaceModel) this.model;
     }
 
-    // ActionListener methods
+    /**
+     * Handles action events within the workspace. Specifically,
+     * saving and loading events.
+     * 
+     * @param e  an action event
+     */
     public void actionPerformed(java.awt.event.ActionEvent e) {
 
         String actionCommand = e.getActionCommand();
@@ -232,6 +267,13 @@ public class WorkspaceView extends View {
         }
     }
 
+    /**
+     * Creates the main menu containing all functionality for the program and
+     * sets action commands and listeners appropriately.
+     * Submenus are created where needed.
+     * 
+     * @param mainImageView  the view in which to set up the menu
+     */
     public void setMenu(ImageView mainImageView) {
         // -------------------- Menu Bar -------------------------------
 
@@ -365,7 +407,9 @@ public class WorkspaceView extends View {
     /**
      * Opens a JFileChooser that allows the user to select where they would like
      * to save the currently displayed Study object and what name they would
-     * like to give it.
+     * like to give it. Saves study as a custom .smc file.
+     * 
+     * @param study  the study to be saved
      */
     public void saveAsStudy(Study study) {
         JFileChooser saveFC = fileChooser;
@@ -391,12 +435,9 @@ public class WorkspaceView extends View {
     }
 
     /**
-     * Saves current image's contour lines into a .txt file containing a header
-     * and the X and Y coordinates of all the points along the contour
-     * 
-     * @param contour : Contour object to be saved
+     * Creates a text file in which to write the contour data for a study and
+     * calls writeContoursToFile() to perform the actual writing to the file.
      */
-
     public void saveContour() {
         String path = System.getProperty("user.dir") + File.separator
                 + "contourPoints.txt";
@@ -405,14 +446,14 @@ public class WorkspaceView extends View {
 
     }
 
+
     /**
-     * reads in a text file containing lists of coordinates for Contour objects
-     * for one or more images and assigns the Contours to their corresponding
-     * images.
+     * Opens a file chooser so the user can select a file to load and
+     * sends the file to loadContour() in ContourUtilities where the 
+     * actual reading of the file is performed.
      * 
      * @throws IOException
      */
-
     public void setUpLoad() throws IOException {
         fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
         int returnVal = fileChooser.showOpenDialog(this.mainComponent);
@@ -435,6 +476,8 @@ public class WorkspaceView extends View {
     /**
      * Adds common KeyBindings (Ctrl+S, Ctrl+Shift+S, Ctrl+O, etc.) to the
      * class' mainComponent attribute.
+     * 
+     * @param gridView  the grid to associate the arrow key bindings
      */
     private void addKeyBindings(GridView gridView) {
         // Need to map KeyBindings
@@ -505,7 +548,10 @@ public class WorkspaceView extends View {
 
     }
 
-    // Action classes
+    
+    /**
+     * Various action classes for the key bindings. 
+     */
     private class CtrlSAction extends AbstractAction {
         private static final long serialVersionUID = 8688937617331716060L;
 
