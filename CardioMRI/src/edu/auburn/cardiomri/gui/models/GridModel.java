@@ -1,10 +1,14 @@
 package edu.auburn.cardiomri.gui.models;
 
-import java.util.ArrayList;
-
 import edu.auburn.cardiomri.datastructure.Group;
-import edu.auburn.cardiomri.datastructure.Slice;
 
+/**
+ * Holds all information the Grid view needs, mainly the Group
+ * 
+ * 
+ * @author Ben Gustafson
+ *
+ */
 public class GridModel extends Model {
     protected Group group;
     protected int s, t, i;
@@ -18,8 +22,6 @@ public class GridModel extends Model {
      * @param imageIndex : New imageIndex.
      */
     public void setCurrentImage(int sliceIndex, int timeIndex, int imageIndex) {
-        // System.out.println("GridModel : setCurrentImage");
-
         this.s = sliceIndex;
         this.t = timeIndex;
         this.i = imageIndex;
@@ -27,20 +29,31 @@ public class GridModel extends Model {
         int[] indices = { this.s, this.t, this.i };
 
         setChanged();
-        // update new current image
         notifyObservers(indices);
     }
 
+    /**
+     * Current group
+     * 
+     * @return group object 
+     */
     public Group getGroup() {
         return group;
     }
 
+    /**
+     * set the group attribute
+     * 
+     * @param group object
+     */
     public void setGroup(Group group) {
         this.group = group;
     }
 
     /**
      * Decrements the current time index and updates the models.
+     * 
+     * @note Left arrow key, will wrap around
      */
     public void decrementTimeIndex() {
         if ((this.t - 1) >= 0) {
@@ -53,6 +66,8 @@ public class GridModel extends Model {
 
     /**
      * Increments the current time index and updates the models.
+     * 
+     * @note Right arrow key, will wrap around
      */
     public void incrementTimeIndex() {
         if ((this.t + 1) < group.getSlices().get(s).getTimes().size()) {
@@ -64,6 +79,8 @@ public class GridModel extends Model {
 
     /**
      * Decrements the current slice index and updates the models.
+     * 
+     * @note up arrow key, will NOT wrap around
      */
     public void decrementSliceIndex() {
         if (this.s > 0) {
@@ -75,6 +92,8 @@ public class GridModel extends Model {
 
     /**
      * Increments the current slice index and updates the models.
+     * 
+     * @note down arrow key, will NOT wrap around
      */
     public void incrementSliceIndex() {
         if ((this.s + 1) < group.getSlices().size()) {
