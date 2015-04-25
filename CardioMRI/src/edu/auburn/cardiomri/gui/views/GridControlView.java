@@ -1,5 +1,11 @@
 package edu.auburn.cardiomri.gui.views;
 
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
 import javax.swing.JSlider;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -17,6 +23,8 @@ import javax.swing.event.ChangeListener;
  */
 public class GridControlView extends View implements ChangeListener {
 
+	protected boolean buttonPressed;
+	protected JButton playButton;
 	/**
 	 * Sets panel to visible, adds slider to panel
 	 * 
@@ -24,8 +32,20 @@ public class GridControlView extends View implements ChangeListener {
 	public GridControlView()
 	{
 		super();
+		this.panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 		this.panel.setOpaque(true);
 		this.panel.setVisible(true);
+		
+		buttonPressed = true;
+		
+		playButton = new JButton();
+        playButton.addActionListener(this);
+        playButton.setPreferredSize(new Dimension(50, 20));
+        playButton.setBorderPainted(true);
+        changeButtonState();
+		playButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+		
+		this.panel.add(playButton);
 		
 		//Slider is from 0 to 20 with one digit increments
 		JSlider framesPerSecond = new JSlider(JSlider.HORIZONTAL, 0, 20, 1); 
@@ -44,6 +64,43 @@ public class GridControlView extends View implements ChangeListener {
         if (!source.getValueIsAdjusting()) {
             //int fps = (int) source.getValue();
             //System.out.println(fps);
+        }
+    }
+    /**
+     * Changes the pay button state based on what is currently being displayed
+     * 
+     */
+    private void changeButtonState()
+    {
+    	if(buttonPressed)
+    	{
+    		//Set to not pressed
+    		playButton.setActionCommand("PLAY");
+            playButton.setText(">");
+    	}
+    	else
+    	{
+    		//Set to pressed
+    		playButton.setActionCommand("STOP");
+            playButton.setText("[]");
+    	}
+    	buttonPressed = !buttonPressed;
+    }
+    
+    /**
+     * Currenly only listening for the play and stop of the play button.
+     * 
+     */
+    public void actionPerformed(ActionEvent e) {
+        String actionCommand = e.getActionCommand();
+        
+        if(actionCommand.equals("STOP"))
+        {
+        	changeButtonState();
+        }
+        else if(actionCommand.equals("PLAY"))
+        {
+        	changeButtonState();
         }
     }
 }

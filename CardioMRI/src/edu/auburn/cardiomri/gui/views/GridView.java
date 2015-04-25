@@ -80,6 +80,19 @@ public class GridView extends View {
             this.buttons[this.t][this.s].setBorderPainted(true);
             this.buttons[this.t][this.s].setOpaque(false);
             this.buttons[this.t][this.s].setBackground(NORMAL_COLOR);
+            if(getGridModel().getGroup().getEd_index() == this.t )
+            {
+            	this.buttons[this.t][this.s].setBackground(END_DIASTOLE);
+            	this.buttons[this.t][this.s].setOpaque(true);
+	    		this.buttons[this.t][this.s].setBorderPainted(false);
+            }
+            if(getGridModel().getGroup().getEs_index() == this.t)
+            {
+            	this.buttons[this.t][this.s].setBackground(END_SYSTOLE);
+            	this.buttons[this.t][this.s].setOpaque(true);
+	    		this.buttons[this.t][this.s].setBorderPainted(false);
+            }
+            
 
             int[] indices = (int[]) obj;
             this.s = indices[0];
@@ -171,11 +184,11 @@ public class GridView extends View {
         //Set the ES and ED if they are there for the group
         if(group.getEd_index() > -1)
         {
-        	changeButtonColumn(END_DIASTOLE,group.getEd_index());
+        	changeButtonColumn(END_DIASTOLE,group.getEd_index(),false);
         }
         if(group.getEs_index() > -1)
         {
-        	changeButtonColumn(END_SYSTOLE,group.getEs_index());
+        	changeButtonColumn(END_SYSTOLE,group.getEs_index(),false);
         }
 
         // Set the size of the scroll panel
@@ -259,16 +272,16 @@ public class GridView extends View {
     private void rotateColumnType(int x, JButton button) {
     	String name = new String("" + (x+1));
     	boolean	changed = false;
-    	if(getGridModel().getGroup().getEd_index() == -1)
+    	if(getGridModel().getGroup().getEd_index() == -1 && !(x == getGridModel().getGroup().getEs_index()))
     	{
-    		changeButtonColumn(END_DIASTOLE,x);
+    		changeButtonColumn(END_DIASTOLE,x,false);
     		getGridModel().getGroup().setEd_index(x);
     		name = "ED";
     		changed = true;
     	}
-    	if(!changed && getGridModel().getGroup().getEs_index() == -1)
+    	if(!changed && getGridModel().getGroup().getEs_index() == -1 &&  !(x == getGridModel().getGroup().getEd_index()))
     	{
-    		changeButtonColumn(END_SYSTOLE,x);
+    		changeButtonColumn(END_SYSTOLE,x,false);
     		getGridModel().getGroup().setEs_index(x);
     		name = "ES";
     		changed = true;
@@ -276,14 +289,14 @@ public class GridView extends View {
     	if(!changed && x == getGridModel().getGroup().getEd_index())
     	{	
     		//Reset ED index to null, and rotate to normal
-			changeButtonColumn(NORMAL_COLOR,x);
+			changeButtonColumn(NORMAL_COLOR,x,true);
 			getGridModel().getGroup().setEd_index(-1);
 			name = new String("" + (x+1));
     	}
     	if(!changed && x == getGridModel().getGroup().getEs_index())
     	{	
     		//Reset ES index to null, and rotate to normal
-			changeButtonColumn(NORMAL_COLOR,x);
+			changeButtonColumn(NORMAL_COLOR,x,true);
     		getGridModel().getGroup().setEs_index(-1);
     		name = new String("" + (x+1));
     	}
@@ -293,25 +306,33 @@ public class GridView extends View {
 	}
     
     /**
-     * changes given column to the given color for the button
+     * changes given column to the given color for the button, all but the selected one
      * 
      * @Note Currently does not work properly 
      * 
      * @param buttonColor	New color for the buttons
      * @param x				Column index of the button array
+     * @param normal		This is an indication of if the button is going to be changed back to the normal color
      */
-    private void changeButtonColumn(Color buttonColor, int x)
+    private void changeButtonColumn(Color buttonColor, int x, boolean normal)
     {
     	for(int y = 0; y < this.maxHeight; y++)
     	{
-//    		if(!this.buttons[x][y].getBackground().equals(SELECTED_COLOR))
-//        	{
-//    			System.out.println("button color set");
-                this.buttons[x][y].setOpaque(false);
-                this.buttons[x][y].setBackground(buttonColor);
-//        	}
+    		if(!this.buttons[x][y].getBackground().equals(SELECTED_COLOR))
+    		{
+	    		this.buttons[x][y].setBackground(buttonColor);
+	    		if(!normal)
+	    		{
+		    		this.buttons[x][y].setOpaque(true);
+		    		this.buttons[x][y].setBorderPainted(false);
+	    		}
+	    		else
+	    		{
+	    			this.buttons[x][y].setOpaque(false);
+		    		this.buttons[x][y].setBorderPainted(true);
+	    		}
+    		}
     	}
-//    	System.out.println("=============================");
     }
 
     /**
