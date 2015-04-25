@@ -89,7 +89,6 @@ public class GridView extends View {
      */
     public void setupGrid() {
     	
-    	System.out.print("Setu");
         Group group = getGridModel().getGroup();
 
         // Figure out the size of the grid : time x slice
