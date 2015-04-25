@@ -38,44 +38,33 @@ public class ImageView extends SingleImagePanel implements ActionListener,
     protected Model model;
     protected JPanel imageContourPanel;
     private static final long serialVersionUID = -6920775905498293695L;
-    private Contour currentContour = null;
-
-    // TODO: make them a different view
 
     public void update(Observable obs, Object obj) {
         if (obj.getClass() == DICOMImage.class) {
-            updateImage((DICOMImage) obj);
-        } else if (obj.getClass() == Vector.class) {
-            Vector vector = (Vector) obj;
-            if ((vector.size() == 0)
-                    || (vector.firstElement().getClass() == Contour.class)) {
-                updateContours((Vector<Contour>) obj);
-            }
-        } else if (obj.getClass() == Contour.class) {
-            updateCurrentContour((Contour) obj);
+            DICOMImage dImage = (DICOMImage) obj;
+            dirtySource(new ConstructImage(dImage));
+            updateCurrentContour(getImageModel().getSelectedContour());
+            updateVisibleContours(getImageModel().getVisibleContours());
+
+            refresh();
         }
-
-    }
-
-    private void updateImage(DICOMImage dImage) {
-        // SingleImagePanel.deconstructAllSingleImagePanelsInContainer(this);
-
-        ConstructImage sImg = new ConstructImage(dImage);
-        dirtySource(sImg);
-        updateContours(getImageModel().getContours());
-
-        this.revalidate();
-        this.repaint();
     }
 
     private void updateCurrentContour(Contour contour) {
-        currentContour = contour;
-        this.repaint();
+        Vector<Shape> allControlPoints = new Vector<Shape>();
+        if (contour != null) {
+            for (Point2D controlPoint : contour.getControlPoints()) {
+                Ellipse2D ellipse = new Ellipse2D.Double(controlPoint.getX(),
+                        controlPoint.getY(), 2, 2);
+                allControlPoints.add(ellipse);
+            }
+        }
+
+        this.setPreDefinedShapes(allControlPoints);
     }
 
-    private void updateContours(Vector<Contour> contours) {
+    private void updateVisibleContours(Vector<Contour> contours) {
         this.setSelectedDrawingShapes(contours);
-        this.repaint();
     }
 
     /**
@@ -102,7 +91,7 @@ public class ImageView extends SingleImagePanel implements ActionListener,
         panel.add(this);
         return panel;
     }
-    
+
     public void refresh() {
         this.revalidate();
         this.repaint();
@@ -145,45 +134,27 @@ public class ImageView extends SingleImagePanel implements ActionListener,
                 minDelta = entry;
             }
         }
-        currentContour = minDelta.getKey();
         getImageModel().setSelectedContour(minDelta.getKey());
     }
 
     // SingleImagePanel methods
     @Override
     public void mouseClicked(MouseEvent e) {
-        // System.out.println("Success");
-        // System.out.println("   " + e.getX()*2 + " " +e.getY()*2);
-        // System.out.print(this.getSelectedDrawingShapes());
+        java.awt.geom.Point2D mouseClick = getImageCoordinateFromWindowCoordinate(
+                e.getX(), e.getY());
         if (SwingUtilities.isRightMouseButton(e)) {
-            // The code in this method needs to be moved here, I couldn't find
-            // it.
             Point2D p = new Point2D(e.getX(), e.getY());
             selectContour(p);
-        } else if (currentContour != null) {
-            java.awt.geom.Point2D point = getImageCoordinateFromWindowCoordinate(e.getX(), e.getY());
-            currentContour.addControlPoint(point.getX(), point.getY());
-            this.repaint();
         } else {
-            System.err.println("currentContour is null");
+            if (!getImageModel().addControlPoint(mouseClick.getX(),
+                    mouseClick.getY())) {
+                System.err.println("currentContour is null");
+            }
         }
     }
 
-    // Allows for imageView to set the contour that the clicks get added to
-
     public void paintComponent(Graphics g) {
-        Vector<Shape> allControlPoints = new Vector<Shape>();
-        if (currentContour != null) {
-            // DrawingUtilities.drawShadowedShape(s, g2d);
-            for (Point2D controlPoint : currentContour.getControlPoints()) {
-                Ellipse2D ellipse = new Ellipse2D.Double(controlPoint.getX(),
-                        controlPoint.getY(), 2, 2);
-                allControlPoints.add(ellipse);
-            }
-        }
-        this.setPreDefinedShapes(allControlPoints);
         super.paintComponent(g);
-        // System.out.println(allControlPoints.size());
     }
 
     /**
@@ -214,7 +185,7 @@ public class ImageView extends SingleImagePanel implements ActionListener,
                 getImageModel().hideSelectedContour();
             }
 
-        } else if(actionCommand.equals("Select Contour")) {
+        } else if (actionCommand.equals("Select Contour")) {
             getImageModel().selectContour(imageContourPanel);
 
         } else if (actionCommand.equals("Hide Contours")) {
@@ -223,7 +194,7 @@ public class ImageView extends SingleImagePanel implements ActionListener,
                 JOptionPane.showMessageDialog(imageContourPanel,
                         "There are no contours to hide.");
             } else {
-                getImageModel().hideContours();
+                getImageModel().hideAllContours();
             }
         } else if (actionCommand.equals("Show Contours")) {
             if (getImageModel().getHiddenContours() == null
@@ -231,7 +202,7 @@ public class ImageView extends SingleImagePanel implements ActionListener,
                 JOptionPane.showMessageDialog(imageContourPanel,
                         "There are no contours to show.");
             } else {
-                getImageModel().showContours();
+                getImageModel().showAllContours();
             }
         } else if (actionCommand.equals("Delete All Contours")) {
             if (getImageModel().getContours() == null

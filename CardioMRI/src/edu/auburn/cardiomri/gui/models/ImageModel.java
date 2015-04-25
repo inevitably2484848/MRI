@@ -1,5 +1,6 @@
 package edu.auburn.cardiomri.gui.models;
 
+import java.util.List;
 import java.util.Vector;
 
 import javax.swing.JOptionPane;
@@ -9,10 +10,14 @@ import edu.auburn.cardiomri.datastructure.Contour;
 import edu.auburn.cardiomri.datastructure.DICOMImage;
 
 public class ImageModel extends Model {
-    private DICOMImage dImage;
-    private Contour currentContour;
-    private Contour selectedContour;
-    private Vector<Contour> hiddenContours = new Vector<Contour>();
+    protected DICOMImage dImage;
+    protected Contour selected;
+    protected List<Contour> hiddenContours;
+
+    public ImageModel() {
+        super();
+        hiddenContours = new Vector<Contour>();
+    }
 
     /**
      * Setter for the internal contour list. If the list has at least one
@@ -27,8 +32,11 @@ public class ImageModel extends Model {
         }
 
         dImage.setContours(contourList);
+        selected = null;
+        hiddenContours.clear();
+
         setChanged();
-        notifyObservers(contourList);
+        notifyObservers(dImage);
 
         if (contourList.size() > 0) {
             setCurrentContour(contourList.lastElement());
@@ -36,21 +44,32 @@ public class ImageModel extends Model {
     }
 
     /**
-     * Setter for currentContour. Observers are notified.
+     * Setter for currentContour. Observers are notified. Note: Null parameter
+     * is allowed.
      * 
      * @param contour
      */
     public void setCurrentContour(Contour contour) {
-        this.currentContour = contour;
+        selected = contour;
 
-        if (currentContour != null) {
-            setChanged();
-            notifyObservers(currentContour);
-        }
+        setChanged();
+        notifyObservers(dImage);
     }
 
     public Vector<Contour> getContours() {
         return dImage.getContours();
+    }
+
+    public Vector<Contour> getVisibleContours() {
+        Vector<Contour> visibleContours = new Vector<Contour>();
+
+        for (Contour contour : getContours()) {
+            if (!hiddenContours.contains(contour)) {
+                visibleContours.add(contour);
+            }
+        }
+
+        return visibleContours;
     }
 
     public void addContourToImage(Contour contour) {
@@ -58,34 +77,41 @@ public class ImageModel extends Model {
         setCurrentContour(contour);
     }
 
+    /**
+     * Hides the currently selected contour.
+     */
     public void hideSelectedContour() {
-        
-        dImage.getContours().remove(selectedContour);
-        hiddenContours.add(selectedContour);
-        selectedContour = null;
-        setChanged();
-        notifyObservers(dImage);
-    }
-
-    public void hideContours() {
-        hiddenContours.addAll(dImage.getContours());
-        dImage.getContours().clear();
-        setChanged();
-        notifyObservers(dImage);
-    }
-
-    public void showContours() {
-        if (hiddenContours.size() != 0) {
-            dImage.getContours().addAll(hiddenContours);
-            hiddenContours.clear();
+        if (selected == null) {
+            // throw NPE?
+            return;
         }
+
+        hiddenContours.add(selected);
+        selected = null;
+
+        setChanged();
+        notifyObservers(dImage);
+    }
+
+    public void hideAllContours() {
+        hiddenContours.addAll(getVisibleContours());
+        selected = null;
+
+        setChanged();
+        notifyObservers(dImage);
+    }
+
+    public void showAllContours() {
+        hiddenContours.clear();
+
         setChanged();
         notifyObservers(dImage);
     }
 
     public void deleteSelectedContour() {
-        dImage.getContours().remove(selectedContour);
-        selectedContour = null;
+        dImage.getContours().remove(selected);
+        setSelectedContour(null);
+
         setChanged();
         notifyObservers(dImage);
     }
@@ -100,49 +126,49 @@ public class ImageModel extends Model {
         return this.dImage;
     }
 
-    // Constructors
-    public ImageModel() {
-        this.dImage = null;
-        // Start other three models (2,4, and contour panel)
-    }
-
     public void refresh() {
         setChanged();
-        notifyObservers(this.dImage);
+        notifyObservers(dImage);
     }
 
-    public void setSelectedContour(Contour c) {
-        this.selectedContour = c;
-        System.out.println(c.toString());
+    public void setSelectedContour(Contour contour) {
+        selected = contour;
     }
 
     public Contour getSelectedContour() {
-        return this.selectedContour;
+        return selected;
     }
 
-    public Vector<Contour> getHiddenContours() {
+    public List<Contour> getHiddenContours() {
         return this.hiddenContours;
     }
-    
+
+    public boolean addControlPoint(double x, double y) {
+        if (selected == null) {
+            return false;
+        }
+
+        selected.addControlPoint(x, y);
+        setChanged();
+        notifyObservers(dImage);
+        return true;
+    }
+
     public void selectContour(JPanel imageContourPanel) {
         Object[] possibilities = dImage.getContours().toArray();
         Contour[] contours = new Contour[possibilities.length];
-        
+
         int i = 0;
         for (Object c : possibilities) {
-            contours[i] = (Contour)c;
+            contours[i] = (Contour) c;
             i++;
         }
-        Contour c = (Contour)JOptionPane.showInputDialog(
-                imageContourPanel,
-                            "Select Contour: ",
-                            "Contours", JOptionPane.PLAIN_MESSAGE,
-                            null,
-                            contours,
-                            "ham");
+        Contour c = (Contour) JOptionPane.showInputDialog(imageContourPanel,
+                "Select Contour: ", "Contours", JOptionPane.PLAIN_MESSAGE,
+                null, contours, "ham");
 
         if (c != null) {
-            this.selectedContour = c;
+            this.selected = c;
         }
 
     }
@@ -151,15 +177,25 @@ public class ImageModel extends Model {
      * @param dImage
      */
     public void setCurrentImage(DICOMImage dImage) {
+        if (dImage == null) {
+            // throw NPE?
+            System.err.println("dImage is null");
+            return;
+        }
+
         this.dImage = dImage;
-        // TODO: Update the two images on the side
-        setContourList(dImage.getContours());
+        selected = null;
+        hiddenContours.clear();
+
         setChanged();
         notifyObservers(dImage);
     }
 
     public void deleteAllContours() {
         dImage.getContours().clear();
+        selected = null;
+        hiddenContours.clear();
+
         setChanged();
         notifyObservers(dImage);
     }
