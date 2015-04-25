@@ -5,6 +5,7 @@ import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.PathIterator;
 import java.awt.geom.Rectangle2D;
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -12,9 +13,10 @@ import java.util.Map;
 import java.util.Vector;
 
 import javafx.geometry.Point2D;
-import edu.auburn.cardiomri.lib.ContourCalc;
+import edu.auburn.cardiomri.util.ContourCalc;
 
-public class Contour implements Shape {
+public class Contour implements Shape, Serializable {
+    private static final long serialVersionUID = 6179619427503035482L;
 
     // XY coordinates of points the user clicked
     private List<Point2D> controlPoints;
@@ -111,23 +113,26 @@ public class Contour implements Shape {
         return new Rectangle2D.Double(minX, minY, (maxX - minX), (maxY - minY));
     }
 
+    private Point2D transformCoordinates(AffineTransform at, Point2D source) {
+        java.awt.geom.Point2D transformed = new java.awt.geom.Point2D.Double();
+        at.transform(
+                new java.awt.geom.Point2D.Double(source.getX(), source.getY()),
+                transformed);
+        return new Point2D(transformed.getX(), transformed.getY());
+    }
+
     @Override
     public PathIterator getPathIterator(AffineTransform at) {
-        // System.out.println(at.getScaleX());
-        // System.out.println(at.getScaleY());
-        // TODO Don't ignore the transform
-
         return new PathIterator() {
             private int index = 0;
 
             @Override
             public void next() {
-                index += 1; // Is this right?
+                index += 1;
             }
 
             @Override
             public boolean isDone() {
-                // TODO Make sure controlPoints isn't null
                 return index >= generatedPoints.size();
             }
 
@@ -139,14 +144,16 @@ public class Contour implements Shape {
             @Override
             public int currentSegment(double[] coords) {
                 if (index == 0) {
-                    coords[0] = generatedPoints.get(0).getX();
-                    coords[1] = generatedPoints.get(0).getY();
+                    Point2D point = transformCoordinates(at,
+                            generatedPoints.get(0));
+                    coords[0] = point.getX();
+                    coords[1] = point.getY();
                     return PathIterator.SEG_MOVETO;
-                } else if ((index > 0)) { // && (this.index <
-                                          // Contour.this.generatedPoints.size()))
-                                          // {
-                    coords[0] = generatedPoints.get(index).getX();
-                    coords[1] = generatedPoints.get(index).getY();
+                } else if ((index > 0)) {
+                    Point2D point = transformCoordinates(at,
+                            generatedPoints.get(index));
+                    coords[0] = point.getX();
+                    coords[1] = point.getY();
                     return PathIterator.SEG_LINETO;
                 } else {
                     return PathIterator.SEG_CLOSE;
@@ -155,17 +162,15 @@ public class Contour implements Shape {
 
             @Override
             public int currentSegment(float[] coords) {
-                if (index == 0) {
-                    coords[0] = (float) generatedPoints.get(0).getX();
-                    coords[1] = (float) generatedPoints.get(0).getY();
-                    return PathIterator.SEG_MOVETO;
-                } else if (index > 0) {
-                    coords[0] = (float) generatedPoints.get(index).getX();
-                    coords[1] = (float) generatedPoints.get(index).getY();
-                    return PathIterator.SEG_LINETO;
-                } else {
-                    return PathIterator.SEG_CLOSE;
+                int size = coords.length;
+                double[] doubleCoords = new double[size];
+                int returnValue = currentSegment(doubleCoords);
+
+                for (int i = 0; i < size; i++) {
+                    coords[i] = (float) doubleCoords[i];
                 }
+
+                return returnValue;
             }
         };
     }
@@ -273,23 +278,46 @@ public class Contour implements Shape {
     public enum Type {
         DEFAULT, DEFAULT_CLOSED, // Example of something that is always a closed
         // contour
-        DEFAULT_OPEN // Example of something that is always an open contour
+        DEFAULT_OPEN, LV_EPI, LV_ENDO, RV_EPI, RV_ENDO, 
+        LA_EPI, LA_ENDO, RA_EPI, RA_ENDO
+
+
     }
-    
+
     public String toString() {
-    	//TODO change strings to more descriptive things...
-    	if (this.getContourType().equals(Type.DEFAULT)) {
-    		return "DEFAULT";
-    	}
-    	else if (this.getContourType().equals(Type.DEFAULT_CLOSED)) {
-    		return "CLOSED";
-    	}
-    	else if (this.getContourType().equals(Type.DEFAULT_OPEN)) {
-    		return "OPEN";
-    	}
-    	else {
-    		return "unknown type";
-    	}
+        String output = "";
+        switch(this.getContourType()) {
+        case DEFAULT: 
+            output+="DEFAULT";
+            break;
+        case LA_ENDO: 
+            output+="LEFT ATRIUM ENDOCARDIAL";
+            break;
+        case LA_EPI: 
+            output+="LEFT ATRIUM EPICARDIAL";
+            break;
+        case LV_ENDO: 
+            output+="LEFT VENTRICLE ENDOCARDIAL";
+            break;
+        case LV_EPI:  
+            output+="LEFT VENTRICLE EPICARDIAL";
+            break;
+        case RA_ENDO: 
+            output+="RIGHT ATRIUM ENDOCARDIAL";
+            break;
+        case RA_EPI: 
+            output+="RIGHT ATRIUM EPICARDIAL";
+            break;
+        case RV_ENDO: 
+            output+="RIGHT VENTRICLE ENDOCARDIAL";
+            break;
+        case RV_EPI: 
+            output+="RIGHT VENTRICLE EPICARDIAL";
+            break;
+        default: output+="invalid type";
+
+        }
+        return output;
     }
 
     public static final Map<Type, Boolean> IS_CLOSED_CONTOUR;
@@ -302,20 +330,43 @@ public class Contour implements Shape {
         tempIsClosedContour.put(Type.DEFAULT, Boolean.TRUE);
         tempIsClosedContour.put(Type.DEFAULT_CLOSED, Boolean.TRUE);
         tempIsClosedContour.put(Type.DEFAULT_OPEN, Boolean.FALSE);
+        tempIsClosedContour.put(Type.LA_ENDO, Boolean.TRUE);
+        tempIsClosedContour.put(Type.LA_EPI, Boolean.TRUE);
+        tempIsClosedContour.put(Type.LV_ENDO, Boolean.TRUE);
+        tempIsClosedContour.put(Type.LV_EPI, Boolean.TRUE);
+        tempIsClosedContour.put(Type.RA_ENDO, Boolean.FALSE);
+        tempIsClosedContour.put(Type.RA_EPI, Boolean.FALSE);
+        tempIsClosedContour.put(Type.RV_ENDO, Boolean.FALSE);
+        tempIsClosedContour.put(Type.RV_EPI, Boolean.FALSE);
         IS_CLOSED_CONTOUR = Collections.unmodifiableMap(tempIsClosedContour);
 
         Map<Type, Integer> tempTypeToInteger = new HashMap<Type, Integer>();
         // TODO fine tune exact types/integer values
-        tempTypeToInteger.put(Type.DEFAULT, 7);
-        tempTypeToInteger.put(Type.DEFAULT_CLOSED, 8);
-        tempTypeToInteger.put(Type.DEFAULT_OPEN, 4);
+        tempTypeToInteger.put(Type.DEFAULT, 1);
+        tempTypeToInteger.put(Type.DEFAULT_CLOSED, 2);
+        tempTypeToInteger.put(Type.DEFAULT_OPEN, 3);
+        tempTypeToInteger.put(Type.LA_ENDO, 7);
+        tempTypeToInteger.put(Type.LA_EPI, 8);
+        tempTypeToInteger.put(Type.LV_ENDO, 9);
+        tempTypeToInteger.put(Type.LV_EPI, 10);
+        tempTypeToInteger.put(Type.RA_ENDO, 11);
+        tempTypeToInteger.put(Type.RA_EPI, 12);
+        tempTypeToInteger.put(Type.RV_ENDO, 13);
+        tempTypeToInteger.put(Type.RV_EPI, 14);
         TYPE_TO_INTEGER = Collections.unmodifiableMap(tempTypeToInteger);
 
         Map<Integer, Type> tempIntegerToType = new HashMap<Integer, Type>();
-        tempIntegerToType.put(7, Type.DEFAULT);
-        tempIntegerToType.put(4, Type.DEFAULT_OPEN);
-        tempIntegerToType.put(8, Type.DEFAULT_CLOSED);
+        tempIntegerToType.put(1, Type.DEFAULT);
+        tempIntegerToType.put(3, Type.DEFAULT_OPEN);
+        tempIntegerToType.put(2, Type.DEFAULT_CLOSED);
+        tempIntegerToType.put(7, Type.LA_ENDO);
+        tempIntegerToType.put(8, Type.LA_EPI);
+        tempIntegerToType.put(9, Type.LV_ENDO);
+        tempIntegerToType.put(10, Type.LV_EPI);
+        tempIntegerToType.put(11, Type.RA_ENDO);
+        tempIntegerToType.put(12, Type.RA_EPI);
+        tempIntegerToType.put(13, Type.RV_ENDO);
+        tempIntegerToType.put(14, Type.RV_EPI);
         INTEGER_TO_TYPE = Collections.unmodifiableMap(tempIntegerToType);
-
     }
 }
