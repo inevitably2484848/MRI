@@ -1,9 +1,5 @@
 package edu.auburn.cardiomri.gui.views;
 
-import java.awt.Component;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-
 import javax.swing.JSplitPane;
 
 /** This class will house the main image panel, and the right most column of panels

@@ -135,11 +135,10 @@ public class WorkspaceView extends View {
                 getWorkspaceModel().setIndices(0, 0, 0);
 
                 LeftPanel leftPanel = new LeftPanel(gridView, gridControl,
-                        multipleImages, WORKSPACE_WIDTH, WORKSPACE_HEIGHT);
+                        multipleImages);
 
                 RightPanel rightPanel = new RightPanel(mainImageView,
-                        twoChamberView, fourChamberView, contourControl,
-                        WORKSPACE_WIDTH, WORKSPACE_HEIGHT);
+                        twoChamberView, fourChamberView, contourControl);
 
                 // add to appFrame
                 appFrame.setSize(WORKSPACE_WIDTH, WORKSPACE_HEIGHT);

@@ -17,8 +17,6 @@ public class LeftPanel extends View {
 	protected GridView grid;
 	protected GridControlView gridControl;
 	protected MultipleImageView multipleImages;
-    private int workSpaceWidth = 1200;
-    private int workSpaceHeight = 800;
 	
     /**
      * Takes all needed information in to create the left third of the main workspace window
@@ -30,14 +28,12 @@ public class LeftPanel extends View {
      * @param width 			Workspace frame width
      * @param height 			Workspace frame height
      */
-	public LeftPanel(GridView grid, GridControlView gridControl, MultipleImageView multipleImages,int width, int height)
+	public LeftPanel(GridView grid, GridControlView gridControl, MultipleImageView multipleImages)
 	{
 		super();
 		this.grid = grid;
 		this.gridControl = gridControl;
 		this.multipleImages = multipleImages;
-		this.workSpaceWidth = width;
-		this.workSpaceHeight = height;
 		SetupPanel();
 	}
 	
@@ -45,7 +41,7 @@ public class LeftPanel extends View {
 	 * Crates the split pane objects, sets divider locations, adds all of them to the internal panel
 	 * 		Notice the first splitPane is added to the second one, then the dividers are set.
 	 * 
-	 * @note It is necessary to use the frame width and height to set the divider locations, simple fractions will render the split panes as very small objects
+	 * @note Resize Weight is used when resizing the whole window, has to be the same as the divider locations
 	 * @note It is is also crucial to only add the final split pane to the panel, adding both will render them very small as well. 
 	 */
 	private void SetupPanel()
@@ -56,8 +52,11 @@ public class LeftPanel extends View {
 		JSplitPane leftSideOfWindow = new JSplitPane( JSplitPane.VERTICAL_SPLIT,
 		true, gridPane, multipleImages.getPanel() );
 		   
-		gridPane.setDividerLocation(workSpaceHeight/4);
-		leftSideOfWindow.setDividerLocation(workSpaceHeight/2);
+		gridPane.setResizeWeight(0.3);
+		leftSideOfWindow.setResizeWeight(0.2);
+
+		gridPane.setDividerLocation(0.3);
+		leftSideOfWindow.setDividerLocation(0.2);
 		   
 		this.panel.add(leftSideOfWindow);
 	}
