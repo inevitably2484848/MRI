@@ -278,23 +278,45 @@ public class Contour implements Shape, Serializable {
     public enum Type {
         DEFAULT, DEFAULT_CLOSED, // Example of something that is always a closed
         // contour
-        DEFAULT_OPEN // Example of something that is always an open contour
+        DEFAULT_OPEN, LV_EPI, LV_ENDO, RV_EPI, RV_ENDO, 
+        LA_EPI, LA_ENDO, RA_EPI, RA_ENDO
+
+
     }
 
     public String toString() {
-        // TODO change strings to more descriptive things...
         String output = "";
-        if (this.getContourType().equals(Type.DEFAULT)) {
-            output += "DEFAULT";
-        } else if (this.getContourType().equals(Type.DEFAULT_CLOSED)) {
-            output += "CLOSED";
-        } else if (this.getContourType().equals(Type.DEFAULT_OPEN)) {
-            output += "OPEN";
-        } else {
-            output += "unknown type";
-        }
+        switch(this.getContourType()) {
+        case DEFAULT: 
+            output+="DEFAULT";
+            break;
+        case LA_ENDO: 
+            output+="LEFT ATRIUM ENDOCARDIAL";
+            break;
+        case LA_EPI: 
+            output+="LEFT ATRIUM EPICARDIAL";
+            break;
+        case LV_ENDO: 
+            output+="LEFT VENTRICLE ENDOCARDIAL";
+            break;
+        case LV_EPI:  
+            output+="LEFT VENTRICLE EPICARDIAL";
+            break;
+        case RA_ENDO: 
+            output+="RIGHT ATRIUM ENDOCARDIAL";
+            break;
+        case RA_EPI: 
+            output+="RIGHT ATRIUM EPICARDIAL";
+            break;
+        case RV_ENDO: 
+            output+="RIGHT VENTRICLE ENDOCARDIAL";
+            break;
+        case RV_EPI: 
+            output+="RIGHT VENTRICLE EPICARDIAL";
+            break;
+        default: output+="invalid type";
 
-        // output += Arrays.deepToString(controlPoints.toArray());
+        }
         return output;
     }
 
@@ -308,19 +330,43 @@ public class Contour implements Shape, Serializable {
         tempIsClosedContour.put(Type.DEFAULT, Boolean.TRUE);
         tempIsClosedContour.put(Type.DEFAULT_CLOSED, Boolean.TRUE);
         tempIsClosedContour.put(Type.DEFAULT_OPEN, Boolean.FALSE);
+        tempIsClosedContour.put(Type.LA_ENDO, Boolean.TRUE);
+        tempIsClosedContour.put(Type.LA_EPI, Boolean.TRUE);
+        tempIsClosedContour.put(Type.LV_ENDO, Boolean.TRUE);
+        tempIsClosedContour.put(Type.LV_EPI, Boolean.TRUE);
+        tempIsClosedContour.put(Type.RA_ENDO, Boolean.FALSE);
+        tempIsClosedContour.put(Type.RA_EPI, Boolean.FALSE);
+        tempIsClosedContour.put(Type.RV_ENDO, Boolean.FALSE);
+        tempIsClosedContour.put(Type.RV_EPI, Boolean.FALSE);
         IS_CLOSED_CONTOUR = Collections.unmodifiableMap(tempIsClosedContour);
 
         Map<Type, Integer> tempTypeToInteger = new HashMap<Type, Integer>();
         // TODO fine tune exact types/integer values
-        tempTypeToInteger.put(Type.DEFAULT, 7);
-        tempTypeToInteger.put(Type.DEFAULT_CLOSED, 8);
-        tempTypeToInteger.put(Type.DEFAULT_OPEN, 4);
+        tempTypeToInteger.put(Type.DEFAULT, 1);
+        tempTypeToInteger.put(Type.DEFAULT_CLOSED, 2);
+        tempTypeToInteger.put(Type.DEFAULT_OPEN, 3);
+        tempTypeToInteger.put(Type.LA_ENDO, 7);
+        tempTypeToInteger.put(Type.LA_EPI, 8);
+        tempTypeToInteger.put(Type.LV_ENDO, 9);
+        tempTypeToInteger.put(Type.LV_EPI, 10);
+        tempTypeToInteger.put(Type.RA_ENDO, 11);
+        tempTypeToInteger.put(Type.RA_EPI, 12);
+        tempTypeToInteger.put(Type.RV_ENDO, 13);
+        tempTypeToInteger.put(Type.RV_EPI, 14);
         TYPE_TO_INTEGER = Collections.unmodifiableMap(tempTypeToInteger);
 
         Map<Integer, Type> tempIntegerToType = new HashMap<Integer, Type>();
-        tempIntegerToType.put(7, Type.DEFAULT);
-        tempIntegerToType.put(4, Type.DEFAULT_OPEN);
-        tempIntegerToType.put(8, Type.DEFAULT_CLOSED);
+        tempIntegerToType.put(1, Type.DEFAULT);
+        tempIntegerToType.put(3, Type.DEFAULT_OPEN);
+        tempIntegerToType.put(2, Type.DEFAULT_CLOSED);
+        tempIntegerToType.put(7, Type.LA_ENDO);
+        tempIntegerToType.put(8, Type.LA_EPI);
+        tempIntegerToType.put(9, Type.LV_ENDO);
+        tempIntegerToType.put(10, Type.LV_EPI);
+        tempIntegerToType.put(11, Type.RA_ENDO);
+        tempIntegerToType.put(12, Type.RA_EPI);
+        tempIntegerToType.put(13, Type.RV_ENDO);
+        tempIntegerToType.put(14, Type.RV_EPI);
         INTEGER_TO_TYPE = Collections.unmodifiableMap(tempIntegerToType);
     }
 }

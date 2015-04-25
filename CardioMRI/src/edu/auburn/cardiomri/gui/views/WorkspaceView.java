@@ -314,22 +314,68 @@ public class WorkspaceView extends View {
 
         // Contour Submenu
         JMenu addContour = new JMenu("Add Contour");
+        JMenu leftVentricle = new JMenu("LV");
+        JMenu leftAtrium = new JMenu("LA");
+        JMenu rightVentricle = new JMenu("RV");
+        JMenu rightAtrium = new JMenu("RA");
+
 
         JMenuItem defaultType = new JMenuItem("Default");
         defaultType.setActionCommand("Default Type");
         defaultType.addActionListener(mainImageView);
         addContour.add(defaultType);
+        
+        JMenuItem lvEpi = new JMenuItem("Epicardial");
+        lvEpi.setActionCommand("LV EPI");
+        lvEpi.addActionListener(mainImageView);
+        leftVentricle.add(lvEpi);
+        JMenuItem lvEndo = new JMenuItem("Endocardial");
+        lvEndo.setActionCommand("LV ENDO");
+        lvEndo.addActionListener(mainImageView);
+        leftVentricle.add(lvEndo);
+        JMenuItem laEpi = new JMenuItem("Epicardial");
+        laEpi.setActionCommand("LA EPI");
+        laEpi.addActionListener(mainImageView);
+        leftAtrium.add(laEpi);
+        JMenuItem laEndo = new JMenuItem("Endocardial");
+        laEndo.setActionCommand("LA ENDO");
+        laEndo.addActionListener(mainImageView);
+        leftAtrium.add(laEndo);
+        
+        JMenuItem rvEpi = new JMenuItem("Epicardial");
+        rvEpi.setActionCommand("RV EPI");
+        rvEpi.addActionListener(mainImageView);
+        rightVentricle.add(rvEpi);
+        JMenuItem rvEndo = new JMenuItem("Endocardial");
+        rvEndo.setActionCommand("RV ENDO");
+        rvEndo.addActionListener(mainImageView);
+        rightVentricle.add(rvEndo);
+        JMenuItem raEpi = new JMenuItem("Epicardial");
+        raEpi.setActionCommand("RA EPI");
+        raEpi.addActionListener(mainImageView);
+        rightAtrium.add(raEpi);
+        JMenuItem raEndo = new JMenuItem("Endocardial");
+        raEndo.setActionCommand("RA ENDO");
+        raEndo.addActionListener(mainImageView);
+        rightAtrium.add(raEndo);
+        
 
-        JMenuItem closedType = new JMenuItem("Closed");
-        closedType.setActionCommand("Closed Type");
-        closedType.addActionListener(mainImageView);
-        addContour.add(closedType);
-
-        JMenuItem openType = new JMenuItem("Open");
-        openType.setActionCommand("Open Type");
-        openType.addActionListener(mainImageView);
-        addContour.add(openType);
+//        JMenuItem closedType = new JMenuItem("Closed");
+//        closedType.setActionCommand("Closed Type");
+//        closedType.addActionListener(mainImageView);
+//        addContour.add(closedType);
+//
+//        JMenuItem openType = new JMenuItem("Open");
+//        openType.setActionCommand("Open Type");
+//        openType.addActionListener(mainImageView);
+//        addContour.add(openType);
+        
         add.add(addContour);
+        addContour.add(leftVentricle);
+        addContour.add(leftAtrium);
+        addContour.add(rightVentricle);
+        addContour.add(rightAtrium);
+
 
         // ----- Contour ------
         JMenu contours = new JMenu("Contours");
