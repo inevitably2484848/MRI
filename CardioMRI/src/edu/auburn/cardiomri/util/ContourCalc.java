@@ -5,6 +5,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Vector;
 
+import edu.auburn.cardiomri.datastructure.Contour;
 import javafx.geometry.Point2D;
 import toxi.geom.Spline2D;
 import toxi.geom.Vec2D;
@@ -103,7 +104,7 @@ public final class ContourCalc {
         }
 
         Spline2D spline = getSplineFromControlPoints(controlPoints, isClosed);
-        
+
         List<Vec2D> genPoints = spline
                 .getDecimatedVertices(ContourCalc.SEPARATION_DISTANCE);
 
@@ -115,9 +116,32 @@ public final class ContourCalc {
         return generatedPoints;
     }
 
-	public static Spline2D getSplineFromControlPoints(
-			List<Point2D> controlPoints, boolean isClosed) {
-		ContourCalc.sortPoints(controlPoints);
+    /**
+     * Compute the change in arc length if the given point is added to the contour.
+     * 
+     * @param contour
+     * @param newPoint
+     * @return
+     */
+    public static float getDeltaArcLength(Contour contour, Point2D newPoint) {
+        List<Point2D> originalList = contour.getControlPoints();
+        List<Point2D> modifiedList = contour.getControlPoints();
+        modifiedList.add(newPoint);
+
+        Spline2D original = getSplineFromControlPoints(originalList,
+                contour.isClosedCurve());
+        original.getDecimatedVertices(SEPARATION_DISTANCE);
+        Spline2D modified = getSplineFromControlPoints(modifiedList,
+                contour.isClosedCurve());
+        modified.getDecimatedVertices(SEPARATION_DISTANCE);
+
+        return modified.getEstimatedArcLength()
+                - original.getEstimatedArcLength();
+    }
+
+    private static Spline2D getSplineFromControlPoints(
+            List<Point2D> controlPoints, boolean isClosed) {
+        ContourCalc.sortPoints(controlPoints);
 
         List<Point2D> rawPoints = new Vector<Point2D>(controlPoints);
         if (isClosed) {
@@ -133,6 +157,6 @@ public final class ContourCalc {
         }
 
         Spline2D spline = new Spline2D(points);
-		return spline;
-	}
+        return spline;
+    }
 }

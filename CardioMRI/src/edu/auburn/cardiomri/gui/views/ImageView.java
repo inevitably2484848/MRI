@@ -1,16 +1,12 @@
 package edu.auburn.cardiomri.gui.views;
 
 import java.awt.Color;
-import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.Shape;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Ellipse2D;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Vector;
@@ -21,8 +17,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
-import toxi.geom.Spline2D;
-
 import com.pixelmed.display.SingleImagePanel;
 
 import edu.auburn.cardiomri.datastructure.Contour;
@@ -31,51 +25,52 @@ import edu.auburn.cardiomri.datastructure.DICOMImage;
 import edu.auburn.cardiomri.gui.ConstructImage;
 import edu.auburn.cardiomri.gui.models.ImageModel;
 import edu.auburn.cardiomri.gui.models.Model;
-import edu.auburn.cardiomri.util.ContourCalc;
 
 public class ImageView extends SingleImagePanel implements ActionListener,
         ViewInterface, Observer {
     protected Model model;
     protected JPanel imageContourPanel;
     private static final long serialVersionUID = -6920775905498293695L;
-    private Contour currentContour = null;
 
-    // TODO: make them a different view
-
+    /**
+     * Redraws the DICOMImage, updates the selected contour's control points,
+     * and updates the set of visible contours.
+     */
     public void update(Observable obs, Object obj) {
-        if (obj.getClass() == DICOMImage.class) {
-            updateImage((DICOMImage) obj);
-        } else if (obj.getClass() == Vector.class) {
-            Vector vector = (Vector) obj;
-            if ((vector.size() == 0)
-                    || (vector.firstElement().getClass() == Contour.class)) {
-                updateContours((Vector<Contour>) obj);
+        DICOMImage dImage = getImageModel().getImage();
+        dirtySource(new ConstructImage(dImage));
+        updateSelectedContour(getImageModel().getSelectedContour());
+        updateVisibleContours(getImageModel().getVisibleContours());
+
+        refresh();
+    }
+
+    /**
+     * Updates the set of control points that should be drawn onto the screen.
+     * Control points are drawn as 2x2 ellipses.
+     * 
+     * @param contour The currently selected contour
+     */
+    private void updateSelectedContour(Contour contour) {
+        Vector<Shape> allControlPoints = new Vector<Shape>();
+        if (contour != null) {
+            for (Point2D controlPoint : contour.getControlPoints()) {
+                Ellipse2D ellipse = new Ellipse2D.Double(controlPoint.getX(),
+                        controlPoint.getY(), 2, 2);
+                allControlPoints.add(ellipse);
             }
-        } else if (obj.getClass() == Contour.class) {
-            updateCurrentContour((Contour) obj);
         }
 
+        this.setPreDefinedShapes(allControlPoints);
     }
 
-    private void updateImage(DICOMImage dImage) {
-        // SingleImagePanel.deconstructAllSingleImagePanelsInContainer(this);
-
-        ConstructImage sImg = new ConstructImage(dImage);
-        dirtySource(sImg);
-        updateContours(getImageModel().getContours());
-
-        this.revalidate();
-        this.repaint();
-    }
-
-    private void updateCurrentContour(Contour contour) {
-        currentContour = contour;
-        this.repaint();
-    }
-
-    private void updateContours(Vector<Contour> contours) {
+    /**
+     * Updates the list of contours to be drawn onto the screen
+     * 
+     * @param contours List of Contour objects
+     */
+    private void updateVisibleContours(Vector<Contour> contours) {
         this.setSelectedDrawingShapes(contours);
-        this.repaint();
     }
 
     /**
@@ -94,6 +89,9 @@ public class ImageView extends SingleImagePanel implements ActionListener,
         return this.model;
     }
 
+    /**
+     * Returns a JPanel with this ImageView as its only element
+     */
     public JPanel getPanel() {
         JPanel panel = new JPanel();
         panel.setSize(200, 200);
@@ -102,7 +100,7 @@ public class ImageView extends SingleImagePanel implements ActionListener,
         panel.add(this);
         return panel;
     }
-    
+
     public void refresh() {
         this.revalidate();
         this.repaint();
@@ -112,78 +110,22 @@ public class ImageView extends SingleImagePanel implements ActionListener,
         super(sImg);
     }
 
-    public void selectContour(Point2D p) {
-        DICOMImage dImage = getImageModel().getImage();
-        Spline2D spline1, spline2;
-        float length1, length2, deltaLength;
-        List<Point2D> controlPoints;
-        HashMap<Contour, Float> deltaList = new HashMap<Contour, Float>();
-        for (Contour c : dImage.getContours()) {
-            if (c.getControlPoints().size() == 0)
-                continue;
-            else {
-                spline1 = ContourCalc.getSplineFromControlPoints(
-                        c.getControlPoints(), c.isClosedCurve());
-                spline1.computeVertices(50);
-                length1 = spline1.getEstimatedArcLength();
-                controlPoints = c.getControlPoints();
-                controlPoints.add(p);
-                spline2 = ContourCalc.getSplineFromControlPoints(controlPoints,
-                        c.isClosedCurve());
-                spline2.computeVertices(50);
-                length2 = spline2.getEstimatedArcLength();
-                deltaLength = length2 - length1;
-
-                deltaList.put(c, deltaLength);
-            }
-        }
-
-        Map.Entry<Contour, Float> minDelta = null;
-        for (Map.Entry<Contour, Float> entry : deltaList.entrySet()) {
-            if (minDelta == null
-                    || entry.getValue().compareTo(minDelta.getValue()) < 0) {
-                minDelta = entry;
-            }
-        }
-        currentContour = minDelta.getKey();
-        getImageModel().setSelectedContour(minDelta.getKey());
-    }
-
-    // SingleImagePanel methods
-    @Override
+    /**
+     * Handle mouse click events. Left clicks add a control point. Right clicks
+     * select the nearest visible contour.
+     */
     public void mouseClicked(MouseEvent e) {
-        // System.out.println("Success");
-        // System.out.println("   " + e.getX()*2 + " " +e.getY()*2);
-        // System.out.print(this.getSelectedDrawingShapes());
+        java.awt.geom.Point2D mouseClick = getImageCoordinateFromWindowCoordinate(
+                e.getX(), e.getY());
+
         if (SwingUtilities.isRightMouseButton(e)) {
-            // The code in this method needs to be moved here, I couldn't find
-            // it.
-            Point2D p = new Point2D(e.getX(), e.getY());
-            selectContour(p);
-        } else if (currentContour != null) {
-            java.awt.geom.Point2D point = getImageCoordinateFromWindowCoordinate(e.getX(), e.getY());
-            currentContour.addControlPoint(point.getX(), point.getY());
-            this.repaint();
+            getImageModel().selectContour(mouseClick.getX(), mouseClick.getY());
         } else {
-            System.err.println("currentContour is null");
-        }
-    }
-
-    // Allows for imageView to set the contour that the clicks get added to
-
-    public void paintComponent(Graphics g) {
-        Vector<Shape> allControlPoints = new Vector<Shape>();
-        if (currentContour != null) {
-            // DrawingUtilities.drawShadowedShape(s, g2d);
-            for (Point2D controlPoint : currentContour.getControlPoints()) {
-                Ellipse2D ellipse = new Ellipse2D.Double(controlPoint.getX(),
-                        controlPoint.getY(), 2, 2);
-                allControlPoints.add(ellipse);
+            if (!getImageModel().addControlPoint(mouseClick.getX(),
+                    mouseClick.getY())) {
+                System.err.println("currentContour is null");
             }
         }
-        this.setPreDefinedShapes(allControlPoints);
-        super.paintComponent(g);
-        // System.out.println(allControlPoints.size());
     }
 
     /**
@@ -214,16 +156,29 @@ public class ImageView extends SingleImagePanel implements ActionListener,
                 getImageModel().hideSelectedContour();
             }
 
-        } else if(actionCommand.equals("Select Contour")) {
-            getImageModel().selectContour(imageContourPanel);
+        } else if (actionCommand.equals("Select Contour")) {
+            Vector<Contour> visibleContours = getImageModel()
+                    .getVisibleContours();
+            if (visibleContours.size() > 0) {
+                Contour[] contours = new Contour[visibleContours.size()];
+                visibleContours.toArray(contours);
 
+                Contour c = (Contour) JOptionPane.showInputDialog(
+                        imageContourPanel, "Select Contour: ", "Contours",
+                        JOptionPane.PLAIN_MESSAGE, null, contours, "ham");
+
+                getImageModel().setSelectedContour(c);
+            } else {
+                JOptionPane.showMessageDialog(imageContourPanel,
+                        "There are no visible contours to select.");
+            }
         } else if (actionCommand.equals("Hide Contours")) {
             if (getImageModel().getContours() == null
                     || getImageModel().getContours().size() == 0) {
                 JOptionPane.showMessageDialog(imageContourPanel,
                         "There are no contours to hide.");
             } else {
-                getImageModel().hideContours();
+                getImageModel().hideAllContours();
             }
         } else if (actionCommand.equals("Show Contours")) {
             if (getImageModel().getHiddenContours() == null
@@ -231,7 +186,7 @@ public class ImageView extends SingleImagePanel implements ActionListener,
                 JOptionPane.showMessageDialog(imageContourPanel,
                         "There are no contours to show.");
             } else {
-                getImageModel().showContours();
+                getImageModel().showAllContours();
             }
         } else if (actionCommand.equals("Delete All Contours")) {
             if (getImageModel().getContours() == null
@@ -242,7 +197,6 @@ public class ImageView extends SingleImagePanel implements ActionListener,
                 getImageModel().deleteAllContours();
             }
         }
-
     }
 
 }
