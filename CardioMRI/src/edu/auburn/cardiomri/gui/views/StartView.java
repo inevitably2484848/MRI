@@ -23,6 +23,11 @@ public class StartView extends View {
 
 	protected JFileChooser fileChooser;
 	
+	/**
+	 * Adds three buttons on opening screen and adds action 
+	 * listeners to each of those buttons
+	 * 
+	 */
 	public StartView()
 	{
 		super();
@@ -50,6 +55,11 @@ public class StartView extends View {
         fileChooser.setCurrentDirectory(new File(System.getProperty("user.dir")));
 	}
 	
+	/**
+	 * Performs a command when the action listener registers a 
+	 * button click
+	 * 
+	 */
 	public void actionPerformed(java.awt.event.ActionEvent e) {
 
 	    String actionCommand = e.getActionCommand();
@@ -134,7 +144,7 @@ public class StartView extends View {
             // System.out.println("GUIController : Cancel choosing file");
         }
     }
-    
+   
     public StartModel getStartModel()
     {
     	return (StartModel) this.model;

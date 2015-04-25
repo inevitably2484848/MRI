@@ -17,29 +17,40 @@ public class SelectModel extends Model {
     public void setShortAxis(int shortAxis) {
         this.shortAxis = shortAxis;
     }
-
+    
     public int getTwoChamber() {
         return twoChamber;
     }
-
+    
     public void setTwoChamber(int twoChamber) {
         this.twoChamber = twoChamber;
     }
-
+    
     public int getFourChamber() {
         return fourChamber;
     }
-
+    
     public void setFourChamber(int fourChamber) {
         this.fourChamber = fourChamber;
     }
-
+    
+    /**
+     * Creates an instance of SelectModel
+     * 
+     * @param study a Study of images
+     *
+     */
     public SelectModel(Study study) {
         super();
         this.study = study;
         shortAxis = twoChamber = fourChamber = -1;
     }
-
+    
+    /**
+     * Returns a size of the series 
+     * 
+     * @return a string size 
+     */
     public String[] getSeriesDescriptions() {
         List<String> descriptions = new ArrayList<String>(study.getGroups()
                 .size());
@@ -52,7 +63,8 @@ public class SelectModel extends Model {
     }
 
     /**
-     * Validate the SA, 2CH and 4CH indices, then notifyObservers(study)
+     * Validate the Short axis, 2 chamber and 4 chamber indices,
+     *  then notifyObservers(study)
      * 
      * @return true if observers were notified, false if indices were invalid
      */
