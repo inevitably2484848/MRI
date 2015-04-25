@@ -53,7 +53,9 @@ public class Group implements Serializable {
     private double ImageAngle;
     private String SArefSeries;
     private double[] tableOffset;
-    // TODO: LandmarkARV, LandmarkIRV, LandmarkMS, LandmarkAPEX
+    private int ed_index, es_index; 
+
+	// TODO: LandmarkARV, LandmarkIRV, LandmarkMS, LandmarkAPEX
     private ArrayList<Slice> slices = new ArrayList<Slice>();
 
     private Vector3d stackUnitVector;
@@ -185,6 +187,22 @@ public class Group implements Serializable {
     public void setStackUnitVector(Vector3d stackUnitVector) {
         this.stackUnitVector = stackUnitVector;
     }
+    
+    public int getEd_index() {
+		return ed_index;
+	}
+
+	public void setEd_index(int ed_index) {
+		this.ed_index = ed_index;
+	}
+
+	public int getEs_index() {
+		return es_index;
+	}
+
+	public void setEs_index(int es_index) {
+		this.es_index = es_index;
+	}
 
     /**
      * This method will add a DICOMImage object to this Group, placing it in its
@@ -250,6 +268,8 @@ public class Group implements Serializable {
     // Constructor
     public Group() {
         this.slices = new ArrayList<Slice>();
+        this.ed_index = -1;
+        this.es_index = -1;
     }
 
     /**
