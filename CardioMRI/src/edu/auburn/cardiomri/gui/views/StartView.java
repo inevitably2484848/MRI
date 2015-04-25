@@ -19,6 +19,12 @@ import edu.auburn.cardiomri.datastructure.Study.NotInStudyException;
 import edu.auburn.cardiomri.gui.models.StartModel;
 import edu.auburn.cardiomri.util.StudyUtilities;
 
+/**
+ * 
+ * This view is the first view of the project. A study or a single image
+ *  will be selected from the fileChooser
+ *
+ */
 public class StartView extends View {
 
 	protected JFileChooser fileChooser;

@@ -2,6 +2,12 @@ package edu.auburn.cardiomri.gui.models;
 
 import edu.auburn.cardiomri.datastructure.Study;
 
+/**
+ * 
+ * Model for StartView. Starts the first frame which a study 
+ * will be selected from 
+ *
+ */
 public class StartModel extends Model {
 	protected Study study;
 	
