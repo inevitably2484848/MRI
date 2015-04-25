@@ -25,8 +25,6 @@ import java.awt.image.WritableRaster;
 import java.nio.ByteBuffer;
 import java.nio.ShortBuffer;
 
-// import org.apache.jasper.compiler.JavacErrorDetail;
-// import org.eclipse.jdt.internal.compiler.ast.TrueLiteral;
 import com.pixelmed.dicom.Attribute;
 import com.pixelmed.dicom.DicomException;
 import com.pixelmed.dicom.DisplayShutter;
@@ -38,12 +36,14 @@ import com.pixelmed.dicom.VOITransform;
 import com.pixelmed.display.SourceImage;
 
 import edu.auburn.cardiomri.datastructure.DICOMImage;
-// import
-// com.pixelmed.display.SourceImage.BandInterleavedByteRGBBufferedImageSource;
-// import com.pixelmed.display.SourceImage.ByteBufferedImageSource;
-// import
-// com.pixelmed.display.SourceImage.PixelInterleavedByteRGBBufferedImageSource;
 
+/**
+ * This was a fix to implement pixelMed, and most of this is pixelMed code.
+ * This class converts a DICOM image into a construct image so that an image
+ * may properly be operated on.
+ * 
+ *
+ */
 public class ConstructImage extends SourceImage {
 
     /***/
@@ -139,7 +139,12 @@ public class ConstructImage extends SourceImage {
     private ColorSpace dstColorSpace;
 
     protected BufferedImageSource bufferedImageSource = null;
-
+    
+    /**
+     * Creates an instance of the image
+     * 
+     * @param image
+     */
     public ConstructImage(DICOMImage image) {
         if (image != null) {
             try {
@@ -149,7 +154,12 @@ public class ConstructImage extends SourceImage {
             }
         }
     }
-
+    
+    /**
+     * 
+     * @param image
+     * @throws DicomException
+     */
     @SuppressWarnings("unused")
     void constructSourceImage(DICOMImage image) throws DicomException {
 
@@ -508,7 +518,12 @@ public class ConstructImage extends SourceImage {
             backgroundValue = 0;
         }
     }
-
+    
+    /**
+     * 
+     * Buffers image details
+     *
+     */
     private abstract class BufferedImageSource {
         protected int nframesamples;
         private int cachedIndex;
@@ -549,7 +564,12 @@ public class ConstructImage extends SourceImage {
             return oldMax;
         }
     }
-
+    
+    /**
+     * 
+     * Buffer for image pixel height and width
+     *
+     */
     private abstract class ShortBufferedImageSource extends BufferedImageSource {
         protected short data[];
         protected ShortBuffer buffer;
@@ -587,7 +607,15 @@ public class ConstructImage extends SourceImage {
             super.finalize();
         }
     }
-
+    
+    /**
+     * 
+     * @param w
+     * @param h
+     * @param data
+     * @param offset
+     * @return
+     */
     private static BufferedImage createSignedShortGrayscaleImage(int w, int h,
             short data[], int offset) {
         ComponentColorModel cm = new ComponentColorModel(
@@ -604,7 +632,12 @@ public class ConstructImage extends SourceImage {
 
         return new BufferedImage(cm, wr, true, null);
     }
-
+    
+    /**
+     * 
+     * 
+     *
+     */
     private class SignedShortGrayscaleBufferedImageSource extends
             ShortBufferedImageSource {
         protected int mask;
@@ -678,7 +711,15 @@ public class ConstructImage extends SourceImage {
             return createSignedShortGrayscaleImage(width, height, newData, 0);
         }
     }
-
+    
+    /**
+     * 
+     * @param w
+     * @param h
+     * @param data
+     * @param offset
+     * @return
+     */
     private static BufferedImage createUnsignedShortGrayscaleImage(int w,
             int h, short data[], int offset) {
         ComponentColorModel cm = new ComponentColorModel(
@@ -695,7 +736,12 @@ public class ConstructImage extends SourceImage {
 
         return new BufferedImage(cm, wr, true, null);
     }
-
+    
+    /**
+     * 
+     * 
+     *
+     */
     private class UnsignedShortGrayscaleBufferedImageSource extends
             ShortBufferedImageSource {
         protected int mask;
@@ -759,7 +805,12 @@ public class ConstructImage extends SourceImage {
             return createUnsignedShortGrayscaleImage(width, height, newData, 0);
         }
     }
-
+    
+    /**
+     * 
+     * 
+     *
+     */
     private abstract class ByteBufferedImageSource extends BufferedImageSource {
         protected byte data[];
         protected ByteBuffer buffer;
@@ -781,7 +832,15 @@ public class ConstructImage extends SourceImage {
             super.finalize();
         }
     }
-
+    
+    /**
+     * 
+     * @param w
+     * @param h
+     * @param data
+     * @param offset
+     * @return
+     */
     private static BufferedImage createByteGrayscaleImage(int w, int h,
             byte data[], int offset) {
         ComponentColorModel cm = new ComponentColorModel(
@@ -798,7 +857,12 @@ public class ConstructImage extends SourceImage {
 
         return new BufferedImage(cm, wr, true, null);
     }
-
+    
+    /**
+     * 
+     * 
+     *
+     */
     private class ByteGrayscaleBufferedImageSource extends
             ByteBufferedImageSource {
         ByteGrayscaleBufferedImageSource(byte data[], int width, int height) {
@@ -826,7 +890,16 @@ public class ConstructImage extends SourceImage {
             return createByteGrayscaleImage(width, height, useData, useOffset);
         }
     }
-
+    
+    /**
+     * 
+     * @param w
+     * @param h
+     * @param data
+     * @param offset
+     * @param colorSpace
+     * @return
+     */
     private static BufferedImage createBandInterleavedByteRGBImage(int w,
             int h, byte data[], int offset, ColorSpace colorSpace) {
 
@@ -846,7 +919,12 @@ public class ConstructImage extends SourceImage {
         return new BufferedImage(cm, wr, true, null);
 
     }
-
+    
+    /**
+     * 
+     * 
+     *
+     */
     private class BandInterleavedByteRGBBufferedImageSource extends
             ByteBufferedImageSource {
         ColorSpace colorSpace;
@@ -890,7 +968,16 @@ public class ConstructImage extends SourceImage {
             return 255;
         }
     }
-
+    
+    /**
+     * 
+     * @param w
+     * @param h
+     * @param data
+     * @param offset
+     * @param colorSpace
+     * @return
+     */
     private static BufferedImage createPixelInterleavedByteRGBImage(int w,
             int h, byte data[], int offset, ColorSpace colorSpace) {
         ComponentColorModel cm = new ComponentColorModel(colorSpace, new int[] {
@@ -907,7 +994,12 @@ public class ConstructImage extends SourceImage {
 
         return new BufferedImage(cm, wr, true, null);
     }
-
+    
+    /**
+     * 
+     * 
+     *
+     */
     private class PixelInterleavedByteRGBBufferedImageSource extends
             ByteBufferedImageSource {
         ColorSpace colorSpace;
@@ -952,14 +1044,26 @@ public class ConstructImage extends SourceImage {
         }
 
     }
-
+    
+    /**
+     * 
+     * @param value
+     * @param default_value
+     * @return
+     */
     private int getIntOrDefault(Integer value, int default_value) {
         if (value == null)
             return default_value;
 
         return value;
     }
-
+    
+    /**
+     * 
+     * @param string
+     * @param default_string
+     * @return
+     */
     private String getStringOrDefault(String string, String default_string) {
         if (string == null)
             return default_string;

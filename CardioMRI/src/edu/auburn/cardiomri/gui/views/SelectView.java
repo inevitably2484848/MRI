@@ -24,6 +24,13 @@ public class SelectView extends View {
     private static final String TWO_CHAMBER = "Two Chamber";
     private static final String FOUR_CHAMBER = "Four Chamber";
 
+    /**
+     * Creates three combo boxes and a button each with an 
+     * action listener in order for a user to select a axis
+     * for each image panel
+     * 
+     * @param model the Select model of the view
+     */
     public SelectView(SelectModel model) {
         super();
         this.model = model;
@@ -59,7 +66,10 @@ public class SelectView extends View {
         this.panel.add(axisType4CH);
         this.panel.add(continueButton);
     }
-
+    
+    /**
+     * Performs a command on each combo box when a axis is selected
+     */
     public void actionPerformed(ActionEvent event) {
         String actionCommand = event.getActionCommand();
 
@@ -80,7 +90,8 @@ public class SelectView extends View {
         }
 
     }
-
+    
+    /***/
     public SelectModel getModel() {
         return (SelectModel) this.model;
     }
@@ -92,7 +103,6 @@ public class SelectView extends View {
      * 
      *@author bengustafson
      */
-    
     public class ComboBoxRenderer extends JLabel implements ListCellRenderer
     {
         private String title;

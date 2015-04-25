@@ -180,7 +180,7 @@ public class ImageView extends SingleImagePanel implements ActionListener,
                 allControlPoints.add(ellipse);
             }
         }
-        this.setPersistentDrawingShapes(allControlPoints);
+        this.setPersistentDrawingShapes(allControlPoints); //replace with null to delete control points
         super.paintComponent(g);
         // System.out.println(allControlPoints.size());
     }
@@ -204,6 +204,8 @@ public class ImageView extends SingleImagePanel implements ActionListener,
                         "Please select a contour to delete.");
             } else {
                 getImageModel().deleteSelectedContour();
+                //this.setPersistantDrawingShapes(null);
+                //^ do above line for delete all, hide. and hide all
             }
         } else if (actionCommand.equals("Hide Contour")) {
             if (getImageModel().getSelectedContour() == null) {
