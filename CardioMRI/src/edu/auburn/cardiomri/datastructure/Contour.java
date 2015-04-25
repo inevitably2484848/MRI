@@ -6,7 +6,6 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.PathIterator;
 import java.awt.geom.Rectangle2D;
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -39,13 +38,6 @@ public class Contour implements Shape, Serializable {
     private Contour() {
         controlPoints = new Vector<Point2D>();
         generatedPoints = new Vector<Point2D>();
-    }
-
-    public boolean isNearControlPoint() {
-        // call method in contourCalc to obtain spline object.
-        // get length of spline object.
-
-        return false;
     }
 
     public void setControlPoints(List<Point2D> points) {
@@ -291,22 +283,19 @@ public class Contour implements Shape, Serializable {
 
     public String toString() {
         // TODO change strings to more descriptive things...
-    	String output = "";
-    	if (this.getContourType().equals(Type.DEFAULT)) {
-    		output += "DEFAULT";
-    	}
-    	else if (this.getContourType().equals(Type.DEFAULT_CLOSED)) {
-    		output += "CLOSED";
-    	}
-    	else if (this.getContourType().equals(Type.DEFAULT_OPEN)) {
-    		output += "OPEN";
-    	}
-    	else {
-    		output += "unknown type";
-    	}
-    	
-    	//output += Arrays.deepToString(controlPoints.toArray());
-    	return output;
+        String output = "";
+        if (this.getContourType().equals(Type.DEFAULT)) {
+            output += "DEFAULT";
+        } else if (this.getContourType().equals(Type.DEFAULT_CLOSED)) {
+            output += "CLOSED";
+        } else if (this.getContourType().equals(Type.DEFAULT_OPEN)) {
+            output += "OPEN";
+        } else {
+            output += "unknown type";
+        }
+
+        // output += Arrays.deepToString(controlPoints.toArray());
+        return output;
     }
 
     public static final Map<Type, Boolean> IS_CLOSED_CONTOUR;
@@ -333,6 +322,5 @@ public class Contour implements Shape, Serializable {
         tempIntegerToType.put(4, Type.DEFAULT_OPEN);
         tempIntegerToType.put(8, Type.DEFAULT_CLOSED);
         INTEGER_TO_TYPE = Collections.unmodifiableMap(tempIntegerToType);
-
     }
 }

@@ -13,8 +13,11 @@ import edu.auburn.cardiomri.datastructure.Time;
 import edu.auburn.cardiomri.util.StudyUtilities;
 
 /**
+ * Model for the WorkspaceView. Contains the Study object, manages the "state"
+ * of the workspace, and maps ImageModels to the Group containing its
+ * DICOMImages.
+ * 
  * @author Moniz
- *
  */
 public class WorkspaceModel extends Model {
     protected State currentState;
@@ -96,20 +99,28 @@ public class WorkspaceModel extends Model {
         imageToGroup.put(imageModel, group);
     }
 
+    /**
+     * Pulls a DICOM image from each Group and sets it in the matching
+     * ImageModel.
+     * 
+     * @param sliceIndex
+     * @param timeIndex
+     * @param imageIndex
+     */
     public void setIndices(int sliceIndex, int timeIndex, int imageIndex) {
         for (ImageModel imageModel : imageToGroup.keySet()) {
             Group group = imageToGroup.get(imageModel);
-            
+
             if (sliceIndex < 0 || sliceIndex >= group.getSlices().size()) {
                 System.err.println("slice index out of bounds");
                 continue;
             }
-            
+
             Slice slice = group.getSlices().get(sliceIndex);
             if (timeIndex < 0 || timeIndex >= slice.getTimes().size()) {
                 System.err.println("time index out of bounds");
             }
-            
+
             Time time = slice.getTimes().get(timeIndex);
             if (imageIndex < 0 || imageIndex >= time.getImages().size()) {
                 System.err.println("image index out of bounds");
@@ -123,6 +134,10 @@ public class WorkspaceModel extends Model {
         UNDEFINED, START, GROUP_SELECTION, WORKSPACE
     }
 
+    /**
+     * @see StudyUtilities#saveStudy(Study, String)
+     * @param fileName
+     */
     public void saveStudy(String fileName) {
         StudyUtilities.saveStudy(this.study, fileName);
     }

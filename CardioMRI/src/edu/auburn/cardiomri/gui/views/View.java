@@ -16,6 +16,9 @@ import javax.swing.JPanel;
 import edu.auburn.cardiomri.gui.models.Model;
 
 /**
+ * Implements ViewInterface. It is the super class of all views in project.
+ * It creates an internal JPanel and adds itself as an observer to any model set.
+ * 
  * @author Moniz
  *
  */

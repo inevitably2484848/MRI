@@ -3,18 +3,13 @@
  */
 package edu.auburn.cardiomri.util;
 
-import java.awt.event.ActionEvent;
 import java.io.IOException;
-
-import javax.swing.JFileChooser;
-import javax.swing.filechooser.FileFilter;
-import javax.swing.filechooser.FileNameExtensionFilter;
 
 import edu.auburn.cardiomri.datastructure.Study;
 
 /**
  * @author Moniz
- *
+ * Utility class to initiate the saving and loading of studies
  */
 public final class StudyUtilities {
 
@@ -23,8 +18,8 @@ public final class StudyUtilities {
      * used file path. If no file path was previously used then it will call on
      * saveAsStudy().
      * 
-     * @param study
-     * @param filename
+     * @param study  the study to be saved
+     * @param filename  the previously used file
      */
     public static void saveStudy(Study study, String filename) {
         if (study != null) {
@@ -40,7 +35,14 @@ public final class StudyUtilities {
             }
         }
     }
-
+    
+    /**
+     * Loads a study from a .smc file by calling load() within
+     * SerializationManager and returns the study. 
+     * 
+     * @param fileName  the file from which to load the study
+     * @return  the study loaded from the file
+     */
     public static Study loadStudy(String fileName) {
         Study newStudy = null;
         try {

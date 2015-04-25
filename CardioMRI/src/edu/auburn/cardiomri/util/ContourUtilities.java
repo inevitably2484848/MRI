@@ -21,10 +21,25 @@ import edu.auburn.cardiomri.datastructure.Contour;
 import edu.auburn.cardiomri.datastructure.DICOMImage;
 
 /**
- * @author Moniz
- *
+ * @author Christopher Colosi
+ * 
+ * Various utilities that can be used to perform actions
+ * related to contouring. 
+ * 
  */
 public final class ContourUtilities {
+    
+    /**
+     * Writes the contour data to the specified path for all images
+     * containing contours. The file format is as follows: 
+     * blank line, SOPInstanceUID, number of points, all of the (x, y) pairs 
+     * for the contour.
+     * a "-1" indicates the end of the list of contours for an image. 
+     * 
+     * @param SOPInstanceUIDToDICOMImage  a hashmap containing all of the
+     * DICOM images with their SOPInstanceUIDs as keys
+     * @param path   the file path to which to create the text file
+     */
     public static void writeContoursToFile(
             Map<String, DICOMImage> SOPInstanceUIDToDICOMImage, String path) {
         // TODO Categorize points based on location (i.e. LA, RA, Endo, Epi,
@@ -82,6 +97,15 @@ public final class ContourUtilities {
         }
     }
 
+    /**
+     * Reads a text file containing the contour data for one or more images in
+     * a study. The method creates new Contour objects and associates them with 
+     * with the appropriate image. 
+     * 
+     * @param file  the text file from which to read the contour data
+     * @param SOPInstanceUIDToDICOMImage  a hashmap containing all of the
+     * DICOM images with their SOPInstanceUIDs as keys
+     */
     public static void loadContour(File file,
             Map<String, DICOMImage> SOPInstanceUIDToDICOMImage) {
         // TODO #7, 8. log error if type not found...
@@ -101,19 +125,14 @@ public final class ContourUtilities {
             while (reader.readLine() != null) {
                 contours = new Vector<Contour>();
                 sopInstanceUID = reader.readLine();
-                // System.out.println(sopInstanceUID);
                 contourType = Integer.parseInt(reader.readLine());
                 while ((lineCheck = reader.readLine()) != "-1") {
-                    // System.out.println("type: " + contourType + "\nnum "
-                    // + numPoints);
                     controlPoints = new Vector<Point2D>();
                     generatedPoints = new Vector<Point2D>();
                     while ((line = reader.readLine().split("\t")).length >= 2) {
                         float x = Float.parseFloat(line[0]);
                         float y = Float.parseFloat(line[1]);
-                        if (x % Math.floor(x) == 0) { // adds first control
-                            // point twice.
-                            // remove?
+                        if (x % Math.floor(x) == 0) { 
                             controlPoints.add(new Point2D(x, y));
                         } else {
                             generatedPoints.add(new Point2D(x, y));
@@ -122,7 +141,6 @@ public final class ContourUtilities {
                     Contour contour = new Contour(
                             Contour.getTypeFromInt(contourType));
                     contour.setControlPoints(controlPoints);
-                    // contour.setGeneratedPoints(generatedPoints);
                     contours.add(contour);
                     if (line[0].equals("-1")) {
                         break;
@@ -130,8 +148,6 @@ public final class ContourUtilities {
                         contourType = Integer.parseInt(line[0]);
                     }
                 }
-                System.out
-                        .println("Reached end of overlay....loading next set of contours.");
                 DICOMImage image = SOPInstanceUIDToDICOMImage
                         .get(sopInstanceUID);
                 image.getContours().addAll(contours);
