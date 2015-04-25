@@ -1,19 +1,19 @@
 package edu.auburn.cardiomri.gui.views;
 
-import java.awt.Color;
-import java.awt.GridLayout;
-
-import javax.swing.JPanel;
-
+/**
+ * This will be a box containing all of the images from each time segment from the current slice. 
+ * 		The current image showing will be highlighted some how
+ * 
+ * @author Ben Gustafson
+ *
+ */
 public class MultipleImageView extends View {
 
-	
+	/**
+	 * Filler code currently
+	 */
 	public MultipleImageView()
 	{
-		this.panel = new JPanel();
-		this.panel.setSize(200, 200);
-		this.panel.setLayout(new GridLayout(1, 1));
-		this.panel.setBackground(Color.YELLOW);
 		this.panel.setOpaque(true);
 		this.panel.setVisible(true);
 	}
