@@ -1,19 +1,25 @@
 package edu.auburn.cardiomri.gui.views;
 
-import java.awt.Color;
-import java.awt.GridLayout;
-
-import javax.swing.JPanel;
-
+/**
+ * This view is the bottom right hand panel of the gui. 
+ * Eventually all contour information from the main image panel will be displayed on here.
+ * 	The ideal setup would be to list all the contours, and be able to show, hide, edit, and delete them easily.  
+ * 
+ * 
+ * @author Ben Gustafson
+ *
+ */
 public class ContourControlView extends View {
 	
+	/**
+	 * Public constructor
+	 * 
+	 * Simply sets panel to visible for filler space
+	 * 
+	 */
 	public ContourControlView()
 	{
 		super();
-		this.panel = new JPanel();
-	    this.panel.setSize(200, 200);
-	    this.panel.setLayout(new GridLayout(1, 1));
-	    this.panel.setBackground(Color.BLUE);
 	    this.panel.setOpaque(true);
 	    this.panel.setVisible(true);
 	}
