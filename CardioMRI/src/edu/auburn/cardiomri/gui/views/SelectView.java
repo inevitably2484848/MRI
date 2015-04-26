@@ -18,6 +18,13 @@ import edu.auburn.cardiomri.datastructure.Group.AxisType;
 import edu.auburn.cardiomri.datastructure.Study;
 import edu.auburn.cardiomri.gui.models.SelectModel;
 
+/**
+ * This view is where an image will be chosen for each image panel in
+ * WorkspaceView
+ * 
+ * @author Justin
+ *
+ */
 public class SelectView extends View {
     private static final String CONTINUE = "Continue";
     private static final String SHORT_AXIS = "Short Axis";

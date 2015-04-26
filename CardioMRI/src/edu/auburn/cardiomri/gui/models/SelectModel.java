@@ -5,7 +5,13 @@ import java.util.List;
 
 import edu.auburn.cardiomri.datastructure.Group;
 import edu.auburn.cardiomri.datastructure.Study;
-
+/**
+ * Model for the SelectView. Extends model and determines which image 
+ * gets placed in what panel. 
+ * 
+ * @author Justin
+ *
+ */
 public class SelectModel extends Model {
     protected Study study;
     protected int shortAxis, twoChamber, fourChamber;
