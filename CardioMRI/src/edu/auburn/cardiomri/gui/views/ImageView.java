@@ -41,7 +41,6 @@ ViewInterface, Observer {
         dirtySource(new ConstructImage(dImage));
         updateSelectedContour(getImageModel().getSelectedContour());
         updateVisibleContours(getImageModel().getVisibleContours());
-
         refresh();
     }
 
@@ -175,6 +174,7 @@ ViewInterface, Observer {
             } else {
                 getImageModel().hideSelectedContour();
             }
+            
 
         } else if (actionCommand.equals("Select Contour")) {
             Vector<Contour> visibleContours = getImageModel()

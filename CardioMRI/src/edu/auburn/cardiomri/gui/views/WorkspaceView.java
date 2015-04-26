@@ -188,6 +188,7 @@ public class WorkspaceView extends View {
             int[] indices = (int[]) obj;
             getWorkspaceModel().setIndices(indices[0], indices[1], indices[2]);
         }
+        
     }
 
     /**
@@ -419,6 +420,11 @@ public class WorkspaceView extends View {
         showContours.addActionListener(mainImageView);
         contours.add(showContours);
         
+        JMenuItem hideContours = new JMenuItem("Hide Contours");
+        hideContours.setActionCommand("Hide Contours");
+        hideContours.addActionListener(mainImageView);
+        contours.add(hideContours);
+        
         
 
         // ----- View -----
@@ -504,7 +510,7 @@ public class WorkspaceView extends View {
         int returnVal = fileChooser.showOpenDialog(this.mainComponent);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             File file = new File(fileChooser.getSelectedFile().getPath());
-            ContourUtilities.loadContour(file, getWorkspaceModel().getStudy()
+            getWorkspaceModel().loadContour(file, getWorkspaceModel().getStudy()
                     .getUIDToImage());
         }
     }
