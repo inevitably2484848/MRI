@@ -27,7 +27,7 @@ import edu.auburn.cardiomri.gui.models.ImageModel;
 import edu.auburn.cardiomri.gui.models.Model;
 
 public class ImageView extends SingleImagePanel implements ActionListener,
-        ViewInterface, Observer {
+ViewInterface, Observer {
     protected Model model;
     protected JPanel imageContourPanel;
     private static final long serialVersionUID = -6920775905498293695L;
@@ -41,7 +41,6 @@ public class ImageView extends SingleImagePanel implements ActionListener,
         dirtySource(new ConstructImage(dImage));
         updateSelectedContour(getImageModel().getSelectedContour());
         updateVisibleContours(getImageModel().getVisibleContours());
-
         refresh();
     }
 
@@ -137,10 +136,30 @@ public class ImageView extends SingleImagePanel implements ActionListener,
 
         if (actionCommand.equals("Default Type")) {
             getImageModel().addContourToImage(new Contour(Type.DEFAULT));
-        } else if (actionCommand.equals("Closed Type")) {
-            getImageModel().addContourToImage(new Contour(Type.DEFAULT_CLOSED));
-        } else if (actionCommand.equals("Open Type")) {
-            getImageModel().addContourToImage(new Contour(Type.DEFAULT_OPEN));
+        } else if (actionCommand.equals("LV EPI")) {
+            getImageModel().addContourToImage(new Contour(Type.LV_EPI));
+
+        } else if (actionCommand.equals("LV ENDO")) {
+            getImageModel().addContourToImage(new Contour(Type.LV_ENDO));
+
+        } else if (actionCommand.equals("LA EPI")) {
+            getImageModel().addContourToImage(new Contour(Type.LA_EPI));
+
+        } else if (actionCommand.equals("LA ENDO")) {
+            getImageModel().addContourToImage(new Contour(Type.LA_ENDO));
+
+        } else if (actionCommand.equals("RV EPI")) {
+            getImageModel().addContourToImage(new Contour(Type.RV_EPI));
+
+        } else if (actionCommand.equals("RV ENDO")) {
+            getImageModel().addContourToImage(new Contour(Type.RV_ENDO));
+
+        } else if (actionCommand.equals("RA EPI")) {
+            getImageModel().addContourToImage(new Contour(Type.RA_EPI));
+
+        } else if (actionCommand.equals("RA ENDO")) {
+            getImageModel().addContourToImage(new Contour(Type.RA_ENDO));
+
         } else if (actionCommand.equals("Delete Contour")) {
             if (getImageModel().getSelectedContour() == null) {
                 JOptionPane.showMessageDialog(imageContourPanel,
@@ -155,6 +174,7 @@ public class ImageView extends SingleImagePanel implements ActionListener,
             } else {
                 getImageModel().hideSelectedContour();
             }
+            
 
         } else if (actionCommand.equals("Select Contour")) {
             Vector<Contour> visibleContours = getImageModel()

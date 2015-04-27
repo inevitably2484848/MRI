@@ -29,6 +29,7 @@ import edu.auburn.cardiomri.gui.models.StartModel;
 import edu.auburn.cardiomri.gui.models.WorkspaceModel;
 import edu.auburn.cardiomri.gui.models.WorkspaceModel.State;
 import edu.auburn.cardiomri.util.ContourUtilities;
+import edu.auburn.cardiomri.util.StudyUtilities;
 
 /**
  * @author Moniz
@@ -42,6 +43,7 @@ public class WorkspaceView extends View {
     protected JFileChooser fileChooser;
     protected JComponent mainComponent;
     protected JFrame appFrame;
+    protected String studyFileName;
     
     /**
      * Class constructor. Sets the current working directory and
@@ -188,6 +190,7 @@ public class WorkspaceView extends View {
             int[] indices = (int[]) obj;
             getWorkspaceModel().setIndices(indices[0], indices[1], indices[2]);
         }
+        
     }
 
     /**
@@ -236,7 +239,7 @@ public class WorkspaceView extends View {
     public WorkspaceModel getWorkspaceModel() {
         return (WorkspaceModel) this.model;
     }
-
+    
     /**
      * Handles action events within the workspace. Specifically,
      * saving and loading events.
@@ -256,6 +259,8 @@ public class WorkspaceView extends View {
             this.saveAsStudy();
         } else if (actionCommand.equals("Save Contours")) {
             this.saveContour();
+        } else if (actionCommand.equals("Rotate Image")) {
+            this.getWorkspaceModel().rotate();
         } else if (actionCommand.equals("Load Contours")) {
             try {
                 this.setUpLoad();
@@ -314,22 +319,68 @@ public class WorkspaceView extends View {
 
         // Contour Submenu
         JMenu addContour = new JMenu("Add Contour");
+        JMenu leftVentricle = new JMenu("LV");
+        JMenu leftAtrium = new JMenu("LA");
+        JMenu rightVentricle = new JMenu("RV");
+        JMenu rightAtrium = new JMenu("RA");
+
 
         JMenuItem defaultType = new JMenuItem("Default");
         defaultType.setActionCommand("Default Type");
         defaultType.addActionListener(mainImageView);
         addContour.add(defaultType);
+        
+        JMenuItem lvEpi = new JMenuItem("Epicardial");
+        lvEpi.setActionCommand("LV EPI");
+        lvEpi.addActionListener(mainImageView);
+        leftVentricle.add(lvEpi);
+        JMenuItem lvEndo = new JMenuItem("Endocardial");
+        lvEndo.setActionCommand("LV ENDO");
+        lvEndo.addActionListener(mainImageView);
+        leftVentricle.add(lvEndo);
+        JMenuItem laEpi = new JMenuItem("Epicardial");
+        laEpi.setActionCommand("LA EPI");
+        laEpi.addActionListener(mainImageView);
+        leftAtrium.add(laEpi);
+        JMenuItem laEndo = new JMenuItem("Endocardial");
+        laEndo.setActionCommand("LA ENDO");
+        laEndo.addActionListener(mainImageView);
+        leftAtrium.add(laEndo);
+        
+        JMenuItem rvEpi = new JMenuItem("Epicardial");
+        rvEpi.setActionCommand("RV EPI");
+        rvEpi.addActionListener(mainImageView);
+        rightVentricle.add(rvEpi);
+        JMenuItem rvEndo = new JMenuItem("Endocardial");
+        rvEndo.setActionCommand("RV ENDO");
+        rvEndo.addActionListener(mainImageView);
+        rightVentricle.add(rvEndo);
+        JMenuItem raEpi = new JMenuItem("Epicardial");
+        raEpi.setActionCommand("RA EPI");
+        raEpi.addActionListener(mainImageView);
+        rightAtrium.add(raEpi);
+        JMenuItem raEndo = new JMenuItem("Endocardial");
+        raEndo.setActionCommand("RA ENDO");
+        raEndo.addActionListener(mainImageView);
+        rightAtrium.add(raEndo);
+        
 
-        JMenuItem closedType = new JMenuItem("Closed");
-        closedType.setActionCommand("Closed Type");
-        closedType.addActionListener(mainImageView);
-        addContour.add(closedType);
-
-        JMenuItem openType = new JMenuItem("Open");
-        openType.setActionCommand("Open Type");
-        openType.addActionListener(mainImageView);
-        addContour.add(openType);
+//        JMenuItem closedType = new JMenuItem("Closed");
+//        closedType.setActionCommand("Closed Type");
+//        closedType.addActionListener(mainImageView);
+//        addContour.add(closedType);
+//
+//        JMenuItem openType = new JMenuItem("Open");
+//        openType.setActionCommand("Open Type");
+//        openType.addActionListener(mainImageView);
+//        addContour.add(openType);
+        
         add.add(addContour);
+        addContour.add(leftVentricle);
+        addContour.add(leftAtrium);
+        addContour.add(rightVentricle);
+        addContour.add(rightAtrium);
+
 
         // ----- Contour ------
         JMenu contours = new JMenu("Contours");
@@ -372,13 +423,18 @@ public class WorkspaceView extends View {
         showContours.setActionCommand("Show Contours");
         showContours.addActionListener(mainImageView);
         contours.add(showContours);
-        
-        
 
-        // ----- View -----
-        JMenu view = new JMenu("View");
-        JMenuItem zoom = new JMenuItem("Zoom");
-        view.add(zoom);
+        JMenuItem hideContours = new JMenuItem("Hide Contours");
+        hideContours.setActionCommand("Hide Contours");
+        hideContours.addActionListener(mainImageView);
+        contours.add(hideContours);
+
+        // ----- Rotate -----
+        JMenu rotate = new JMenu("Rotate");
+        JMenuItem rotateImage = new JMenuItem("Rotate Image");
+        rotateImage.setActionCommand("Rotate Image");
+        rotateImage.addActionListener(this);
+        rotate.add(rotateImage);
 
         // ----- Main Menu -----
         JMenuBar menuBar = new JMenuBar();
@@ -387,7 +443,7 @@ public class WorkspaceView extends View {
         menuBar.add(fileMenu);
         menuBar.add(add);
         menuBar.add(contours);
-        menuBar.add(view);
+        menuBar.add(rotate);
 
         appFrame.setJMenuBar(menuBar);
         appFrame.revalidate();
@@ -438,11 +494,33 @@ public class WorkspaceView extends View {
      * calls writeContoursToFile() to perform the actual writing to the file.
      */
     public void saveContour() {
-        String path = System.getProperty("user.dir") + File.separator
+        JFileChooser saveFC = fileChooser;
+        
+        FileFilter studyFileFilter = new FileNameExtensionFilter(
+        		"Text file (.txt)", "txt");
+        
+        saveFC.setFileFilter(studyFileFilter);
+        
+        int response = saveFC.showSaveDialog(this.mainComponent);
+        
+        if (response == JFileChooser.APPROVE_OPTION) {
+        	String newContourFileName = saveFC.getSelectedFile().getAbsolutePath();
+        	
+        	if (!newContourFileName.endsWith(".txt")) {
+        		newContourFileName = newContourFileName.concat(".txt");
+        	}
+        	
+        	ContourUtilities.writeContoursToFile(getWorkspaceModel().getStudy()
+        			.getUIDToImage(), newContourFileName);
+        }
+        else if (response == JFileChooser.CANCEL_OPTION) {
+        }
+        
+    	/*String path = System.getProperty("user.dir") + File.separator
                 + "contourPoints.txt";
         ContourUtilities.writeContoursToFile(getWorkspaceModel().getStudy()
                 .getUIDToImage(), path);
-
+	*/
     }
 
 
@@ -458,7 +536,7 @@ public class WorkspaceView extends View {
         int returnVal = fileChooser.showOpenDialog(this.mainComponent);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             File file = new File(fileChooser.getSelectedFile().getPath());
-            ContourUtilities.loadContour(file, getWorkspaceModel().getStudy()
+            getWorkspaceModel().loadContour(file, getWorkspaceModel().getStudy()
                     .getUIDToImage());
         }
     }
@@ -521,7 +599,7 @@ public class WorkspaceView extends View {
         this.mainComponent.getActionMap().put("close", new CtrlWAction());
         
     }
-  
+    
 
     /**
      * 
@@ -535,15 +613,37 @@ public class WorkspaceView extends View {
      * 
      */
     private void saveStudy() {
-        // TODO Auto-generated method stub
-
+    	if (studyFileName == null){
+            saveAsStudy();
+    	} else {
+    		StudyUtilities.saveStudy(getWorkspaceModel().getStudy(), studyFileName);
+        }
     }
 
     /**
      * 
      */
     private void saveAsStudy() {
-        // TODO Auto-generated method stub
+    	JFileChooser saveFC = fileChooser;
+
+        FileFilter studyFileFilter = new FileNameExtensionFilter(
+                "Study file (.smc)", "smc");
+        saveFC.setFileFilter(studyFileFilter);
+
+        int response = saveFC.showSaveDialog(this.mainComponent);
+
+        if (response == JFileChooser.APPROVE_OPTION) {
+            studyFileName = saveFC.getSelectedFile().getAbsolutePath();
+
+            if (!studyFileName.endsWith(".smc")) {
+                studyFileName = studyFileName.concat(".smc");
+            }
+
+            StudyUtilities.saveStudy(getWorkspaceModel().getStudy(), studyFileName);
+
+        } else if (response == JFileChooser.CANCEL_OPTION) {
+            // System.out.println("Choose to Cancel");
+        }
 
     }
 

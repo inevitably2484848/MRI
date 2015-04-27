@@ -105,5 +105,4 @@ public class SelectModel extends Model {
             return false;
         }
     }
-
 }
