@@ -29,6 +29,7 @@ import edu.auburn.cardiomri.gui.models.StartModel;
 import edu.auburn.cardiomri.gui.models.WorkspaceModel;
 import edu.auburn.cardiomri.gui.models.WorkspaceModel.State;
 import edu.auburn.cardiomri.util.ContourUtilities;
+import edu.auburn.cardiomri.util.StudyUtilities;
 
 /**
  * @author Moniz
@@ -42,6 +43,7 @@ public class WorkspaceView extends View {
     protected JFileChooser fileChooser;
     protected JComponent mainComponent;
     protected JFrame appFrame;
+    protected String studyFileName;
     
     /**
      * Class constructor. Sets the current working directory and
@@ -549,15 +551,37 @@ public class WorkspaceView extends View {
      * 
      */
     private void saveStudy() {
-        // TODO Auto-generated method stub
-
+    	if (studyFileName == null){
+            saveAsStudy();
+    	} else {
+    		StudyUtilities.saveStudy(getWorkspaceModel().getStudy(), studyFileName);
+        }
     }
 
     /**
      * 
      */
     private void saveAsStudy() {
-        // TODO Auto-generated method stub
+    	JFileChooser saveFC = fileChooser;
+
+        FileFilter studyFileFilter = new FileNameExtensionFilter(
+                "Study file (.smc)", "smc");
+        saveFC.setFileFilter(studyFileFilter);
+
+        int response = saveFC.showSaveDialog(this.mainComponent);
+
+        if (response == JFileChooser.APPROVE_OPTION) {
+            studyFileName = saveFC.getSelectedFile().getAbsolutePath();
+
+            if (!studyFileName.endsWith(".smc")) {
+                studyFileName = studyFileName.concat(".smc");
+            }
+
+            StudyUtilities.saveStudy(getWorkspaceModel().getStudy(), studyFileName);
+
+        } else if (response == JFileChooser.CANCEL_OPTION) {
+            // System.out.println("Choose to Cancel");
+        }
 
     }
 
