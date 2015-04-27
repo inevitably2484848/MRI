@@ -55,7 +55,7 @@ public final class ContourUtilities {
                     new FileWriter(f, false)));
             for (DICOMImage image : SOPInstanceUIDToDICOMImage.values()) {
                 contours = image.getContours();
-                if (contours.size() <= 1) {
+                if (contours.size() < 1) {
                     continue;
                 } else {
                     writer.write("\n" + image.getSopInstanceUID() + "\n");
