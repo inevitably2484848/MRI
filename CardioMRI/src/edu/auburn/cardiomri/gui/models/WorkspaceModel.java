@@ -23,6 +23,7 @@ public class WorkspaceModel extends Model {
     protected State currentState;
     protected Study study;
     protected Map<ImageModel, Group> imageToGroup;
+    private int temp4CH = -1;
 
     /**
      * Constructor for WorkspaceModel. The currentState is initialized to
@@ -177,4 +178,14 @@ public class WorkspaceModel extends Model {
     public void saveStudy(String fileName) {
         StudyUtilities.saveStudy(this.study, fileName);
     }
+    
+    public void rotate() {
+    	temp4CH = study.getFourChamber();
+    	study.setFourChamber(study.getTwoChamber());
+    	study.setTwoChamber(study.getShortAxis());
+    	study.setShortAxis(temp4CH);
+    	setChanged();
+    	notifyObservers(currentState);
+    }
+    
 }

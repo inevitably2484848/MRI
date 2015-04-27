@@ -334,4 +334,5 @@ public class Study implements Serializable {
 
         return currentImage;
     }
+
 }
