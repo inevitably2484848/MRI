@@ -220,12 +220,17 @@ public class WorkspaceModel extends Model {
         for (ImageModel imageModel : imageToGroup.keySet()) {
             Group group = imageToGroup.get(imageModel);
 
+            Slice slice = null;
             if (sliceIndex < 0 || sliceIndex >= group.getSlices().size()) {
-                System.err.println("slice index out of bounds");
-                continue;
+                //System.err.println("slice index out of bounds");
+                slice = group.getSlices().get(0);
+                //continue;
+            }
+            else
+            {
+            	slice = group.getSlices().get(sliceIndex);
             }
 
-            Slice slice = group.getSlices().get(sliceIndex);
             if (timeIndex < 0 || timeIndex >= slice.getTimes().size()) {
                 System.err.println("time index out of bounds");
             }
