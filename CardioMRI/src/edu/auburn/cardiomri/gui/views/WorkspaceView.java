@@ -236,7 +236,7 @@ public class WorkspaceView extends View {
     public WorkspaceModel getWorkspaceModel() {
         return (WorkspaceModel) this.model;
     }
-
+    
     /**
      * Handles action events within the workspace. Specifically,
      * saving and loading events.
@@ -256,6 +256,8 @@ public class WorkspaceView extends View {
             this.saveAsStudy();
         } else if (actionCommand.equals("Save Contours")) {
             this.saveContour();
+        } else if (actionCommand.equals("Rotate Image")) {
+            this.getWorkspaceModel().rotate();
         } else if (actionCommand.equals("Load Contours")) {
             try {
                 this.setUpLoad();
@@ -373,12 +375,18 @@ public class WorkspaceView extends View {
         showContours.addActionListener(mainImageView);
         contours.add(showContours);
         
-        
 
         // ----- View -----
         JMenu view = new JMenu("View");
         JMenuItem zoom = new JMenuItem("Zoom");
         view.add(zoom);
+        
+        // ----- Rotate -----
+        JMenu rotate = new JMenu("Rotate");
+        JMenuItem rotateImage = new JMenuItem("Rotate Image");
+        rotateImage.setActionCommand("Rotate Image");
+        rotateImage.addActionListener(this);
+        rotate.add(rotateImage);
 
         // ----- Main Menu -----
         JMenuBar menuBar = new JMenuBar();
@@ -388,6 +396,7 @@ public class WorkspaceView extends View {
         menuBar.add(add);
         menuBar.add(contours);
         menuBar.add(view);
+        menuBar.add(rotate);
 
         appFrame.setJMenuBar(menuBar);
         appFrame.revalidate();
@@ -521,7 +530,7 @@ public class WorkspaceView extends View {
         this.mainComponent.getActionMap().put("close", new CtrlWAction());
         
     }
-  
+    
 
     /**
      * 
