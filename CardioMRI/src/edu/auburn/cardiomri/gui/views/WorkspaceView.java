@@ -29,6 +29,7 @@ import edu.auburn.cardiomri.gui.models.StartModel;
 import edu.auburn.cardiomri.gui.models.WorkspaceModel;
 import edu.auburn.cardiomri.gui.models.WorkspaceModel.State;
 import edu.auburn.cardiomri.util.ContourUtilities;
+import edu.auburn.cardiomri.util.StudyUtilities;
 
 /**
  * @author Moniz
@@ -42,6 +43,7 @@ public class WorkspaceView extends View {
     protected JFileChooser fileChooser;
     protected JComponent mainComponent;
     protected JFrame appFrame;
+    protected String studyFileName;
     
     /**
      * Class constructor. Sets the current working directory and
@@ -372,13 +374,6 @@ public class WorkspaceView extends View {
         showContours.setActionCommand("Show Contours");
         showContours.addActionListener(mainImageView);
         contours.add(showContours);
-        
-        
-
-        // ----- View -----
-        JMenu view = new JMenu("View");
-        JMenuItem zoom = new JMenuItem("Zoom");
-        view.add(zoom);
 
         // ----- Main Menu -----
         JMenuBar menuBar = new JMenuBar();
@@ -387,7 +382,6 @@ public class WorkspaceView extends View {
         menuBar.add(fileMenu);
         menuBar.add(add);
         menuBar.add(contours);
-        menuBar.add(view);
 
         appFrame.setJMenuBar(menuBar);
         appFrame.revalidate();
@@ -438,11 +432,33 @@ public class WorkspaceView extends View {
      * calls writeContoursToFile() to perform the actual writing to the file.
      */
     public void saveContour() {
-        String path = System.getProperty("user.dir") + File.separator
+        JFileChooser saveFC = fileChooser;
+        
+        FileFilter studyFileFilter = new FileNameExtensionFilter(
+        		"Text file (.txt)", "txt");
+        
+        saveFC.setFileFilter(studyFileFilter);
+        
+        int response = saveFC.showSaveDialog(this.mainComponent);
+        
+        if (response == JFileChooser.APPROVE_OPTION) {
+        	String newContourFileName = saveFC.getSelectedFile().getAbsolutePath();
+        	
+        	if (!newContourFileName.endsWith(".txt")) {
+        		newContourFileName = newContourFileName.concat(".txt");
+        	}
+        	
+        	ContourUtilities.writeContoursToFile(getWorkspaceModel().getStudy()
+        			.getUIDToImage(), newContourFileName);
+        }
+        else if (response == JFileChooser.CANCEL_OPTION) {
+        }
+        
+    	/*String path = System.getProperty("user.dir") + File.separator
                 + "contourPoints.txt";
         ContourUtilities.writeContoursToFile(getWorkspaceModel().getStudy()
                 .getUIDToImage(), path);
-
+	*/
     }
 
 
@@ -535,15 +551,37 @@ public class WorkspaceView extends View {
      * 
      */
     private void saveStudy() {
-        // TODO Auto-generated method stub
-
+    	if (studyFileName == null){
+            saveAsStudy();
+    	} else {
+    		StudyUtilities.saveStudy(getWorkspaceModel().getStudy(), studyFileName);
+        }
     }
 
     /**
      * 
      */
     private void saveAsStudy() {
-        // TODO Auto-generated method stub
+    	JFileChooser saveFC = fileChooser;
+
+        FileFilter studyFileFilter = new FileNameExtensionFilter(
+                "Study file (.smc)", "smc");
+        saveFC.setFileFilter(studyFileFilter);
+
+        int response = saveFC.showSaveDialog(this.mainComponent);
+
+        if (response == JFileChooser.APPROVE_OPTION) {
+            studyFileName = saveFC.getSelectedFile().getAbsolutePath();
+
+            if (!studyFileName.endsWith(".smc")) {
+                studyFileName = studyFileName.concat(".smc");
+            }
+
+            StudyUtilities.saveStudy(getWorkspaceModel().getStudy(), studyFileName);
+
+        } else if (response == JFileChooser.CANCEL_OPTION) {
+            // System.out.println("Choose to Cancel");
+        }
 
     }
 
