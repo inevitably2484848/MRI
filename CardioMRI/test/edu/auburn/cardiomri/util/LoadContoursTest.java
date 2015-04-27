@@ -54,7 +54,7 @@ public class LoadContoursTest {
          */
         image2.setSopInstanceUID("tempID");
         SOPInstanceUIDToDICOMImage.put("tempID", image2);
-        ContourUtilities.loadContour(file, SOPInstanceUIDToDICOMImage);
+       // ContourUtilities.loadContour(file, SOPInstanceUIDToDICOMImage);
         assertEquals(2, image2.getContours().size());
         assertEquals(3, image2.getContours().get(1).getControlPoints().size());
         assertEquals(13, image2.getContours().get(1).getGeneratedPoints()
@@ -77,7 +77,7 @@ public class LoadContoursTest {
         image1.getContours().add(c1);
         image1.setSopInstanceUID("tempID");
         SOPInstanceUIDToDICOMImage.put("tempID", image1);
-        ContourUtilities.loadContour(file, SOPInstanceUIDToDICOMImage);
+        //ContourUtilities.loadContour(file, SOPInstanceUIDToDICOMImage);
 
         assertEquals(3, image1.getContours().size());
     }
