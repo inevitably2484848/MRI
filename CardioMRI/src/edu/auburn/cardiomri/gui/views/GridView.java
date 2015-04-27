@@ -354,6 +354,7 @@ public class GridView extends View {
         private static final long serialVersionUID = 6612132766001531904L;
 
         public void actionPerformed(ActionEvent e) {
+        	System.out.println("got it");
             getGridModel().decrementTimeIndex();
         }
     }
