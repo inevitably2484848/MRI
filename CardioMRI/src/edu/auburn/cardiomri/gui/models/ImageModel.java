@@ -1,5 +1,6 @@
 package edu.auburn.cardiomri.gui.models;
 
+import java.awt.event.ActionEvent;
 import java.util.List;
 import java.util.Vector;
 
@@ -200,4 +201,9 @@ public class ImageModel extends Model {
         setChanged();
         notifyObservers(dImage);
     }
+
+	public void arrowAction(ActionEvent e) {
+		setChanged();
+		notifyObservers(e);
+	}
 }
