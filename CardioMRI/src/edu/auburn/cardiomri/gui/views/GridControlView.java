@@ -25,8 +25,11 @@ public class GridControlView extends View implements ChangeListener {
 
 	protected boolean buttonPressed;
 	protected JButton playButton;
+	protected int playSpeed;
 	/**
 	 * Sets panel to visible, adds slider to panel
+	 * 
+	 * In order to get the play button to work, look in to swing timers. I couldn't get it to work in the time we had
 	 * 
 	 */
 	public GridControlView()
@@ -37,6 +40,7 @@ public class GridControlView extends View implements ChangeListener {
 		this.panel.setVisible(true);
 		
 		buttonPressed = true;
+		playSpeed = 0;
 		
 		playButton = new JButton();
         playButton.addActionListener(this);
@@ -57,13 +61,12 @@ public class GridControlView extends View implements ChangeListener {
 	/**
 	 * Required for changeListener
 	 * 
-	 * Commented out code prints out the value of the slider and prints it to the console
+	 * Sets the internal variable playSpeed to the current value of the slider. 
 	 */
     public void stateChanged(ChangeEvent e) {
         JSlider source = (JSlider) e.getSource();
         if (!source.getValueIsAdjusting()) {
-            //int fps = (int) source.getValue();
-            //System.out.println(fps);
+            playSpeed = (int) source.getValue();
         }
     }
     /**
@@ -88,7 +91,7 @@ public class GridControlView extends View implements ChangeListener {
     }
     
     /**
-     * Currenly only listening for the play and stop of the play button.
+     * Currently only listening for the play and stop of the play button.
      * 
      */
     public void actionPerformed(ActionEvent e) {
