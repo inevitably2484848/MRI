@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.util.Observable;
 
 import javax.swing.AbstractAction;
+import javax.swing.ActionMap;
+import javax.swing.InputMap;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -189,6 +191,8 @@ public class WorkspaceView extends View {
         } else if (obj.getClass() == int[].class) {
             int[] indices = (int[]) obj;
             getWorkspaceModel().setIndices(indices[0], indices[1], indices[2]);
+        } else if (obj.getClass() == ActionEvent.class){
+        	this.mainComponent.getActionMap().get(((ActionEvent) obj).getActionCommand()).actionPerformed((ActionEvent) obj);
         }
         
     }
@@ -541,15 +545,6 @@ public class WorkspaceView extends View {
         }
     }
 
-    // TODO: move key binding to GridView
-    // TODO: move key binding to GridView
-    // TODO: move key binding to GridView
-    // TODO: move key binding to GridView
-    // TODO: move key binding to GridView
-    // TODO: move key binding to GridView
-    // TODO: move key binding to GridView
-    // TODO: move key binding to GridView
-
     /**
      * Adds common KeyBindings (Ctrl+S, Ctrl+Shift+S, Ctrl+O, etc.) to the
      * class' mainComponent attribute.
@@ -558,49 +553,56 @@ public class WorkspaceView extends View {
      */
     private void addKeyBindings(GridView gridView) {
         // Need to map KeyBindings
-        this.mainComponent.getInputMap().put(KeyStroke.getKeyStroke("LEFT"),
-                "left");
-        this.mainComponent.getActionMap().put("left",
-                gridView.new LeftKeyAction());
+    	//JComponent content = (JComponent) appFrame.getContentPane();
+    	
+    	InputMap inputMap = this.mainComponent.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+    	ActionMap actionMap = this.mainComponent.getActionMap();
+    	
+    	inputMap.put(KeyStroke.getKeyStroke("LEFT"),"left");
+    	actionMap.put("left", gridView.new LeftKeyAction());
 
-        this.mainComponent.getInputMap().put(KeyStroke.getKeyStroke("RIGHT"),
-                "right");
-        this.mainComponent.getActionMap().put("right",
-                gridView.new RightKeyAction());
+        inputMap.put(KeyStroke.getKeyStroke("RIGHT"),"right");
+        actionMap.put("right",gridView.new RightKeyAction());
 
-        this.mainComponent.getInputMap().put(KeyStroke.getKeyStroke("DOWN"),
-                "down");
-        this.mainComponent.getActionMap().put("down",
-                gridView.new DownKeyAction());
+        inputMap.put(KeyStroke.getKeyStroke("DOWN"),"down");
+        actionMap.put("down",gridView.new DownKeyAction());
 
-        this.mainComponent.getInputMap()
-                .put(KeyStroke.getKeyStroke("UP"), "up");
-        this.mainComponent.getActionMap().put("up", gridView.new UpKeyAction());
+        inputMap.put(KeyStroke.getKeyStroke("UP"), "up");
+        actionMap.put("up", gridView.new UpKeyAction());
 
         KeyStroke ctrlS = KeyStroke.getKeyStroke(KeyEvent.VK_S, Toolkit
                 .getDefaultToolkit().getMenuShortcutKeyMask());
-        this.mainComponent.getInputMap().put(ctrlS, "save");
-        this.mainComponent.getActionMap().put("save", new CtrlSAction());
+        
+        inputMap.put(ctrlS, "save");
+        actionMap.put("save", new CtrlSAction());
 
         KeyStroke ctrlShiftS = KeyStroke.getKeyStroke(KeyEvent.VK_S, 21);
-        this.mainComponent.getInputMap().put(ctrlShiftS, "save as");
-        this.mainComponent.getActionMap()
-                .put("save as", new CtrlShiftSAction());
+        inputMap.put(ctrlShiftS, "save as");
+        actionMap.put("save as", new CtrlShiftSAction());
 
         KeyStroke ctrlO = KeyStroke.getKeyStroke(KeyEvent.VK_O, Toolkit
                 .getDefaultToolkit().getMenuShortcutKeyMask());
-        this.mainComponent.getInputMap().put(ctrlO, "open existing");
-        this.mainComponent.getActionMap().put("open existing",
-                new CtrlOAction());
+        inputMap.put(ctrlO, "open existing");
+        actionMap.put("open existing", new CtrlOAction());
 
         KeyStroke ctrlW = KeyStroke.getKeyStroke(KeyEvent.VK_W, Toolkit
                 .getDefaultToolkit().getMenuShortcutKeyMask());
-        this.mainComponent.getInputMap().put(ctrlW, "close");
-        this.mainComponent.getActionMap().put("close", new CtrlWAction());
+        inputMap.put(ctrlW, "close");
+        actionMap.put("close", new CtrlWAction());
         
+        inputMap = this.mainComponent.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+    	
+    	inputMap.put(KeyStroke.getKeyStroke("LEFT"),"left");
+    	
+        inputMap.put(KeyStroke.getKeyStroke("RIGHT"),"right");
+       
+        inputMap.put(KeyStroke.getKeyStroke("DOWN"),"down");
+
+        inputMap.put(KeyStroke.getKeyStroke("UP"), "up");
+
     }
     
-
+    
     /**
      * 
      */

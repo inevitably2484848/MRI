@@ -12,6 +12,7 @@ import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.KeyStroke;
 
 import edu.auburn.cardiomri.datastructure.Group;
 import edu.auburn.cardiomri.datastructure.Slice;
@@ -66,6 +67,7 @@ public class GridView extends View {
                 getGridModel().setCurrentImage(newSlice, newTime, i);
             }
         }
+        this.panel.requestFocusInWindow();
     }
 
     /**
@@ -256,7 +258,8 @@ public class GridView extends View {
      */
     public GridView() {
         super();
-        this.panel.setFocusable(false);
+        this.panel.setFocusable(true);
+        setKeyBindings();
 
         this.s = 0;
         this.t = 0;
@@ -334,7 +337,28 @@ public class GridView extends View {
     		}
     	}
     }
-
+    
+    public void setKeyBindings()
+    {
+	    this.panel.getInputMap().put(KeyStroke.getKeyStroke("LEFT"),
+	            "left");
+	    this.panel.getActionMap().put("left",
+	            this.new LeftKeyAction());
+	
+	    this.panel.getInputMap().put(KeyStroke.getKeyStroke("RIGHT"),
+	            "right");
+	    this.panel.getActionMap().put("right",
+	            this.new RightKeyAction());
+	
+	    this.panel.getInputMap().put(KeyStroke.getKeyStroke("DOWN"),
+	            "down");
+	    this.panel.getActionMap().put("down",
+	            this.new DownKeyAction());
+	
+	    this.panel.getInputMap()
+	            .put(KeyStroke.getKeyStroke("UP"), "up");
+	    this.panel.getActionMap().put("up", this.new UpKeyAction());
+    }
     /**
      * Helper method for this model
      * 
@@ -354,7 +378,6 @@ public class GridView extends View {
         private static final long serialVersionUID = 6612132766001531904L;
 
         public void actionPerformed(ActionEvent e) {
-        	System.out.println("got it");
             getGridModel().decrementTimeIndex();
         }
     }
