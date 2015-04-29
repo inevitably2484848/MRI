@@ -9,14 +9,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
-import javafx.geometry.Point2D;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import edu.auburn.cardiomri.datastructure.Contour;
 import edu.auburn.cardiomri.datastructure.DICOMImage;
+import edu.auburn.cardiomri.datastructure.Vector3d;
 
 public class LoadContoursTest {
     private static final String FILE_DIR = "/test/edu/auburn/cardiomri/util/";
@@ -63,10 +62,10 @@ public class LoadContoursTest {
 
     @Test
     public void testReadInOneContourForOneImageWith1ContourExistingCheckNotDeleted() {
-        Point2D p1 = new Point2D(1.0, 2.0);
-        Point2D p2 = new Point2D(3.0, 4.0);
+        Vector3d p1 = new Vector3d(1.0, 2.0, 0.0);
+        Vector3d p2 = new Vector3d(3.0, 4.0, 0.0);
 
-        List<Point2D> controlPoints = new Vector<Point2D>();
+        List<Vector3d> controlPoints = new Vector<Vector3d>();
         controlPoints.add(p1);
         controlPoints.add(p2);
 

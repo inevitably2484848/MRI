@@ -5,10 +5,11 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Vector;
 
-import edu.auburn.cardiomri.datastructure.Contour;
 import javafx.geometry.Point2D;
 import toxi.geom.Spline2D;
 import toxi.geom.Vec2D;
+import edu.auburn.cardiomri.datastructure.Contour;
+import edu.auburn.cardiomri.datastructure.Vector3d;
 
 public final class ContourCalc {
     /**
@@ -23,7 +24,7 @@ public final class ContourCalc {
      * @param points List of points used to find the centroid
      * @return The centroid of the points
      */
-    public static Point2D calcCentroid(List<Point2D> points) {
+    public static Vector3d calcCentroid(List<Vector3d> points) {
         if (points == null) {
             throw new NullPointerException("List cannot be null");
         }
@@ -33,14 +34,14 @@ public final class ContourCalc {
         }
 
         double averageX = 0, averageY = 0;
-        for (Point2D p : points) {
+        for (Vector3d p : points) {
             averageX += p.getX();
             averageY += p.getY();
         }
         averageX /= points.size();
         averageY /= points.size();
 
-        Point2D centroid = new Point2D(averageX, averageY);
+        Vector3d centroid = new Vector3d(averageX, averageY, 0);
         return centroid;
     }
 
@@ -49,7 +50,7 @@ public final class ContourCalc {
      *
      * @param points List of points to sort
      */
-    public static void sortPoints(List<Point2D> points) {
+    public static void sortPoints(List<Vector3d> points) {
         if (points == null) {
             throw new NullPointerException("List cannot be null");
         }
@@ -57,16 +58,16 @@ public final class ContourCalc {
             return;
         }
 
-        Point2D centroid = ContourCalc.calcCentroid(points);
+        Vector3d centroid = ContourCalc.calcCentroid(points);
 
-        Collections.sort(points, new Comparator<Point2D>() {
+        Collections.sort(points, new Comparator<Vector3d>() {
 
             /**
              * Returns negative integer if point p1 is comes before point p2 in
              * the contour?
              */
             @Override
-            public int compare(Point2D p1, Point2D p2) {
+            public int compare(Vector3d p1, Vector3d p2) {
                 double thetaP1 = Math.atan2(p1.getY() - centroid.getY(),
                         p1.getX() - centroid.getX());
                 double thetaP2 = Math.atan2(p2.getY() - centroid.getY(),
@@ -94,13 +95,13 @@ public final class ContourCalc {
      * @param isClosed Whether the curve should be closed or left open
      * @return new vector with the generated points
      */
-    public static List<Point2D> generate(List<Point2D> controlPoints,
+    public static List<Vector3d> generate(List<Vector3d> controlPoints,
             boolean isClosed) {
         if (controlPoints == null) {
             throw new NullPointerException("List cannot be null");
         }
         if (controlPoints.size() < 3) {
-            return new Vector<Point2D>(controlPoints);
+            return new Vector<Vector3d>(controlPoints);
         }
 
         Spline2D spline = getSplineFromControlPoints(controlPoints, isClosed);
@@ -108,9 +109,9 @@ public final class ContourCalc {
         List<Vec2D> genPoints = spline
                 .getDecimatedVertices(ContourCalc.SEPARATION_DISTANCE);
 
-        List<Point2D> generatedPoints = new Vector<Point2D>();
+        List<Vector3d> generatedPoints = new Vector<Vector3d>();
         for (Vec2D point : genPoints) {
-            generatedPoints.add(new Point2D(point.x, point.y));
+            generatedPoints.add(new Vector3d(point.x, point.y, 0));
         }
 
         return generatedPoints;
@@ -123,9 +124,9 @@ public final class ContourCalc {
      * @param newPoint
      * @return
      */
-    public static float getDeltaArcLength(Contour contour, Point2D newPoint) {
-        List<Point2D> originalList = contour.getControlPoints();
-        List<Point2D> modifiedList = contour.getControlPoints();
+    public static float getDeltaArcLength(Contour contour, Vector3d newPoint) {
+        List<Vector3d> originalList = contour.getControlPoints();
+        List<Vector3d> modifiedList = contour.getControlPoints();
         modifiedList.add(newPoint);
 
         Spline2D original = getSplineFromControlPoints(originalList,
@@ -140,20 +141,20 @@ public final class ContourCalc {
     }
 
     private static Spline2D getSplineFromControlPoints(
-            List<Point2D> controlPoints, boolean isClosed) {
+            List<Vector3d> controlPoints, boolean isClosed) {
         ContourCalc.sortPoints(controlPoints);
 
-        List<Point2D> rawPoints = new Vector<Point2D>(controlPoints);
+        List<Vector3d> rawPoints = new Vector<Vector3d>(controlPoints);
         if (isClosed) {
             rawPoints.add(rawPoints.get(0));
         }
 
         Vec2D[] points = new Vec2D[rawPoints.size()];
-        Point2D point2D;
+        Vector3d point;
         for (int i = 0; i < rawPoints.size(); i++) {
-            point2D = rawPoints.get(i);
-            points[i] = new Vec2D((float) point2D.getX(),
-                    (float) point2D.getY());
+            point = rawPoints.get(i);
+            points[i] = new Vec2D((float) point.getX(),
+                    (float) point.getY());
         }
 
         Spline2D spline = new Spline2D(points);

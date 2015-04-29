@@ -75,4 +75,25 @@ public class Vector3d implements Serializable {
 
         return new Vector3d(this.x / length, this.y / length, this.z / length);
     }
+
+    public boolean equals(Vector3d vec2) {
+        return this.getX() == vec2.getX() && this.getY() == vec2.getY()
+                && this.getZ() == vec2.getZ();
+    }
+
+    public double distance(Vector3d vec2) {
+        double deltaX = this.getX() - vec2.getX();
+        double deltaY = this.getY() - vec2.getY();
+        double deltaZ = this.getZ() - vec2.getZ();
+        return Math.sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ);
+    }
+
+    public Vector3d midpoint(Vector3d vec2) {
+        double midX = (this.getX() + vec2.getX()) / 2.0;
+        double midY = (this.getY() + vec2.getY()) / 2.0;
+        double midZ = (this.getZ() + vec2.getZ()) / 2.0;
+
+        Vector3d midpoint = new Vector3d(midX, midY, midZ);
+        return midpoint;
+    }
 }

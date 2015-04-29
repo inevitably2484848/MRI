@@ -7,6 +7,7 @@ import java.util.Vector;
 import javafx.geometry.Point2D;
 import edu.auburn.cardiomri.datastructure.Contour;
 import edu.auburn.cardiomri.datastructure.DICOMImage;
+import edu.auburn.cardiomri.datastructure.Vector3d;
 import edu.auburn.cardiomri.util.ContourCalc;
 
 public class ImageModel extends Model {
@@ -155,7 +156,7 @@ public class ImageModel extends Model {
      * @param y
      */
     public void selectContour(double x, double y) {
-        Point2D pointClicked = new Point2D(x, y);
+        Vector3d pointClicked = new Vector3d(x, y, 0);
         float delta = Float.MAX_VALUE;
         Contour closest = null;
 

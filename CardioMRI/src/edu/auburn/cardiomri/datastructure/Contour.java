@@ -15,15 +15,25 @@ import java.util.Vector;
 import javafx.geometry.Point2D;
 import edu.auburn.cardiomri.util.ContourCalc;
 
+/**
+ * Data structure used to hold control points for a contour. It is a subclass of
+ * Shape so that the SingleImagePane class can draw it on its own.
+ * 
+ * Vector3d to store points because the alternative (javafx.geom.Point2D) is not
+ * serializable.
+ * 
+ * @author Moniz
+ *
+ */
 public class Contour implements Shape, Serializable {
     private static final long serialVersionUID = 6179619427503035482L;
 
     // XY coordinates of points the user clicked
-    private List<Point2D> controlPoints;
+    private List<Vector3d> controlPoints;
 
     // XY coordinates of points that look like a smooth curve is drawn between
     // each of the control points
-    private List<Point2D> generatedPoints;
+    private List<Vector3d> generatedPoints;
 
     private Type contourType;
 
@@ -36,19 +46,19 @@ public class Contour implements Shape, Serializable {
      * Sets controlPoints to a predefined set of points.
      */
     private Contour() {
-        controlPoints = new Vector<Point2D>();
-        generatedPoints = new Vector<Point2D>();
+        controlPoints = new Vector<Vector3d>();
+        generatedPoints = new Vector<Vector3d>();
     }
 
-    public void setControlPoints(List<Point2D> points) {
+    public void setControlPoints(List<Vector3d> points) {
         if (points == null) {
             throw new NullPointerException("List cannot be null");
         }
 
-        List<Point2D> newList = new Vector<Point2D>();
-        for (Point2D point : points) {
+        List<Vector3d> newList = new Vector<Vector3d>();
+        for (Vector3d point : points) {
             validateCoordinates(point.getX(), point.getY());
-            newList.add(new Point2D(point.getX(), point.getY()));
+            newList.add(new Vector3d(point.getX(), point.getY(), 0));
         }
 
         controlPoints = newList;
@@ -86,7 +96,7 @@ public class Contour implements Shape, Serializable {
         int maxX = Integer.MIN_VALUE;
         int maxY = Integer.MIN_VALUE;
 
-        for (Point2D point : controlPoints) {
+        for (Vector3d point : controlPoints) {
             minX = (int) Math.floor(Math.min(point.getX(), minX));
             minY = (int) Math.floor(Math.min(point.getY(), minY));
             maxX = (int) Math.ceil(Math.max(point.getX(), maxX));
@@ -103,7 +113,7 @@ public class Contour implements Shape, Serializable {
         double maxX = Double.MIN_VALUE;
         double maxY = Double.MIN_VALUE;
 
-        for (Point2D point : controlPoints) {
+        for (Vector3d point : controlPoints) {
             minX = Math.min(point.getX(), minX);
             minY = Math.min(point.getY(), minY);
             maxX = Math.max(point.getX(), maxX);
@@ -113,12 +123,12 @@ public class Contour implements Shape, Serializable {
         return new Rectangle2D.Double(minX, minY, (maxX - minX), (maxY - minY));
     }
 
-    private Point2D transformCoordinates(AffineTransform at, Point2D source) {
+    private Vector3d transformCoordinates(AffineTransform at, Vector3d source) {
         java.awt.geom.Point2D transformed = new java.awt.geom.Point2D.Double();
         at.transform(
                 new java.awt.geom.Point2D.Double(source.getX(), source.getY()),
                 transformed);
-        return new Point2D(transformed.getX(), transformed.getY());
+        return new Vector3d(transformed.getX(), transformed.getY(), 0);
     }
 
     @Override
@@ -144,13 +154,13 @@ public class Contour implements Shape, Serializable {
             @Override
             public int currentSegment(double[] coords) {
                 if (index == 0) {
-                    Point2D point = transformCoordinates(at,
+                    Vector3d point = transformCoordinates(at,
                             generatedPoints.get(0));
                     coords[0] = point.getX();
                     coords[1] = point.getY();
                     return PathIterator.SEG_MOVETO;
                 } else if ((index > 0)) {
-                    Point2D point = transformCoordinates(at,
+                    Vector3d point = transformCoordinates(at,
                             generatedPoints.get(index));
                     coords[0] = point.getX();
                     coords[1] = point.getY();
@@ -201,7 +211,7 @@ public class Contour implements Shape, Serializable {
      */
     public void addControlPoint(double x, double y) {
         validateCoordinates(x, y);
-        controlPoints.add(new Point2D(x, y));
+        controlPoints.add(new Vector3d(x, y, 0));
         generatedPoints = ContourCalc.generate(controlPoints, isClosedCurve());
     }
 
@@ -231,8 +241,8 @@ public class Contour implements Shape, Serializable {
      *
      * @return copy of the internal list
      */
-    public List<Point2D> getControlPoints() {
-        return new Vector<Point2D>(controlPoints);
+    public List<Vector3d> getControlPoints() {
+        return new Vector<Vector3d>(controlPoints);
     }
 
     /**
@@ -240,8 +250,8 @@ public class Contour implements Shape, Serializable {
      *
      * @return copy of the internal list
      */
-    public List<Point2D> getGeneratedPoints() {
-        return new Vector<Point2D>(generatedPoints);
+    public List<Vector3d> getGeneratedPoints() {
+        return new Vector<Vector3d>(generatedPoints);
     }
 
     /**
@@ -278,43 +288,41 @@ public class Contour implements Shape, Serializable {
     public enum Type {
         DEFAULT, DEFAULT_CLOSED, // Example of something that is always a closed
         // contour
-        DEFAULT_OPEN, LV_EPI, LV_ENDO, RV_EPI, RV_ENDO, 
-        LA_EPI, LA_ENDO, RA_EPI, RA_ENDO
-
-
+        DEFAULT_OPEN, LV_EPI, LV_ENDO, RV_EPI, RV_ENDO, LA_EPI, LA_ENDO, RA_EPI, RA_ENDO
     }
 
     public String toString() {
         String output = "";
-        switch(this.getContourType()) {
-        case DEFAULT: 
-            output+="DEFAULT";
-            break;
-        case LA_ENDO: 
-            output+="LEFT ATRIUM ENDOCARDIAL";
-            break;
-        case LA_EPI: 
-            output+="LEFT ATRIUM EPICARDIAL";
-            break;
-        case LV_ENDO: 
-            output+="LEFT VENTRICLE ENDOCARDIAL";
-            break;
-        case LV_EPI:  
-            output+="LEFT VENTRICLE EPICARDIAL";
-            break;
-        case RA_ENDO: 
-            output+="RIGHT ATRIUM ENDOCARDIAL";
-            break;
-        case RA_EPI: 
-            output+="RIGHT ATRIUM EPICARDIAL";
-            break;
-        case RV_ENDO: 
-            output+="RIGHT VENTRICLE ENDOCARDIAL";
-            break;
-        case RV_EPI: 
-            output+="RIGHT VENTRICLE EPICARDIAL";
-            break;
-        default: output+="invalid type";
+        switch (this.getContourType()) {
+            case DEFAULT:
+                output += "DEFAULT";
+                break;
+            case LA_ENDO:
+                output += "LEFT ATRIUM ENDOCARDIAL";
+                break;
+            case LA_EPI:
+                output += "LEFT ATRIUM EPICARDIAL";
+                break;
+            case LV_ENDO:
+                output += "LEFT VENTRICLE ENDOCARDIAL";
+                break;
+            case LV_EPI:
+                output += "LEFT VENTRICLE EPICARDIAL";
+                break;
+            case RA_ENDO:
+                output += "RIGHT ATRIUM ENDOCARDIAL";
+                break;
+            case RA_EPI:
+                output += "RIGHT ATRIUM EPICARDIAL";
+                break;
+            case RV_ENDO:
+                output += "RIGHT VENTRICLE ENDOCARDIAL";
+                break;
+            case RV_EPI:
+                output += "RIGHT VENTRICLE EPICARDIAL";
+                break;
+            default:
+                output += "invalid type";
 
         }
         return output;

@@ -8,13 +8,10 @@ import static org.junit.Assert.fail;
 import java.util.List;
 import java.util.Vector;
 
-import javafx.geometry.Point2D;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import edu.auburn.cardiomri.datastructure.Contour;
 import edu.auburn.cardiomri.util.ContourCalc;
 
 public class ContourTest {
@@ -46,11 +43,11 @@ public class ContourTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testSetControlPointsThrowsIllegalArgumentExceptionWhenGivenPointsWithNegativeCoordinates() {
-        List<Point2D> list = new Vector<Point2D>();
+        List<Vector3d> list = new Vector<Vector3d>();
 
-        list.add(new Point2D(1, 2));
-        list.add(new Point2D(-3, 4)); // The bad point
-        list.add(new Point2D(5, 6));
+        list.add(new Vector3d(1, 2, 0));
+        list.add(new Vector3d(-3, 4, 0)); // The bad point
+        list.add(new Vector3d(5, 6, 0));
 
         contour.setControlPoints(list);
         fail("Exception not thrown");
@@ -58,16 +55,16 @@ public class ContourTest {
 
     @Test
     public void testSetControlPointsFillsInternalListWithEquivalentPoints() {
-        List<Point2D> list = new Vector<Point2D>();
+        List<Vector3d> list = new Vector<Vector3d>();
 
-        list.add(new Point2D(1, 2));
-        list.add(new Point2D(3, 4));
-        list.add(new Point2D(5, 6));
+        list.add(new Vector3d(1, 2, 0));
+        list.add(new Vector3d(3, 4, 0));
+        list.add(new Vector3d(5, 6, 0));
 
         contour.setControlPoints(list);
-        List<Point2D> contourList = contour.getControlPoints();
+        List<Vector3d> contourList = contour.getControlPoints();
 
-        for (Point2D point : list) {
+        for (Vector3d point : list) {
             assertTrue(contourList.contains(point));
         }
     }
@@ -95,8 +92,8 @@ public class ContourTest {
     public void testAddControlPointCreatesPoint2DAndAddsItToControlPointsList() {
         contour.addControlPoint(1, 2);
 
-        Point2D expected = new Point2D(1, 2);
-        Point2D actual = contour.getControlPoints().get(0);
+        Vector3d expected = new Vector3d(1, 2, 0);
+        Vector3d actual = contour.getControlPoints().get(0);
         assertEquals(expected, actual);
     }
 
@@ -104,10 +101,10 @@ public class ContourTest {
     public void testGetControlPointsReturnsACopyOfTheInternalList() {
         contour.addControlPoint(1, 2);
         contour.addControlPoint(3, 4);
-        List<Point2D> listWithTwoPoints = contour.getControlPoints();
+        List<Vector3d> listWithTwoPoints = contour.getControlPoints();
 
         contour.addControlPoint(5, 6);
-        List<Point2D> listWithThreePoints = contour.getControlPoints();
+        List<Vector3d> listWithThreePoints = contour.getControlPoints();
 
         assertEquals(2, listWithTwoPoints.size());
         assertEquals(3, listWithThreePoints.size());
@@ -119,12 +116,12 @@ public class ContourTest {
         contour.addControlPoint(15, 15);
         contour.addControlPoint(5, 15);
 
-        List<Point2D> controlPoints = contour.getControlPoints();
-        List<Point2D> generatedPoints = contour.getGeneratedPoints();
+        List<Vector3d> controlPoints = contour.getControlPoints();
+        List<Vector3d> generatedPoints = contour.getGeneratedPoints();
 
-        for (Point2D controlPoint : controlPoints) {
+        for (Vector3d controlPoint : controlPoints) {
             double minDistance = Double.MAX_VALUE;
-            for (Point2D generatedPoint : generatedPoints) {
+            for (Vector3d generatedPoint : generatedPoints) {
                 minDistance = Math.min(minDistance,
                         controlPoint.distance(generatedPoint));
             }
@@ -142,8 +139,8 @@ public class ContourTest {
         contour.addControlPoint(3, 4);
         contour.addControlPoint(5, 6);
 
-        List<Point2D> copy1 = contour.getGeneratedPoints();
-        List<Point2D> copy2 = contour.getGeneratedPoints();
+        List<Vector3d> copy1 = contour.getGeneratedPoints();
+        List<Vector3d> copy2 = contour.getGeneratedPoints();
         copy1.clear();
 
         assertNotEquals(copy1, copy2);

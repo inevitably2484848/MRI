@@ -1,18 +1,18 @@
 package edu.auburn.cardiomri.util;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.List;
 import java.util.Vector;
-
-import javafx.geometry.Point2D;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import edu.auburn.cardiomri.datastructure.Contour;
-import edu.auburn.cardiomri.util.ContourCalc;
+import edu.auburn.cardiomri.datastructure.Vector3d;
 
 public class ContourCalcTest {
 
@@ -40,28 +40,28 @@ public class ContourCalcTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testCalcCentroidThrowsIllegalArgumentExceptionWhenGivenEmptyList() {
-        ContourCalc.calcCentroid(new Vector<Point2D>());
+        ContourCalc.calcCentroid(new Vector<Vector3d>());
         fail("Exception not thrown");
     }
 
     @Test
     public void testCalcCentroidReturnsEqualivalentPointWhenGivenSinglePoint() {
-        Point2D expected = new Point2D(1, 2);
-        List<Point2D> points = new Vector<Point2D>();
+        Vector3d expected = new Vector3d(1, 2, 0);
+        List<Vector3d> points = new Vector<Vector3d>();
         points.add(expected);
 
-        Point2D actual = ContourCalc.calcCentroid(points);
+        Vector3d actual = ContourCalc.calcCentroid(points);
         assertEquals(expected, actual);
     }
 
     @Test
     public void testCalcCentroidReturnsMidpointWhenGivenTwoPoints() {
-        List<Point2D> points = new Vector<Point2D>();
-        points.add(new Point2D(1, 2));
-        points.add(new Point2D(3, 4));
-        Point2D expected = points.get(0).midpoint(points.get(1));
+        List<Vector3d> points = new Vector<Vector3d>();
+        points.add(new Vector3d(1, 2, 0));
+        points.add(new Vector3d(3, 4, 0));
+        Vector3d expected = points.get(0).midpoint(points.get(1));
 
-        Point2D actual = ContourCalc.calcCentroid(points);
+        Vector3d actual = ContourCalc.calcCentroid(points);
         assertEquals(expected, actual);
     }
 
@@ -73,17 +73,17 @@ public class ContourCalcTest {
 
     @Test
     public void testSortPointsReturnsEmptyListWhenGivenEmptyList() {
-        List<Point2D> points = new Vector<Point2D>();
+        List<Vector3d> points = new Vector<Vector3d>();
         ContourCalc.sortPoints(points);
         assertEquals(0, points.size());
     }
 
     @Test
     public void testSortPointsWorksWhenGivenSinglePoint() {
-        List<Point2D> expected = new Vector<Point2D>();
-        expected.add(new Point2D(1, 2));
+        List<Vector3d> expected = new Vector<Vector3d>();
+        expected.add(new Vector3d(1, 2, 0));
 
-        List<Point2D> actual = new Vector<Point2D>(expected);
+        List<Vector3d> actual = new Vector<Vector3d>(expected);
         ContourCalc.sortPoints(actual);
 
         assertEquals(expected, actual);
@@ -94,24 +94,24 @@ public class ContourCalcTest {
         // -p1---------
         // ------------
         // ---------p2-
-        Point2D p1 = new Point2D(-1, 1);
-        Point2D p2 = new Point2D(1, -1);
+        Vector3d p1 = new Vector3d(-1, 1, 0);
+        Vector3d p2 = new Vector3d(1, -1, 0);
 
-        List<Point2D> sorted = new Vector<Point2D>();
+        List<Vector3d> sorted = new Vector<Vector3d>();
         sorted.add(p1);
         sorted.add(p2);
 
-        List<List<Point2D>> unsortedLists = new Vector<List<Point2D>>();
+        List<List<Vector3d>> unsortedLists = new Vector<List<Vector3d>>();
 
-        unsortedLists.add(new Vector<Point2D>());
+        unsortedLists.add(new Vector<Vector3d>());
         unsortedLists.get(0).add(p1);
         unsortedLists.get(0).add(p2);
 
-        unsortedLists.add(new Vector<Point2D>());
+        unsortedLists.add(new Vector<Vector3d>());
         unsortedLists.get(1).add(p2);
         unsortedLists.get(1).add(p1);
 
-        for (List<Point2D> list : unsortedLists) {
+        for (List<Vector3d> list : unsortedLists) {
             ContourCalc.sortPoints(list);
             assertEquals(sorted, list);
         }
@@ -122,48 +122,48 @@ public class ContourCalcTest {
         // -----p1-----
         // ------------
         // -p2------p3-
-        Point2D p1 = new Point2D(0, 1);
-        Point2D p2 = new Point2D(-1, -1);
-        Point2D p3 = new Point2D(1, -1);
+        Vector3d p1 = new Vector3d(0, 1, 0);
+        Vector3d p2 = new Vector3d(1, -1, 0);
+        Vector3d p3 = new Vector3d(1, -1, 0);
 
-        List<Point2D> sorted = new Vector<Point2D>();
+        List<Vector3d> sorted = new Vector<Vector3d>();
         sorted.add(p1);
         sorted.add(p3);
         sorted.add(p2);
 
-        List<List<Point2D>> unsortedLists = new Vector<List<Point2D>>();
+        List<List<Vector3d>> unsortedLists = new Vector<List<Vector3d>>();
 
-        unsortedLists.add(new Vector<Point2D>());
+        unsortedLists.add(new Vector<Vector3d>());
         unsortedLists.get(0).add(p1);
         unsortedLists.get(0).add(p2);
         unsortedLists.get(0).add(p3);
 
-        unsortedLists.add(new Vector<Point2D>());
+        unsortedLists.add(new Vector<Vector3d>());
         unsortedLists.get(1).add(p1);
         unsortedLists.get(1).add(p3);
         unsortedLists.get(1).add(p2);
 
-        unsortedLists.add(new Vector<Point2D>());
+        unsortedLists.add(new Vector<Vector3d>());
         unsortedLists.get(2).add(p2);
         unsortedLists.get(2).add(p1);
         unsortedLists.get(2).add(p3);
 
-        unsortedLists.add(new Vector<Point2D>());
+        unsortedLists.add(new Vector<Vector3d>());
         unsortedLists.get(3).add(p2);
         unsortedLists.get(3).add(p3);
         unsortedLists.get(3).add(p1);
 
-        unsortedLists.add(new Vector<Point2D>());
+        unsortedLists.add(new Vector<Vector3d>());
         unsortedLists.get(4).add(p3);
         unsortedLists.get(4).add(p1);
         unsortedLists.get(4).add(p2);
 
-        unsortedLists.add(new Vector<Point2D>());
+        unsortedLists.add(new Vector<Vector3d>());
         unsortedLists.get(5).add(p3);
         unsortedLists.get(5).add(p2);
         unsortedLists.get(5).add(p1);
 
-        for (List<Point2D> actual : unsortedLists) {
+        for (List<Vector3d> actual : unsortedLists) {
             ContourCalc.sortPoints(actual);
             assertEquals(sorted, actual);
         }
@@ -177,17 +177,17 @@ public class ContourCalcTest {
 
     @Test
     public void testGenerateReturnsEmptyListWhenGivenZeroControlPointsForOpenContour() {
-        List<Point2D> generatedPoints = ContourCalc.generate(
-                new Vector<Point2D>(), false);
+        List<Vector3d> generatedPoints = ContourCalc.generate(
+                new Vector<Vector3d>(), false);
         assertEquals(0, generatedPoints.size());
     }
 
     @Test
     public void testGenerateReturnsListWithSamePointWhenGivenOneControlPointForOpenContour() {
-        Point2D controlPoint = new Point2D(1, 2);
-        List<Point2D> controlPoints = new Vector<Point2D>();
+        Vector3d controlPoint = new Vector3d(1, 2, 0);
+        List<Vector3d> controlPoints = new Vector<Vector3d>();
         controlPoints.add(controlPoint);
-        List<Point2D> generatedPoints = ContourCalc.generate(controlPoints,
+        List<Vector3d> generatedPoints = ContourCalc.generate(controlPoints,
                 false);
 
         assertEquals("Generated list does not have exactly 1 point",
@@ -198,19 +198,19 @@ public class ContourCalcTest {
 
     @Test
     public void testGenerateReturnsListWithSameTwoPointsWhenGivenTwoControlPointsForOpenContour() {
-        Point2D p1 = new Point2D(1, 2);
-        Point2D p2 = new Point2D(1, 2);
-        List<Point2D> controlPoints = new Vector<Point2D>();
+        Vector3d p1 = new Vector3d(1, 2, 0);
+        Vector3d p2 = new Vector3d(1, 2, 0);
+        List<Vector3d> controlPoints = new Vector<Vector3d>();
         controlPoints.add(p1);
         controlPoints.add(p2);
-        List<Point2D> generatedPoints = ContourCalc.generate(controlPoints,
+        List<Vector3d> generatedPoints = ContourCalc.generate(controlPoints,
                 false);
 
         assertEquals("Generated list does not have exactly 2 points",
                 controlPoints.size(), generatedPoints.size());
 
-        for (Point2D controlPoint : controlPoints) {
-            for (Point2D generatedPoint : generatedPoints) {
+        for (Vector3d controlPoint : controlPoints) {
+            for (Vector3d generatedPoint : generatedPoints) {
                 assertEquals(controlPoint, generatedPoint);
             }
         }
@@ -224,11 +224,11 @@ public class ContourCalcTest {
      */
     @Test
     public void testGenerateReturnsListInWhichAllPointsAreCloseToEachOtherForOpenContour() {
-        List<Point2D> controlPoints = new Vector<Point2D>();
-        controlPoints.add(new Point2D(1, 2));
-        controlPoints.add(new Point2D(3, 4));
-        controlPoints.add(new Point2D(5, 6));
-        List<Point2D> generatedPoints = ContourCalc.generate(controlPoints,
+        List<Vector3d> controlPoints = new Vector<Vector3d>();
+        controlPoints.add(new Vector3d(1, 2, 0));
+        controlPoints.add(new Vector3d(3, 4, 0));
+        controlPoints.add(new Vector3d(5, 6, 0));
+        List<Vector3d> generatedPoints = ContourCalc.generate(controlPoints,
                 false);
 
         for (int i = 1; i < generatedPoints.size(); i++) {
@@ -251,16 +251,16 @@ public class ContourCalcTest {
      */
     @Test
     public void testGenerateReturnsListInWhichAllControlPointsAreCloseToSomeGeneratedPointForOpenContour() {
-        List<Point2D> controlPoints = new Vector<Point2D>();
-        controlPoints.add(new Point2D(1, 2));
-        controlPoints.add(new Point2D(3, 4));
-        controlPoints.add(new Point2D(5, 6));
-        List<Point2D> generatedPoints = ContourCalc.generate(controlPoints,
+        List<Vector3d> controlPoints = new Vector<Vector3d>();
+        controlPoints.add(new Vector3d(1, 2, 0));
+        controlPoints.add(new Vector3d(3, 4, 0));
+        controlPoints.add(new Vector3d(5, 6, 0));
+        List<Vector3d> generatedPoints = ContourCalc.generate(controlPoints,
                 false);
 
-        for (Point2D controlPoint : controlPoints) {
+        for (Vector3d controlPoint : controlPoints) {
             double minDistance = Double.MAX_VALUE;
-            for (Point2D generatedPoint : generatedPoints) {
+            for (Vector3d generatedPoint : generatedPoints) {
                 minDistance = Math.min(minDistance,
                         controlPoint.distance(generatedPoint));
             }
@@ -280,11 +280,11 @@ public class ContourCalcTest {
      */
     @Test
     public void testGenerateReturnsListInWhichFirstAndLastPointsAreNotCloseToEachOtherForOpenContour() {
-        List<Point2D> controlPoints = new Vector<Point2D>();
-        controlPoints.add(new Point2D(1, 2));
-        controlPoints.add(new Point2D(3, 4));
-        controlPoints.add(new Point2D(5, 6));
-        List<Point2D> generatedPoints = ContourCalc.generate(controlPoints,
+        List<Vector3d> controlPoints = new Vector<Vector3d>();
+        controlPoints.add(new Vector3d(1, 2, 0));
+        controlPoints.add(new Vector3d(3, 4, 0));
+        controlPoints.add(new Vector3d(5, 6, 0));
+        List<Vector3d> generatedPoints = ContourCalc.generate(controlPoints,
                 false);
 
         double actualDistance = generatedPoints.get(0).distance(
@@ -298,17 +298,17 @@ public class ContourCalcTest {
 
     @Test
     public void testGenerateReturnsEmptyListWhenGivenZeroControlPointsForClosedContour() {
-        List<Point2D> generatedPoints = ContourCalc.generate(
-                new Vector<Point2D>(), true);
+        List<Vector3d> generatedPoints = ContourCalc.generate(
+                new Vector<Vector3d>(), true);
         assertEquals(0, generatedPoints.size());
     }
 
     @Test
     public void testGenerateReturnsListWithSamePointWhenGivenOneControlPointForClosedContour() {
-        Point2D controlPoint = new Point2D(1, 2);
-        List<Point2D> controlPoints = new Vector<Point2D>();
+        Vector3d controlPoint = new Vector3d(1, 2, 0);
+        List<Vector3d> controlPoints = new Vector<Vector3d>();
         controlPoints.add(controlPoint);
-        List<Point2D> generatedPoints = ContourCalc.generate(controlPoints,
+        List<Vector3d> generatedPoints = ContourCalc.generate(controlPoints,
                 true);
 
         assertEquals("Generated list does not have exactly 1 point",
@@ -319,19 +319,19 @@ public class ContourCalcTest {
 
     @Test
     public void testGenerateReturnsListWithSameTwoPointsWhenGivenTwoControlPointsForClosedContour() {
-        Point2D p1 = new Point2D(1, 2);
-        Point2D p2 = new Point2D(1, 2);
-        List<Point2D> controlPoints = new Vector<Point2D>();
+        Vector3d p1 = new Vector3d(1, 2, 0);
+        Vector3d p2 = new Vector3d(1, 2, 0);
+        List<Vector3d> controlPoints = new Vector<Vector3d>();
         controlPoints.add(p1);
         controlPoints.add(p2);
-        List<Point2D> generatedPoints = ContourCalc.generate(controlPoints,
+        List<Vector3d> generatedPoints = ContourCalc.generate(controlPoints,
                 true);
 
         assertEquals("Generated list does not have exactly 2 points",
                 controlPoints.size(), generatedPoints.size());
 
-        for (Point2D controlPoint : controlPoints) {
-            for (Point2D generatedPoint : generatedPoints) {
+        for (Vector3d controlPoint : controlPoints) {
+            for (Vector3d generatedPoint : generatedPoints) {
                 assertEquals(controlPoint, generatedPoint);
             }
         }
@@ -339,11 +339,11 @@ public class ContourCalcTest {
 
     @Test
     public void testGenerateReturnsListWithMoreThanThreePointsWhenGivenThreeControlPointsForOpenContour() {
-        List<Point2D> controlPoints = new Vector<Point2D>();
-        controlPoints.add(new Point2D(1, 2));
-        controlPoints.add(new Point2D(3, 4));
-        controlPoints.add(new Point2D(5, 6));
-        List<Point2D> generatedPoints = ContourCalc.generate(controlPoints,
+        List<Vector3d> controlPoints = new Vector<Vector3d>();
+        controlPoints.add(new Vector3d(1, 2, 0));
+        controlPoints.add(new Vector3d(3, 4, 0));
+        controlPoints.add(new Vector3d(5, 6, 0));
+        List<Vector3d> generatedPoints = ContourCalc.generate(controlPoints,
                 false);
 
         assertTrue(generatedPoints.size() > 3);
@@ -351,11 +351,11 @@ public class ContourCalcTest {
 
     @Test
     public void testGenerateReturnsListWithMoreThanThreePointsWhenGivenThreeControlPointsForClosedContour() {
-        List<Point2D> controlPoints = new Vector<Point2D>();
-        controlPoints.add(new Point2D(1, 2));
-        controlPoints.add(new Point2D(3, 4));
-        controlPoints.add(new Point2D(5, 6));
-        List<Point2D> generatedPoints = ContourCalc.generate(controlPoints,
+        List<Vector3d> controlPoints = new Vector<Vector3d>();
+        controlPoints.add(new Vector3d(1, 2, 0));
+        controlPoints.add(new Vector3d(3, 4, 0));
+        controlPoints.add(new Vector3d(5, 6, 0));
+        List<Vector3d> generatedPoints = ContourCalc.generate(controlPoints,
                 true);
 
         assertTrue(generatedPoints.size() > 3);
@@ -369,11 +369,11 @@ public class ContourCalcTest {
      */
     @Test
     public void testGenerateReturnsListInWhichAllPointsAreCloseToEachOtherForClosedContour() {
-        List<Point2D> controlPoints = new Vector<Point2D>();
-        controlPoints.add(new Point2D(1, 2));
-        controlPoints.add(new Point2D(3, 4));
-        controlPoints.add(new Point2D(5, 6));
-        List<Point2D> generatedPoints = ContourCalc.generate(controlPoints,
+        List<Vector3d> controlPoints = new Vector<Vector3d>();
+        controlPoints.add(new Vector3d(1, 2, 0));
+        controlPoints.add(new Vector3d(3, 4, 0));
+        controlPoints.add(new Vector3d(5, 6, 0));
+        List<Vector3d> generatedPoints = ContourCalc.generate(controlPoints,
                 true);
 
         for (int i = 1; i < generatedPoints.size(); i++) {
@@ -396,16 +396,16 @@ public class ContourCalcTest {
      */
     @Test
     public void testGenerateReturnsListInWhichAllControlPointsAreCloseToSomeGeneratedPointForClosedContour() {
-        List<Point2D> controlPoints = new Vector<Point2D>();
-        controlPoints.add(new Point2D(1, 2));
-        controlPoints.add(new Point2D(3, 4));
-        controlPoints.add(new Point2D(5, 6));
-        List<Point2D> generatedPoints = ContourCalc.generate(controlPoints,
+        List<Vector3d> controlPoints = new Vector<Vector3d>();
+        controlPoints.add(new Vector3d(1, 2, 0));
+        controlPoints.add(new Vector3d(3, 4, 0));
+        controlPoints.add(new Vector3d(5, 6, 0));
+        List<Vector3d> generatedPoints = ContourCalc.generate(controlPoints,
                 true);
 
-        for (Point2D controlPoint : controlPoints) {
+        for (Vector3d controlPoint : controlPoints) {
             double minDistance = Double.MAX_VALUE;
-            for (Point2D generatedPoint : generatedPoints) {
+            for (Vector3d generatedPoint : generatedPoints) {
                 minDistance = Math.min(minDistance,
                         controlPoint.distance(generatedPoint));
             }
@@ -425,11 +425,11 @@ public class ContourCalcTest {
      */
     @Test
     public void testGenerateReturnsListInWhichFirstAndLastPointsAreCloseToEachOtherForClosedContour() {
-        List<Point2D> controlPoints = new Vector<Point2D>();
-        controlPoints.add(new Point2D(1, 2));
-        controlPoints.add(new Point2D(3, 4));
-        controlPoints.add(new Point2D(5, 6));
-        List<Point2D> generatedPoints = ContourCalc.generate(controlPoints,
+        List<Vector3d> controlPoints = new Vector<Vector3d>();
+        controlPoints.add(new Vector3d(1, 2, 0));
+        controlPoints.add(new Vector3d(3, 4, 0));
+        controlPoints.add(new Vector3d(5, 6, 0));
+        List<Vector3d> generatedPoints = ContourCalc.generate(controlPoints,
                 true);
 
         double actualDistance = generatedPoints.get(0).distance(
