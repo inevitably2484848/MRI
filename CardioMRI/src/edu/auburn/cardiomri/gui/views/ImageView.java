@@ -14,8 +14,6 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.Vector;
 
-import javafx.geometry.Point2D;
-
 import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -27,12 +25,13 @@ import com.pixelmed.display.SingleImagePanel;
 import edu.auburn.cardiomri.datastructure.Contour;
 import edu.auburn.cardiomri.datastructure.Contour.Type;
 import edu.auburn.cardiomri.datastructure.DICOMImage;
+import edu.auburn.cardiomri.datastructure.Vector3d;
 import edu.auburn.cardiomri.gui.ConstructImage;
 import edu.auburn.cardiomri.gui.models.ImageModel;
 import edu.auburn.cardiomri.gui.models.Model;
 
 public class ImageView extends SingleImagePanel implements ActionListener,
-ViewInterface, Observer {
+        ViewInterface, Observer {
     protected Model model;
     protected JPanel imageContourPanel, panel;
     private static final long serialVersionUID = -6920775905498293695L;
@@ -42,13 +41,13 @@ ViewInterface, Observer {
      * and updates the set of visible contours.
      */
     public void update(Observable obs, Object obj) {
-    	if (obj.getClass() == DICOMImage.class){
-	        DICOMImage dImage = getImageModel().getImage();
-	        dirtySource(new ConstructImage(dImage));
-	        updateSelectedContour(getImageModel().getSelectedContour());
-	        updateVisibleContours(getImageModel().getVisibleContours());
-	        refresh();
-    	} 
+        if (obj.getClass() == DICOMImage.class) {
+            DICOMImage dImage = getImageModel().getImage();
+            dirtySource(new ConstructImage(dImage));
+            updateSelectedContour(getImageModel().getSelectedContour());
+            updateVisibleContours(getImageModel().getVisibleContours());
+            refresh();
+        }
     }
 
     /**
@@ -60,7 +59,7 @@ ViewInterface, Observer {
     private void updateSelectedContour(Contour contour) {
         Vector<Shape> allControlPoints = new Vector<Shape>();
         if (contour != null) {
-            for (Point2D controlPoint : contour.getControlPoints()) {
+            for (Vector3d controlPoint : contour.getControlPoints()) {
                 Ellipse2D ellipse = new Ellipse2D.Double(controlPoint.getX(),
                         controlPoint.getY(), 2, 2);
                 allControlPoints.add(ellipse);
@@ -136,14 +135,14 @@ ViewInterface, Observer {
         }
         this.panel.requestFocusInWindow();
     }
-    
+
     /**
-     * This is so every time a mouse event is processed through the Image panels, the arrow keys will work as well.
+     * This is so every time a mouse event is processed through the Image
+     * panels, the arrow keys will work as well.
      * 
      */
-    public void mouseReleased(MouseEvent e)
-    {
-    	this.panel.requestFocusInWindow();
+    public void mouseReleased(MouseEvent e) {
+        this.panel.requestFocusInWindow();
     }
 
     /**
@@ -193,7 +192,6 @@ ViewInterface, Observer {
             } else {
                 getImageModel().hideSelectedContour();
             }
-            
 
         } else if (actionCommand.equals("Select Contour")) {
             Vector<Contour> visibleContours = getImageModel()
@@ -238,46 +236,66 @@ ViewInterface, Observer {
         }
         this.panel.requestFocusInWindow();
     }
-    
+
     private void addKeyBindings(JPanel panel) {
-        panel.getInputMap().put(KeyStroke.getKeyStroke("LEFT"),"left");
-        panel.getActionMap().put("left",this.new ArrowKeyAction("left"));
+        panel.getInputMap().put(KeyStroke.getKeyStroke("LEFT"), "left");
+        panel.getActionMap().put("left", this.new ArrowKeyAction("left"));
 
-        panel.getInputMap().put(KeyStroke.getKeyStroke("RIGHT"),"right");
-        panel.getActionMap().put("right",this.new ArrowKeyAction("right"));
+        panel.getInputMap().put(KeyStroke.getKeyStroke("RIGHT"), "right");
+        panel.getActionMap().put("right", this.new ArrowKeyAction("right"));
 
-        panel.getInputMap().put(KeyStroke.getKeyStroke("DOWN"),"down");
-        panel.getActionMap().put("down",this.new ArrowKeyAction("down"));
+        panel.getInputMap().put(KeyStroke.getKeyStroke("DOWN"), "down");
+        panel.getActionMap().put("down", this.new ArrowKeyAction("down"));
 
         panel.getInputMap().put(KeyStroke.getKeyStroke("UP"), "up");
         panel.getActionMap().put("up", this.new ArrowKeyAction("up"));
-        
+
         int commandKey = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
-        
-        panel.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_E, commandKey), "LV ENDO");
-        panel.getActionMap().put("LV ENDO", this.new ControlKeyAction("LV ENDO", this));
-        
-        panel.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_R, commandKey), "LV EPI");
-        panel.getActionMap().put("LV EPI", this.new ControlKeyAction("LV EPI", this));
-        
-        panel.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_D, commandKey), "Delete Contour");
-        panel.getActionMap().put("Delete Contour", this.new ControlKeyAction("Delete Contour", this));
-        
-        panel.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_D, commandKey | InputEvent.SHIFT_MASK), "Delete Contours");
-        panel.getActionMap().put("Delete Contours", this.new ControlKeyAction("Delete All Contours", this));
-        
-        panel.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_G, commandKey | InputEvent.SHIFT_MASK), "Hide Contours");
-        panel.getActionMap().put("Hide Contours", this.new ControlKeyAction("Hide Contours", this));
-        
-        panel.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_G, commandKey), "Hide Contour");
-        panel.getActionMap().put("Hide Contour", this.new ControlKeyAction("Hide Contour", this));
-        
-        panel.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_F, commandKey), "Show Contours");
-        panel.getActionMap().put("Show Contours", this.new ControlKeyAction("Show Contours", this));
+
+        panel.getInputMap().put(
+                KeyStroke.getKeyStroke(KeyEvent.VK_E, commandKey), "LV ENDO");
+        panel.getActionMap().put("LV ENDO",
+                this.new ControlKeyAction("LV ENDO", this));
+
+        panel.getInputMap().put(
+                KeyStroke.getKeyStroke(KeyEvent.VK_R, commandKey), "LV EPI");
+        panel.getActionMap().put("LV EPI",
+                this.new ControlKeyAction("LV EPI", this));
+
+        panel.getInputMap().put(
+                KeyStroke.getKeyStroke(KeyEvent.VK_D, commandKey),
+                "Delete Contour");
+        panel.getActionMap().put("Delete Contour",
+                this.new ControlKeyAction("Delete Contour", this));
+
+        panel.getInputMap().put(
+                KeyStroke.getKeyStroke(KeyEvent.VK_D, commandKey
+                        | InputEvent.SHIFT_MASK), "Delete Contours");
+        panel.getActionMap().put("Delete Contours",
+                this.new ControlKeyAction("Delete All Contours", this));
+
+        panel.getInputMap().put(
+                KeyStroke.getKeyStroke(KeyEvent.VK_G, commandKey
+                        | InputEvent.SHIFT_MASK), "Hide Contours");
+        panel.getActionMap().put("Hide Contours",
+                this.new ControlKeyAction("Hide Contours", this));
+
+        panel.getInputMap().put(
+                KeyStroke.getKeyStroke(KeyEvent.VK_G, commandKey),
+                "Hide Contour");
+        panel.getActionMap().put("Hide Contour",
+                this.new ControlKeyAction("Hide Contour", this));
+
+        panel.getInputMap().put(
+                KeyStroke.getKeyStroke(KeyEvent.VK_F, commandKey),
+                "Show Contours");
+        panel.getActionMap().put("Show Contours",
+                this.new ControlKeyAction("Show Contours", this));
     }
 
     /**
-     * Action key event for all of the arrow buttons. Has to be sent over to workspaceView
+     * Action key event for all of the arrow buttons. Has to be sent over to
+     * workspaceView
      * 
      * @author Ben Gustafson
      *
@@ -285,17 +303,21 @@ ViewInterface, Observer {
     public class ArrowKeyAction extends AbstractAction {
         private static final long serialVersionUID = 6612132766001531904L;
         private String comand;
-        
+
         public ArrowKeyAction(String cmd) {
-        	this.comand = cmd;
+            this.comand = cmd;
         }
 
-		public void actionPerformed(ActionEvent e) {
-			getImageModel().arrowAction(new ActionEvent(panel,(int) ActionEvent.ACTION_PERFORMED,this.comand));
-		}
+        public void actionPerformed(ActionEvent e) {
+            getImageModel().arrowAction(
+                    new ActionEvent(panel, (int) ActionEvent.ACTION_PERFORMED,
+                            this.comand));
+        }
     }
+
     /**
-     * Action key event for all of the arrow buttons. Has to be sent over to workspaceView
+     * Action key event for all of the arrow buttons. Has to be sent over to
+     * workspaceView
      * 
      * @author Ben Gustafson
      *
@@ -304,15 +326,16 @@ ViewInterface, Observer {
         private static final long serialVersionUID = 6612132766001531904L;
         private String comand;
         private ImageView imageView;
-        
+
         public ControlKeyAction(String cmd, ImageView imageView) {
-        	this.comand = cmd;
-        	this.imageView = imageView;
+            this.comand = cmd;
+            this.imageView = imageView;
         }
 
-		public void actionPerformed(ActionEvent e) {
-			imageView.actionPerformed(new ActionEvent(panel,(int) ActionEvent.ACTION_PERFORMED,this.comand));
-		}
+        public void actionPerformed(ActionEvent e) {
+            imageView.actionPerformed(new ActionEvent(panel,
+                    (int) ActionEvent.ACTION_PERFORMED, this.comand));
+        }
     }
-    
+
 }

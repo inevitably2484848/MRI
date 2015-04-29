@@ -19,6 +19,7 @@ import edu.auburn.cardiomri.datastructure.Group;
 import edu.auburn.cardiomri.datastructure.Slice;
 import edu.auburn.cardiomri.datastructure.Study;
 import edu.auburn.cardiomri.datastructure.Time;
+import edu.auburn.cardiomri.datastructure.Vector3d;
 import edu.auburn.cardiomri.util.StudyUtilities;
 
 /**
@@ -67,7 +68,7 @@ public class WorkspaceModel extends Model {
     public void loadContour(File file,
             Map<String, DICOMImage> SOPInstanceUIDToDICOMImage) {
           Vector<Contour> contours;
-        List<Point2D> controlPoints;
+        List<Vector3d> controlPoints;
 
         String sopInstanceUID;
         String[] line = new String[2];
@@ -82,11 +83,11 @@ public class WorkspaceModel extends Model {
                 sopInstanceUID = reader.readLine();
                 contourType = Integer.parseInt(reader.readLine());
                 while ((lineCheck = reader.readLine()) != "-1") {
-                    controlPoints = new Vector<Point2D>();
+                    controlPoints = new Vector<Vector3d>();
                     while ((line = reader.readLine().split("\t")).length >= 2) {
                         float x = Float.parseFloat(line[0]);
                         float y = Float.parseFloat(line[1]);
-                        controlPoints.add(new Point2D(x, y));
+                        controlPoints.add(new Vector3d(x, y, 0));
                     }
                     Contour contour = new Contour(
                             Contour.getTypeFromInt(contourType));

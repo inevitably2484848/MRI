@@ -3,22 +3,19 @@
  */
 package edu.auburn.cardiomri.util;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
-import javafx.geometry.Point2D;
 import edu.auburn.cardiomri.datastructure.Contour;
 import edu.auburn.cardiomri.datastructure.DICOMImage;
+import edu.auburn.cardiomri.datastructure.Vector3d;
 
 /**
  * @author Christopher Colosi
@@ -66,7 +63,7 @@ public final class ContourUtilities {
                             String header = c.getIntFromType() + "\n"
                                     + numPoints + "\n";
                             writer.write(header);
-                            for (javafx.geometry.Point2D point : c
+                            for (Vector3d point : c
                                     .getControlPoints()) {
                                 writer.write(BigDecimal.valueOf(point.getX())
                                         .setScale(4, BigDecimal.ROUND_UP)
@@ -76,7 +73,7 @@ public final class ContourUtilities {
                                                         BigDecimal.ROUND_UP)
                                         + "\n");
                             }
-                            for (javafx.geometry.Point2D point : c
+                            for (Vector3d point : c
                                     .getGeneratedPoints()) {
                                 writer.write(BigDecimal.valueOf(point.getX())
                                         .setScale(4, BigDecimal.ROUND_UP)
