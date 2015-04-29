@@ -4,7 +4,6 @@
 ##Download and install instructions
 - Clone this repository
 - Download Eclipse
-- 
 
 
 ##Warning
