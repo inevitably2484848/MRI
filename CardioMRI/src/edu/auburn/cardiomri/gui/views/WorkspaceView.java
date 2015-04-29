@@ -87,6 +87,9 @@ public class WorkspaceView extends View {
     public void update(Observable obs, Object obj) {
         if (obj.getClass() == State.class) {
             State currentState = (State) obj;
+            if (StartModel.getLoadStudy()){
+            	currentState = State.WORKSPACE;
+            }
             if (currentState == State.START) {
                 this.disposeFrame();
                 this.createFrame();
@@ -117,6 +120,7 @@ public class WorkspaceView extends View {
             } else if (currentState == State.WORKSPACE) {
                 this.disposeFrame();
                 this.createFrame();
+                StartModel.setLoadFalse();
 
                 Study study = getWorkspaceModel().getStudy();
                 ImageModel mainImageModel, twoChamberModel, fourChamberModel;
@@ -263,6 +267,8 @@ public class WorkspaceView extends View {
             this.saveAsStudy();
         } else if (actionCommand.equals("Save Contours")) {
             this.saveContour();
+        } else if (actionCommand.equals("Load Existing Study")) {
+        	this.loadExistingStudy();
         } else if (actionCommand.equals("Rotate Image")) {
             this.getWorkspaceModel().rotate();
         } else if (actionCommand.equals("Load Contours")) {
@@ -607,8 +613,23 @@ public class WorkspaceView extends View {
      * 
      */
     private void loadExistingStudy() {
-        // TODO Auto-generated method stub
-
+    	 JFileChooser loadFC = fileChooser;
+    	         
+    	 FileNameExtensionFilter filter1 = new FileNameExtensionFilter("SMC files", "smc");
+    	         
+    	 loadFC.setFileFilter(filter1);
+    	         
+    	 int returnVal = loadFC.showOpenDialog(this.mainComponent);
+    	 String loadFileName;
+    	 if (returnVal == JFileChooser.APPROVE_OPTION) {
+    		 loadFileName = loadFC.getSelectedFile().getPath();
+    	     this.disposeFrame();
+    	     this.getWorkspaceModel().setStudy(StudyUtilities.loadStudy(loadFileName));
+    	         
+    	     } else if (returnVal == JFileChooser.CANCEL_OPTION) {
+    	             // System.out.println("Choose to Cancel");
+    	     }
+    	  
     }
 
     /**

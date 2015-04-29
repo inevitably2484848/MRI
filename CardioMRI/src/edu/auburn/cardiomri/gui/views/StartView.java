@@ -88,6 +88,7 @@ public class StartView extends View {
      * (.smc).
      */
     public void loadStudy() {
+    	fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
         FileFilter studyFilter = new FileNameExtensionFilter(
                 "Study file (.smc)", "smc");
         fileChooser.setFileFilter(studyFilter);
@@ -97,6 +98,8 @@ public class StartView extends View {
             String fileName = fileChooser.getSelectedFile().getAbsolutePath();
 
             Study study = StudyUtilities.loadStudy(fileName);
+            this.getStartModel();
+			StartModel.setLoadStudy();
             this.getStartModel().setStudy(study);
         }
     }
