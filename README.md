@@ -4,6 +4,10 @@
 ##Download and install instructions
 - Clone this repository
 - Download Eclipse
+- Import the project into Eclipse by navigating to File -> Import... -> General -> Existing Projects into Workspace. Set MRI/CardioMRI as the root directory for the import.
+- The name of the imported project should be **CardioMRI**
+- Open src/edu/auburn/cardiomri/Main.java
+- Click run.
 
 
 ##Warning
