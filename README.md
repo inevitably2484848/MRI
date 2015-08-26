@@ -26,9 +26,12 @@ ___________________________________________________________
 Goal:
 
 -Dillon Beck
+
 -Josh Farrar
+
 -Davis Quarles
--Kullen Williams   - kaw0026@auburn.edu
+
+-Kullen Williams
 
 
 ___________________________________________________________
