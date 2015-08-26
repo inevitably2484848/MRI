@@ -19,6 +19,17 @@
 ##Contributors 
 
 Thank you to all that have helped make this pacakge a reality!
+___________________________________________________________
+
+####Senior Design Fall 2015 Auburn University -- MRI Group.
+
+Goal:
+
+-Dillon Beck
+-Josh Farrar
+-Davis Quarles
+-Kullen Williams   - kaw0026@auburn.edu
+
 
 ___________________________________________________________
 
