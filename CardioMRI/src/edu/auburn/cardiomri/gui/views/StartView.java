@@ -37,7 +37,7 @@ public class StartView extends View {
 	public StartView()
 	{
 		super();
-	        
+	    
         this.panel.setLayout(new GridBagLayout());
 
         //Add the three buttons

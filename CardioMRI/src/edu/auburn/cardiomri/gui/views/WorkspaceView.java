@@ -10,6 +10,7 @@ import java.util.Observable;
 
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
+import javax.swing.ImageIcon;
 import javax.swing.InputMap;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
@@ -53,6 +54,7 @@ public class WorkspaceView extends View {
      */
     public WorkspaceView() {
         super();
+        
         fileChooser = new JFileChooser();
         fileChooser
                 .setCurrentDirectory(new File(System.getProperty("user.dir")));
@@ -101,6 +103,7 @@ public class WorkspaceView extends View {
 
                 appFrame.setSize(600, 400);
                 this.appFrame.add(startView.getPanel());
+                appFrame.setIconImage(new ImageIcon("res/CardiacMRI_icon.png").getImage());
                 appFrame.setVisible(true);
 
             } else if (currentState == State.GROUP_SELECTION) {
