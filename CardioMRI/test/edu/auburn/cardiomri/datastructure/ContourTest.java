@@ -96,6 +96,8 @@ public class ContourTest {
         Vector3d actual = contour.getControlPoints().get(0);
         assertEquals(expected, actual);
     }
+    
+    
 
     @Test
     public void testGetControlPointsReturnsACopyOfTheInternalList() {

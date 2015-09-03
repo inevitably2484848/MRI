@@ -47,13 +47,39 @@ public class ImageModel extends Model {
         if (selected == null) {
             return false;
         }
-
-        selected.addControlPoint(x, y);
-        setChanged();
-        notifyObservers(dImage);
-        return true;
+        if(selected.notToClose(x, y)){
+	        selected.addControlPoint(x, y);  //Contour.java
+	        setChanged();
+	        notifyObservers(dImage);
+	        
+	        return true;
+        }
+        else{
+        	return deleteControlPoint(x, y);
+        }
     }
+    
+    
+    /** -----------------------------------------------------------------------
+     * deleteControlPoint - if you click on an existing point it is removed.
+     * @author KulW
+     * @param x
+     * @param y
+     * @return
+     * -----------------------------------------------------------------------*/
+    public boolean deleteControlPoint(double x, double y){
+    	
+    	if(!(selected.deleteControlPoint(x,y))){
+    		return false;
+    	}
+    	
+    	setChanged();
+    	notifyObservers(dImage);
+    	return true;
+    } //deleteControlPoint
 
+    
+    
     /**
      * Delete all of the visible and hidden contours
      */

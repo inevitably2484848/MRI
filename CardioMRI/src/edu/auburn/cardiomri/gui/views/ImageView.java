@@ -124,9 +124,8 @@ public class ImageView extends SingleImagePanel implements ActionListener,
     public void mouseClicked(MouseEvent e) {
         java.awt.geom.Point2D mouseClick = getImageCoordinateFromWindowCoordinate(
                 e.getX(), e.getY());
-
         if (SwingUtilities.isRightMouseButton(e)) {
-            getImageModel().selectContour(mouseClick.getX(), mouseClick.getY());
+            getImageModel().selectContour(mouseClick.getX(), mouseClick.getY());  //ImageModel.java
         } else {
             if (!getImageModel().addControlPoint(mouseClick.getX(),
                     mouseClick.getY())) {
@@ -135,6 +134,7 @@ public class ImageView extends SingleImagePanel implements ActionListener,
         }
         this.panel.requestFocusInWindow();
     }
+    
 
     /**
      * This is so every time a mouse event is processed through the Image

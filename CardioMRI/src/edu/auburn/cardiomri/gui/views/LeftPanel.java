@@ -21,7 +21,6 @@ public class LeftPanel extends View {
     /**
      * Takes all needed information in to create the left third of the main workspace window
      * 
-     * 
      * @param grid 				The current grid View-Object (Placed top left in workspace window)
      * @param gridControl 		The current grid control View-Object (Placed middle left in workspace window)
      * @param multipleImages 	The current multiple Image View-Object (Placed bottom left in workspace window)

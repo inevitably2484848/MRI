@@ -204,16 +204,78 @@ public class Contour implements Shape, Serializable {
     }
 
     /**
-     * Adds a control point to the contour with the given coordinates
+     * Adds a control point to the contour List with the given coordinates
      *
      * @param x nonnegative double value
      * @param y nonnegative double value
      */
     public void addControlPoint(double x, double y) {
         validateCoordinates(x, y);
-        controlPoints.add(new Vector3d(x, y, 0));
+        
+        if(notToClose(x,y)){
+        	controlPoints.add(new Vector3d(x, y, 0));
+        }
         generatedPoints = ContourCalc.generate(controlPoints, isClosedCurve());
     }
+    
+    
+    /** -----------------------------------------------------------------------
+     * 	notToClose()  returns boolean, if user tries to add control point that 
+     *   is to close to an existing one (accidently double clicks) return false 
+     *   and not allow control point to be to close.
+     *   @author KulW
+     *   @param x double
+     *   @param y double
+     *   @return bToClose boolean
+     *  ---------------------------------------------------------------------*/
+     public boolean notToClose(double x, double y){
+    	 boolean bToClose = true;
+    	 double dMinGap = 3;
+
+    	 for(Vector3d controlP : controlPoints){
+    		if(((Math.abs(controlP.getX() - x)) <= dMinGap) && ((Math.abs(controlP.getY() - y) <= dMinGap))){
+    			return false;
+    		}
+    	 } // end for loop
+    	 return bToClose;
+     } // end isToClose
+    
+     /** ----------------------------------------------------------------------
+      * deleteControlPoint(x,y): removes selected control point from controlPoint List. 
+      * return true if deleted.
+      * @author KulW
+      * @param x double
+      * @param y double
+      * @return boolean
+      * ---------------------------------------------------------------------*/
+     public boolean deleteControlPoint(double x, double y){
+    	 double minGap = 3;
+    	 boolean bDeleted = false;
+    	 int index = -1;
+    	 Vector3d temp;
+    	 double tempX, tempY;
+    	 
+    	 //find point that is close enough to delete 
+    	 for(int i = 0 ; i < controlPoints.size() ; i++){
+    		 temp = controlPoints.get(i);
+    		 tempX = temp.getX();
+    		 tempY = temp.getY();
+    		 if((Math.abs(tempX - x) < minGap) && (Math.abs(tempY - y) < minGap)){
+    			 index = i;
+    			 break;
+    		 }
+    	 } // end loop
+
+    	 if(index >= 0){
+    		 controlPoints.remove(index); //remove from list
+    		 generatedPoints = ContourCalc.generate(controlPoints, isClosedCurve()); //refresh curve
+    		 bDeleted = true;
+    	 }
+    	 
+    	 return bDeleted;
+    	 
+     } // end deleteControlPoint
+    
 
     /**
      * Throws IllegalArgumentException if x or y is less than zero
@@ -234,6 +296,19 @@ public class Contour implements Shape, Serializable {
                     "Coordinates (%1$f, %2$f) must be nonnegative", x, y);
             throw new IllegalArgumentException(message);
         }
+    }
+    
+    
+    /**
+     * loops through Vector3d list if the x and y coordinates are to close
+     *  to each other then omit, because they either double clicked or just to close.
+     * @param x double
+     * @param y double
+     * @return boolean
+     */
+    protected boolean userCoordinates(double x, double y){
+    	
+    	return true;
     }
 
     /**
@@ -377,4 +452,6 @@ public class Contour implements Shape, Serializable {
         tempIntegerToType.put(14, Type.RV_EPI);
         INTEGER_TO_TYPE = Collections.unmodifiableMap(tempIntegerToType);
     }
+    
+    
 }
