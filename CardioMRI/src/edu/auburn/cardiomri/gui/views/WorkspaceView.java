@@ -545,7 +545,11 @@ public class WorkspaceView extends View {
      * @throws IOException
      */
     public void setUpLoad() throws IOException {
-        fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+    	JFileChooser loadFC = fileChooser;
+    	FileFilter studyFileFilter = new FileNameExtensionFilter(
+        		"Import file (.import)", "import");
+        
+        loadFC.setFileFilter(studyFileFilter);
         int returnVal = fileChooser.showOpenDialog(this.mainComponent);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             File file = new File(fileChooser.getSelectedFile().getPath());
