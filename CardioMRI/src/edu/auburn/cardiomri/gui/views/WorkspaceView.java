@@ -388,12 +388,13 @@ public class WorkspaceView extends View {
 //        openType.addActionListener(mainImageView);
 //        addContour.add(openType);
         // ----- Landmark ------
+        
         JMenu landmarks = new JMenu("Add Landmark");
         
         
-        
+
         JMenuItem arvLmrk = new JMenuItem("ARV");
-        arvLmrk.setActionCommand("ARV LMRK");
+        arvLmrk.setActionCommand("ARV");
         arvLmrk.addActionListener(mainImageView);
         arvLmrk.setToolTipText("Anterior Right Ventrical Insertion");
         landmarks.add(arvLmrk);

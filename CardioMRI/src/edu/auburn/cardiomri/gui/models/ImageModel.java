@@ -7,12 +7,14 @@ import java.util.Vector;
 import javafx.geometry.Point2D;
 import edu.auburn.cardiomri.datastructure.Contour;
 import edu.auburn.cardiomri.datastructure.DICOMImage;
+import edu.auburn.cardiomri.datastructure.Landmark;
 import edu.auburn.cardiomri.datastructure.Vector3d;
 import edu.auburn.cardiomri.util.ContourCalc;
 
 public class ImageModel extends Model {
     protected DICOMImage dImage;
     protected Contour selected;
+    protected Landmark activeLandmark;
     protected List<Contour> hiddenContours;
 
     public ImageModel() {
@@ -82,7 +84,14 @@ public class ImageModel extends Model {
 
         return visibleContours;
     }
-
+    public Vector<Landmark> getVisibleLandmarks() {
+    	Vector<Landmark> visibleLandmarks = getLandmarks();
+    	
+    	return visibleLandmarks;
+    }
+    public Vector<Landmark> getLandmarks(){
+    	return dImage.getLandmarks();
+    }
     /**
      * Adds a contour to the image and sets it as the selected contour.
      * 
@@ -91,8 +100,21 @@ public class ImageModel extends Model {
     public void addContourToImage(Contour contour) {
         this.dImage.addContour(contour);
         setSelectedContour(contour);
+        
     }
-
+    
+    public void addLandmarkToImage(Landmark landmark){
+    	this.dImage.addLandmark(landmark);
+    	setActiveLandmark(landmark);
+    }
+    public void setActiveLandmark(Landmark landmark){
+    	activeLandmark = landmark;
+    }
+    public void setLandmarkCoordinates(double x, double y){
+    	activeLandmark.setLandmarkCoordinates(x,y);
+    	setChanged();
+        notifyObservers(dImage);
+    }
     /**
      * Hides the currently selected contour.
      */

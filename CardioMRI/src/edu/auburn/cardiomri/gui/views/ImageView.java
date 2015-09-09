@@ -10,6 +10,7 @@ import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Ellipse2D;
+import java.awt.geom.GeneralPath;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Vector;
@@ -24,6 +25,8 @@ import com.pixelmed.display.SingleImagePanel;
 
 import edu.auburn.cardiomri.datastructure.Contour;
 import edu.auburn.cardiomri.datastructure.Contour.Type;
+import edu.auburn.cardiomri.datastructure.Landmark;
+import edu.auburn.cardiomri.datastructure.Landmark.LandmarkType;
 import edu.auburn.cardiomri.datastructure.DICOMImage;
 import edu.auburn.cardiomri.datastructure.Vector3d;
 import edu.auburn.cardiomri.gui.ConstructImage;
@@ -35,7 +38,8 @@ public class ImageView extends SingleImagePanel implements ActionListener,
     protected Model model;
     protected JPanel imageContourPanel, panel;
     private static final long serialVersionUID = -6920775905498293695L;
-
+    private boolean lmrkMode = false;
+    private Vector<Shape> visibleShapes = new Vector<Shape>();
     /**
      * Redraws the DICOMImage, updates the selected contour's control points,
      * and updates the set of visible contours.
@@ -44,8 +48,11 @@ public class ImageView extends SingleImagePanel implements ActionListener,
         if (obj.getClass() == DICOMImage.class) {
             DICOMImage dImage = getImageModel().getImage();
             dirtySource(new ConstructImage(dImage));
+            visibleShapes.clear();
             updateSelectedContour(getImageModel().getSelectedContour());
             updateVisibleContours(getImageModel().getVisibleContours());
+            updateVisibleLandmarks(getImageModel().getVisibleLandmarks());
+            this.setPreDefinedShapes(visibleShapes);
             refresh();
         }
     }
@@ -57,17 +64,32 @@ public class ImageView extends SingleImagePanel implements ActionListener,
      * @param contour The currently selected contour
      */
     private void updateSelectedContour(Contour contour) {
-        Vector<Shape> allControlPoints = new Vector<Shape>();
+        
         if (contour != null) {
             for (Vector3d controlPoint : contour.getControlPoints()) {
-                Ellipse2D ellipse = new Ellipse2D.Double(controlPoint.getX(),
+            	Ellipse2D ellipse = new Ellipse2D.Double(controlPoint.getX(),
                         controlPoint.getY(), 2, 2);
-                allControlPoints.add(ellipse);
+                visibleShapes.add(ellipse);
             }
         }
 
-        this.setPreDefinedShapes(allControlPoints);
+        
     }
+    private void updateVisibleLandmarks(Vector<Landmark> landmarks){
+    	for (Landmark l:landmarks){
+    		double x = l.getCoordinates().getX();
+    		double y = l.getCoordinates().getY();
+    		GeneralPath cross = new GeneralPath();
+    		//horizontal component
+    		cross.moveTo(x-1, y);
+    		cross.lineTo(x+1, y);
+    		//vertical component
+    		cross.moveTo(x,y-1);
+    		cross.lineTo(x,y+1);
+    		visibleShapes.add(cross);
+    	}
+    }
+    
 
     /**
      * Updates the list of contours to be drawn onto the screen
@@ -127,10 +149,17 @@ public class ImageView extends SingleImagePanel implements ActionListener,
 
         if (SwingUtilities.isRightMouseButton(e)) {
             getImageModel().selectContour(mouseClick.getX(), mouseClick.getY());
-        } else {
-            if (!getImageModel().addControlPoint(mouseClick.getX(),
+        } 
+        else {
+            if (!lmrkMode){
+            	if (!getImageModel().addControlPoint(mouseClick.getX(),
                     mouseClick.getY())) {
                 System.err.println("currentContour is null");
+            }
+            }
+            else {
+            	getImageModel().setLandmarkCoordinates(mouseClick.getX(), mouseClick.getY());
+            	lmrkMode = false;
             }
         }
         this.panel.requestFocusInWindow();
@@ -178,6 +207,10 @@ public class ImageView extends SingleImagePanel implements ActionListener,
         } else if (actionCommand.equals("RA ENDO")) {
             getImageModel().addContourToImage(new Contour(Type.RA_ENDO));
 
+        } else if (actionCommand.equals("ARV")){
+        	getImageModel().addLandmarkToImage(new Landmark(LandmarkType.ARV));
+        	lmrkMode = true;
+        	
         } else if (actionCommand.equals("Delete Contour")) {
             if (getImageModel().getSelectedContour() == null) {
                 JOptionPane.showMessageDialog(imageContourPanel,
