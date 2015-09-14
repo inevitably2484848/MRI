@@ -11,6 +11,7 @@ import java.io.Serializable;
 public class Vector3d implements Serializable {
     private static final long serialVersionUID = -2673685056075348464L;
     private double x, y, z;
+    private double tensionX, tensionY;
 
     /**
      * Basic constructor for Vector3d
@@ -36,7 +37,23 @@ public class Vector3d implements Serializable {
     public double getZ() {
         return z;
     }
-
+    
+    public double getTensionX() {
+    	return tensionX;
+    }
+    
+    public double getTensionY() {
+    	return tensionY;
+	}	
+    
+    public void setTensionX(double x) {
+    	this.tensionX = x;
+    }
+    
+    public void setTensionY(double y) {
+    	this.tensionY = y;
+    }
+    
     /**
      * This method performs the cross product of (calling Vector3d) x (vec2)
      * 
