@@ -106,12 +106,16 @@ public final class ContourCalc {
       
       for(int i = 0; i < controlPoints.size() - 1 ; i++) {
     	  
-    	  //create tension point from two control points of a segment
-    	  Vector3d tensionPoint = getTensionPoint(controlPoints.get(i), controlPoints.get(i+1));
-    	  
-    	  //represent this tension point within the corresponding control point
-    	  controlPoints.get(i).setTensionX(tensionPoint.getX());
-    	  controlPoints.get(i).setTensionY(tensionPoint.getY());
+    	  //checks to make sure tension points that have already been calculated or moved by the user are not overwritten
+    	  if(controlPoints.get(i).getTensionX() == 0.0 && controlPoints.get(i).getTensionY() == 0.0) {
+    		  
+    		  //create tension point from two control points of a segment
+    		  Vector3d tensionPoint = getTensionPoint(controlPoints.get(i), controlPoints.get(i+1));
+ 
+    		  //represent this tension point within the corresponding control point
+    		  controlPoints.get(i).setTensionX(tensionPoint.getX());
+    		  controlPoints.get(i).setTensionY(tensionPoint.getY());
+    	  }
     	  
     	  //generate points for every segment of the curve
     	  curvePoints = genCurve(controlPoints.get(i), controlPoints.get(i + 1));
