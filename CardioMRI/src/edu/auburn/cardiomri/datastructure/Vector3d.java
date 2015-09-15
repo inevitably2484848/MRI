@@ -11,7 +11,8 @@ import java.io.Serializable;
 public class Vector3d implements Serializable {
     private static final long serialVersionUID = -2673685056075348464L;
     private double x, y, z;
-    private double tensionX, tensionY;
+    private double tensionX = 0.0;
+    private double tensionY = 0.0;
 
     /**
      * Basic constructor for Vector3d

@@ -214,6 +214,62 @@ public class Contour implements Shape, Serializable {
         
         if(notToClose(x,y)){
         	controlPoints.add(new Vector3d(x, y, 0));
+        	ContourCalc.sortPoints(controlPoints);
+        	if(controlPoints.size() > 1) {        		
+        		for(int i = 0; i < controlPoints.size(); i++) {
+        			//search the control points to find the new point with no tension point
+        			if(controlPoints.get(i).getTensionX() == 0.0 && controlPoints.get(i).getTensionY() == 0.0) { 
+        			
+        				//check to see if new control point was sorted to the beginning of the contour
+        				if(i == 0) {
+        					//calculate new tension point for previous control point, which for this branch is the final point
+        					Vector3d tensionPointA = ContourCalc.getTensionPoint(controlPoints.get(controlPoints.size() - 1), controlPoints.get(i));
+            			
+        					//set the tension point values of the next control point equal to the new tension point
+        					controlPoints.get(controlPoints.size() - 1).setTensionX(tensionPointA.getTensionX());
+        					controlPoints.get(controlPoints.size() - 1).setTensionY(tensionPointA.getTensionY());
+            			
+        					//calculate new tension point for next control point
+        					Vector3d tensionPointB = ContourCalc.getTensionPoint(controlPoints.get(i), controlPoints.get(i + 1));
+            			
+        					//set the tension point values of the next control point equal to the new tension point
+        					controlPoints.get(i).setTensionX(tensionPointB.getTensionX());
+        					controlPoints.get(i).setTensionY(tensionPointB.getTensionY());
+            			
+        				} else if(i == controlPoints.size() - 1) { //check to see if the new control point was sorted to the end of the contour
+        				
+        					//calculate new tension point for previous control point
+        					Vector3d tensionPointA = ContourCalc.getTensionPoint(controlPoints.get(i - 1), controlPoints.get(i));
+            			
+        					//set the tension point values of the next control point equal to the new tension point
+        					controlPoints.get(i - 1).setTensionX(tensionPointA.getTensionX());
+        					controlPoints.get(i - 1).setTensionY(tensionPointA.getTensionY());
+            			
+        					//calculate new tension point for next control point
+        					Vector3d tensionPointB = ContourCalc.getTensionPoint(controlPoints.get(i), controlPoints.get(0));
+            			
+        					//set the tension point values of the next control point equal to the new tension point
+        					controlPoints.get(i).setTensionX(tensionPointB.getTensionX());
+        					controlPoints.get(i).setTensionY(tensionPointB.getTensionY());
+        				} else {
+        				
+        					//calculate new tension point for previous control point
+        					Vector3d tensionPointA = ContourCalc.getTensionPoint(controlPoints.get(i - 1), controlPoints.get(i));
+        			
+        					//set the tension point values of the next control point equal to the new tension point
+        					controlPoints.get(i - 1).setTensionX(tensionPointA.getTensionX());
+        					controlPoints.get(i - 1).setTensionY(tensionPointA.getTensionY());
+        			
+        					//calculate new tension point for next control point
+        					Vector3d tensionPointB = ContourCalc.getTensionPoint(controlPoints.get(i), controlPoints.get(i + 1));
+        			
+        					//set the tension point values of the next control point equal to the new tension point
+        					controlPoints.get(i).setTensionX(tensionPointB.getTensionX());
+        					controlPoints.get(i).setTensionY(tensionPointB.getTensionY());
+        				}
+        			}        			
+        		}
+        	}
         }
         generatedPoints = ContourCalc.generate(controlPoints, isClosedCurve());
     }
