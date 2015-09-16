@@ -351,6 +351,7 @@ public class Contour implements Shape, Serializable {
     public Type getContourType() {
         return contourType;
     }
+    
 
     public Integer getIntFromType() {
         return Contour.TYPE_TO_INTEGER.get(getContourType());
@@ -358,6 +359,10 @@ public class Contour implements Shape, Serializable {
 
     public static Type getTypeFromInt(int contourType) {
         return Contour.INTEGER_TO_TYPE.get(contourType);
+    }
+    
+    public Integer getIntFromTypeControlPoints() {
+    	return Contour.TYPE_TO_CONTROL_INTEGER.get(getContourType());
     }
 
     public enum Type {
@@ -406,6 +411,7 @@ public class Contour implements Shape, Serializable {
     public static final Map<Type, Boolean> IS_CLOSED_CONTOUR;
     public static final Map<Type, Integer> TYPE_TO_INTEGER;
     public static final Map<Integer, Type> INTEGER_TO_TYPE;
+    public static final Map<Type, Integer> TYPE_TO_CONTROL_INTEGER;
 
     static {
         Map<Type, Boolean> tempIsClosedContour = new HashMap<Type, Boolean>();
@@ -451,6 +457,21 @@ public class Contour implements Shape, Serializable {
         tempIntegerToType.put(13, Type.RV_ENDO);
         tempIntegerToType.put(14, Type.RV_EPI);
         INTEGER_TO_TYPE = Collections.unmodifiableMap(tempIntegerToType);
+        
+        Map<Type, Integer> tempTypeToControlInteger = new HashMap<Type, Integer>();
+        // TODO fine tune exact types/integer values
+        tempTypeToControlInteger.put(Type.DEFAULT, 9);
+        tempTypeToControlInteger.put(Type.DEFAULT_CLOSED, 2);
+        tempTypeToControlInteger.put(Type.DEFAULT_OPEN, 3);
+        tempTypeToControlInteger.put(Type.LA_ENDO, 16);			//LA2
+        tempTypeToControlInteger.put(Type.LA_EPI, 17);			//LA2
+        tempTypeToControlInteger.put(Type.LV_ENDO, 32);			//LA4
+        tempTypeToControlInteger.put(Type.LV_EPI, 33);			//LA4
+        tempTypeToControlInteger.put(Type.RA_ENDO, 64);			//FP1
+        tempTypeToControlInteger.put(Type.RA_EPI, 65);			//FP1
+        tempTypeToControlInteger.put(Type.RV_ENDO, 80);			//FP2			
+        tempTypeToControlInteger.put(Type.RV_EPI, 81);			//FP2
+        TYPE_TO_CONTROL_INTEGER = Collections.unmodifiableMap(tempTypeToControlInteger);
     }
     
     
