@@ -43,7 +43,7 @@ public final class ContourUtilities {
         // etc...
         // TODO merge with save() in SerializableManager
         Vector<Contour> contours;
-        Writer writer = null;
+        PrintWriter writer = null;
 
         File f = new File(path);
 
@@ -55,37 +55,9 @@ public final class ContourUtilities {
                 if (contours.size() < 1) {
                     continue;
                 } else {
-                    writer.write("\n" + image.getSopInstanceUID() + "\n");
-                    for (Contour c : contours) {
-                        if (c.getControlPoints().size() > 0) {
-                            int numPoints = c.getControlPoints().size()
-                                    + c.getGeneratedPoints().size();
-                            String header = c.getIntFromType() + "\n"
-                                    + numPoints + "\n";
-                            writer.write(header);
-                            for (Vector3d point : c
-                                    .getControlPoints()) {
-                                writer.write(BigDecimal.valueOf(point.getX())
-                                        .setScale(4, BigDecimal.ROUND_UP)
-                                        + "\t"
-                                        + BigDecimal.valueOf(point.getY())
-                                                .setScale(4,
-                                                        BigDecimal.ROUND_UP)
-                                        + "\n");
-                            }
-                            for (Vector3d point : c
-                                    .getGeneratedPoints()) {
-                                writer.write(BigDecimal.valueOf(point.getX())
-                                        .setScale(4, BigDecimal.ROUND_UP)
-                                        + "\t"
-                                        + BigDecimal.valueOf(point.getY())
-                                                .setScale(4,
-                                                        BigDecimal.ROUND_UP)
-                                        + "\n");
-                            }
-                        }
-                    }
-                    writer.write((-1) + "\n");
+                	ContourUtilities.writeControurControlPointsToFile(writer, image, contours);
+                	ContourUtilities.writeContourGeneratedPointsToFile(writer, image, contours);
+                    
                 }
             }
             writer.close();
@@ -93,8 +65,70 @@ public final class ContourUtilities {
             e.printStackTrace();
         }
     }
+    
+    public static void writeControurControlPointsToFile(PrintWriter writer, 
+    		DICOMImage image, Vector<Contour> contours)
+    {
+    	writer.write("\n" + image.getSopInstanceUID() + "\n");
+        for (Contour c : contours) {
+            if (c.getControlPoints().size() > 0) {
+                int numPoints = c.getControlPoints().size();
+                String header = c.getIntFromTypeControlPoints() + "\n"
+                        + numPoints + "\n";
+                writer.write(header);
+                for (Vector3d point : c
+                        .getControlPoints()) {
+                    writer.write(BigDecimal.valueOf(point.getX())
+                            .setScale(4, BigDecimal.ROUND_UP)
+                            + "\t"
+                            + BigDecimal.valueOf(point.getY())
+                                    .setScale(4,
+                                            BigDecimal.ROUND_UP)
+                            + "\n");
+                }
+            }
+        }
+        writer.write((-1) + "\n");
+    }
 
-    /**
+    public static void writeContourGeneratedPointsToFile(PrintWriter writer, 
+    		DICOMImage image, Vector<Contour> contours)
+    {
+    	writer.write("\n" + image.getSopInstanceUID() + "\n");
+        for (Contour c : contours) {
+            if (c.getControlPoints().size() > 0) {
+                int numPoints = c.getControlPoints().size()
+                        + c.getGeneratedPoints().size();
+                String header = c.getIntFromType() + "\n"
+                        + numPoints + "\n";
+                writer.write(header);
+                for (Vector3d point : c
+                        .getControlPoints()) {
+                    writer.write(BigDecimal.valueOf(point.getX())
+                            .setScale(4, BigDecimal.ROUND_UP)
+                            + "\t"
+                            + BigDecimal.valueOf(point.getY())
+                                    .setScale(4,
+                                            BigDecimal.ROUND_UP)
+                            + "\n");
+                }
+                for (Vector3d point : c
+                        .getGeneratedPoints()) {
+                    writer.write(BigDecimal.valueOf(point.getX())
+                            .setScale(4, BigDecimal.ROUND_UP)
+                            + "\t"
+                            + BigDecimal.valueOf(point.getY())
+                                    .setScale(4,
+                                            BigDecimal.ROUND_UP)
+                            + "\n");
+                }
+            }
+        }
+        writer.write((-1) + "\n");
+    }
+
+    
+   /* *//**
      * Writes the contour data to the specified path for all images
      * containing contours.  Only exports contour data for the control points
      * explicitly drawn by the user. The file format is as follows: 
@@ -105,7 +139,7 @@ public final class ContourUtilities {
      * @param SOPInstanceUIDToDICOMImage  a hashmap containing all of the
      * DICOM images with their SOPInstanceUIDs as keys
      * @param path   the file path to which to create the text file
-     */
+     *//*
     public static void writeContourControlPointsToFile(
             Map<String, DICOMImage> SOPInstanceUIDToDICOMImage, String path) {
         // TODO Categorize points based on location (i.e. LA, RA, Endo, Epi,
@@ -150,5 +184,5 @@ public final class ContourUtilities {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
+    }*/
 }
