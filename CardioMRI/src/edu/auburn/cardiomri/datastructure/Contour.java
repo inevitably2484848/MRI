@@ -425,17 +425,17 @@ public class Contour implements Shape, Serializable {
 
         Map<Type, Integer> tempTypeToInteger = new HashMap<Type, Integer>();
         // TODO fine tune exact types/integer values
-        tempTypeToInteger.put(Type.DEFAULT, 1);
-        tempTypeToInteger.put(Type.DEFAULT_CLOSED, 2);
-        tempTypeToInteger.put(Type.DEFAULT_OPEN, 3);
-        tempTypeToInteger.put(Type.LA_ENDO, 7);
-        tempTypeToInteger.put(Type.LA_EPI, 8);
-        tempTypeToInteger.put(Type.LV_ENDO, 9);
-        tempTypeToInteger.put(Type.LV_EPI, 10);
-        tempTypeToInteger.put(Type.RA_ENDO, 11);
-        tempTypeToInteger.put(Type.RA_EPI, 12);
-        tempTypeToInteger.put(Type.RV_ENDO, 13);
-        tempTypeToInteger.put(Type.RV_EPI, 14);
+        tempTypeToInteger.put(Type.DEFAULT, 6);
+        tempTypeToInteger.put(Type.DEFAULT_CLOSED, 4);
+        tempTypeToInteger.put(Type.DEFAULT_OPEN, 5);
+        tempTypeToInteger.put(Type.LA_ENDO, 20);		//LA2
+        tempTypeToInteger.put(Type.LA_EPI, 21);			//LA2
+        tempTypeToInteger.put(Type.LV_ENDO, 36);		//LA4
+        tempTypeToInteger.put(Type.LV_EPI, 37);			//LA4
+        tempTypeToInteger.put(Type.RA_ENDO, 68);		//FP1
+        tempTypeToInteger.put(Type.RA_EPI, 69);			//FP1
+        tempTypeToInteger.put(Type.RV_ENDO, 84);		//FP2
+        tempTypeToInteger.put(Type.RV_EPI, 85);			//FP2
         TYPE_TO_INTEGER = Collections.unmodifiableMap(tempTypeToInteger);
 
         Map<Integer, Type> tempIntegerToType = new HashMap<Integer, Type>();
