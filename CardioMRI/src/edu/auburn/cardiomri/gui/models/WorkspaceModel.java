@@ -82,6 +82,7 @@ public class WorkspaceModel extends Model {
                 contours = new Vector<Contour>();
                 sopInstanceUID = reader.readLine();
                 contourType = Integer.parseInt(reader.readLine());
+                
                 while ((lineCheck = reader.readLine()) != "-1") {
                     controlPoints = new Vector<Vector3d>();
                     while ((line = reader.readLine().split("\t")).length >= 2) {
@@ -91,8 +92,14 @@ public class WorkspaceModel extends Model {
                     }
                     Contour contour = new Contour(
                             Contour.getTypeFromInt(contourType));
-                    contour.setControlPoints(controlPoints);
-                    contours.add(contour);
+                    
+                    // Only add contours to image if it is a control point contour
+                    if (contour.isControlPointFromInt(contourType))
+                    {
+                    	contour.setControlPoints(controlPoints);
+                    	contours.add(contour);
+                    }
+                    
                     if (line[0].equals("-1")) {
                         break;
                     } else {
