@@ -559,7 +559,7 @@ public class WorkspaceView extends View {
     public void setUpLoad() throws IOException {
     	JFileChooser loadFC = fileChooser;
     	FileFilter studyFileFilter = new FileNameExtensionFilter(
-        		"Import file (.import)", "import");
+        		"Text File", "txt");
         
         loadFC.setFileFilter(studyFileFilter);
         int returnVal = fileChooser.showOpenDialog(this.mainComponent);
