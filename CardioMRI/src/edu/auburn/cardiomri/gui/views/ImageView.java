@@ -210,7 +210,42 @@ public class ImageView extends SingleImagePanel implements ActionListener,
         } else if (actionCommand.equals("ARV")){
         	getImageModel().addLandmarkToImage(new Landmark(LandmarkType.ARV));
         	lmrkMode = true;
-        	
+        } else if (actionCommand.equals("IRV")){
+        	getImageModel().addLandmarkToImage(new Landmark(LandmarkType.IRV));
+        	lmrkMode = true;
+        } else if (actionCommand.equals("MS")){
+        	getImageModel().addLandmarkToImage(new Landmark(LandmarkType.MS));
+        	lmrkMode = true;
+        } else if (actionCommand.equals("LVAPEX")){
+        	getImageModel().addLandmarkToImage(new Landmark(LandmarkType.LVAPEX));
+        	lmrkMode = true;
+        } else if (actionCommand.equals("LVSEPTALBASE")){
+        	getImageModel().addLandmarkToImage(new Landmark(LandmarkType.LVSEPTALBASE));
+        	lmrkMode = true;
+        } else if (actionCommand.equals("LVLATERALBASE")){
+        	getImageModel().addLandmarkToImage(new Landmark(LandmarkType.LVLATERALBASE));
+        	lmrkMode = true;
+        } else if (actionCommand.equals("LVANTERIORBASE")){
+        	getImageModel().addLandmarkToImage(new Landmark(LandmarkType.LVANTERIORBASE));
+        	lmrkMode = true;
+        } else if (actionCommand.equals("LVINFERIORBASE")){
+        	getImageModel().addLandmarkToImage(new Landmark(LandmarkType.LVINFERIORBASE));
+        	lmrkMode = true;
+        } else if (actionCommand.equals("RVAPEX")){
+        	getImageModel().addLandmarkToImage(new Landmark(LandmarkType.RVAPEX));
+        	lmrkMode = true;
+        } else if (actionCommand.equals("RVLATERALBASE")){
+        	getImageModel().addLandmarkToImage(new Landmark(LandmarkType.RVLATERALBASE));
+        	lmrkMode = true;
+        } else if (actionCommand.equals("RVSEPTALBASE")){
+        	getImageModel().addLandmarkToImage(new Landmark(LandmarkType.RVSEPTALBASE));
+        	lmrkMode = true;
+        } else if (actionCommand.equals("RVANTERIORBASE")){
+        	getImageModel().addLandmarkToImage(new Landmark(LandmarkType.RVANTERIORBASE));
+        	lmrkMode = true;
+        } else if (actionCommand.equals("RVINFERIORBASE")){
+        	getImageModel().addLandmarkToImage(new Landmark(LandmarkType.RVINFERIORBASE));
+        	lmrkMode = true;
         } else if (actionCommand.equals("Delete Contour")) {
             if (getImageModel().getSelectedContour() == null) {
                 JOptionPane.showMessageDialog(imageContourPanel,
