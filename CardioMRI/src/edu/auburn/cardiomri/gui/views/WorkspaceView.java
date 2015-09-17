@@ -23,6 +23,7 @@ import javax.swing.KeyStroke;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import edu.auburn.cardiomri.datastructure.Landmark;
 import edu.auburn.cardiomri.datastructure.Study;
 import edu.auburn.cardiomri.gui.ConstructImage;
 import edu.auburn.cardiomri.gui.models.GridModel;
@@ -388,16 +389,18 @@ public class WorkspaceView extends View {
 //        openType.addActionListener(mainImageView);
 //        addContour.add(openType);
         // ----- Landmark ------
-        
+        //runs through the LandmarkType enum and adds every item to the menu
         JMenu landmarks = new JMenu("Add Landmark");
         
-        
+        for (Landmark.LandmarkType t : Landmark.LandmarkType.values() ){
+        	JMenuItem tmp = new JMenuItem(t.abbv());
+        	tmp.setActionCommand(t.abbv());
+        	tmp.addActionListener(mainImageView);
+        	tmp.setToolTipText(t.toString());
+        	landmarks.add(tmp);
+        }
 
-        JMenuItem arvLmrk = new JMenuItem("ARV");
-        arvLmrk.setActionCommand("ARV");
-        arvLmrk.addActionListener(mainImageView);
-        arvLmrk.setToolTipText("Anterior Right Ventrical Insertion");
-        landmarks.add(arvLmrk);
+        
         
         add.add(addContour);
         add.add(landmarks);
