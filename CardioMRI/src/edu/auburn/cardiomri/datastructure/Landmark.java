@@ -16,7 +16,7 @@ package edu.auburn.cardiomri.datastructure;
 public class Landmark {
 	//type Enum
 	/**
-	 * Enum of Landmark types
+	 * Enum of Landmark types, add landmarks here and they will show up in the menu
 	 * @author davis
 	 *
 	 */
@@ -29,11 +29,11 @@ public class Landmark {
 		LVLATERALBASE("LVLATERALBASE","LV Lateral Base"),
 		LVANTERIORBASE("LVANTERIORBASE", "LV Anterior Base"),
 		LVINFERIORBASE("LVINFERIORBASE","LV Inferior Base"),
-		RVAPEX("LVAPEX","LV Apex"),
+		RVAPEX("RVAPEX","RV Apex"),
 		RVLATERALBASE("RVLATERALBASE","RV Lateral Base"),
-		RVSEPTALBASE("LVSEPTABLBASE","LV Septal Base"),
-		RVANTERIORBASE("LVANTERIORBASE", "LV Anterior Base"),
-		RVINFERIORBASE("LVINFERIORBASE","LV Inferior Base");
+		RVSEPTALBASE("RVSEPTABLBASE","RV Septal Base"),
+		RVANTERIORBASE("RVANTERIORBASE", "RV Anterior Base"),
+		RVINFERIORBASE("RVINFERIORBASE","RV Inferior Base");
 		
 		private String lngName;
 		private String abbv;
