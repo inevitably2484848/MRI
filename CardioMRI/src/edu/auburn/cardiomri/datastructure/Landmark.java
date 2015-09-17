@@ -10,7 +10,47 @@ package edu.auburn.cardiomri.datastructure;
  * @author F. Davis Quarles
  *
  */
+
+
+
 public class Landmark {
+	//type Enum
+	/**
+	 * Enum of Landmark types
+	 * @author davis
+	 *
+	 */
+	public enum LandmarkType{ 
+		ARV("ARV","Anterior RV Insertion"), 
+		IRV("IRV","Inferior RV"),
+		MS("MS","Mid-Septum"),
+		LVAPEX("LVAPEX","LV Apex"),
+		LVSEPTALBASE("LVSEPTABLBASE","LV Septal Base"),
+		LVLATERALBASE("LVLATERALBASE","LV Lateral Base"),
+		LVANTERIORBASE("LVANTERIORBASE", "LV Anterior Base"),
+		LVINFERIORBASE("LVINFERIORBASE","LV Inferior Base"),
+		RVAPEX("LVAPEX","LV Apex"),
+		RVLATERALBASE("RVLATERALBASE","RV Lateral Base"),
+		RVSEPTALBASE("LVSEPTABLBASE","LV Septal Base"),
+		RVANTERIORBASE("LVANTERIORBASE", "LV Anterior Base"),
+		RVINFERIORBASE("LVINFERIORBASE","LV Inferior Base");
+		
+		private String lngName;
+		private String abbv;
+		private LandmarkType(String abbv, String lngName){
+			this.abbv = abbv;
+			this.lngName = lngName;
+		}
+		
+		@Override 
+		public String toString(){
+			return lngName;
+		}
+		
+		public String abbv(){
+			return abbv;
+		}
+	}
 	private Vector3d coordinates;
 	private LandmarkType landmarkType;
 	/**
@@ -36,8 +76,8 @@ public class Landmark {
 	 * Default constructor
 	 */
 	private Landmark(){
-		
-	}
+	}	
+	
 	/**
 	 * Set a Landmarks coordinates
 	 * @param x double X coordinates
@@ -54,6 +94,7 @@ public class Landmark {
 	public Vector3d getCoordinates(){
 		return coordinates;
 	}
+	
 	/**
 	 * formats a landmark as a string
 	 * @return String
@@ -62,28 +103,13 @@ public class Landmark {
 		String out = "[" + coordinates.getX() + "," + coordinates.getY() + "]";
 		return out;
 	}
-	//type Enum
-	/**
-	 * Enum of Landmark types
-	 * @author davis
-	 *
-	 */
-	public enum LandmarkType{
-	ARV,
-	IRV,
-	MS,
-	APEX,
-	LVSEPTALBASE,
-	LVLATERALBASE,
-	LVANTERIORBASE,
-	LVINFERIORBASE,
-	RVAPEX,
-	RVBASE,
-	RVSEPTALBASE,
-	RVANTERIORBASE,
-	RVINFERIORBASE,
-	}
-	
 	
 
 }
+
+	
+	
+	
+	
+	
+
