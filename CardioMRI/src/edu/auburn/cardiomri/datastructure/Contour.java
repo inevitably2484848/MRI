@@ -409,6 +409,7 @@ public class Contour implements Shape, Serializable {
     }
 
     public static final Map<Type, Boolean> IS_CLOSED_CONTOUR;
+    public static final Map<Integer, Boolean> IS_CONTROL_POINT_CONTOUR;
     public static final Map<Type, Integer> TYPE_TO_INTEGER;
     public static final Map<Integer, Type> INTEGER_TO_TYPE;
     public static final Map<Type, Integer> TYPE_TO_CONTROL_INTEGER;
@@ -428,12 +429,70 @@ public class Contour implements Shape, Serializable {
         tempIsClosedContour.put(Type.RV_ENDO, Boolean.FALSE);
         tempIsClosedContour.put(Type.RV_EPI, Boolean.FALSE);
         IS_CLOSED_CONTOUR = Collections.unmodifiableMap(tempIsClosedContour);
+        
+        
+        Map<Integer, Boolean> tempIsControlPointContour = new HashMap<Integer, Boolean>();
+        // Control Points
+        tempIsControlPointContour.put(1, Boolean.TRUE);
+        tempIsControlPointContour.put(2, Boolean.TRUE);
+        tempIsControlPointContour.put(3, Boolean.TRUE);
+        tempIsControlPointContour.put(16, Boolean.TRUE);
+        tempIsControlPointContour.put(17, Boolean.TRUE);
+        tempIsControlPointContour.put(32, Boolean.TRUE);
+        tempIsControlPointContour.put(33, Boolean.TRUE);
+        tempIsControlPointContour.put(64, Boolean.TRUE);
+        tempIsControlPointContour.put(65, Boolean.TRUE);
+        tempIsControlPointContour.put(80, Boolean.TRUE);
+        tempIsControlPointContour.put(81, Boolean.TRUE);
+        
+        // Generated Points
+        tempIsControlPointContour.put(4, Boolean.FALSE);
+        tempIsControlPointContour.put(5, Boolean.FALSE);
+        tempIsControlPointContour.put(6, Boolean.FALSE);
+        tempIsControlPointContour.put(20, Boolean.FALSE);
+        tempIsControlPointContour.put(21, Boolean.FALSE);
+        tempIsControlPointContour.put(36, Boolean.FALSE);
+        tempIsControlPointContour.put(37, Boolean.FALSE);
+        tempIsControlPointContour.put(68, Boolean.FALSE);
+        tempIsControlPointContour.put(69, Boolean.FALSE);
+        tempIsControlPointContour.put(84, Boolean.FALSE);
+        tempIsControlPointContour.put(85, Boolean.FALSE);
+        IS_CONTROL_POINT_CONTOUR = Collections.unmodifiableMap(tempIsControlPointContour);
 
+        
+        Map<Integer, Type> tempIntegerToType = new HashMap<Integer, Type>();
+        //Control Points
+        tempIntegerToType.put(1, Type.DEFAULT);			
+        tempIntegerToType.put(2, Type.DEFAULT_OPEN);
+        tempIntegerToType.put(3, Type.DEFAULT_CLOSED);
+        tempIntegerToType.put(16, Type.LA_ENDO);		//LA2
+        tempIntegerToType.put(17, Type.LA_EPI);			//LA2
+        tempIntegerToType.put(32, Type.LV_ENDO);		//LA4
+        tempIntegerToType.put(33, Type.LV_EPI);			//LA4
+        tempIntegerToType.put(64, Type.RA_ENDO);		//FP1
+        tempIntegerToType.put(65, Type.RA_EPI);			//FP1
+        tempIntegerToType.put(80, Type.RV_ENDO);		//FP2
+        tempIntegerToType.put(81, Type.RV_EPI);			//FP2
+        
+        //Generated Points
+        tempIntegerToType.put(4, Type.DEFAULT);
+        tempIntegerToType.put(5, Type.DEFAULT_OPEN);
+        tempIntegerToType.put(6, Type.DEFAULT_CLOSED);
+        tempIntegerToType.put(20, Type.LA_ENDO);
+        tempIntegerToType.put(21, Type.LA_EPI);
+        tempIntegerToType.put(36, Type.LV_ENDO);
+        tempIntegerToType.put(37, Type.LV_EPI);
+        tempIntegerToType.put(68, Type.RA_ENDO);
+        tempIntegerToType.put(69, Type.RA_EPI);
+        tempIntegerToType.put(84, Type.RV_ENDO);
+        tempIntegerToType.put(85, Type.RV_EPI);
+        INTEGER_TO_TYPE = Collections.unmodifiableMap(tempIntegerToType);
+        
+        
         Map<Type, Integer> tempTypeToInteger = new HashMap<Type, Integer>();
-        // TODO fine tune exact types/integer values
-        tempTypeToInteger.put(Type.DEFAULT, 6);
-        tempTypeToInteger.put(Type.DEFAULT_CLOSED, 4);
-        tempTypeToInteger.put(Type.DEFAULT_OPEN, 5);
+        tempTypeToInteger.put(Type.DEFAULT, 4);
+        tempTypeToInteger.put(Type.DEFAULT_CLOSED, 5);
+        tempTypeToInteger.put(Type.DEFAULT_OPEN, 6);
         tempTypeToInteger.put(Type.LA_ENDO, 20);		//LA2
         tempTypeToInteger.put(Type.LA_EPI, 21);			//LA2
         tempTypeToInteger.put(Type.LV_ENDO, 36);		//LA4
@@ -443,24 +502,11 @@ public class Contour implements Shape, Serializable {
         tempTypeToInteger.put(Type.RV_ENDO, 84);		//FP2
         tempTypeToInteger.put(Type.RV_EPI, 85);			//FP2
         TYPE_TO_INTEGER = Collections.unmodifiableMap(tempTypeToInteger);
-
-        Map<Integer, Type> tempIntegerToType = new HashMap<Integer, Type>();
-        tempIntegerToType.put(1, Type.DEFAULT);
-        tempIntegerToType.put(3, Type.DEFAULT_OPEN);
-        tempIntegerToType.put(2, Type.DEFAULT_CLOSED);
-        tempIntegerToType.put(7, Type.LA_ENDO);
-        tempIntegerToType.put(8, Type.LA_EPI);
-        tempIntegerToType.put(9, Type.LV_ENDO);
-        tempIntegerToType.put(10, Type.LV_EPI);
-        tempIntegerToType.put(11, Type.RA_ENDO);
-        tempIntegerToType.put(12, Type.RA_EPI);
-        tempIntegerToType.put(13, Type.RV_ENDO);
-        tempIntegerToType.put(14, Type.RV_EPI);
-        INTEGER_TO_TYPE = Collections.unmodifiableMap(tempIntegerToType);
+        
         
         Map<Type, Integer> tempTypeToControlInteger = new HashMap<Type, Integer>();
         // TODO fine tune exact types/integer values
-        tempTypeToControlInteger.put(Type.DEFAULT, 9);
+        tempTypeToControlInteger.put(Type.DEFAULT, 1);
         tempTypeToControlInteger.put(Type.DEFAULT_CLOSED, 2);
         tempTypeToControlInteger.put(Type.DEFAULT_OPEN, 3);
         tempTypeToControlInteger.put(Type.LA_ENDO, 16);			//LA2
