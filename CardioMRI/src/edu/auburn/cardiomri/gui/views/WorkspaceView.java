@@ -537,10 +537,6 @@ public class WorkspaceView extends View {
         	
         	ContourUtilities.writeContoursToFile(getWorkspaceModel().getStudy()
         			.getUIDToImage(), newContourFileName);
-        	
-        	/*// Write only control points file
-        	ContourUtilities.writeContourControlPointsToFile(getWorkspaceModel().getStudy()
-        			.getUIDToImage(), newContourFileName.concat(".import"));*/
         }
         else if (response == JFileChooser.CANCEL_OPTION) {
         }
