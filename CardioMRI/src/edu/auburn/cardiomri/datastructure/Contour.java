@@ -364,6 +364,10 @@ public class Contour implements Shape, Serializable {
     public Integer getIntFromTypeControlPoints() {
     	return Contour.TYPE_TO_CONTROL_INTEGER.get(getContourType());
     }
+    
+    public boolean isControlPointFromInt(int contourType) { 
+    	return Contour.IS_CONTROL_POINT_CONTOUR.get(contourType);
+    }
 
     public enum Type {
         DEFAULT, DEFAULT_CLOSED, // Example of something that is always a closed
