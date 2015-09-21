@@ -76,9 +76,15 @@ public class Vector3d implements Serializable {
         return new Vector3d(this.x / length, this.y / length, this.z / length);
     }
 
-    public boolean equals(Vector3d vec2) {
-        return this.getX() == vec2.getX() && this.getY() == vec2.getY()
-                && this.getZ() == vec2.getZ();
+    @Override
+    public boolean equals(Object o) {
+    	boolean result = false;
+    	if (o instanceof Vector3d) {
+    		Vector3d vec2 = (Vector3d) o;
+	        result = this.getX() == vec2.getX() && this.getY() == vec2.getY()
+	                && this.getZ() == vec2.getZ();
+    	}
+        return result;
     }
 
     public double distance(Vector3d vec2) {
