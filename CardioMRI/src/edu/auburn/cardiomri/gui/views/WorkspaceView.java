@@ -565,8 +565,7 @@ public class WorkspaceView extends View {
         int returnVal = fileChooser.showOpenDialog(this.mainComponent);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             File file = new File(fileChooser.getSelectedFile().getPath());
-            getWorkspaceModel().loadContour(file, getWorkspaceModel().getStudy()
-                    .getUIDToImage());
+            getWorkspaceModel().loadContour(file);
         }
     }
 

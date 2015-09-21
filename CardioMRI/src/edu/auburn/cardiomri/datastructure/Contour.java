@@ -365,7 +365,7 @@ public class Contour implements Shape, Serializable {
     	return Contour.TYPE_TO_CONTROL_INTEGER.get(getContourType());
     }
     
-    public boolean isControlPointFromInt(int contourType) { 
+    public static boolean isControlPointFromInt(int contourType) { 
     	return Contour.IS_CONTROL_POINT_CONTOUR.get(contourType);
     }
 

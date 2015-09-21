@@ -20,6 +20,7 @@ import edu.auburn.cardiomri.datastructure.Slice;
 import edu.auburn.cardiomri.datastructure.Study;
 import edu.auburn.cardiomri.datastructure.Time;
 import edu.auburn.cardiomri.datastructure.Vector3d;
+import edu.auburn.cardiomri.util.ContourUtilities;
 import edu.auburn.cardiomri.util.StudyUtilities;
 
 /**
@@ -53,6 +54,11 @@ public class WorkspaceModel extends Model {
      */
     public Study getStudy() {
         return study;
+    }
+    
+    public void loadContour(File file) {
+    	ContourUtilities.loadContour(file, this.getStudy().getUIDToImage());
+    	setIndices(s, t, i);
     }
 
     /**
@@ -90,12 +96,13 @@ public class WorkspaceModel extends Model {
                         float y = Float.parseFloat(line[1]);
                         controlPoints.add(new Vector3d(x, y, 0));
                     }
-                    Contour contour = new Contour(
-                            Contour.getTypeFromInt(contourType));
                     
                     // Only add contours to image if it is a control point contour
-                    if (contour.isControlPointFromInt(contourType))
+                    if (Contour.isControlPointFromInt(contourType))
                     {
+                    	Contour contour = new Contour(
+                    			Contour.getTypeFromInt(contourType));
+                    
                     	contour.setControlPoints(controlPoints);
                     	contours.add(contour);
                     }
@@ -249,6 +256,42 @@ public class WorkspaceModel extends Model {
             }
 
             imageModel.setCurrentImage(time.getImages().get(imageIndex));
+        }
+    }
+    
+    /**
+     * Pulls a DICOM image from each Group and sets it in the matching
+     * ImageModel.
+     * 
+     * @param sliceIndex
+     * @param timeIndex
+     * @param imageIndex
+     */
+    public void setIndices() {
+        for (ImageModel imageModel : imageToGroup.keySet()) {
+            Group group = imageToGroup.get(imageModel);
+
+            Slice slice = null;
+            if (this.s < 0 || this.s >= group.getSlices().size()) {
+                //System.err.println("slice index out of bounds");
+                slice = group.getSlices().get(0);
+                //continue;
+            }
+            else
+            {
+            	slice = group.getSlices().get(this.s);
+            }
+
+            if (this.t < 0 || this.t >= slice.getTimes().size()) {
+                System.err.println("time index out of bounds");
+            }
+
+            Time time = slice.getTimes().get(this.t);
+            if (this.i < 0 || this.i >= time.getImages().size()) {
+                System.err.println("image index out of bounds");
+            }
+
+            imageModel.setCurrentImage(time.getImages().get(this.i));
         }
     }
 
