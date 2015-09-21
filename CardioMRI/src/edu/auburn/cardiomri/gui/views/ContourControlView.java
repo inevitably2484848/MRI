@@ -1,36 +1,19 @@
 package edu.auburn.cardiomri.gui.views;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Container;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.GridBagLayout;
-import java.awt.Shape;
-import java.awt.TextField;
-import java.awt.event.ItemEvent;
+import java.sql.Time;
 import java.util.Vector;
-
-import javax.swing.ButtonGroup;
 import javax.swing.DefaultListModel;
-import javax.swing.JButton;
-import javax.swing.JComponent;
+
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTabbedPane;
-import javax.swing.JTable;
-import javax.swing.JToggleButton;
-import javax.swing.ListModel;
-import javax.swing.ListSelectionModel;
-import javax.swing.event.ListSelectionListener;
 
 import edu.auburn.cardiomri.datastructure.Contour;
 import edu.auburn.cardiomri.datastructure.DICOMImage;
-import javafx.scene.control.ToggleButton;
-import javafx.scene.control.ToggleGroup;
+
 
 /**
  * This view is the bottom right panel of the main workspace window. 
@@ -38,7 +21,7 @@ import javafx.scene.control.ToggleGroup;
  * 	The ideal setup would be to list all the contours, and be able to show, hide, edit, and delete them easily.  
  * 
  * 
- * @author Ben Gustafson
+ * @author Kullen Williams
  *
  */
 public class ContourControlView extends View {
@@ -47,67 +30,73 @@ public class ContourControlView extends View {
 	 * Simply sets panel to visible for filler space
 	 * 
 	 */
+	public JPanel ccv;
 	
-	private JList list;
-	private DefaultListModel listModel;
-	private Contour contour;
-	private DICOMImage dicom;
-	private DefaultListModel model = new DefaultListModel();
-	
-	public ContourControlView()
+	public ContourControlView(DICOMImage dImage)
 	{
-		super(); // *		
-		model.addElement("Contours");
-		JList list = new JList(model);
+		//super(); // *
+		ccv = this.panel;
+	    ccv.setOpaque(true);  // * 
+	    ccv.setVisible(true); // *
+	    
+	    
+		String fileName = "Title";
+		DefaultListModel<Contour> model = new DefaultListModel<Contour>();
+		if(dImage != null){
+			//System.out.println("DICOM NOT NULL");
+			 fileName = dImage.toString();
+			System.out.println(dImage.toString());
+			Vector<Contour> contours = dImage.getContours();
+			if(!(contours.isEmpty())){
+				for(Contour x : contours){
+					model.addElement(x);
+					System.out.println(x);
+				}
+			}
+			else { 
+				//System.out.println("NO CONTOURS");
+			}
+		}
+		else{  //TESTING
+			
+			//System.out.println("DICOM NULL");
+			
+			Vector<Contour> contours = new Vector<Contour>();
+			contours.add(new Contour(Contour.getTypeFromInt(1)));
+			contours.add(new Contour(Contour.getTypeFromInt(2)));
+			if(!(contours.isEmpty())){
+				for(Contour x : contours){
+					model.addElement(x);
+				}
+			}
+		} //END TESTING
+		
+		JList<Contour> list = new JList<Contour>(model);
 		list.setVisibleRowCount(5);
+		JScrollPane scroll = new JScrollPane(list);
+		scroll.setName("SCROLL PANE");
 		
-		this.panel.setLayout(new BorderLayout());
-
-		
-		JToggleButton tb1 = new JToggleButton("LANDMARK");
-		JToggleButton tb2 = new JToggleButton("CONTOUR");
-		
+		ccv.setLayout(new BorderLayout());
 		
 		JPanel titlePanel = new JPanel();
-		JPanel centerPanel = new JPanel();
-		JPanel buttonPanel = new JPanel();
-		
-		JLabel title = new JLabel("TITLE");
+		JLabel title = new JLabel(fileName);
 		titlePanel.add(title);
+		titlePanel.setName("TITLE PANEL");
+		ccv.add(titlePanel, BorderLayout.NORTH);
+		//ccv.add(new JButton("TEST"), BorderLayout.SOUTH);
+		ccv.add(scroll, BorderLayout.CENTER);
+	    
 		
-		buttonPanel.add(tb1, BorderLayout.SOUTH);
-		buttonPanel.add(tb2, BorderLayout.SOUTH);
+		ccv.setPreferredSize(new Dimension(100,200));
+	    System.out.println("Set Panel Name to CCVPanel");
+	    ccv.setName("CCVPanel");
+	    ccv.updateUI();
+	    ccv.doLayout();
+		ccv.revalidate();
+		ccv.repaint();
 		
-		this.panel.add(titlePanel, BorderLayout.NORTH);
-		this.panel.add(buttonPanel, BorderLayout.SOUTH);
-		this.panel.add(centerPanel, BorderLayout.CENTER);
-		this.panel.add(titlePanel, BorderLayout.NORTH);
-
-		this.panel.add(new JScrollPane(list), BorderLayout.CENTER);
-	    this.panel.setOpaque(true);  // * 
-	    this.panel.setVisible(true); // *
-	}
-
-	public JPanel refreshView(Vector<Contour> contourList){
 		
-		String name;
-		
-		for(Contour x : contourList){
-			name = x.toString();
-			model.addElement(name);
-			//System.out.println(name);
-		}
-		
-		@SuppressWarnings("unchecked")
-		JList list = new JList(model);
-		list.setVisibleRowCount(5);
-		this.panel.add(new JScrollPane(list));
-		this.panel.setOpaque(true);  // * 
-	    this.panel.setVisible(true); // *
-		
-		return panel;
-		
-	}
+	}	
 	
 
 	

@@ -18,6 +18,7 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.KeyStroke;
 import javax.swing.filechooser.FileFilter;
@@ -38,7 +39,8 @@ import edu.auburn.cardiomri.util.StudyUtilities;
  * @author Moniz
  * 
  * This view owns and manages all other views. It houses the menu
- * as well as the various panels for the GUI.
+ * as well as the various panels for the GUI.  
+ * Hot Keys
  */
 public class WorkspaceView extends View {
     private static final int WORKSPACE_WIDTH = 1200;
@@ -47,6 +49,8 @@ public class WorkspaceView extends View {
     protected JComponent mainComponent;
     protected JFrame appFrame;
     protected String studyFileName;
+    public static JPanel ccvPanel;
+    
     
     /**
      * Class constructor. Sets the current working directory and
@@ -154,9 +158,9 @@ public class WorkspaceView extends View {
                 MultipleImageView multipleImages = new MultipleImageView();
                 multipleImages.setModel(gridModel);
 
-                ContourControlView contourControl = new ContourControlView();
+                ContourControlView contourControl = new ContourControlView(null);  //preBuild
                 contourControl.setModel(mainImageModel);
-
+         
                 getWorkspaceModel().addImage(mainImageModel,
                         study.getShortAxisGroup());
                 getWorkspaceModel().addImage(twoChamberModel,
@@ -192,6 +196,8 @@ public class WorkspaceView extends View {
                 setMenu(mainImageView);
                 this.appFrame.add(mainComponent);
                 appFrame.setVisible(true);
+                appFrame.revalidate();  //kw
+                appFrame.repaint();  //kw
             }
         } else if (obj.getClass() == Study.class) {
             getWorkspaceModel().setStudy((Study) obj);
@@ -203,6 +209,7 @@ public class WorkspaceView extends View {
         }
         
     }
+    
 
     /**
      * Sets the class' appFrame attribute.
@@ -728,5 +735,9 @@ public class WorkspaceView extends View {
             closeWindow();
         }
     }
+    
+    
+
+     
     
 }
