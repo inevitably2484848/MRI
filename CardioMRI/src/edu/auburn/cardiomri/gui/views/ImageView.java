@@ -9,6 +9,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionListener;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.GeneralPath;
 import java.util.Observable;
@@ -164,6 +165,23 @@ public class ImageView extends SingleImagePanel implements ActionListener,
         this.panel.requestFocusInWindow();
     }
     
+    public void mouseDragged(MouseEvent e) {
+    	java.awt.geom.Point2D mouseClick = getImageCoordinateFromWindowCoordinate(e.getX(), e.getY());
+    	
+        if(!lmrkMode){
+        	if(getImageModel().getSelectedContour().deleteControlPoint(mouseClick.getX(), mouseClick.getY())) {
+        		getImageModel().getSelectedContour().addControlPoint(mouseClick.getX(), mouseClick.getY());
+        	}
+        	else {
+        		System.err.println("currentContour is null");
+        	}
+        }
+        else {
+        	getImageModel().setLandmarkCoordinates(mouseClick.getX(), mouseClick.getY());
+        	lmrkMode = false;
+        }
+        this.panel.requestFocusInWindow();
+    }
 
     /**
      * This is so every time a mouse event is processed through the Image
