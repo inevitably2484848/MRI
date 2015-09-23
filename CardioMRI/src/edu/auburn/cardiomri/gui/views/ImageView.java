@@ -176,10 +176,6 @@ public class ImageView extends SingleImagePanel implements ActionListener,
         		System.err.println("currentContour is null");
         	}
         }
-        else {
-        	getImageModel().setLandmarkCoordinates(mouseClick.getX(), mouseClick.getY());
-        	lmrkMode = false;
-        }
         this.panel.requestFocusInWindow();
     }
 
