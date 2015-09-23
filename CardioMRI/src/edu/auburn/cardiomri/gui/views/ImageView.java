@@ -53,6 +53,7 @@ public class ImageView extends SingleImagePanel implements ActionListener,
             updateSelectedContour(getImageModel().getSelectedContour());
             updateVisibleContours(getImageModel().getVisibleContours());
             updateVisibleLandmarks(getImageModel().getVisibleLandmarks());
+            updateTensionPoints(getImageModel().getSelectedContour());
             this.setPreDefinedShapes(visibleShapes);
             refresh();
         }
@@ -73,9 +74,18 @@ public class ImageView extends SingleImagePanel implements ActionListener,
                 visibleShapes.add(ellipse);
             }
         }
-
-        
     }
+    
+    private void updateTensionPoints(Contour contour) {
+    	
+    	if(contour != null) {
+    		for (Vector3d controlPoint : contour.getControlPoints()) {
+    			Ellipse2D ellipse = new Ellipse2D.Double(controlPoint.getTensionX(), controlPoint.getTensionY(), 2, 2);
+    			visibleShapes.add(ellipse);
+    		}
+    	}
+    }
+    
     private void updateVisibleLandmarks(Vector<Landmark> landmarks){
     	for (Landmark l:landmarks){
     		double x = l.getCoordinates().getX();
