@@ -165,7 +165,7 @@ public class ImageView extends SingleImagePanel implements ActionListener,
             	if (!getImageModel().addControlPoint(mouseClick.getX(),
                     mouseClick.getY())) {
                 System.err.println("currentContour is null");
-            }
+            	}
             }
             else {
             	getImageModel().setLandmarkCoordinates(mouseClick.getX(), mouseClick.getY());
@@ -181,6 +181,10 @@ public class ImageView extends SingleImagePanel implements ActionListener,
         if(!lmrkMode){
         	if(getImageModel().getSelectedContour().deleteControlPoint(mouseClick.getX(), mouseClick.getY())) {
         		getImageModel().getSelectedContour().addControlPoint(mouseClick.getX(), mouseClick.getY());
+        	}
+        	else if(getImageModel().getSelectedContour().moveTensionPoint(mouseClick.getX(), mouseClick.getY())) {
+        		//temporary print statement
+        		System.out.println("Tension Point moved");
         	}
         	else {
         		System.err.println("currentContour is null");

@@ -295,6 +295,33 @@ public class Contour implements Shape, Serializable {
     	 } // end for loop
     	 return bToClose;
      } // end isToClose
+     
+     public boolean moveTensionPoint(double x, double y) {
+    	 double minGap = 3;
+    	 boolean moved = false;
+    	 int index = -1;
+    	 Vector3d temp;
+    	 double tempX, tempY;
+    	 
+    	 //find point that is close enough to delete
+    	 for(int i = 0; i < controlPoints.size(); i ++) {
+    		 temp = controlPoints.get(i);
+    		 tempX = temp.getTensionX();
+    		 tempY = temp.getTensionY();
+    		 if((Math.abs(tempX - x) < minGap) && (Math.abs(tempY - y) < minGap)){
+    			 index = i;
+    			 break;
+    		 }
+    	 }
+    	 //update tension point values
+    	 if(index >= 0) {
+			 controlPoints.get(index).setTensionX(x);
+			 controlPoints.get(index).setTensionY(y);
+			 generatedPoints = ContourCalc.generate(controlPoints, isClosedCurve()); //refresh curve
+			 moved = true;
+		 }
+    	 return moved;
+     }
     
      /** ----------------------------------------------------------------------
       * deleteControlPoint(x,y): removes selected control point from controlPoint List. 

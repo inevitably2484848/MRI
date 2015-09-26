@@ -80,7 +80,14 @@ public class ImageModel extends Model {
     	return true;
     } //deleteControlPoint
 
-    
+    public boolean moveTensionPoint(double x, double y) {
+    	boolean move;
+    	move = selected.moveTensionPoint(x, y);
+    	    	
+    	setChanged();
+    	notifyObservers(dImage);
+    	return move;
+    } //move tensionPoint
     
     /**
      * Delete all of the visible and hidden contours
