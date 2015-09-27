@@ -13,6 +13,8 @@ public class Vector3d implements Serializable {
     private double x, y, z;
     private double tensionX = 0.0;
     private double tensionY = 0.0;
+    private double tensionY2 = 0.0;
+    private double tensionX2 = 0.0;
 
     /**
      * Basic constructor for Vector3d
@@ -47,6 +49,14 @@ public class Vector3d implements Serializable {
     	return tensionY;
 	}	
     
+    public double getTensionX2() {
+    	return tensionX2;
+    }
+    
+    public double getTensionY2() {
+    	return tensionY2;
+    }
+    
     public void setTensionX(double x) {
     	this.tensionX = x;
     }
@@ -55,6 +65,13 @@ public class Vector3d implements Serializable {
     	this.tensionY = y;
     }
     
+    public void setTensionX2(double x) {
+    	this.tensionX2 = x;
+    }
+    
+    public void setTensionY2(double y) {
+    	this.tensionY2 = y;
+    }
     /**
      * This method performs the cross product of (calling Vector3d) x (vec2)
      * 

@@ -187,7 +187,7 @@ public final class ContourCalc {
      * 
      * @param first control point 
      * @param second control point
-     * @return new Vector3d objet with the appropriate X, Y coordinate
+     * @return new Vector3d object with the appropriate X, Y coordinate
      */
     public static Vector3d getTensionPoint(Vector3d a, Vector3d b) {
     	
