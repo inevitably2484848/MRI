@@ -15,8 +15,6 @@ import edu.auburn.cardiomri.datastructure.Contour.Type;
 import edu.auburn.cardiomri.gui.models.ImageModel;
 import edu.auburn.cardiomri.gui.views.ImageView;
 import edu.auburn.cardiomri.gui.views.View;
-import edu.auburn.cardiomri.gui.views.WorkspaceView;
-
 
 //add popupmenuListener class
 
@@ -90,12 +88,11 @@ public class ContourModeMenus extends View implements ActionListener{
 		contourPop.addSeparator();
 		contourPop.add(ra);
 		
-
 		return contourPop;
 	}
+	
+	
 
-
- 
 
 }
 
@@ -121,7 +118,11 @@ class MyPopupMenuListener implements PopupMenuListener {
 
 
 //Define ActionListener
-
+/**
+ * 
+ * @author Kullen
+ *
+ */
 class PopupActionListener extends View implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent actionEvent) {
@@ -131,7 +132,6 @@ class PopupActionListener extends View implements ActionListener {
         	getImageModel().addContourToImage(new Contour(Type.DEFAULT));
         } else if (actionCommand.equals("LV EPI")) {
             getImageModel().addContourToImage(new Contour(Type.LV_EPI));
-
         } else if (actionCommand.equals("LV ENDO")) {
             getImageModel().addContourToImage(new Contour(Type.LV_ENDO));
 

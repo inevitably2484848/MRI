@@ -31,6 +31,7 @@ import edu.auburn.cardiomri.util.ContourModeMenus;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 
+
 /**
  * This view will house all the control functions of the gridView
  * 		A play button (to begin auto-rotating through the current times in the selected slice)
@@ -159,6 +160,7 @@ public class GridControlView extends View implements ChangeListener {
 		timer();  //popup menus close after being inactive for 9 sec
 	}
 	
+
 	
 	/**
 	 * Required for changeListener
