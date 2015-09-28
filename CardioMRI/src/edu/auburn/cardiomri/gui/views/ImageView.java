@@ -81,7 +81,9 @@ public class ImageView extends SingleImagePanel implements ActionListener,
     	if(contour != null) {
     		for (Vector3d controlPoint : contour.getControlPoints()) {
     			Ellipse2D ellipse = new Ellipse2D.Double(controlPoint.getTensionX(), controlPoint.getTensionY(), 2, 2);
+    			Ellipse2D ellipse2 = new Ellipse2D.Double(controlPoint.getTensionX2(), controlPoint.getTensionY2(), 2, 2);
     			visibleShapes.add(ellipse);
+    			visibleShapes.add(ellipse2);
     		}
     	}
     }
