@@ -18,6 +18,7 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.KeyStroke;
 import javax.swing.filechooser.FileFilter;
@@ -38,7 +39,8 @@ import edu.auburn.cardiomri.util.StudyUtilities;
  * @author Moniz
  * 
  * This view owns and manages all other views. It houses the menu
- * as well as the various panels for the GUI.
+ * as well as the various panels for the GUI.  
+ * Hot Keys
  */
 public class WorkspaceView extends View {
     private static final int WORKSPACE_WIDTH = 1200;
@@ -47,6 +49,8 @@ public class WorkspaceView extends View {
     protected JComponent mainComponent;
     protected JFrame appFrame;
     protected String studyFileName;
+    public static JPanel ccvPanel;
+    
     
     /**
      * Class constructor. Sets the current working directory and
@@ -154,9 +158,9 @@ public class WorkspaceView extends View {
                 MultipleImageView multipleImages = new MultipleImageView();
                 multipleImages.setModel(gridModel);
 
-                ContourControlView contourControl = new ContourControlView();
+                ContourControlView contourControl = new ContourControlView(null);  //preBuild
                 contourControl.setModel(mainImageModel);
-
+         
                 getWorkspaceModel().addImage(mainImageModel,
                         study.getShortAxisGroup());
                 getWorkspaceModel().addImage(twoChamberModel,
@@ -189,9 +193,14 @@ public class WorkspaceView extends View {
 
                 mainComponent = allPanes;
                 this.addKeyBindings(gridView);
+                
+                //kw
+                setMainImageView(mainImageView);
                 setMenu(mainImageView);
                 this.appFrame.add(mainComponent);
                 appFrame.setVisible(true);
+                appFrame.revalidate();  //kw
+                appFrame.repaint();  //kw
             }
         } else if (obj.getClass() == Study.class) {
             getWorkspaceModel().setStudy((Study) obj);
@@ -203,6 +212,7 @@ public class WorkspaceView extends View {
         }
         
     }
+    
 
     /**
      * Sets the class' appFrame attribute.
@@ -328,7 +338,7 @@ public class WorkspaceView extends View {
         fileMenu.add(saveAsStudy);
 
         // ----- Add ------
-        JMenu add = new JMenu("Add"); // change to add shape later?
+        JMenu add = new JMenu("Add"); // change to add shape later?  //kw
 
         // Contour Submenu
         JMenu addContour = new JMenu("Add Contour");
@@ -351,6 +361,7 @@ public class WorkspaceView extends View {
         lvEndo.setActionCommand("LV ENDO");
         lvEndo.addActionListener(mainImageView);
         leftVentricle.add(lvEndo);
+        
         JMenuItem laEpi = new JMenuItem("Epicardial");
         laEpi.setActionCommand("LA EPI");
         laEpi.addActionListener(mainImageView);
@@ -368,6 +379,7 @@ public class WorkspaceView extends View {
         rvEndo.setActionCommand("RV ENDO");
         rvEndo.addActionListener(mainImageView);
         rightVentricle.add(rvEndo);
+        
         JMenuItem raEpi = new JMenuItem("Epicardial");
         raEpi.setActionCommand("RA EPI");
         raEpi.addActionListener(mainImageView);
@@ -537,10 +549,6 @@ public class WorkspaceView extends View {
         	
         	ContourUtilities.writeContoursToFile(getWorkspaceModel().getStudy()
         			.getUIDToImage(), newContourFileName);
-        	
-        	// Write only control points file
-        	ContourUtilities.writeContourControlPointsToFile(getWorkspaceModel().getStudy()
-        			.getUIDToImage(), newContourFileName.concat(".import"));
         }
         else if (response == JFileChooser.CANCEL_OPTION) {
         }
@@ -563,14 +571,13 @@ public class WorkspaceView extends View {
     public void setUpLoad() throws IOException {
     	JFileChooser loadFC = fileChooser;
     	FileFilter studyFileFilter = new FileNameExtensionFilter(
-        		"Import file (.import)", "import");
+        		"Text File", "txt");
         
         loadFC.setFileFilter(studyFileFilter);
         int returnVal = fileChooser.showOpenDialog(this.mainComponent);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             File file = new File(fileChooser.getSelectedFile().getPath());
-            getWorkspaceModel().loadContour(file, getWorkspaceModel().getStudy()
-                    .getUIDToImage());
+            getWorkspaceModel().loadContour(file);
         }
     }
 
@@ -728,5 +735,20 @@ public class WorkspaceView extends View {
             closeWindow();
         }
     }
+    
+    //-------------------------------------------------------------------------
+    //KW
+    
+    public static ImageView imageView;
+    
+    //set and get MainImageView()
+    public static void setMainImageView(ImageView imageViewIN){
+    	imageView = imageViewIN;
+    }
+    public static ImageView getMainImageView(){
+    	return imageView;
+    }
+
+     
     
 }

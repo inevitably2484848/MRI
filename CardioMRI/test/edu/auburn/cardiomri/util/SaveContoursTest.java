@@ -8,6 +8,8 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +20,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import edu.auburn.cardiomri.datastructure.Contour;
+import edu.auburn.cardiomri.datastructure.Contour.Type;
 import edu.auburn.cardiomri.datastructure.DICOMImage;
 import edu.auburn.cardiomri.datastructure.Vector3d;
 
@@ -78,9 +81,9 @@ public class SaveContoursTest {
             i++;
         }
 
-        List<Vector3d> generatedPoints = new Vector<Vector3d>();
-        generatedPoints = c1.getGeneratedPoints();
-        assertEquals(4, Integer.parseInt(reader.readLine()));
+        controlPoints = new Vector<Vector3d>();
+        controlPoints = c1.getControlPoints();
+        assertEquals(2, Integer.parseInt(reader.readLine()));
 
         String[] line = new String[2];
 
@@ -91,6 +94,20 @@ public class SaveContoursTest {
             assertEquals(x, Double.parseDouble(line[0]), 0.0000);
             assertEquals(y, Double.parseDouble(line[1]), 0.0000);
         }
+        
+        reader.readLine(); // Throwaway -1
+        
+        i = 0;
+        // skip to number of points
+        while (i < 3) {
+            reader.readLine();
+            i++;
+        }
+        
+        List<Vector3d> generatedPoints = new Vector<Vector3d>();
+        generatedPoints = c1.getGeneratedPoints();
+        // With only 2 control points, no extra points are generated
+        assertEquals(2, Integer.parseInt(reader.readLine()));
 
         for (Vector3d p : generatedPoints) {
             double x = p.getX();
@@ -131,9 +148,10 @@ public class SaveContoursTest {
             i++;
         }
 
-        List<Vector3d> generatedPoints = new Vector<Vector3d>();
-        generatedPoints = c1.getGeneratedPoints();
-        assertEquals(16, Integer.parseInt(reader.readLine()));
+        
+        controlPoints = new Vector<Vector3d>();
+        controlPoints = c1.getControlPoints();
+        assertEquals(3, Integer.parseInt(reader.readLine()));
 
         String[] line = new String[2];
 
@@ -148,6 +166,20 @@ public class SaveContoursTest {
             assertEquals(x, d1);
             assertEquals(y, d2);
         }
+        
+        reader.readLine(); // Throwaway -1
+        
+        i = 0;
+        // skip to number of points
+        while (i < 3) {
+            reader.readLine();
+            i++;
+        }
+        
+        List<Vector3d> generatedPoints = new Vector<Vector3d>();
+        generatedPoints = c1.getGeneratedPoints();
+        // Generate 99 extra points per control point
+        assertEquals(3*99, Integer.parseInt(reader.readLine()));	
 
         for (Vector3d p : generatedPoints) {
             BigDecimal x = BigDecimal.valueOf(p.getX()).setScale(4,
@@ -161,5 +193,97 @@ public class SaveContoursTest {
             assertEquals(y, d2);
         }
 
+    }
+    
+    @Test
+    public void test003SaveOneContourOnOneImageFourControlPointsForEachContourType()
+            throws Exception {
+    	ArrayList<Type> types = new ArrayList<Type>(
+    			Arrays.asList(
+    					Contour.Type.LA_ENDO,
+    					Contour.Type.LA_EPI,
+    					Contour.Type.LV_ENDO,
+    					Contour.Type.LV_EPI,
+    					Contour.Type.RA_ENDO,
+    					Contour.Type.RA_EPI,
+    					Contour.Type.RV_ENDO,
+    					Contour.Type.RV_EPI));
+    	
+    	for (Type type : types) {
+    		this.tearDown();		// Fixes issues with appending file multiple times
+    		this.setUp();
+	        Vector3d p1 = new Vector3d(1.0, 2.0, 0.0);
+	        Vector3d p2 = new Vector3d(3.0, 4.0, 0.0);
+	        Vector3d p3 = new Vector3d(5.0, 6.0, 0.0);
+	        Vector3d p4 = new Vector3d(7.0, 8.0, 0.0);
+	
+	        List<Vector3d> controlPoints = new Vector<Vector3d>();
+	        controlPoints.add(p4);
+	        controlPoints.add(p3);
+	        controlPoints.add(p2);
+	        controlPoints.add(p1);
+	
+	        Contour c1 = new Contour(type);
+	        c1.setControlPoints(controlPoints); // automatically generates other
+	                                            // points
+	
+	        image1.getContours().add(c1);
+	        SOPInstanceUIDToDICOMImage.put("first", image1);
+	
+	        ContourUtilities.writeContoursToFile(SOPInstanceUIDToDICOMImage, path);
+	
+	        int i = 0;
+	        // skip to number of points
+	        while (i < 3) {
+	            reader.readLine();
+	            i++;
+	        }
+	
+	        
+	        controlPoints = new Vector<Vector3d>();
+	        controlPoints = c1.getControlPoints();
+	        String t = reader.readLine();
+	        assertEquals(4, Integer.parseInt(t));
+	
+	        String[] line = new String[2];
+	
+	        for (Vector3d p : controlPoints) {
+	            BigDecimal x = BigDecimal.valueOf(p.getX()).setScale(4,
+	                    BigDecimal.ROUND_UP);
+	            BigDecimal y = BigDecimal.valueOf(p.getY()).setScale(4,
+	                    BigDecimal.ROUND_UP);
+	            line = reader.readLine().split("\t");
+	            BigDecimal d1 = new BigDecimal(line[0]);
+	            BigDecimal d2 = new BigDecimal(line[1]);
+	            assertEquals(x, d1);
+	            assertEquals(y, d2);
+	        }
+	        
+	        reader.readLine(); // Throwaway -1
+	        
+	        i = 0;
+	        // skip to number of points
+	        while (i < 3) {
+	            reader.readLine();
+	            i++;
+	        }
+	        
+	        List<Vector3d> generatedPoints = new Vector<Vector3d>();
+	        generatedPoints = c1.getGeneratedPoints();
+	        // Generate 99 extra points per control point
+	        assertEquals(4*99, Integer.parseInt(reader.readLine()));	
+	
+	        for (Vector3d p : generatedPoints) {
+	            BigDecimal x = BigDecimal.valueOf(p.getX()).setScale(4,
+	                    BigDecimal.ROUND_UP);
+	            BigDecimal y = BigDecimal.valueOf(p.getY()).setScale(4,
+	                    BigDecimal.ROUND_UP);
+	            line = reader.readLine().split("\t");
+	            BigDecimal d1 = new BigDecimal(line[0]);
+	            BigDecimal d2 = new BigDecimal(line[1]);
+	            assertEquals(x, d1);
+	            assertEquals(y, d2);
+	        }
+    	}
     }
 }
