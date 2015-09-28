@@ -191,6 +191,17 @@ public class ImageView extends SingleImagePanel implements ActionListener,
         	else {
         		System.err.println("currentContour is null");
         	}
+        	
+        	// Forces updating of control and tension points during dragging
+        	DICOMImage dImage = getImageModel().getImage();
+            dirtySource(new ConstructImage(dImage));
+            visibleShapes.clear();
+            updateSelectedContour(getImageModel().getSelectedContour());
+            updateVisibleContours(getImageModel().getVisibleContours());
+            updateVisibleLandmarks(getImageModel().getVisibleLandmarks());
+            updateTensionPoints(getImageModel().getSelectedContour());
+            this.setPreDefinedShapes(visibleShapes);
+            refresh();
         }
         this.panel.requestFocusInWindow();
     }
