@@ -5,6 +5,7 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
@@ -81,11 +82,11 @@ public class ContourTest {
         fail("Exception not thrown");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testAddControlPointThrowsIllegalArgumentExceptionWhenPointHasAlreadyBeenAdded() {
         contour.addControlPoint(1, 2);
         contour.addControlPoint(1, 2);
-        fail("Exception not thrown");
+        assertEquals(1, contour.getControlPoints().size());
     }
 
     @Test
@@ -98,14 +99,22 @@ public class ContourTest {
     }
     
     
+    @Test
+    public void testControlPointsTooCloseDontAdd() {
+        contour.addControlPoint(1, 2);
+        contour.addControlPoint(2, 1);
+        List<Vector3d> points = contour.getControlPoints();
+
+        assertEquals(1, points.size());
+    }
 
     @Test
     public void testGetControlPointsReturnsACopyOfTheInternalList() {
         contour.addControlPoint(1, 2);
-        contour.addControlPoint(3, 4);
+        contour.addControlPoint(5, 6);
         List<Vector3d> listWithTwoPoints = contour.getControlPoints();
 
-        contour.addControlPoint(5, 6);
+        contour.addControlPoint(10, 12);
         List<Vector3d> listWithThreePoints = contour.getControlPoints();
 
         assertEquals(2, listWithTwoPoints.size());
