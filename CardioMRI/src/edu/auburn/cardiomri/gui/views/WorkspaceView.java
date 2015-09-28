@@ -537,10 +537,6 @@ public class WorkspaceView extends View {
         	
         	ContourUtilities.writeContoursToFile(getWorkspaceModel().getStudy()
         			.getUIDToImage(), newContourFileName);
-        	
-        	// Write only control points file
-        	ContourUtilities.writeContourControlPointsToFile(getWorkspaceModel().getStudy()
-        			.getUIDToImage(), newContourFileName.concat(".import"));
         }
         else if (response == JFileChooser.CANCEL_OPTION) {
         }
@@ -563,14 +559,13 @@ public class WorkspaceView extends View {
     public void setUpLoad() throws IOException {
     	JFileChooser loadFC = fileChooser;
     	FileFilter studyFileFilter = new FileNameExtensionFilter(
-        		"Import file (.import)", "import");
+        		"Text File", "txt");
         
         loadFC.setFileFilter(studyFileFilter);
         int returnVal = fileChooser.showOpenDialog(this.mainComponent);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             File file = new File(fileChooser.getSelectedFile().getPath());
-            getWorkspaceModel().loadContour(file, getWorkspaceModel().getStudy()
-                    .getUIDToImage());
+            getWorkspaceModel().loadContour(file);
         }
     }
 
