@@ -49,6 +49,8 @@ public class ImageView extends SingleImagePanel implements ActionListener,
     private boolean lmrkMode = false;
     private Vector<Shape> visibleShapes = new Vector<Shape>();
     private ContourControlView contourPanel; // testing
+    
+    
     /**
      * Redraws the DICOMImage, updates the selected contour's control points,
      * and updates the set of visible contours.
@@ -56,8 +58,8 @@ public class ImageView extends SingleImagePanel implements ActionListener,
     public void update(Observable obs, Object obj) {
         if (obj.getClass() == DICOMImage.class) {
             DICOMImage dImage = getImageModel().getImage();
-            //System.out.println("\n\nCall ContourControlView");
-            ContourControlView contourPanel = new ContourControlView(dImage);  //KW
+//            System.out.println("\n\nCall ContourControlView");
+//            ContourControlView contourPanel = new ContourControlView(dImage);  //KW
 //            JPanel temp = contourPanel.getPanel(); //kw
 //            updateControlPanel(temp,dImage); //kw
 
@@ -121,38 +123,38 @@ public class ImageView extends SingleImagePanel implements ActionListener,
      * @param panel - JPanel
      * @param dImage - DICOMImage
      * ------------------------------------------------------------------------*/
-    private void updateControlPanel(JPanel panel, DICOMImage dImage){
-    	//System.out.println("\n\nUPDATE PANEL FROM IMAGEVIEW");
-    	
-    	panel.add(new JButton("TEST"), BorderLayout.SOUTH);
-    	//System.out.println("Get Panel Name " + panel.getName());
-    	//panel.removeAll();
-    	//panel.add(new JButton("TEST2"), BorderLayout.CENTER);
-    	//panel.revalidate();
-    	//validate();
-    	//panel.repaint();
-    	//System.out.println("Before REMOVE");
-    	Component[] cList = panel.getComponents();
-    	for(int i = 0 ; i < cList.length ; i++){
-    		//System.out.println(cList[i]);
-    		//System.out.println(cList[i].getName());
-    	}
-    	
-    	removeAll();
-    	panel.removeAll();
-
-    	panel.revalidate();
-    	panel.updateUI();
-    	panel.doLayout();
-    	panel.repaint();
-    	//System.out.println("\n\nAfter REMOVE");
-    	cList = panel.getComponents();
-    	for(int i = 0 ; i < cList.length ; i++){
-    		//System.out.println(cList[i]);
-    		//System.out.println(cList[i].getName());
-    	}
-    	
-    } // ----------------------------------------------------------------------
+//    private void updateControlPanel(JPanel panel, DICOMImage dImage){
+//    	//System.out.println("\n\nUPDATE PANEL FROM IMAGEVIEW");
+//    	
+//    	panel.add(new JButton("TEST"), BorderLayout.SOUTH);
+//    	//System.out.println("Get Panel Name " + panel.getName());
+//    	//panel.removeAll();
+//    	//panel.add(new JButton("TEST2"), BorderLayout.CENTER);
+//    	//panel.revalidate();
+//    	//validate();
+//    	//panel.repaint();
+//    	//System.out.println("Before REMOVE");
+//    	Component[] cList = panel.getComponents();
+//    	for(int i = 0 ; i < cList.length ; i++){
+//    		//System.out.println(cList[i]);
+//    		//System.out.println(cList[i].getName());
+//    	}
+//    	
+//    	removeAll();
+//    	panel.removeAll();
+//
+//    	panel.revalidate();
+//    	panel.updateUI();
+//    	panel.doLayout();
+//    	panel.repaint();
+//    	//System.out.println("\n\nAfter REMOVE");
+//    	cList = panel.getComponents();
+//    	for(int i = 0 ; i < cList.length ; i++){
+//    		//System.out.println(cList[i]);
+//    		//System.out.println(cList[i].getName());
+//    	}
+//    	
+//    } // ----------------------------------------------------------------------
 
     /**
      * This is copy/pasted from the View class.
@@ -162,8 +164,15 @@ public class ImageView extends SingleImagePanel implements ActionListener,
         this.model.addObserver(this);
     }
 
+    protected static ImageModel imageModel; //kw
+    
     public ImageModel getImageModel() {
+    	imageModel = (ImageModel) this.model;
         return (ImageModel) this.model;
+    }
+    
+    public static ImageModel getImageModelStatic(){ //kw
+    	return imageModel;
     }
 
     public Model getModel() {
@@ -201,44 +210,58 @@ public class ImageView extends SingleImagePanel implements ActionListener,
     public void mouseClicked(MouseEvent e) {
     	int mode = GridControlView.getMode(); //kw
     	
-    	java.awt.geom.Point2D mouseClick = getImageCoordinateFromWindowCoordinate(
-                e.getX(), e.getY());
+    	java.awt.geom.Point2D mouseClick = 
+    			getImageCoordinateFromWindowCoordinate(e.getX(), e.getY());
     	
-    	if(mode == 1){ // adding contour mode
+    	if(mode == 1){ // adding contour mode  --------------------------------
+    		
     		//left click add contour point
+    		if(SwingUtilities.isLeftMouseButton(e)){
+	    		if (!getImageModel().addControlPoint
+	    				(mouseClick.getX(),mouseClick.getY())) {
+	                System.err.println("currentContour is null");
+	            }
+    		}
+    		
     		
     		//RC context menu if contour selected
-    		// Delete
-    		// lock tension points
-    		// properties
-    		
-    		
-    	}
+    			// Delete
+    			// lock tension points
+    			// properties
+    		else{
+    			
+    		}
+    	} //-------------------------------------------------------------------
+    	
     	else if (mode == 2){ //landmark mode
     		//left click add landMark
     	}
     	else { //select mode
-    		//leftClick select closest contour or landMark
     		
+    		//leftClick select closest contour or landMark
+    		 if (SwingUtilities.isLeftMouseButton(e)) {
+    	            getImageModel().selectContour(mouseClick.getX(), mouseClick.getY());
+    	     } 
+    		 
     		
     		// rightClick context menu
     	}
     	
-        if (SwingUtilities.isRightMouseButton(e)) {
-            getImageModel().selectContour(mouseClick.getX(), mouseClick.getY());
-        } 
-        else {
-            if (!lmrkMode){
-            	if (!getImageModel().addControlPoint(mouseClick.getX(),
-                    mouseClick.getY())) {
-                System.err.println("currentContour is null");
-            	}
-            }
-            else {
-            	getImageModel().setLandmarkCoordinates(mouseClick.getX(), mouseClick.getY());
-            	lmrkMode = false;
-            }
-        }
+//        if (SwingUtilities.isRightMouseButton(e)) {
+//            getImageModel().selectContour(mouseClick.getX(), mouseClick.getY());
+//        } 
+//        else {
+//            if (!lmrkMode){
+//            	if (!getImageModel().addControlPoint(mouseClick.getX(),
+//                    mouseClick.getY())) {
+//                System.err.println("currentContour is null");
+//            	}
+//            }
+//            else {
+//            	getImageModel().setLandmarkCoordinates(mouseClick.getX(), mouseClick.getY());
+//            	lmrkMode = false;
+//            }
+//        }
         this.panel.requestFocusInWindow();
     }
     
@@ -260,7 +283,7 @@ public class ImageView extends SingleImagePanel implements ActionListener,
         String actionCommand = e.getActionCommand();
 
         if (actionCommand.equals("Default Type")) {
-            getImageModel().addContourToImage(new Contour(Type.DEFAULT));
+        	getImageModel().addContourToImage(new Contour(Type.DEFAULT));
         } else if (actionCommand.equals("LV EPI")) {
             getImageModel().addContourToImage(new Contour(Type.LV_EPI));
 

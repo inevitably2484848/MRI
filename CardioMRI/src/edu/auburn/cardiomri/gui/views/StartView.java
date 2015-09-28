@@ -40,6 +40,7 @@ public class StartView extends View {
 	    
         this.panel.setLayout(new GridBagLayout());
 
+        
         //Add the three buttons
         JButton newStudy = new JButton("New Study");
         newStudy.setActionCommand("Create New Study");
@@ -110,18 +111,25 @@ public class StartView extends View {
      *
      */
     public void createNewStudy() {
-        fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+    	
+    	//commented a bunch of stuff out for testing
+    	//when finished testing uncomment and delete testing stuff
+        //fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);  // **
 
-        int returnVal = fileChooser.showOpenDialog(this.panel);
-        if (returnVal == JFileChooser.APPROVE_OPTION) {
-
-            String directory = fileChooser.getSelectedFile().getAbsolutePath();
+        //int returnVal = fileChooser.showOpenDialog(this.panel); //**
+        boolean x = true; //testing remove later
+        if(x == true) {  //testing remove later
+        //if (returnVal == JFileChooser.APPROVE_OPTION) { //**
+        	
+           // String directory = fileChooser.getSelectedFile().getAbsolutePath(); //**
+            String directory = "/Users/Kullen/GitHub/MRI/CardioMRI/res/SCCOR/05DAC002/BAS"; //Testing remove later
             Path path = Paths.get(directory);
-
+            
+            
             DICOMFileTreeWalker fileTreeWalker = new DICOMFileTreeWalker();
 
             Study study = fileTreeWalker.addFileTreeToStudy(path, new Study());
-
+            
             this.getStartModel().setStudy(study);
         } else {
             // System.out.println("FileChooser : Canceled choosing directory");
@@ -158,4 +166,5 @@ public class StartView extends View {
     {
     	return (StartModel) this.model;
     }
+    
 }

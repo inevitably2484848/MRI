@@ -193,6 +193,9 @@ public class WorkspaceView extends View {
 
                 mainComponent = allPanes;
                 this.addKeyBindings(gridView);
+                
+                //kw
+                setMainImageView(mainImageView);
                 setMenu(mainImageView);
                 this.appFrame.add(mainComponent);
                 appFrame.setVisible(true);
@@ -335,7 +338,7 @@ public class WorkspaceView extends View {
         fileMenu.add(saveAsStudy);
 
         // ----- Add ------
-        JMenu add = new JMenu("Add"); // change to add shape later?
+        JMenu add = new JMenu("Add"); // change to add shape later?  //kw
 
         // Contour Submenu
         JMenu addContour = new JMenu("Add Contour");
@@ -358,6 +361,7 @@ public class WorkspaceView extends View {
         lvEndo.setActionCommand("LV ENDO");
         lvEndo.addActionListener(mainImageView);
         leftVentricle.add(lvEndo);
+        
         JMenuItem laEpi = new JMenuItem("Epicardial");
         laEpi.setActionCommand("LA EPI");
         laEpi.addActionListener(mainImageView);
@@ -375,6 +379,7 @@ public class WorkspaceView extends View {
         rvEndo.setActionCommand("RV ENDO");
         rvEndo.addActionListener(mainImageView);
         rightVentricle.add(rvEndo);
+        
         JMenuItem raEpi = new JMenuItem("Epicardial");
         raEpi.setActionCommand("RA EPI");
         raEpi.addActionListener(mainImageView);
@@ -736,7 +741,18 @@ public class WorkspaceView extends View {
         }
     }
     
+    //-------------------------------------------------------------------------
+    //KW
     
+    public static ImageView imageView;
+    
+    //set and get MainImageView()
+    public static void setMainImageView(ImageView imageViewIN){
+    	imageView = imageViewIN;
+    }
+    public static ImageView getMainImageView(){
+    	return imageView;
+    }
 
      
     

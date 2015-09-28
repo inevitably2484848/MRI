@@ -4,6 +4,7 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Image;
+import java.awt.MouseInfo;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
@@ -14,7 +15,10 @@ import javax.swing.ButtonGroup;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JRadioButton;
 import javax.swing.JSlider;
 import javax.swing.JToggleButton;
@@ -23,6 +27,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import edu.auburn.cardiomri.gui.models.GridModel;
+import edu.auburn.cardiomri.util.ContourModeMenus;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 
@@ -50,6 +55,7 @@ public class GridControlView extends View implements ChangeListener {
 	protected static final int SELECT_MODE = 0;
 	protected static final int CONTOUR_MODE = 1;
 	protected static final int LANDMARK_MODE = 2;
+	protected JPopupMenu jpm = ContourModeMenus.popupMenuContour();
 	
 	/**
 	 * Sets panel to visible, adds slider to panel
@@ -84,7 +90,6 @@ public class GridControlView extends View implements ChangeListener {
 	 */
 	public void setUp()
 	{
-		
 		playButton = new JButton();
         playButton.addActionListener(this);
         playButton.setPreferredSize(new Dimension(50, 20));
@@ -112,7 +117,6 @@ public class GridControlView extends View implements ChangeListener {
 		contour.setToolTipText("Add New Contour");
 		contour.setMinimumSize(new Dimension(124,29));
 		
-		
 		landMark.addActionListener(this);
 		landMark.setActionCommand("landmark");
 		landMark.setToolTipText("Add New Landmark Point");
@@ -123,6 +127,7 @@ public class GridControlView extends View implements ChangeListener {
 		this.panel.add(modePanel);
 	} 
 	
+	
 	/** -----------------------------------------------------------------------
 	 *  mode state 
 	 *  changes mode when a toggle button is pressed.
@@ -132,18 +137,26 @@ public class GridControlView extends View implements ChangeListener {
 	 *  @author KulW
 	 */
 	public void modeState(){
+		
 		if(contour.isSelected()){
+			jpm.setLocation(MouseInfo.getPointerInfo().getLocation());
+			jpm.setVisible(true);
 			mode = CONTOUR_MODE;
 			new Toast("Contour Mode");
 		}
 		else if(landMark.isSelected()){
+			jpm.setVisible(false);
+			
 			mode = LANDMARK_MODE;
 			new Toast("Landmark Mode");
 		}
 		else {
+			jpm.setVisible(false);
 			mode = SELECT_MODE;
 			new Toast("Select Mode");
 		}
+		
+		timer();  //popup menus close after being inactive for 9 sec
 	}
 	
 	
@@ -189,6 +202,8 @@ public class GridControlView extends View implements ChangeListener {
     public void actionPerformed(ActionEvent e) {
         String actionCommand = e.getActionCommand();
         
+        System.out.println(actionCommand);
+        
         if(actionCommand.equals("STOP"))
         {
         	changeButtonState();
@@ -218,6 +233,32 @@ public class GridControlView extends View implements ChangeListener {
      */
     public static int getMode(){
     	return mode;
+    }
+    
+    
+   
+    
+    /**
+     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+     */
+
+    /**
+     *  TIMER Colapses popupMenus
+     */
+    public void timer(){
+    	if(jpm.isVisible()){
+			new Thread(){
+		            public void run() {
+		                try {
+		                    Thread.sleep(9000);
+		                    jpm.setVisible(false);
+		                    
+		                } catch (InterruptedException e) {
+		                    e.printStackTrace();
+		                }
+		            }
+		    }.start();
+    	}
     }
     
     /**
