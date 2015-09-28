@@ -1,17 +1,36 @@
 package edu.auburn.cardiomri.gui.views;
 
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.Image;
+import java.awt.MouseInfo;
 import java.awt.event.ActionEvent;
+import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
+import javax.imageio.ImageIO;
 import javax.swing.BoxLayout;
+import javax.swing.ButtonGroup;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JRadioButton;
 import javax.swing.JSlider;
+import javax.swing.JToggleButton;
+import javax.swing.UIManager;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import edu.auburn.cardiomri.gui.models.GridModel;
+import edu.auburn.cardiomri.util.ContourModeMenus;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.control.ToggleGroup;
+
 
 /**
  * This view will house all the control functions of the gridView
@@ -30,6 +49,15 @@ public class GridControlView extends View implements ChangeListener {
 	protected JButton playButton;
 	protected int playSpeed;
 	protected RunPlaybutton runner;
+	
+	protected JToggleButton contour = new JToggleButton("Add Contour"); //kw
+	protected JToggleButton landMark = new JToggleButton("Add LandMark"); //kw
+	protected static int mode = 0;   //0 - select ; 1 - contour ; 2 - landmark // kw
+	protected static final int SELECT_MODE = 0;
+	protected static final int CONTOUR_MODE = 1;
+	protected static final int LANDMARK_MODE = 2;
+	protected JPopupMenu jpm = ContourModeMenus.popupMenuContour();
+	
 	/**
 	 * Sets panel to visible, adds slider to panel
 	 * 
@@ -51,8 +79,11 @@ public class GridControlView extends View implements ChangeListener {
 		//Slider is from 0 to 20 with one digit increments
 		JSlider framesPerSecond = new JSlider(JSlider.HORIZONTAL, 0, 20, 1); 
 		framesPerSecond.addChangeListener(this);
+		framesPerSecond.setToolTipText("Change Speed");
 		   
 		this.panel.add(framesPerSecond);
+		
+		modeToggleButton(); //kw
 	}
 	
 	/**
@@ -69,6 +100,67 @@ public class GridControlView extends View implements ChangeListener {
 		
 		this.panel.add(playButton);
 	}
+	
+	/** -----------------------------------------------------------------------
+	 *  mode ToogleButton set up
+	 *  Creates a new panel and adds 2 toggle buttons to that panel. Then adds
+	 *  the new panel to the main panel.
+	 *  adds and sets actions to the toggle buttons
+	 *  you can set modes to add contours , add landmarks, de-selecting button 
+	 *  sets select mode
+	 *  @author KulW
+	 */
+	public void modeToggleButton(){
+		JPanel modePanel = new JPanel();
+	
+		contour.addActionListener(this);
+		contour.setActionCommand("contour");
+		contour.setToolTipText("Add New Contour");
+		contour.setMinimumSize(new Dimension(124,29));
+		
+		landMark.addActionListener(this);
+		landMark.setActionCommand("landmark");
+		landMark.setToolTipText("Add New Landmark Point");
+		
+		modePanel.add(contour);
+		modePanel.add(landMark);
+		
+		this.panel.add(modePanel);
+	} 
+	
+	
+	/** -----------------------------------------------------------------------
+	 *  mode state 
+	 *  changes mode when a toggle button is pressed.
+	 *  in Contour mode adds contour
+	 *  landmark mode adds landmark
+	 *  select mode select contours or landmarks
+	 *  @author KulW
+	 */
+	public void modeState(){
+		
+		if(contour.isSelected()){
+			jpm.setLocation(MouseInfo.getPointerInfo().getLocation());
+			jpm.setVisible(true);
+			mode = CONTOUR_MODE;
+			new Toast("Contour Mode");
+		}
+		else if(landMark.isSelected()){
+			jpm.setVisible(false);
+			
+			mode = LANDMARK_MODE;
+			new Toast("Landmark Mode");
+		}
+		else {
+			jpm.setVisible(false);
+			mode = SELECT_MODE;
+			new Toast("Select Mode");
+		}
+		
+		timer();  //popup menus close after being inactive for 9 sec
+	}
+	
+
 	
 	/**
 	 * Required for changeListener
@@ -89,17 +181,18 @@ public class GridControlView extends View implements ChangeListener {
      */
     private void changeButtonState()
     {
-    	if(buttonPressed)
-    	{
+    	if(buttonPressed) {
+    		Icon image = new ImageIcon("icons/play.png");
     		//Set to not pressed
     		playButton.setActionCommand("PLAY");
-            playButton.setText(">");
+    		playButton.setToolTipText("Play");
+    		playButton.setIcon(image);
     	}
-    	else
-    	{
+    	else {
     		//Set to pressed
     		playButton.setActionCommand("STOP");
-            playButton.setText("[ ]");
+    		playButton.setIcon(new ImageIcon("icons/pause1.png"));
+    		playButton.setToolTipText("Pause");
     	}
     	buttonPressed = !buttonPressed;
     }
@@ -110,6 +203,8 @@ public class GridControlView extends View implements ChangeListener {
      */
     public void actionPerformed(ActionEvent e) {
         String actionCommand = e.getActionCommand();
+        
+        System.out.println(actionCommand);
         
         if(actionCommand.equals("STOP"))
         {
@@ -123,9 +218,54 @@ public class GridControlView extends View implements ChangeListener {
         	Thread t = new Thread(runner);
         	t.start();
         }
+        else if(actionCommand.equalsIgnoreCase("contour")){  //kw
+        	landMark.setSelected(false);
+        	modeState();
+        }
+        else if(actionCommand.equalsIgnoreCase("landMark")){ //kw
+        	contour.setSelected(false);
+        	modeState();
+        }
     }
+    
+    /** -----------------------------------------------------------------------
+     *  Static Method so Other Classes can get the Mode Value
+     *  @return mode - int
+     *  @author KulW
+     */
+    public static int getMode(){
+    	return mode;
+    }
+    
+    
+   
+    
     /**
-     * Because the gridContorlModel would be more than a hassle, we chose to have the GridModel be the designated model for gridControlView
+     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+     */
+
+    /**
+     *  TIMER Colapses popupMenus
+     */
+    public void timer(){
+    	if(jpm.isVisible()){
+			new Thread(){
+		            public void run() {
+		                try {
+		                    Thread.sleep(9000);
+		                    jpm.setVisible(false);
+		                    
+		                } catch (InterruptedException e) {
+		                    e.printStackTrace();
+		                }
+		            }
+		    }.start();
+    	}
+    }
+    
+    /**
+     * Because the gridContorlModel would be more than a hassle, we chose to have 
+     * the GridModel be the designated model for gridControlView
      * 		This is set in the WorkspaceView
      * 
      * @return current Grid Model

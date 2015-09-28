@@ -46,7 +46,8 @@ public class ImageModel extends Model {
      * @return true if point was added, false otherwise
      */
     public boolean addControlPoint(double x, double y) {
-        if (selected == null) {
+        
+    	if (selected == null) {
             return false;
         }
         if(selected.notToClose(x, y)){
@@ -74,7 +75,6 @@ public class ImageModel extends Model {
     	if(!(selected.deleteControlPoint(x,y))){
     		return false;
     	}
-    	
     	setChanged();
     	notifyObservers(dImage);
     	return true;
