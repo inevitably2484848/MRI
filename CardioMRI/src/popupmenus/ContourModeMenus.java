@@ -8,7 +8,8 @@ import java.awt.event.MouseListener;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
-
+import javax.swing.event.MenuEvent;
+import javax.swing.event.MenuListener;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 
@@ -38,22 +39,14 @@ public class ContourModeMenus extends View implements ActionListener, MouseListe
 	public static JPopupMenu popupMenuContour(){
 
 		ActionListener actionListener = new PopupActionListener();
-
+		contourPop.setLightWeightPopupEnabled(false);
 		contourPop.add("Choose a Type");
 		contourPop.addSeparator();
-		
-		JMenuItem defaultType = new JMenuItem("Default");
-		defaultType.setActionCommand("Default Type");
-        defaultType.addActionListener(actionListener);
-		contourPop.add(defaultType);
-		
-		
 
-        
+		//JMenu lv = new JMenu("LV");
 		
-		JMenu lv = new JMenu("LV");
-        JMenuItem lvEpi = new JMenuItem("Epicardial");
-        JMenuItem lvEndo = new JMenuItem("Endocardial");
+        JMenuItem lvEpi = new JMenuItem("LV Epicardial");
+        JMenuItem lvEndo = new JMenuItem("LV Endocardial");
         
         lvEpi.setActionCommand("LV EPI");
         lvEpi.addActionListener(actionListener);
@@ -61,53 +54,62 @@ public class ContourModeMenus extends View implements ActionListener, MouseListe
         lvEndo.setActionCommand("LV ENDO");
         lvEndo.addActionListener(actionListener);
         
-        lv.add(lvEpi);
-        lv.add(lvEndo);
-		
-        contourPop.add(lv);
+        contourPop.add(lvEpi);
+        contourPop.add(lvEndo);
+        contourPop.addSeparator();
+        //contourPop.add(lv);
 
-		JMenu la = new JMenu("LA");
-        JMenuItem laEpi = new JMenuItem("Epicardial");
+		//JMenu la = new JMenu("LA");
+        JMenuItem laEpi = new JMenuItem("LA Epicardial");
+        JMenuItem laEndo = new JMenuItem("LA Endocardial");
+        
         laEpi.setActionCommand("LA EPI");
         laEpi.addActionListener(actionListener);
-        la.add(laEpi);
-        JMenuItem laEndo = new JMenuItem("Endocardial");
         laEndo.setActionCommand("LA ENDO");
         laEndo.addActionListener(actionListener);
-        la.add(laEndo);
+        
+        contourPop.add(laEndo);
+        contourPop.add(laEpi);
+        contourPop.addSeparator();
 		
-		
-		JMenu rv = new JMenu("RV");
-        JMenuItem rvEpi = new JMenuItem("Epicardial");
+		//JMenu rv = new JMenu("RV");
+        
+        JMenuItem rvEpi = new JMenuItem("RV Epicardial");
+        JMenuItem rvEndo = new JMenuItem("RV Endocardial");
+        
         rvEpi.setActionCommand("RV EPI");
         rvEpi.addActionListener(actionListener);
-        rv.add(rvEpi);
-        JMenuItem rvEndo = new JMenuItem("Endocardial");
         rvEndo.setActionCommand("RV ENDO");
         rvEndo.addActionListener(actionListener);
-        rv.add(rvEndo);
         
+        contourPop.add(rvEpi);
+        contourPop.add(rvEndo);
+        contourPop.addSeparator();
+		//JMenu ra = new JMenu("RA");
         
-		JMenu ra = new JMenu("RA");
-        JMenuItem raEpi = new JMenuItem("Epicardial");
+        JMenuItem raEpi = new JMenuItem("RA Epicardial");
+        JMenuItem raEndo = new JMenuItem("RA Endocardial");
+        
         raEpi.setActionCommand("RA EPI");
         raEpi.addActionListener(actionListener);
-        ra.add(raEpi);
-        JMenuItem raEndo = new JMenuItem("Endocardial");
         raEndo.setActionCommand("RA ENDO");
         raEndo.addActionListener(actionListener);
-        ra.add(raEndo);
-		
-		
+        
+        contourPop.add(raEndo);
+        contourPop.add(raEpi);
+        
         //jpopupmenu add all menus to popup menu
 		
 		
-		contourPop.add(la);
+//		contourPop.add(la);
+//		
+//		contourPop.add(rv);
+//		
+//		contourPop.add(ra);
 		
-		contourPop.add(rv);
 		
-		contourPop.add(ra);
-		
+		contourPop.repaint();
+		contourPop.revalidate();
 		return contourPop;
 	}
 	
@@ -148,7 +150,6 @@ class PopupActionListener extends View implements ActionListener {
         } 
         else if (actionCommand.equals("LA ENDO")) {
             getImageModel().addContourToImage(new Contour(Type.LA_ENDO));
-
         } 
         else if (actionCommand.equals("RV EPI")) {
             getImageModel().addContourToImage(new Contour(Type.RV_EPI));
