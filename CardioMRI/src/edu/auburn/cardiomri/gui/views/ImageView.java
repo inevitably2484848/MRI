@@ -285,7 +285,7 @@ public class ImageView extends SingleImagePanel implements ActionListener,
     public void mouseDragged(MouseEvent e) {
     	java.awt.geom.Point2D mouseClick = getImageCoordinateFromWindowCoordinate(e.getX(), e.getY());
     	
-        if(!lmrkMode){
+        if(!lmrkMode) {
         	if(getImageModel().getSelectedContour().deleteControlPoint(mouseClick.getX(), mouseClick.getY())) {
         		getImageModel().getSelectedContour().addControlPoint(mouseClick.getX(), mouseClick.getY());
         	}
@@ -294,7 +294,8 @@ public class ImageView extends SingleImagePanel implements ActionListener,
         		System.out.println("Tension Point moved");
         	}
         	else {
-        		System.err.println("currentContour is null");
+        		super.mouseDragged(e);
+        		//add this code to the landmark drag when created
         	}
         	
         	// Forces updating of control and tension points during dragging
