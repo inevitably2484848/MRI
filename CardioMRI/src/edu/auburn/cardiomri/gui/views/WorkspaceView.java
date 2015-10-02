@@ -347,12 +347,9 @@ public class WorkspaceView extends View {
         JMenu leftAtrium = new JMenu("LA");
         JMenu rightVentricle = new JMenu("RV");
         JMenu rightAtrium = new JMenu("RA");
-
-
-        JMenuItem defaultType = new JMenuItem("Default");
-        defaultType.setActionCommand("Default Type");
-        defaultType.addActionListener(mainImageView);
-        addContour.add(defaultType);
+        
+        addContour.setActionCommand("CONTOUR_MODE");// kw
+        addContour.addActionListener(mainImageView);// kw
         
         JMenuItem lvEpi = new JMenuItem("Epicardial");
         lvEpi.setActionCommand("LV EPI");
@@ -403,6 +400,7 @@ public class WorkspaceView extends View {
         // ----- Landmark ------
         //runs through the LandmarkType enum and adds every item to the menu
         JMenu landmarks = new JMenu("Add Landmark");
+        
         
         for (Landmark.LandmarkType t : Landmark.LandmarkType.values() ){
         	JMenuItem tmp = new JMenuItem(t.abbv());
