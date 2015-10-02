@@ -27,9 +27,13 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import edu.auburn.cardiomri.gui.models.GridModel;
+import edu.auburn.cardiomri.util.Mode;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
-import popupmenus.ContourModeMenus;
+import popupmenus.ContourModeMenu;
+import popupmenus.DoneAdding;
+import popupmenus.LandmarkModeMenu;
+
 
 
 /**
@@ -52,11 +56,11 @@ public class GridControlView extends View implements ChangeListener {
 	
 	protected JToggleButton contour = new JToggleButton("Add Contour"); //kw
 	protected JToggleButton landMark = new JToggleButton("Add LandMark"); //kw
-	protected static int mode = 0;   //0 - select ; 1 - contour ; 2 - landmark // kw
+	protected JPopupMenu jpm = ContourModeMenu.popupMenuContour();
+	protected JPopupMenu lndmrkPM = LandmarkModeMenu.popupMenuLandMark();
 	protected static final int SELECT_MODE = 0;
 	protected static final int CONTOUR_MODE = 1;
 	protected static final int LANDMARK_MODE = 2;
-	protected JPopupMenu jpm = ContourModeMenus.popupMenuContour();
 	
 	/**
 	 * Sets panel to visible, adds slider to panel
@@ -140,20 +144,25 @@ public class GridControlView extends View implements ChangeListener {
 	public void modeState(){
 		
 		if(contour.isSelected()){
+			lndmrkPM.setVisible(false);
 			jpm.setLocation(MouseInfo.getPointerInfo().getLocation());
 			jpm.setVisible(true);
-			mode = CONTOUR_MODE;
+			Mode.setMode(CONTOUR_MODE);
 			new Toast("Contour Mode");
 		}
 		else if(landMark.isSelected()){
 			jpm.setVisible(false);
 			
-			mode = LANDMARK_MODE;
+			lndmrkPM.setLocation(MouseInfo.getPointerInfo().getLocation());
+			lndmrkPM.setVisible(true);
+			
+			Mode.setMode(LANDMARK_MODE);
 			new Toast("Landmark Mode");
 		}
 		else {
 			jpm.setVisible(false);
-			mode = SELECT_MODE;
+			lndmrkPM.setVisible(false);
+			Mode.setMode(SELECT_MODE);
 			new Toast("Select Mode");
 		}
 		
@@ -226,14 +235,7 @@ public class GridControlView extends View implements ChangeListener {
         }
     }
     
-    /** -----------------------------------------------------------------------
-     *  Static Method so Other Classes can get the Mode Value
-     *  @return mode - int
-     *  @author KulW
-     */
-    public static int getMode(){
-    	return mode;
-    }
+   
     
 
     /**
