@@ -122,8 +122,8 @@ public class StartView extends View {
         //if (returnVal == JFileChooser.APPROVE_OPTION) { //**
         	
            // String directory = fileChooser.getSelectedFile().getAbsolutePath(); //**
-            String directory = "C:/Users/Joshua/git/MRI/CardioMRI/res/SCCOR/05DAC002/BAS"; //Testing remove later
-            Path path = Paths.get(directory);
+            
+            Path path = Paths.get(System.getProperty("user.dir") + "/res/SCCOR/05DAC002/BAS");
             
             
             DICOMFileTreeWalker fileTreeWalker = new DICOMFileTreeWalker();
