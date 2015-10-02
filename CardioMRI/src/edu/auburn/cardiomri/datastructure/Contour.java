@@ -320,15 +320,43 @@ public class Contour implements Shape, Serializable {
     		 tempY = temp.getTensionY();
     		 if((Math.abs(tempX - x) < minGap) && (Math.abs(tempY - y) < minGap)){
     			 index = i;
+    			 //extra code to handle two tension points
+    			 //first tension point represented with an even value
+    			 index = index * 2;
     			 break;
     		 }
     	 }
+    	 
+    	 for(int i = 0; i < controlPoints.size(); i ++) {
+    		 temp = controlPoints.get(i);
+    		 tempX = temp.getTensionX2();
+    		 tempY = temp.getTensionY2();
+    		 if((Math.abs(tempX - x) < minGap) && (Math.abs(tempY - y) < minGap)){
+    			 index = i;
+    			 //extra code to handle two tension points
+    			 //second tension point represented with an odd number
+    			 index = index * 2;
+    			 index++;
+    			 break;
+    		 }
+    	 }
+    	 
     	 //update tension point values
     	 if(index >= 0) {
-			 controlPoints.get(index).setTensionX(x);
-			 controlPoints.get(index).setTensionY(y);
-			 generatedPoints = ContourCalc.generate(controlPoints, isClosedCurve()); //refresh curve
-			 moved = true;
+    		 if(index % 2 == 0) {
+    			 index = index / 2; //set index back to original value
+				 controlPoints.get(index).setTensionX(x);
+				 controlPoints.get(index).setTensionY(y);
+				 generatedPoints = ContourCalc.generate(controlPoints, isClosedCurve()); //refresh curve
+				 moved = true;
+    		 } else {
+    			 index--;
+    			 index = index / 2;
+				 controlPoints.get(index).setTensionX2(x);
+				 controlPoints.get(index).setTensionY2(y);
+				 generatedPoints = ContourCalc.generate(controlPoints, isClosedCurve()); //refresh curve
+				 moved = true;
+    		 }				 
 		 }
     	 return moved;
      }
