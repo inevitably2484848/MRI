@@ -227,6 +227,9 @@ public class ImageView extends SingleImagePanel implements ActionListener,
     		if (SwingUtilities.isLeftMouseButton(e)) {
     			getImageModel().setLandmarkCoordinates(mouseClick.getX(), mouseClick.getY());
     		}
+    		else if(SwingUtilities.isRightMouseButton(e)){
+    			
+    		}
     		
     	} //-------------------------------------------------------------------
     	else { //select mode --------------------------------------------------
@@ -237,7 +240,7 @@ public class ImageView extends SingleImagePanel implements ActionListener,
     	     } 
     		// rightClick context menu
     		 else {
-    			 //getImageModel().deleteControlPoint(mouseClick.getX(),mouseClick.getY());
+    			 getImageModel().deleteSelectedContour();
 
     		 }
     		 
