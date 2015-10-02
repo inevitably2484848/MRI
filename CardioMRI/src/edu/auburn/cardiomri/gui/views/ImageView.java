@@ -43,6 +43,7 @@ import edu.auburn.cardiomri.datastructure.Vector3d;
 import edu.auburn.cardiomri.gui.ConstructImage;
 import edu.auburn.cardiomri.gui.models.ImageModel;
 import edu.auburn.cardiomri.gui.models.Model;
+import edu.auburn.cardiomri.util.Mode;
 import popupmenus.ContourContextMenu;
 
 public class ImageView extends SingleImagePanel implements ActionListener,
@@ -190,7 +191,7 @@ public class ImageView extends SingleImagePanel implements ActionListener,
      */
     public void mouseClicked(MouseEvent e) {
 
-    	int mode = GridControlView.getMode(); //kw
+    	int mode = Mode.getMode(); //kw
     	
     	System.out.println("MODE : " + mode);
     	
@@ -308,69 +309,97 @@ public class ImageView extends SingleImagePanel implements ActionListener,
     public void actionPerformed(ActionEvent e) {
         String actionCommand = e.getActionCommand();
 
-        if (actionCommand.equals("Default Type")) {
+        if (actionCommand.equals("CONTOUR_MODE")){
+        	Mode.setMode(Mode.contourMode());
+        }
+        else if (actionCommand.equals("LANDMARK_MODE")){
+        	Mode.setMode(Mode.landmarkMode());
+        }
+        else if (actionCommand.equals("Default Type")) {
         	getImageModel().addContourToImage(new Contour(Type.DEFAULT));
-        } else if (actionCommand.equals("LV EPI")) {
+        } 
+        else if (actionCommand.equals("LV EPI")) {
+        	Mode.setMode(Mode.contourMode());
             getImageModel().addContourToImage(new Contour(Type.LV_EPI));
-
-        } else if (actionCommand.equals("LV ENDO")) {
+        } 
+        else if (actionCommand.equals("LV ENDO")) {
+        	Mode.setMode(Mode.contourMode());
             getImageModel().addContourToImage(new Contour(Type.LV_ENDO));
-
-        } else if (actionCommand.equals("LA EPI")) {
+        } 
+        else if (actionCommand.equals("LA EPI")) {
+        	Mode.setMode(Mode.contourMode());
             getImageModel().addContourToImage(new Contour(Type.LA_EPI));
-
-        } else if (actionCommand.equals("LA ENDO")) {
+        } 
+        else if (actionCommand.equals("LA ENDO")) {
+        	Mode.setMode(Mode.contourMode());
             getImageModel().addContourToImage(new Contour(Type.LA_ENDO));
-
-        } else if (actionCommand.equals("RV EPI")) {
+        } 
+        else if (actionCommand.equals("RV EPI")) {
+        	Mode.setMode(Mode.contourMode());
             getImageModel().addContourToImage(new Contour(Type.RV_EPI));
-
-        } else if (actionCommand.equals("RV ENDO")) {
+        } 
+        else if (actionCommand.equals("RV ENDO")) {
+        	Mode.setMode(Mode.contourMode());
             getImageModel().addContourToImage(new Contour(Type.RV_ENDO));
 
         } else if (actionCommand.equals("RA EPI")) {
+        	Mode.setMode(Mode.contourMode());
             getImageModel().addContourToImage(new Contour(Type.RA_EPI));
 
         } else if (actionCommand.equals("RA ENDO")) {
+        	Mode.setMode(Mode.contourMode());
             getImageModel().addContourToImage(new Contour(Type.RA_ENDO));
 
         } else if (actionCommand.equals("ARV")){
+        	Mode.setMode(Mode.landmarkMode());
         	getImageModel().addLandmarkToImage(new Landmark(LandmarkType.ARV));
         	lmrkMode = true;
         } else if (actionCommand.equals("IRV")){
+        	Mode.setMode(Mode.landmarkMode());
         	getImageModel().addLandmarkToImage(new Landmark(LandmarkType.IRV));
         	lmrkMode = true;
         } else if (actionCommand.equals("MS")){
+        	Mode.setMode(Mode.landmarkMode());
         	getImageModel().addLandmarkToImage(new Landmark(LandmarkType.MS));
         	lmrkMode = true;
         } else if (actionCommand.equals("LVAPEX")){
+        	Mode.setMode(Mode.landmarkMode());
         	getImageModel().addLandmarkToImage(new Landmark(LandmarkType.LVAPEX));
         	lmrkMode = true;
         } else if (actionCommand.equals("LVSEPTALBASE")){
+        	Mode.setMode(Mode.landmarkMode());
         	getImageModel().addLandmarkToImage(new Landmark(LandmarkType.LVSEPTALBASE));
         	lmrkMode = true;
         } else if (actionCommand.equals("LVLATERALBASE")){
+        	Mode.setMode(Mode.landmarkMode());
         	getImageModel().addLandmarkToImage(new Landmark(LandmarkType.LVLATERALBASE));
         	lmrkMode = true;
         } else if (actionCommand.equals("LVANTERIORBASE")){
+        	Mode.setMode(Mode.landmarkMode());
         	getImageModel().addLandmarkToImage(new Landmark(LandmarkType.LVANTERIORBASE));
         	lmrkMode = true;
         } else if (actionCommand.equals("LVINFERIORBASE")){
+        	Mode.setMode(Mode.landmarkMode());
         	getImageModel().addLandmarkToImage(new Landmark(LandmarkType.LVINFERIORBASE));
         	lmrkMode = true;
         } else if (actionCommand.equals("RVAPEX")){
+        	Mode.setMode(Mode.landmarkMode());
         	getImageModel().addLandmarkToImage(new Landmark(LandmarkType.RVAPEX));
         	lmrkMode = true;
         } else if (actionCommand.equals("RVLATERALBASE")){
+        	Mode.setMode(Mode.landmarkMode());
         	getImageModel().addLandmarkToImage(new Landmark(LandmarkType.RVLATERALBASE));
         	lmrkMode = true;
         } else if (actionCommand.equals("RVSEPTALBASE")){
+        	Mode.setMode(Mode.landmarkMode());
         	getImageModel().addLandmarkToImage(new Landmark(LandmarkType.RVSEPTALBASE));
         	lmrkMode = true;
         } else if (actionCommand.equals("RVANTERIORBASE")){
+        	Mode.setMode(Mode.landmarkMode());
         	getImageModel().addLandmarkToImage(new Landmark(LandmarkType.RVANTERIORBASE));
         	lmrkMode = true;
         } else if (actionCommand.equals("RVINFERIORBASE")){
+        	Mode.setMode(Mode.landmarkMode());
         	getImageModel().addLandmarkToImage(new Landmark(LandmarkType.RVINFERIORBASE));
         	lmrkMode = true;
         } else if (actionCommand.equals("Delete Contour")) {
