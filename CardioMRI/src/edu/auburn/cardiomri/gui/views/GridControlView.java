@@ -27,9 +27,9 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import edu.auburn.cardiomri.gui.models.GridModel;
-import edu.auburn.cardiomri.util.ContourModeMenus;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
+import popupmenus.ContourModeMenus;
 
 
 /**
@@ -203,9 +203,7 @@ public class GridControlView extends View implements ChangeListener {
      */
     public void actionPerformed(ActionEvent e) {
         String actionCommand = e.getActionCommand();
-        
-        System.out.println(actionCommand);
-        
+       
         if(actionCommand.equals("STOP"))
         {
         	changeButtonState();
@@ -237,9 +235,7 @@ public class GridControlView extends View implements ChangeListener {
     	return mode;
     }
     
-    
-   
-    
+
     /**
      * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
      */
@@ -260,7 +256,7 @@ public class GridControlView extends View implements ChangeListener {
 		                }
 		            }
 		    }.start();
-    	}
+    	} // end if
     }
     
     /**

@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.awt.MouseInfo;
 import java.awt.Shape;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -26,6 +27,7 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
@@ -41,6 +43,7 @@ import edu.auburn.cardiomri.datastructure.Vector3d;
 import edu.auburn.cardiomri.gui.ConstructImage;
 import edu.auburn.cardiomri.gui.models.ImageModel;
 import edu.auburn.cardiomri.gui.models.Model;
+import popupmenus.ContourContextMenu;
 
 public class ImageView extends SingleImagePanel implements ActionListener,
         ViewInterface, Observer {
@@ -51,6 +54,8 @@ public class ImageView extends SingleImagePanel implements ActionListener,
     private Vector<Shape> visibleShapes = new Vector<Shape>();
     private ContourControlView contourPanel; // testing
     
+    protected JPopupMenu ccm;// = ContourContextMenu.popupContextMenu(); //kw
+    private int ccmIndex = 0;
     
     /**
      * Redraws the DICOMImage, updates the selected contour's control points,
@@ -130,46 +135,7 @@ public class ImageView extends SingleImagePanel implements ActionListener,
         this.setSelectedDrawingShapes(contours);
         //contourPanel.refreshView(contours); //KW
     }
-    
-    /* ------------------------------------------------------------------------
-     * Update the image annotation 
-     * List Contours and Landmarks on a current image
-     * @author KulW
-     * @param panel - JPanel
-     * @param dImage - DICOMImage
-     * ------------------------------------------------------------------------*/
-//    private void updateControlPanel(JPanel panel, DICOMImage dImage){
-//    	//System.out.println("\n\nUPDATE PANEL FROM IMAGEVIEW");
-//    	
-//    	panel.add(new JButton("TEST"), BorderLayout.SOUTH);
-//    	//System.out.println("Get Panel Name " + panel.getName());
-//    	//panel.removeAll();
-//    	//panel.add(new JButton("TEST2"), BorderLayout.CENTER);
-//    	//panel.revalidate();
-//    	//validate();
-//    	//panel.repaint();
-//    	//System.out.println("Before REMOVE");
-//    	Component[] cList = panel.getComponents();
-//    	for(int i = 0 ; i < cList.length ; i++){
-//    		//System.out.println(cList[i]);
-//    		//System.out.println(cList[i].getName());
-//    	}
-//    	
-//    	removeAll();
-//    	panel.removeAll();
-//
-//    	panel.revalidate();
-//    	panel.updateUI();
-//    	panel.doLayout();
-//    	panel.repaint();
-//    	//System.out.println("\n\nAfter REMOVE");
-//    	cList = panel.getComponents();
-//    	for(int i = 0 ; i < cList.length ; i++){
-//    		//System.out.println(cList[i]);
-//    		//System.out.println(cList[i].getName());
-//    	}
-//    	
-//    } // ----------------------------------------------------------------------
+
 
     /**
      * This is copy/pasted from the View class.
@@ -226,6 +192,8 @@ public class ImageView extends SingleImagePanel implements ActionListener,
 
     	int mode = GridControlView.getMode(); //kw
     	
+    	System.out.println("MODE : " + mode);
+    	
     	java.awt.geom.Point2D mouseClick = 
     			getImageCoordinateFromWindowCoordinate(e.getX(), e.getY());
     	
@@ -233,35 +201,48 @@ public class ImageView extends SingleImagePanel implements ActionListener,
     		
     		//left click add contour point
     		if(SwingUtilities.isLeftMouseButton(e)){
-	    		if (!getImageModel().addControlPoint
-	    				(mouseClick.getX(),mouseClick.getY())) {
+	    		if (!getImageModel().addControlPoint(mouseClick.getX(),mouseClick.getY())) {
 	                System.err.println("currentContour is null");
 	            }
     		}
-    		
-    		
     		//RC context menu if contour selected
     			// Delete
     			// lock tension points
     			// properties
-    		else{
+    		else if(SwingUtilities.isRightMouseButton(e)){
+    			//getImageModel().setSelectedContour(null);
+    			if(ccmIndex == 1){
+    				ccm.removeAll();
+    			}
+    			ccmIndex = 1;
+    			ccm = ContourContextMenu.popupContextMenu();
+   			 	ccm.setLocation(MouseInfo.getPointerInfo().getLocation());
+   			 	ccm.setVisible(true);
     			
     		}
-    	} //-------------------------------------------------------------------
-    	
-    	else if (mode == 2){ //landmark mode
+    	} 
+    	else if (mode == 2){ //landmark mode ----------------------------------
     		//left click add landMark
-    	}
-    	else { //select mode
+    		if (SwingUtilities.isLeftMouseButton(e)) {
+    			getImageModel().setLandmarkCoordinates(mouseClick.getX(), mouseClick.getY());
+    		}
+    		
+    	} //-------------------------------------------------------------------
+    	else { //select mode --------------------------------------------------
     		
     		//leftClick select closest contour or landMark
     		 if (SwingUtilities.isLeftMouseButton(e)) {
     	            getImageModel().selectContour(mouseClick.getX(), mouseClick.getY());
     	     } 
-    		 
-    		
     		// rightClick context menu
-    	}
+    		 else {
+    			 //getImageModel().deleteControlPoint(mouseClick.getX(),mouseClick.getY());
+
+    		 }
+    		 
+    		 
+    		 
+    	} //-------------------------------------------------------------------
     	
 //        if (SwingUtilities.isRightMouseButton(e)) {
 //            getImageModel().selectContour(mouseClick.getX(), mouseClick.getY());
