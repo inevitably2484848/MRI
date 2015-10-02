@@ -27,7 +27,7 @@ import edu.auburn.cardiomri.gui.views.View;
  *
  */
 
-public class ContourModeMenus extends View implements ActionListener, MouseListener{
+public class ContourModeMenu extends View implements ActionListener, MouseListener{
 	
 	
 	/**
