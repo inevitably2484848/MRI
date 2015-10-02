@@ -159,7 +159,7 @@ class PopupActionListener extends View implements ActionListener {
         }
         else if (actionCommand.equals("RA EPI")) {
             getImageModel().addContourToImage(new Contour(Type.RA_EPI));
-        } 
+        }  
         else if (actionCommand.equals("RA ENDO")) {
             getImageModel().addContourToImage(new Contour(Type.RA_ENDO));
         }
