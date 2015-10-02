@@ -123,7 +123,7 @@ public class StartView extends View {
         	
            // String directory = fileChooser.getSelectedFile().getAbsolutePath(); //**
             
-            Path path = Paths.get(System.getProperty("user.dir") + "\\res\\SCCOR\\05DAC002\\BAS");
+            Path path = Paths.get(System.getProperty("user.dir") + "/res/SCCOR/05DAC002/BAS");
             
             
             DICOMFileTreeWalker fileTreeWalker = new DICOMFileTreeWalker();
