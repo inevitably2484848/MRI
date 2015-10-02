@@ -122,7 +122,7 @@ public class StartView extends View {
         //if (returnVal == JFileChooser.APPROVE_OPTION) { //**
         	
            // String directory = fileChooser.getSelectedFile().getAbsolutePath(); //**
-            String directory = "/Users/Kullen/GitHub/MRI/CardioMRI/res/SCCOR/05DAC002/BAS"; //Testing remove later
+            String directory = "C:/Users/Joshua/git/MRI/CardioMRI/res/SCCOR/05DAC002/BAS"; //Testing remove later
             Path path = Paths.get(directory);
             
             
