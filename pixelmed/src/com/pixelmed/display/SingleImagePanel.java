@@ -2316,7 +2316,7 @@ System.err.println("SingleImagePanel.paintComponent(): not ARGB superimposed ima
 			g2d.setColor(interactiveColor);
 			Iterator i = interactiveDrawingShapes.iterator();
 			while (i.hasNext()) {
-				DrawingUtilities.drawShadowedShape((Shape)i.next(),g2d);
+				DrawingUtilities.drawShape((Shape)i.next(),g2d);
 			}
 		}
 
@@ -2326,7 +2326,7 @@ System.err.println("SingleImagePanel.paintComponent(): not ARGB superimposed ima
 			g2d.setColor(persistentColor);
 			Iterator i = persistentDrawingShapes.iterator();
 			while (i.hasNext()) {
-				DrawingUtilities.drawShadowedShape((Shape)i.next(),g2d);
+				DrawingUtilities.drawShape((Shape)i.next(),g2d);
 			}
 		}
 
@@ -2336,7 +2336,7 @@ System.err.println("SingleImagePanel.paintComponent(): not ARGB superimposed ima
 			g2d.setColor(selectedColor);
 			Iterator i = selectedDrawingShapes.iterator();
 			while (i.hasNext()) {
-				DrawingUtilities.drawShadowedShape((Shape)i.next(),g2d);
+				DrawingUtilities.drawShape((Shape)i.next(),g2d);
 			}
 		}
 
@@ -2346,7 +2346,7 @@ System.err.println("SingleImagePanel.paintComponent(): not ARGB superimposed ima
 			g2d.setColor(volumeLocalizationColor);
 			Iterator i = volumeLocalizationShapes.iterator();
 			while (i.hasNext()) {
-				DrawingUtilities.drawShadowedShape((Shape)i.next(),g2d);
+				DrawingUtilities.drawShape((Shape)i.next(),g2d);
 			}
 		}
 		
@@ -2356,7 +2356,7 @@ System.err.println("SingleImagePanel.paintComponent(): not ARGB superimposed ima
 			g2d.setColor(localizerColor);
 			Iterator i = localizerShapes.iterator();
 			while (i.hasNext()) {
-				DrawingUtilities.drawShadowedShape((Shape)i.next(),g2d);
+				DrawingUtilities.drawShape((Shape)i.next(),g2d);
 			}
 		}
 		
@@ -2366,7 +2366,7 @@ System.err.println("SingleImagePanel.paintComponent(): not ARGB superimposed ima
 			g2d.setColor(preDefinedColor);
 			Iterator i = preDefinedShapes.iterator();
 			while (i.hasNext()) {
-				DrawingUtilities.drawShadowedShape((Shape)i.next(),g2d);
+				DrawingUtilities.drawShape((Shape)i.next(),g2d);
 			}
 		}
 		

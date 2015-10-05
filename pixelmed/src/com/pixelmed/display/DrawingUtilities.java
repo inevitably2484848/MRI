@@ -41,17 +41,17 @@ public class DrawingUtilities {
 	 * @param	shape	the shape to be drawn
 	 * @param	g2d	the drawing context
 	 */
-	public static void drawShadowedShape(Shape shape,Graphics2D g2d) {
-		Color holdColor = g2d.getColor();
-		g2d.setColor(Color.black);
-		AffineTransform holdTransform = g2d.getTransform();
+	public static void drawShape(Shape shape,Graphics2D g2d) {
+		//Color holdColor = g2d.getColor();
+		//g2d.setColor(Color.black);
+		//AffineTransform holdTransform = g2d.getTransform();
 		// want the shadow to be one line width pixel offset
-		float lineWidth = g2d.getStroke() instanceof BasicStroke ? ((BasicStroke)(g2d.getStroke())).getLineWidth() : 1.0f;
+		//float lineWidth = g2d.getStroke() instanceof BasicStroke ? ((BasicStroke)(g2d.getStroke())).getLineWidth() : 1.0f;
 //System.err.println("DrawingUtilities.drawShadowedShape(): lineWidth = "+lineWidth);
-		g2d.translate(lineWidth,lineWidth);
-		g2d.draw(shape);
-		g2d.setColor(holdColor);
-		g2d.setTransform(holdTransform);
+		//g2d.translate(lineWidth,lineWidth);
+		//g2d.draw(shape);
+		//g2d.setColor(holdColor);
+		//g2d.setTransform(holdTransform);
 		g2d.draw(shape);
 	}
 
