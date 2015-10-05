@@ -28,7 +28,6 @@ import javax.swing.event.ChangeListener;
 
 import edu.auburn.cardiomri.gui.models.GridModel;
 import edu.auburn.cardiomri.popupmenu.view.ContourModeMenu;
-import edu.auburn.cardiomri.popupmenu.view.DoneAdding;
 import edu.auburn.cardiomri.popupmenu.view.LandmarkModeMenu;
 import edu.auburn.cardiomri.util.Mode;
 import javafx.scene.control.ToggleButton;
