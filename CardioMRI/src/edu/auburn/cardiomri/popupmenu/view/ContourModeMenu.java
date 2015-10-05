@@ -1,4 +1,4 @@
-package popupmenus;
+package edu.auburn.cardiomri.popupmenu.view;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
