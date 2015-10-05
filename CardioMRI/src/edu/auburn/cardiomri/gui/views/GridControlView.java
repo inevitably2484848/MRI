@@ -253,12 +253,25 @@ public class GridControlView extends View implements ChangeListener {
 		                    Thread.sleep(9000);
 		                    jpm.setVisible(false);
 		                    
+		                    
 		                } catch (InterruptedException e) {
 		                    e.printStackTrace();
 		                }
 		            }
 		    }.start();
     	} // end if
+    	if(lndmrkPM.isVisible()){
+			new Thread(){
+	            public void run() {
+	                try {
+	                    Thread.sleep(9000);
+	                    lndmrkPM.setVisible(false);
+	                } catch (InterruptedException e) {
+	                    e.printStackTrace();
+	                }
+	            }
+	    }.start();
+    	}
     }
     
     /**
