@@ -9,9 +9,9 @@ package edu.auburn.cardiomri.util;
 
 public class Mode {
 	protected static int mode = 0;   //0 - select ; 1 - contour ; 2 - landmark // kw
-	protected static final int SELECT_MODE = 0;
-	protected static final int CONTOUR_MODE = 1;
-	protected static final int LANDMARK_MODE = 2;
+	private static final int SELECT_MODE 	= 0;
+	private static final int CONTOUR_MODE 	= 1;
+	private static final int LANDMARK_MODE 	= 2;
 	
     public static int getMode(){
     	return mode;
