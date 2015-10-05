@@ -43,8 +43,8 @@ import edu.auburn.cardiomri.datastructure.Vector3d;
 import edu.auburn.cardiomri.gui.ConstructImage;
 import edu.auburn.cardiomri.gui.models.ImageModel;
 import edu.auburn.cardiomri.gui.models.Model;
+import edu.auburn.cardiomri.popupmenu.view.ContourContextMenu;
 import edu.auburn.cardiomri.util.Mode;
-import popupmenus.ContourContextMenu;
 
 public class ImageView extends SingleImagePanel implements ActionListener,
         ViewInterface, Observer {
