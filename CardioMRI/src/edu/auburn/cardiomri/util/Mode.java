@@ -17,6 +17,23 @@ public class Mode {
     	return mode;
     }
     
+    public static String modeToast(){
+    	switch (getMode()){
+	    	case SELECT_MODE: {
+	    		return "SELECT MODE";
+	    	}
+	    	case CONTOUR_MODE : {
+	    		return "CONTOUR MODE";
+	    	}
+	    	case LANDMARK_MODE : {
+	    		return "LANDMARK_MODE";
+	    	}
+	    	default : {
+	    		return null;
+	    	}
+    	}
+    }
+    
    // to set the mode in another class Mode.setMode(Mode.contourMode()) 
     public static void setMode(int modeIN){
     	mode = modeIN;
