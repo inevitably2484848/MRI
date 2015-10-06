@@ -1,15 +1,16 @@
-package edu.auburn.cardiomri.gui.models;
+package edu.auburn.cardiomri.gui.view.actionperformed;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import edu.auburn.cardiomri.datastructure.Contour;
 import edu.auburn.cardiomri.datastructure.Contour.Type;
+import edu.auburn.cardiomri.gui.models.ImageModel;
 import edu.auburn.cardiomri.gui.views.ImageView;
 import edu.auburn.cardiomri.gui.views.View;
 import edu.auburn.cardiomri.util.Mode;
 
-public class ContourActionPerformedModel extends View implements ActionListener {
+public class ContourActionPerformedView extends View implements ActionListener {
 
 	/**
 	 * Defines the action listener for each menu option. 

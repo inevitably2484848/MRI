@@ -1,4 +1,4 @@
-package edu.auburn.cardiomri.gui.models;
+package edu.auburn.cardiomri.gui.view.actionperformed;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -9,10 +9,11 @@ import javax.swing.JPanel;
 
 import edu.auburn.cardiomri.datastructure.Contour;
 import edu.auburn.cardiomri.datastructure.Contour.Type;
+import edu.auburn.cardiomri.gui.models.ImageModel;
 import edu.auburn.cardiomri.gui.views.ImageView;
 import edu.auburn.cardiomri.gui.views.View;
 
-public class ContourMenuActionPerformedModel extends View implements ActionListener {
+public class ContourOptionMenuActionPerformedView extends View implements ActionListener {
 	
 	protected JPanel imageContourPanel;
 	
