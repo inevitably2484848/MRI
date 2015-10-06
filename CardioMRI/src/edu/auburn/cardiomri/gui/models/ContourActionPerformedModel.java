@@ -7,6 +7,7 @@ import edu.auburn.cardiomri.datastructure.Contour;
 import edu.auburn.cardiomri.datastructure.Contour.Type;
 import edu.auburn.cardiomri.gui.views.ImageView;
 import edu.auburn.cardiomri.gui.views.View;
+import edu.auburn.cardiomri.util.Mode;
 
 public class ContourActionPerformedModel extends View implements ActionListener {
 
@@ -19,7 +20,9 @@ public class ContourActionPerformedModel extends View implements ActionListener 
 	@Override
 	public void actionPerformed(ActionEvent actionEvent) {
 		String actionCommand = actionEvent.getActionCommand();
-
+		Mode.setMode(Mode.contourMode());
+		//System.out.println(actionCommand);
+		
         if (actionCommand.equals("Default Type")) {
         	getImageModel().addContourToImage(new Contour(Type.DEFAULT));
         } 
