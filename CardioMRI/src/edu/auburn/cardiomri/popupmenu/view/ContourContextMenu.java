@@ -12,9 +12,11 @@ import edu.auburn.cardiomri.datastructure.Contour;
 import edu.auburn.cardiomri.datastructure.Contour.Type;
 import edu.auburn.cardiomri.gui.models.ImageModel;
 import edu.auburn.cardiomri.gui.views.ImageView;
+import edu.auburn.cardiomri.gui.views.Toast;
 import edu.auburn.cardiomri.gui.views.View;
+import edu.auburn.cardiomri.util.Mode;
 
-public class ContourContextMenu extends View implements ActionListener, MouseListener{
+public class ContourContextMenu extends View implements ActionListener{
 
 	/**
 	 * Populates the Popup Menu
@@ -25,50 +27,27 @@ public class ContourContextMenu extends View implements ActionListener, MouseLis
 	public static JPopupMenu popupContextMenu(){
 
 		ImageModel imageModel = ImageView.getImageModelStatic();
-		ActionListener actionListener = new PopupActionContourContext();
 		
 		if(imageModel.getSelectedContour() != null){
-			JMenuItem defaultType = new JMenuItem("Select Contour");
-			defaultType.setActionCommand("Default Type");
-			defaultType.addActionListener(actionListener);
-			contourPop.add(defaultType);
+			JMenuItem done = new JMenuItem("Done Adding");
+			done.setActionCommand("Done Adding");
+			done.addActionListener(new ActionListener(){
+	            @Override
+	            public void actionPerformed(ActionEvent e){
+	    			getImageModel().setSelectedContour(null);
+	    			Mode.setMode(Mode.selectMode());
+	    			new Toast(Mode.modeToast());
+	    			contourPop.setVisible(false);
+	    			contourPop.removeAll();
+	            }
+	        });
+			contourPop.add(done);
 		}
-		else{
-			JMenuItem defaultType = new JMenuItem("Un-Select Contour");
-			defaultType.setActionCommand("Default Type");
-			defaultType.addActionListener(actionListener);
-			contourPop.add(defaultType);
-		}
-		
-		JMenuItem defaultType = new JMenuItem("No Contour");
-		defaultType.setActionCommand("Default Type");
-		defaultType.addActionListener(actionListener);
-		contourPop.add(defaultType);
-		
+		JMenuItem test = new JMenuItem("TESTING");
+		contourPop.add(test);
 
 		return contourPop;
-	}
-	
-	
-	
-}
-
-//Define ActionListener
-/**
-* Defines the action listener for each menu option. 
-* This action listener sets the contour type you are going to add.
-* @author Kullen
-*
-*/
-class PopupActionContourContext extends View implements ActionListener {
-	@Override
-	
-	
-	public void actionPerformed(ActionEvent actionEvent) {
-		String actionCommand = actionEvent.getActionCommand();
-		System.out.println(actionCommand);
-	
-	}
+	}	
 	
 	/**
 	 * gets Image model to add contour type
@@ -77,5 +56,4 @@ class PopupActionContourContext extends View implements ActionListener {
 	public static ImageModel getImageModel(){
 		return ImageView.getImageModelStatic();
 	}
-	
 }
