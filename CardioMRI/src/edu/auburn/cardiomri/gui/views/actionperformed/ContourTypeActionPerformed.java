@@ -1,4 +1,4 @@
-package edu.auburn.cardiomri.gui.view.actionperformed;
+package edu.auburn.cardiomri.gui.views.actionperformed;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -8,9 +8,10 @@ import edu.auburn.cardiomri.datastructure.Contour.Type;
 import edu.auburn.cardiomri.gui.models.ImageModel;
 import edu.auburn.cardiomri.gui.views.ImageView;
 import edu.auburn.cardiomri.gui.views.View;
+import edu.auburn.cardiomri.popupmenu.view.ContourTypeMenu;
 import edu.auburn.cardiomri.util.Mode;
 
-public class ContourActionPerformedView extends View implements ActionListener {
+public class ContourTypeActionPerformed extends View implements ActionListener {
 
 	/**
 	 * Defines the action listener for each menu option. 
@@ -22,7 +23,7 @@ public class ContourActionPerformedView extends View implements ActionListener {
 	public void actionPerformed(ActionEvent actionEvent) {
 		String actionCommand = actionEvent.getActionCommand();
 		Mode.setMode(Mode.contourMode());
-		//System.out.println(actionCommand);
+		ContourTypeMenu.hidePopupMenu();
 		
         if (actionCommand.equals("Default Type")) {
         	getImageModel().addContourToImage(new Contour(Type.DEFAULT));
