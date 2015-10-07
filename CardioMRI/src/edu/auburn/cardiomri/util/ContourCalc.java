@@ -177,11 +177,12 @@ public final class ContourCalc {
         
         List<Vector3d> tensionPoints = getTensionPoint(controlPoints.get(controlPoints.size() - 1), controlPoints.get(0));
         
-        controlPoints.get(controlPoints.size() - 1).setTensionX(tensionPoints.get(0).getX());
-        controlPoints.get(controlPoints.size() - 1).setTensionY(tensionPoints.get(0).getY());
-        controlPoints.get(controlPoints.size() - 1).setTensionX2(tensionPoints.get(1).getX());
-        controlPoints.get(controlPoints.size() - 1).setTensionY2(tensionPoints.get(1).getY());
-        
+    	if(controlPoints.get(controlPoints.size() - 1).getTensionX() == 0.0 && controlPoints.get(controlPoints.size() - 1).getTensionY() == 0.0) {
+	        controlPoints.get(controlPoints.size() - 1).setTensionX(tensionPoints.get(0).getX());
+	        controlPoints.get(controlPoints.size() - 1).setTensionY(tensionPoints.get(0).getY());
+	        controlPoints.get(controlPoints.size() - 1).setTensionX2(tensionPoints.get(1).getX());
+	        controlPoints.get(controlPoints.size() - 1).setTensionY2(tensionPoints.get(1).getY());
+    	}
         //final curve from the last point to the initial point
         curvePoints = genCurve(controlPoints.get(controlPoints.size() - 1), controlPoints.get(0));
         
