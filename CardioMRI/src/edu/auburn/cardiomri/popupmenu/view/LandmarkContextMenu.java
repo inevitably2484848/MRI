@@ -41,7 +41,6 @@ public class LandmarkContextMenu extends View implements ActionListener, MouseLi
 		return landmarkPop;
 	}	
 	
-	
 }
 
 
