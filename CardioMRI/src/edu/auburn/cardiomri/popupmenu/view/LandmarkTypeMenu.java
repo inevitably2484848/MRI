@@ -1,8 +1,10 @@
 package edu.auburn.cardiomri.popupmenu.view;
 
+import java.awt.MouseInfo;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 
@@ -16,11 +18,22 @@ import edu.auburn.cardiomri.gui.views.View;
 import edu.auburn.cardiomri.gui.views.actionperformed.LandmarkTypeActionPerformed;
 import edu.auburn.cardiomri.util.Mode;
 
-public class LandmarkTypeMenu extends JPopupMenu{
+public class LandmarkTypeMenu extends JPopupMenu implements MRIPopupMenu{
 	
-	public static JPopupMenu landmarkPop = new JPopupMenu();
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	public static JPopupMenu staticMenu;
+	public JPopupMenu landmarkPop = new JPopupMenu();
 	
-	public static JPopupMenu popupMenuLandMark(){
+	public LandmarkTypeMenu(){
+		setPopup();
+	}
+	
+	
+	@Override
+	public void setPopup(){
 	
 		ActionListener actionListener = new LandmarkTypeActionPerformed();
 		
@@ -33,14 +46,55 @@ public class LandmarkTypeMenu extends JPopupMenu{
         	tmp.setToolTipText(t.toString());
         	landmarkPop.add(tmp);
         }
-		
-		return landmarkPop;
+        
+        staticMenu = landmarkPop;
 	}
 	
-	public static void hidePopupMenu(){
+
+	@Override
+	public JMenu addMenu(String str) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public JMenuItem addMenuItem(String str) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public JPopupMenu getPopup() {
+		landmarkPop.setVisible(true);
+		setLocation();
+		refreshPopup();
+		return landmarkPop;
+	}
+
+	@Override
+	public void hidePopup() {
 		landmarkPop.setVisible(false);
+		refreshPopup();
+		
+	}
+
+	@Override
+	public void refreshPopup() {
+		// TODO Auto-generated method stub
 		landmarkPop.revalidate();
 		landmarkPop.repaint();
+		
+	}
+
+	@Override
+	public void setLocation() {
+		// TODO Auto-generated method stub
+		landmarkPop.setLocation(MouseInfo.getPointerInfo().getLocation());
+		refreshPopup();
+	}
+	
+	public static void staticHide(){
+		staticMenu.setVisible(false);
 	}
 	
 }

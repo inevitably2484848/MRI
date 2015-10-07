@@ -1,5 +1,6 @@
 package edu.auburn.cardiomri.popupmenu.view;
 
+import java.awt.MouseInfo;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseListener;
@@ -16,15 +17,20 @@ import edu.auburn.cardiomri.gui.views.Toast;
 import edu.auburn.cardiomri.gui.views.View;
 import edu.auburn.cardiomri.util.Mode;
 
-public class ContourContextMenu extends View implements ActionListener{
+public class ContourContextMenu extends JPopupMenu implements MRIPopupMenu{
 
 	/**
 	 * Populates the Popup Menu
 	 * @return JPopupMenu
 	 */
-	public static JPopupMenu contourPop = new JPopupMenu();
+	private JPopupMenu contourPop = new JPopupMenu();
 	
-	public static JPopupMenu popupContextMenu(){
+	public ContourContextMenu(){
+		setPopup();
+	}
+	
+	@Override
+	public void setPopup() {
 
 		ImageModel imageModel = ImageView.getImageModelStatic();
 		
@@ -46,8 +52,54 @@ public class ContourContextMenu extends View implements ActionListener{
 		JMenuItem test = new JMenuItem("TESTING");
 		contourPop.add(test);
 
+	}
+
+	@Override
+	public JMenu addMenu(String str) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public JMenuItem addMenuItem(String str) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public JPopupMenu getPopup() {
+		contourPop.setVisible(true);
+		contourPop.repaint();
+		contourPop.revalidate();
 		return contourPop;
-	}	
+	}
+
+	@Override
+	public void hidePopup() {
+		contourPop.setVisible(false);
+	}
+
+	@Override
+	public void refreshPopup() {
+		contourPop.revalidate();
+		contourPop.repaint();
+		
+	}
+
+	@Override
+	public void setLocation() {
+		contourPop.setLocation(MouseInfo.getPointerInfo().getLocation());
+		refreshPopup();
+		
+	}
+	
+	@Override
+	public void removeAll() {
+		contourPop.removeAll();
+		contourPop.setVisible(false);
+		refreshPopup();
+		
+	}
 	
 	/**
 	 * gets Image model to add contour type
@@ -56,4 +108,7 @@ public class ContourContextMenu extends View implements ActionListener{
 	public static ImageModel getImageModel(){
 		return ImageView.getImageModelStatic();
 	}
+
+
+
 }

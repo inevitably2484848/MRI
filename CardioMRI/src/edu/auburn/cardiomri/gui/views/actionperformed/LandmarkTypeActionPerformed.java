@@ -17,7 +17,7 @@ public class LandmarkTypeActionPerformed extends View implements ActionListener 
 	public void actionPerformed(ActionEvent actionEvent) {
 		String actionCommand = actionEvent.getActionCommand();
 		Mode.setMode(Mode.landmarkMode());
-		LandmarkTypeMenu.hidePopupMenu();
+		LandmarkTypeMenu.staticHide();  //hides current landmarkTypeMenu
 		
 		if (actionCommand.equals("ARV")){
         	getImageModel().addLandmarkToImage(new Landmark(LandmarkType.ARV));
