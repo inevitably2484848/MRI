@@ -23,13 +23,13 @@ public class Toast extends JDialog{
         getContentPane().setLayout(new BorderLayout(0, 0));
         
         JPanel panel = new JPanel();
-        panel.setBackground(Color.LIGHT_GRAY);
+        panel.setBackground(Color.ORANGE);
         panel.setBorder(new LineBorder(Color.LIGHT_GRAY, 2));
         getContentPane().add(panel, BorderLayout.CENTER);
         
         JLabel lblToastString = new JLabel("");
         lblToastString.setText(text);
-        lblToastString.setFont(new Font("Dialog", Font.BOLD, 12));
+        lblToastString.setFont(new Font("Dialog", Font.BOLD, 15));
         lblToastString.setForeground(Color.WHITE);
         
         setAlwaysOnTop(true);
