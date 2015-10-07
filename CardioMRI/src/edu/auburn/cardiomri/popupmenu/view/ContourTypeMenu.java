@@ -29,7 +29,7 @@ import edu.auburn.cardiomri.gui.views.actionperformed.ContourTypeActionPerformed
  *
  */
 
-public class ContourTypeMenu extends View implements ActionListener, MouseListener {
+public class ContourTypeMenu extends JPopupMenu{ // extends View implements MouseListener {
 	
 	/**
 	 * Populates the Popup Menu
@@ -37,7 +37,7 @@ public class ContourTypeMenu extends View implements ActionListener, MouseListen
 	 */
 	public static JPopupMenu contourPop = new JPopupMenu();
 	
-	public static JPopupMenu popupMenuContour(){
+	public static JPopupMenu setPopup(){
 
 		ActionListener actionListener = new ContourTypeActionPerformed();
 		contourPop.setLightWeightPopupEnabled(false);
