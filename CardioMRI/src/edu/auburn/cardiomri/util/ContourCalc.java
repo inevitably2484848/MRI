@@ -176,7 +176,7 @@ public final class ContourCalc {
         }
         
         List<Vector3d> tensionPoints = getTensionPoint(controlPoints.get(controlPoints.size() - 1), controlPoints.get(0));
-        
+ 
     	if(controlPoints.get(controlPoints.size() - 1).getTensionX() == 0.0 && controlPoints.get(controlPoints.size() - 1).getTensionY() == 0.0) {
 	        controlPoints.get(controlPoints.size() - 1).setTensionX(tensionPoints.get(0).getX());
 	        controlPoints.get(controlPoints.size() - 1).setTensionY(tensionPoints.get(0).getY());
@@ -353,7 +353,7 @@ public final class ContourCalc {
  		double distanceCX = b.getX() - a.getTensionX2();
  		double distanceCY = b.getY() - a.getTensionY2();
  		   
-     	for(int j = 0; j < 99; j++) {
+     	for(int j = 0; j < 101; j++) {
      	   
      		//calculates the point j% along the line from the first control point to the first tension point
      		double aX = a.getX() + (j * (distanceAX/100));
