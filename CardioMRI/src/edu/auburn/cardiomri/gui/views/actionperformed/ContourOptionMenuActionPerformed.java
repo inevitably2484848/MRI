@@ -13,7 +13,7 @@ import edu.auburn.cardiomri.gui.models.ImageModel;
 import edu.auburn.cardiomri.gui.views.ImageView;
 import edu.auburn.cardiomri.gui.views.View;
 
-public class ContourOptionMenuActionPerformedView extends View implements ActionListener {
+public class ContourOptionMenuActionPerformed extends View implements ActionListener {
 	
 	protected JPanel imageContourPanel;
 	
