@@ -76,9 +76,18 @@ public final class ContourUtilities {
 	                    	pointIdx = (pointIdx + 1) % (tensionPointsPerControlPoint + 1);
 	                    }
 	                    
+                    	int tensionPointIdx = 0;
+                    	for (Vector3d controlPoint : controlPoints)
+                    	{
+                    		controlPoint.setTensionX(tensionPoints.get(tensionPointIdx).getX());
+                    		controlPoint.setTensionY(tensionPoints.get(tensionPointIdx).getY());
+                    		controlPoint.setTensionX2(tensionPoints.get(tensionPointIdx+1).getX());
+                    		controlPoint.setTensionY2(tensionPoints.get(tensionPointIdx+1).getY());
+                    		tensionPointIdx += 2;
+                    	}
+                    	
                     	Contour contour = new Contour(
                     			Contour.getTypeFromInt(contourType));
-                    
                     	contour.setControlPoints(controlPoints);
                     	contours.add(contour);
 	                    

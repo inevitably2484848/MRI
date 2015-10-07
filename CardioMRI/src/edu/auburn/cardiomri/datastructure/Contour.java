@@ -59,7 +59,7 @@ public class Contour implements Shape, Serializable {
         List<Vector3d> newList = new Vector<Vector3d>();
         for (Vector3d point : points) {
             validateCoordinates(point.getX(), point.getY());
-            newList.add(new Vector3d(point.getX(), point.getY(), 0));
+            newList.add(point);
         }
 
         controlPoints = newList;
