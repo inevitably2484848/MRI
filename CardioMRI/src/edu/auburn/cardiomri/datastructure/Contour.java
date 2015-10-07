@@ -6,6 +6,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.PathIterator;
 import java.awt.geom.Rectangle2D;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -486,6 +487,18 @@ public class Contour implements Shape, Serializable {
      */
     public List<Vector3d> getGeneratedPoints() {
         return new Vector<Vector3d>(generatedPoints);
+    }
+    
+    public List<Vector3d> getTensionPoints() {
+    	List<Vector3d> tensionPoints = new ArrayList<Vector3d>();
+    	for (Vector3d controlPoint : controlPoints)
+    	{
+    		Vector3d tensionPoint1 = new Vector3d(controlPoint.getTensionX(), controlPoint.getTensionY(), 0.0);
+    		Vector3d tensionPoint2 = new Vector3d(controlPoint.getTensionX2(), controlPoint.getTensionY2(), 0.0);
+    		tensionPoints.add(tensionPoint1);
+    		tensionPoints.add(tensionPoint2);
+    	}
+		return tensionPoints;
     }
 
     /**

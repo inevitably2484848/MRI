@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
@@ -33,6 +34,7 @@ public final class ContourUtilities {
 	public static void loadContour(File file, Map<String, DICOMImage> SOPInstanceUIDToDICOMImage) {
         Vector<Contour> contours;
         List<Vector3d> controlPoints;
+        List<Vector3d> tensionPoints;
 
         String sopInstanceUID;
         String[] line = new String[2];
@@ -47,29 +49,60 @@ public final class ContourUtilities {
                 sopInstanceUID = reader.readLine();
                 contourType = Integer.parseInt(reader.readLine());
                 
-                while ((lineCheck = reader.readLine()) != "-1") {
-                    controlPoints = new Vector<Vector3d>();
-                    while ((line = reader.readLine().split("\t")).length >= 2) {
-                        float x = Float.parseFloat(line[0]);
-                        float y = Float.parseFloat(line[1]);
-                        controlPoints.add(new Vector3d(x, y, 0));
-                    }
-                    
-                    // Only add contours to image if it is a control point contour
-                    if (Contour.isControlPointFromInt(contourType))
-                    {
+                // Only add contours to image if it is a control point contour
+                if (Contour.isControlPointFromInt(contourType))
+                {
+	                while ((lineCheck = reader.readLine()) != "-1") {
+	                	int pointIdx = 0;
+	                	int controlPointIdx = 1;
+	                	int tensionPointsPerControlPoint = 2;
+	                	
+	                    controlPoints = new Vector<Vector3d>();
+	                    tensionPoints = new Vector<Vector3d>();
+	                    while ((line = reader.readLine().split("\t")).length >= 2) {
+	                    	
+	                    	float x = Float.parseFloat(line[0]);
+	                        float y = Float.parseFloat(line[1]);
+	                        
+	                    	if (pointIdx == controlPointIdx)	// control point
+		                    {
+		                        controlPoints.add(new Vector3d(x, y, 0));
+		                    }
+	                    	else	// tension point
+	                    	{
+	                    		tensionPoints.add(new Vector3d(x, y, 0));
+	                    	}
+	                    	
+	                    	pointIdx = (pointIdx + 1) % (tensionPointsPerControlPoint + 1);
+	                    }
+	                    
                     	Contour contour = new Contour(
                     			Contour.getTypeFromInt(contourType));
                     
                     	contour.setControlPoints(controlPoints);
                     	contours.add(contour);
-                    }
-                    
-                    if (line[0].equals("-1")) {
-                        break;
-                    } else {
-                        contourType = Integer.parseInt(line[0]);
-                    }
+	                    
+	                    
+	                    if (line[0].equals("-1")) {
+	                        break;
+	                    } else {
+	                        contourType = Integer.parseInt(line[0]);
+	                    }
+	                }
+                }
+                else // Not a control point contour
+                {
+                	while ((lineCheck = reader.readLine()) != "-1") {
+                		while ((line = reader.readLine().split("\t")).length >= 2) {
+                			// Do nothing with these points
+                		}
+                		
+                		if (line[0].equals("-1")) {
+	                        break;
+	                    } else {
+	                        contourType = Integer.parseInt(line[0]);
+	                    }
+                	}
                 }
                 DICOMImage image = SOPInstanceUIDToDICOMImage
                         .get(sopInstanceUID);
@@ -130,12 +163,34 @@ public final class ContourUtilities {
     	writer.write("\n" + image.getSopInstanceUID() + "\n");
         for (Contour c : contours) {
             if (c.getControlPoints().size() > 0) {
-                int numPoints = c.getControlPoints().size();
+                int numPoints = c.getControlPoints().size() 
+                		+ c.getTensionPoints().size();
                 String header = c.getIntFromTypeControlPoints() + "\n"
                         + numPoints + "\n";
                 writer.write(header);
-                for (Vector3d point : c
-                        .getControlPoints()) {
+                /*
+                 * This contour's section format will be as follows:
+                 * Tension 1-1
+                 * Control 1
+                 * Tension 1-2
+                 * 
+                 * Tension 2-1
+                 * Control 2
+                 * Tension 2-2
+                 * etc.
+                 */
+                // Build list of combined tension and control points
+                int numControlPoints = c.getControlPoints().size();
+                List<Vector3d> allPoints = new ArrayList<Vector3d>();
+                List<Vector3d> controlPoints = c.getControlPoints();
+                List<Vector3d> tensionPoints = c.getTensionPoints();
+                for (int i = 0; i < numControlPoints; i++)
+                {
+                	allPoints.add(tensionPoints.get(i*2));
+                	allPoints.add(controlPoints.get(i));
+                	allPoints.add(tensionPoints.get(i*2 + 1));
+                }
+                for (Vector3d point : allPoints) {
                     writer.write(BigDecimal.valueOf(point.getX())
                             .setScale(4, BigDecimal.ROUND_UP)
                             + "\t"
@@ -148,6 +203,7 @@ public final class ContourUtilities {
         }
         writer.write((-1) + "\n");
     }
+    
 
     public static void writeContourGeneratedPointsToFile(PrintWriter writer, 
     		DICOMImage image, Vector<Contour> contours)
