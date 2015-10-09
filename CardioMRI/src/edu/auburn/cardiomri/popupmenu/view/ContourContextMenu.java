@@ -26,6 +26,7 @@ public class ContourContextMenu extends JPopupMenu implements MRIPopupMenu{
 	private JPopupMenu contourPop = new JPopupMenu();
 	
 	public ContourContextMenu(){
+		contourPop.setLightWeightPopupEnabled(true);
 		setPopup();
 	}
 	
@@ -49,8 +50,7 @@ public class ContourContextMenu extends JPopupMenu implements MRIPopupMenu{
 	        });
 			contourPop.add(done);
 		}
-		JMenuItem test = new JMenuItem("TESTING");
-		contourPop.add(test);
+		
 
 	}
 
