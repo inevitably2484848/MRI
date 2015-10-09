@@ -17,7 +17,7 @@ public class Toast extends JDialog{
 	int miliseconds;
 	public Toast(String text){
 		
-		this.miliseconds = 3000;
+		this.miliseconds = 2000;
 		setBounds(400, 400, 280,100);
         setUndecorated(true);
         getContentPane().setLayout(new BorderLayout(0, 0));
