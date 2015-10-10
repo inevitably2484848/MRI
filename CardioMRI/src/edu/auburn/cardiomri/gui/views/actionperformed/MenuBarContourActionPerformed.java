@@ -2,6 +2,7 @@ package edu.auburn.cardiomri.gui.views.actionperformed;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.util.Vector;
 
 import javax.swing.JOptionPane;
@@ -13,7 +14,7 @@ import edu.auburn.cardiomri.gui.models.ImageModel;
 import edu.auburn.cardiomri.gui.views.ImageView;
 import edu.auburn.cardiomri.gui.views.View;
 
-public class ContourOptionMenuActionPerformed extends View implements ActionListener {
+public class MenuBarContourActionPerformed extends View implements ActionListener {
 	
 	protected JPanel imageContourPanel;
 	
@@ -83,6 +84,26 @@ public class ContourOptionMenuActionPerformed extends View implements ActionList
 				getImageModel().deleteAllContours();
 			}
 		}
+		else if (actionCommand.equals("Save Study")) {
+            this.saveStudy();
+        } else if (actionCommand.equals("Save As Study")) {
+            this.saveAsStudy();
+        } else if (actionCommand.equals("Save Contours")) {
+            this.saveContour();
+        } else if (actionCommand.equals("Load Existing Study")) {
+        	this.loadExistingStudy();
+        } else if (actionCommand.equals("Rotate Image")) {
+            this.getWorkspaceModel().rotate();
+        } else if (actionCommand.equals("Load Contours")) {
+            try {
+                this.setUpLoad();
+            } catch (IOException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
+        }
+		
+		
 	}
 		/**
 		 * gets Image model to add contour type
