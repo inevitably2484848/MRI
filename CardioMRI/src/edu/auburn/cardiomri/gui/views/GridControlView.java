@@ -24,6 +24,7 @@ import edu.auburn.cardiomri.gui.models.GridModel;
 import edu.auburn.cardiomri.gui.views.actionperformed.ContourTypeActionPerformed;
 import edu.auburn.cardiomri.popupmenu.view.ContourTypeMenu;
 import edu.auburn.cardiomri.popupmenu.view.LandmarkTypeMenu;
+
 import edu.auburn.cardiomri.util.Mode;
 
 

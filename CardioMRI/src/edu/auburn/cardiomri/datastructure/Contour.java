@@ -305,61 +305,6 @@ public class Contour implements Shape, Serializable {
     	 } // end for loop
     	 return bToClose;
      } // end isToClose
-     
-     public boolean moveTensionPoint(double x, double y) {
-    	 double minGap = 3;
-    	 boolean moved = false;
-    	 int index = -1;
-    	 Vector3d temp;
-    	 double tempX, tempY;
-    	 
-    	 //find point that is close enough to delete
-    	 for(int i = 0; i < controlPoints.size(); i ++) {
-    		 temp = controlPoints.get(i);
-    		 tempX = temp.getTensionX();
-    		 tempY = temp.getTensionY();
-    		 if((Math.abs(tempX - x) < minGap) && (Math.abs(tempY - y) < minGap)){
-    			 index = i;
-    			 //extra code to handle two tension points
-    			 //first tension point represented with an even value
-    			 index = index * 2;
-    			 break;
-    		 }
-    	 }
-    	 
-    	 for(int i = 0; i < controlPoints.size(); i ++) {
-    		 temp = controlPoints.get(i);
-    		 tempX = temp.getTensionX2();
-    		 tempY = temp.getTensionY2();
-    		 if((Math.abs(tempX - x) < minGap) && (Math.abs(tempY - y) < minGap)){
-    			 index = i;
-    			 //extra code to handle two tension points
-    			 //second tension point represented with an odd number
-    			 index = index * 2;
-    			 index++;
-    			 break;
-    		 }
-    	 }
-    	 
-    	 //update tension point values
-    	 if(index >= 0) {
-    		 if(index % 2 == 0) {
-    			 index = index / 2; //set index back to original value
-				 controlPoints.get(index).setTensionX(x);
-				 controlPoints.get(index).setTensionY(y);
-				 generatedPoints = ContourCalc.generate(controlPoints, isClosedCurve()); //refresh curve
-				 moved = true;
-    		 } else {
-    			 index--;
-    			 index = index / 2;
-				 controlPoints.get(index).setTensionX2(x);
-				 controlPoints.get(index).setTensionY2(y);
-				 generatedPoints = ContourCalc.generate(controlPoints, isClosedCurve()); //refresh curve
-				 moved = true;
-    		 }				 
-		 }
-    	 return moved;
-     }
     
      /** ----------------------------------------------------------------------
       * deleteControlPoint(x,y): removes selected control point from controlPoint List. 
@@ -435,7 +380,80 @@ public class Contour implements Shape, Serializable {
     	 
      } // end deleteControlPoint
     
+     public int findControlPoint(double x, double y) {
+    	 int cPointD = -1;
+    	 int index = -1;
+    	 double minGap = 3;
+    	 Vector3d temp;
+    	 double tempX, tempY;
+    	 
+    	 for(int i = 0 ; i < controlPoints.size() ; i++){
+    		 temp = controlPoints.get(i);
+    		 tempX = temp.getX();
+    		 tempY = temp.getY();
+    		 if((Math.abs(tempX - x) < minGap) && (Math.abs(tempY - y) < minGap)){
+    			 index = i;
+    			 break;
+    		 }
+    	 } // end loop
+    	 cPointD = index;
+    	 return cPointD;
+     }
+     
+     public int findTensionPoint(double x, double y) {
+    	 int tPointD = -1;
+    	 int index = -1;
+    	 double minGap = 3;
+    	 Vector3d temp;
+    	 double tempX, tempY;
+    	 
+    	 //find point that is close enough to delete
+    	 for(int i = 0; i < controlPoints.size(); i ++) {
+    		 temp = controlPoints.get(i);
+    		 tempX = temp.getTensionX();
+    		 tempY = temp.getTensionY();
+    		 if((Math.abs(tempX - x) < minGap) && (Math.abs(tempY - y) < minGap)){
+    			 index = i;
+    			 //extra code to handle two tension points
+    			 //first tension point represented with an even value
+    			 index = index * 2;
+    	    	 tPointD = index;
+    			 break;
+    		 }
+    	 }
+    	 for(int i = 0; i < controlPoints.size(); i ++) {
+    		 temp = controlPoints.get(i);
+    		 tempX = temp.getTensionX2();
+    		 tempY = temp.getTensionY2();
+    		 if((Math.abs(tempX - x) < minGap) && (Math.abs(tempY - y) < minGap)){
+    			 index = i;
+    			 //extra code to handle two tension points
+    			 //second tension point represented with an odd number
+    			 index = index * 2;
+    			 index++;
+    	    	 tPointD = index;
+    			 break;
+    		 }
+    	 }
+    	 return tPointD;
+     }
+     
+     public void moveContourPoint(double x, double y, int i) {
+    	 controlPoints.get(i).setX(x);
+    	 controlPoints.get(i).setY(y);
+    	 generatedPoints = ContourCalc.generate(controlPoints, isClosedCurve());
+     }
 
+     public void moveTensionPoint(double x, double y, int i) {
+    	 if(i % 2 == 0) {
+    		 controlPoints.get(i / 2).setTensionX(x);
+    		 controlPoints.get(i / 2).setTensionY(y);
+    	 } else {
+    		 controlPoints.get((i - 1) / 2).setTensionX2(x);
+    		 controlPoints.get((i - 1) / 2).setTensionY2(y);
+    	 }
+    	 generatedPoints = ContourCalc.generate(controlPoints, isClosedCurve());
+     }
     /**
      * Throws IllegalArgumentException if x or y is less than zero
      *

@@ -56,6 +56,8 @@ public class ImageView extends SingleImagePanel implements ActionListener,
     protected JPanel imageContourPanel, panel, cPanel;
     private static final long serialVersionUID = -6920775905498293695L;
     private boolean lmrkMode = false;
+    private int cPointD = -1; //int values to act as mode flags for dragging and store dragging index value
+    private int tPointD = -1;
     private Vector<Shape> visibleShapes = new Vector<Shape>();
     private ContourControlView contourPanel; // testing
     
@@ -291,12 +293,11 @@ public class ImageView extends SingleImagePanel implements ActionListener,
     	java.awt.geom.Point2D mouseClick = getImageCoordinateFromWindowCoordinate(e.getX(), e.getY());
     	
         if(!lmrkMode) {
-        	if(getImageModel().getSelectedContour().deleteControlPoint(mouseClick.getX(), mouseClick.getY())) {
-        		getImageModel().getSelectedContour().addControlPoint(mouseClick.getX(), mouseClick.getY());
+        	if(cPointD >= 0) {
+        		getImageModel().getSelectedContour().moveContourPoint(mouseClick.getX(), mouseClick.getY(), cPointD);
         	}
-        	else if(getImageModel().getSelectedContour().moveTensionPoint(mouseClick.getX(), mouseClick.getY())) {
-        		//temporary print statement
-        		System.out.println("Tension Point moved");
+        	else if(tPointD >= 0) {
+        		getImageModel().getSelectedContour().moveTensionPoint(mouseClick.getX(), mouseClick.getY(), tPointD);	
         	}
         	else {
         		super.mouseDragged(e);
@@ -323,9 +324,12 @@ public class ImageView extends SingleImagePanel implements ActionListener,
      * 
      */
     public void mouseReleased(MouseEvent e) {
+    	cPointD = -1;
+    	tPointD = -1;
         this.panel.requestFocusInWindow();
     }
 
+//<<<<<<< HEAD
 //    /**
 //     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
 //     */
@@ -489,6 +493,23 @@ public class ImageView extends SingleImagePanel implements ActionListener,
 		// TODO Auto-generated method stub
 		
 	}
+
+    public void mousePressed(MouseEvent e) {
+    	int temp1;
+    	int temp2;
+    	java.awt.geom.Point2D mouseClick = getImageCoordinateFromWindowCoordinate(e.getX(), e.getY());
+    	
+    	temp1 = getImageModel().getSelectedContour().findControlPoint(mouseClick.getX(), mouseClick.getY());
+    	temp2 = getImageModel().getSelectedContour().findTensionPoint(mouseClick.getX(), mouseClick.getY());
+    	if(temp1 >= 0) {
+    		cPointD = temp1;
+    	}
+    	else if(temp2 >= 0) {
+    		tPointD = temp2;
+    	}
+    	
+    	this.panel.requestFocusInWindow();
+    }
 
     private void addKeyBindings(JPanel panel) {
         panel.getInputMap().put(KeyStroke.getKeyStroke("LEFT"), "left");
