@@ -1,11 +1,13 @@
 package edu.auburn.cardiomri.popupmenu.view;
 
+import java.awt.MouseInfo;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseAdapter;
 
+import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.UIManager;
@@ -29,7 +31,7 @@ import edu.auburn.cardiomri.gui.views.actionperformed.ContourTypeActionPerformed
  *
  */
 
-public class ContourTypeMenu extends JPopupMenu{ // extends View implements MouseListener {
+public class ContourTypeMenu extends View implements MRIPopupMenu{ // extends View implements MouseListener {
 	
 	/**
 	 * Populates the Popup Menu
@@ -37,76 +39,84 @@ public class ContourTypeMenu extends JPopupMenu{ // extends View implements Mous
 	 */
 	public static JPopupMenu contourPop = new JPopupMenu();
 	
-	public static JPopupMenu setPopup(){
+	
+	public ContourTypeMenu(){
+		setPopup();
+	}
+	
+	@Override
+	public void setPopup(){
 
-		ActionListener actionListener = new ContourTypeActionPerformed();
-		contourPop.setLightWeightPopupEnabled(false);
+		ActionListener actionListener = new ContourTypeActionPerformed(this, true);
+		contourPop.setLightWeightPopupEnabled(true);
 		contourPop.add("Choose a Type");
 		contourPop.addSeparator();
 		
-        JMenuItem lvEpi = new JMenuItem("LV Epicardial");
-        JMenuItem lvEndo = new JMenuItem("LV Endocardial");
-        
-        lvEpi.setActionCommand("LV EPI");
-        lvEpi.addActionListener(actionListener);
-        
-        lvEndo.setActionCommand("LV ENDO");
-        lvEndo.addActionListener(actionListener);
-        
-        contourPop.add(lvEpi);
-        contourPop.add(lvEndo);
-        contourPop.addSeparator();
+		int addSepEveryTwo = 0;
+        for(Contour.Type t : Contour.Type.values()){  //loops over Contour Type enum
+        	
+        	String name = t.getGroup() + " " +  t.getName();
+        	contourPop.add(addMenuItem(name,t.getAbbv(), actionListener));
 
-		//JMenu la = new JMenu("LA");
-        JMenuItem laEpi = new JMenuItem("LA Epicardial");
-        JMenuItem laEndo = new JMenuItem("LA Endocardial");
-        
-        laEpi.setActionCommand("LA EPI");
-        laEpi.addActionListener(actionListener);
-        laEndo.setActionCommand("LA ENDO");
-        laEndo.addActionListener(actionListener);
-        
-        contourPop.add(laEndo);
-        contourPop.add(laEpi);
-        contourPop.addSeparator();
+        	++addSepEveryTwo;
+        	if(addSepEveryTwo % 2 == 0){
+        		contourPop.addSeparator();
+        	}
+        	
+        } 
 		
-        JMenuItem rvEpi = new JMenuItem("RV Epicardial");
-        JMenuItem rvEndo = new JMenuItem("RV Endocardial");
-        
-        rvEpi.setActionCommand("RV EPI");
-        rvEpi.addActionListener(actionListener);
-        rvEndo.setActionCommand("RV ENDO");
-        rvEndo.addActionListener(actionListener);
-        
-        contourPop.add(rvEpi);
-        contourPop.add(rvEndo);
-        contourPop.addSeparator();
-        
-        JMenuItem raEpi = new JMenuItem("RA Epicardial");
-        JMenuItem raEndo = new JMenuItem("RA Endocardial");
-        
-        raEpi.setActionCommand("RA EPI");
-        raEpi.addActionListener(actionListener);
-        raEndo.setActionCommand("RA ENDO");
-        raEndo.addActionListener(actionListener);
-        
-        contourPop.add(raEndo);
-        contourPop.add(raEpi);
-        
-		contourPop.repaint();
-		contourPop.revalidate();
-		
-		return contourPop;
+	}
+
+	@Override
+	public JMenu addMenu(String str) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public JMenuItem addMenuItem(String str) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
-	public static JPopupMenu getPopupMenu(){
+	public JMenuItem addMenuItem(String name, String command, ActionListener action){
+		JMenuItem newItem = new JMenuItem(name);
+		newItem.setActionCommand(command);
+		newItem.addActionListener(action);
+		return newItem;
+	}
+
+	@Override
+	public JPopupMenu getPopup() {
+		contourPop.setVisible(true);
 		return contourPop;
 	}
-	
-	public static void hidePopupMenu(){
+
+	@Override
+	public void hidePopup() {
 		contourPop.setVisible(false);
+		
+	}
+
+	@Override
+	public void refreshPopup() {
 		contourPop.revalidate();
 		contourPop.repaint();
+		
+	}
+
+	@Override
+	public void setLocation() {
+		contourPop.setLocation(MouseInfo.getPointerInfo().getLocation());
+		refreshPopup();
+		
+	}
+
+	@Override
+	public void removeAll() {
+		contourPop.removeAll();
+		refreshPopup();
+		
 	}
 
 }
