@@ -47,7 +47,7 @@ public class GridControlView extends View implements ChangeListener {
 	
 	protected JToggleButton contour = new JToggleButton("Add Contour"); //kw
 	protected JToggleButton landMark = new JToggleButton("Add LandMark"); //kw
-	protected JPopupMenu cntrPM = ContourTypeMenu.setPopup();
+	protected ContourTypeMenu cntrPM = new ContourTypeMenu();
 	protected LandmarkTypeMenu lndmrkPM = new LandmarkTypeMenu();
 	protected static final int SELECT_MODE = 0;
 	protected static final int CONTOUR_MODE = 1;
@@ -187,19 +187,19 @@ public class GridControlView extends View implements ChangeListener {
 			if(Mode.getMode() == Mode.contourMode()){  //if already in contour mode
 				contour.setSelected(false);
 				Mode.setMode(Mode.selectMode());
-				cntrPM.setVisible(false);
+				cntrPM.hidePopup();
 			}
 			else{
 				contour.setSelected(true);
-				cntrPM.setLocation(MouseInfo.getPointerInfo().getLocation());
-				cntrPM.setVisible(true);
+				cntrPM.setLocation();
+				cntrPM.getPopup();
 				Mode.setMode(Mode.contourMode());
 			}
 			new Toast(Mode.modeToast());
         }
         else if(actionCommand.equalsIgnoreCase("landMark")){ //kw
         	contour.setSelected(false);
-        	cntrPM.setVisible(false);
+        	cntrPM.hidePopup();
         	if(Mode.getMode() == Mode.landmarkMode()){
         		landMark.setSelected(false);
         		Mode.setMode(Mode.selectMode());
@@ -216,9 +216,6 @@ public class GridControlView extends View implements ChangeListener {
         }
     }
     
-   
-    
-
     
     /**
      * Because the gridContorlModel would be more than a hassle, we chose to have 
