@@ -21,7 +21,7 @@ public class ContourTest {
 
     @Before
     public void setUp() {
-        contour = new Contour(Contour.Type.DEFAULT);
+        contour = new Contour(Contour.Type.LV_EPI);
     }
 
     @After
@@ -31,7 +31,7 @@ public class ContourTest {
 
     @Test
     public void testContourConstructorSetsContourType() {
-        Contour.Type expected = Contour.Type.DEFAULT;
+        Contour.Type expected = Contour.Type.LV_EPI;
         Contour.Type actual = contour.getContourType();
         assertEquals(expected, actual);
     }
@@ -157,14 +157,14 @@ public class ContourTest {
         assertNotEquals(copy1, copy2);
     }
 
-    @Test
-    public void testSetContourTypeAffectsReturnValueOfIsClosedCurve() {
-        contour.setContourType(Contour.Type.DEFAULT_CLOSED);
-        boolean initialValue = contour.isClosedCurve();
-
-        contour.setContourType(Contour.Type.DEFAULT_OPEN);
-        boolean finalValue = contour.isClosedCurve();
-
-        assertNotEquals(initialValue, finalValue);
-    }
+//    @Test
+//    public void testSetContourTypeAffectsReturnValueOfIsClosedCurve() {
+//        contour.setContourType(Contour.Type.DEFAULT_CLOSED);
+//        boolean initialValue = contour.isClosedCurve();
+//
+//        contour.setContourType(Contour.Type.DEFAULT_OPEN);
+//        boolean finalValue = contour.isClosedCurve();
+//
+//        assertNotEquals(initialValue, finalValue);
+//    }
 }

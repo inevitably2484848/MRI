@@ -64,7 +64,7 @@ public class LoadContoursTest {
         controlPoints.add(p1);
         controlPoints.add(p2);
 
-        Contour c1 = new Contour(Contour.Type.DEFAULT);
+        Contour c1 = new Contour(Contour.Type.LV_EPI);
         c1.setControlPoints(controlPoints); // automatically generates other
                                             // points
         contourList.add(c1);
