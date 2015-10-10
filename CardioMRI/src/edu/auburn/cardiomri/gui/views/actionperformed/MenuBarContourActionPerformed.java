@@ -11,12 +11,20 @@ import javax.swing.JPanel;
 import edu.auburn.cardiomri.datastructure.Contour;
 import edu.auburn.cardiomri.datastructure.Contour.Type;
 import edu.auburn.cardiomri.gui.models.ImageModel;
+import edu.auburn.cardiomri.gui.models.WorkspaceModel;
 import edu.auburn.cardiomri.gui.views.ImageView;
 import edu.auburn.cardiomri.gui.views.View;
+import edu.auburn.cardiomri.gui.views.WorkspaceView;
 
-public class MenuBarContourActionPerformed extends View implements ActionListener {
+public class MenuBarContourActionPerformed implements ActionListener {
 	
+
 	protected JPanel imageContourPanel;
+	private WorkspaceView wrkspcVw;
+	public MenuBarContourActionPerformed(WorkspaceView wrkspcVw){
+		this.wrkspcVw = wrkspcVw;
+	}
+	
 	
 	@Override
 	public void actionPerformed(ActionEvent actionEvent) {
@@ -60,7 +68,8 @@ public class MenuBarContourActionPerformed extends View implements ActionListene
 			}
 		} 
 		else if (actionCommand.equals("Hide Contours")) {
-			if (getImageModel().getContours() == null || getImageModel().getContours().size() == 0) {
+			if (getImageModel().getContours() == null || getImageModel().getContours()
+					.size() == 0) {
 				JOptionPane.showMessageDialog(imageContourPanel,
                 "There are no contours to hide.");
 			} else {
@@ -68,7 +77,9 @@ public class MenuBarContourActionPerformed extends View implements ActionListene
 			}
 		} 
 		else if (actionCommand.equals("Show Contours")) {
-			if (getImageModel().getHiddenContours() == null || getImageModel().getHiddenContours().size() == 0) {
+			if (getImageModel().getHiddenContours() 
+					== null || wrkspcVw.getMainImageView().getImageModel()
+					.getHiddenContours().size() == 0) {
 				JOptionPane.showMessageDialog(imageContourPanel,
                 "There are no contours to show.");
 			} 
@@ -77,31 +88,24 @@ public class MenuBarContourActionPerformed extends View implements ActionListene
 			}
 		} 
 		else if (actionCommand.equals("Delete All Contours")) {
-			if (getImageModel().getContours() == null || getImageModel().getContours().size() == 0) {
-				JOptionPane.showMessageDialog(imageContourPanel,"There are no contours to delete.");
+			if (getImageModel().getContours() == null 
+					|| getImageModel().getContours().size() == 0) {
+				JOptionPane.showMessageDialog
+				(imageContourPanel,"There are no contours to delete.");
 			} 
 			else {
 				getImageModel().deleteAllContours();
 			}
 		}
-		else if (actionCommand.equals("Save Study")) {
-            this.saveStudy();
-        } else if (actionCommand.equals("Save As Study")) {
-            this.saveAsStudy();
-        } else if (actionCommand.equals("Save Contours")) {
-            this.saveContour();
-        } else if (actionCommand.equals("Load Existing Study")) {
-        	this.loadExistingStudy();
-        } else if (actionCommand.equals("Rotate Image")) {
-            this.getWorkspaceModel().rotate();
-        } else if (actionCommand.equals("Load Contours")) {
+		else if (actionCommand.equals("Load Contours")) {
             try {
-                this.setUpLoad();
+            	wrkspcVw.setUpLoad();
             } catch (IOException e1) {
                 // TODO Auto-generated catch block
                 e1.printStackTrace();
             }
         }
+
 		
 		
 	}
@@ -109,8 +113,9 @@ public class MenuBarContourActionPerformed extends View implements ActionListene
 		 * gets Image model to add contour type
 		 * @return
 		 */
-		public static ImageModel getImageModel(){
-	    	return ImageView.getImageModelStatic();
+		private ImageModel getImageModel(){
+	    	return wrkspcVw.getMainImageView().getImageModel();
 	    }
+		
 	
 }
