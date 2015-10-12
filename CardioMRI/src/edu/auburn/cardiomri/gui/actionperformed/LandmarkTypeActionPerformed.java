@@ -1,4 +1,4 @@
-package edu.auburn.cardiomri.gui.views.actionperformed;
+package edu.auburn.cardiomri.gui.actionperformed;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -7,6 +7,7 @@ import edu.auburn.cardiomri.datastructure.Landmark;
 import edu.auburn.cardiomri.datastructure.Landmark.LandmarkType;
 import edu.auburn.cardiomri.gui.models.ImageModel;
 import edu.auburn.cardiomri.gui.views.ImageView;
+import edu.auburn.cardiomri.gui.views.Toast;
 import edu.auburn.cardiomri.gui.views.View;
 import edu.auburn.cardiomri.popupmenu.view.LandmarkTypeMenu;
 import edu.auburn.cardiomri.util.Mode;
@@ -17,6 +18,7 @@ public class LandmarkTypeActionPerformed extends View implements ActionListener 
 	public void actionPerformed(ActionEvent actionEvent) {
 		String actionCommand = actionEvent.getActionCommand();
 		Mode.setMode(Mode.landmarkMode());
+		
 		LandmarkTypeMenu.staticHide();  //hides current landmarkTypeMenu
 		
 		if (actionCommand.equals("ARV")){

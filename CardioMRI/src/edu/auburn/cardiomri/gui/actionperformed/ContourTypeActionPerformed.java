@@ -1,4 +1,4 @@
-package edu.auburn.cardiomri.gui.views.actionperformed;
+package edu.auburn.cardiomri.gui.actionperformed;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -45,7 +45,8 @@ public class ContourTypeActionPerformed  implements ActionListener {
 	public void actionPerformed(ActionEvent actionEvent) {
 		String actionCommand = actionEvent.getActionCommand();
 		Mode.setMode(Mode.contourMode());
-
+// change
+		
 		if(istoggled){
 			 this.model = getImageModel(istoggled);
 			 ctMenu.hidePopup();

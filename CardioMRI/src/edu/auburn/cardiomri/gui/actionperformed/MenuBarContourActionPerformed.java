@@ -1,4 +1,4 @@
-package edu.auburn.cardiomri.gui.views.actionperformed;
+package edu.auburn.cardiomri.gui.actionperformed;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
