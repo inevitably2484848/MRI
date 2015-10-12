@@ -20,8 +20,8 @@ import javax.swing.JToggleButton;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import edu.auburn.cardiomri.gui.actionperformed.ContourTypeActionPerformed;
 import edu.auburn.cardiomri.gui.models.GridModel;
-import edu.auburn.cardiomri.gui.views.actionperformed.ContourTypeActionPerformed;
 import edu.auburn.cardiomri.popupmenu.view.ContourTypeMenu;
 import edu.auburn.cardiomri.popupmenu.view.LandmarkTypeMenu;
 
@@ -164,6 +164,7 @@ public class GridControlView extends View implements ChangeListener {
     }
     
     /**
+     * ***************** NEEDS REFACTORING ******************************
      * Currently only listening for the play and stop of the play button.
      * 
      */
@@ -191,12 +192,13 @@ public class GridControlView extends View implements ChangeListener {
 				cntrPM.hidePopup();
 			}
 			else{
+				lndmrkPM.hidePopup();
 				contour.setSelected(true);
 				cntrPM.setLocation();
 				cntrPM.getPopup();
 				Mode.setMode(Mode.contourMode());
 			}
-			new Toast(Mode.modeToast());
+			//new Toast(Mode.modeToast());
         }
         else if(actionCommand.equalsIgnoreCase("landMark")){ //kw
         	contour.setSelected(false);
@@ -215,7 +217,7 @@ public class GridControlView extends View implements ChangeListener {
         	new Toast(Mode.modeToast());
         		
         }
-    }
+    } //*************************************************************************
     
     
     /**
