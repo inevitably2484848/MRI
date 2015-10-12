@@ -9,6 +9,7 @@ import edu.auburn.cardiomri.gui.controller.Controller;
 import edu.auburn.cardiomri.gui.models.ImageModel;
 import edu.auburn.cardiomri.gui.models.Model;
 import edu.auburn.cardiomri.gui.views.ImageView;
+import edu.auburn.cardiomri.gui.views.Toast;
 import edu.auburn.cardiomri.gui.views.View;
 import edu.auburn.cardiomri.gui.views.WorkspaceView;
 import edu.auburn.cardiomri.popupmenu.view.ContourTypeMenu;
@@ -44,7 +45,7 @@ public class ContourTypeActionPerformed  implements ActionListener {
 	public void actionPerformed(ActionEvent actionEvent) {
 		String actionCommand = actionEvent.getActionCommand();
 		Mode.setMode(Mode.contourMode());
-//		ContourTypeMenu.hidePopup();
+
 		if(istoggled){
 			 this.model = getImageModel(istoggled);
 			 ctMenu.hidePopup();
