@@ -1,4 +1,7 @@
 package edu.auburn.cardiomri.util;
+
+import edu.auburn.cardiomri.gui.views.Toast;
+
 /**
  * Mode is used on the mouseclick listen. 
  * The action performed from a mouse click is based 
@@ -37,6 +40,7 @@ public class Mode {
    // to set the mode in another class Mode.setMode(Mode.contourMode()) 
     public static void setMode(int modeIN){
     	mode = modeIN;
+    	new Toast(modeToast());
     }
     
     public static int contourMode(){
