@@ -10,6 +10,7 @@ import edu.auburn.cardiomri.datastructure.DICOMImage;
 import edu.auburn.cardiomri.datastructure.Landmark;
 import edu.auburn.cardiomri.datastructure.Vector3d;
 import edu.auburn.cardiomri.util.ContourCalc;
+import edu.auburn.cardiomri.datastructure.ControlPoint;
 
 public class ImageModel extends Model {
     protected DICOMImage dImage;
@@ -202,7 +203,7 @@ public class ImageModel extends Model {
      * @param y
      */
     public void selectContour(double x, double y) {
-        Vector3d pointClicked = new Vector3d(x, y, 0);
+        ControlPoint pointClicked = new ControlPoint(x, y);
         float delta = Float.MAX_VALUE;
         Contour closest = null;
 

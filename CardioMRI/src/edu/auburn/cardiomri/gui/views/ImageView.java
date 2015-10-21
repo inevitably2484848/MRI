@@ -45,6 +45,7 @@ import edu.auburn.cardiomri.gui.models.ImageModel;
 import edu.auburn.cardiomri.gui.models.Model;
 import edu.auburn.cardiomri.popupmenu.view.ContourContextMenu;
 import edu.auburn.cardiomri.util.Mode;
+import edu.auburn.cardiomri.datastructure.ControlPoint;
 
 public class ImageView extends SingleImagePanel implements ActionListener,
         ViewInterface, Observer {
@@ -92,7 +93,7 @@ public class ImageView extends SingleImagePanel implements ActionListener,
     private void updateSelectedContour(Contour contour) {
         
         if (contour != null) {
-            for (Vector3d controlPoint : contour.getControlPoints()) {
+            for (ControlPoint controlPoint : contour.getControlPoints()) {
             	Ellipse2D ellipse = new Ellipse2D.Double(controlPoint.getX(),
                         controlPoint.getY(), 2, 2);
                 visibleShapes.add(ellipse);
@@ -103,9 +104,9 @@ public class ImageView extends SingleImagePanel implements ActionListener,
     private void updateTensionPoints(Contour contour) {
     	
     	if(contour != null) {
-    		for (Vector3d controlPoint : contour.getControlPoints()) {
-    			Ellipse2D ellipse = new Ellipse2D.Double(controlPoint.getTensionX(), controlPoint.getTensionY(), 2, 2);
-    			Ellipse2D ellipse2 = new Ellipse2D.Double(controlPoint.getTensionX2(), controlPoint.getTensionY2(), 2, 2);
+    		for (ControlPoint controlPoint : contour.getControlPoints()) {
+    			Ellipse2D ellipse = new Ellipse2D.Double(controlPoint.getTension1().getX(), controlPoint.getTension1().getY(), 2, 2);
+    			Ellipse2D ellipse2 = new Ellipse2D.Double(controlPoint.getTension2().getX(), controlPoint.getTension2().getY(), 2, 2);
     			visibleShapes.add(ellipse);
     			visibleShapes.add(ellipse2);
     		}

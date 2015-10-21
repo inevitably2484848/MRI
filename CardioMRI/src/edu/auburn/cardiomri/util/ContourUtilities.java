@@ -20,6 +20,8 @@ import edu.auburn.cardiomri.datastructure.Contour;
 import edu.auburn.cardiomri.datastructure.DICOMImage;
 import edu.auburn.cardiomri.datastructure.Vector3d;
 import edu.auburn.cardiomri.gui.models.WorkspaceModel;
+import edu.auburn.cardiomri.datastructure.Point;
+import edu.auburn.cardiomri.datastructure.ControlPoint;
 
 /**
  * @author Christopher Colosi
@@ -134,8 +136,7 @@ public final class ContourUtilities {
                 String header = c.getIntFromTypeControlPoints() + "\n"
                         + numPoints + "\n";
                 writer.write(header);
-                for (Vector3d point : c
-                        .getControlPoints()) {
+                for (ControlPoint point : c.getControlPoints()) {
                     writer.write(BigDecimal.valueOf(point.getX())
                             .setScale(4, BigDecimal.ROUND_UP)
                             + "\t"
@@ -159,8 +160,7 @@ public final class ContourUtilities {
                 String header = c.getIntFromType() + "\n"
                         + numPoints + "\n";
                 writer.write(header);
-                for (Vector3d point : c
-                        .getGeneratedPoints()) {
+                for (Point point : c.getGeneratedPoints()) {
                     writer.write(BigDecimal.valueOf(point.getX())
                             .setScale(4, BigDecimal.ROUND_UP)
                             + "\t"

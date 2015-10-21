@@ -29,11 +29,11 @@ public class Contour implements Shape, Serializable {
     private static final long serialVersionUID = 6179619427503035482L;
 
     // XY coordinates of points the user clicked
-    private List<Vector3d> controlPoints;
+    private List<ControlPoint> controlPoints;
 
     // XY coordinates of points that look like a smooth curve is drawn between
     // each of the control points
-    private List<Vector3d> generatedPoints;
+    private List<Point> generatedPoints;
 
     private Type contourType;
 
@@ -46,8 +46,8 @@ public class Contour implements Shape, Serializable {
      * Sets controlPoints to a predefined set of points.
      */
     private Contour() {
-        controlPoints = new Vector<Vector3d>();
-        generatedPoints = new Vector<Vector3d>();
+        controlPoints = new Vector<ControlPoint>();
+        generatedPoints = new Vector<Point>();
     }
 
     public void setControlPoints(List<Vector3d> points) {
@@ -55,10 +55,10 @@ public class Contour implements Shape, Serializable {
             throw new NullPointerException("List cannot be null");
         }
 
-        List<Vector3d> newList = new Vector<Vector3d>();
+        List<ControlPoint> newList = new Vector<ControlPoint>();
         for (Vector3d point : points) {
             validateCoordinates(point.getX(), point.getY());
-            newList.add(new Vector3d(point.getX(), point.getY(), 0));
+            newList.add(new ControlPoint(point.getX(), point.getY()));
         }
 
         controlPoints = newList;
@@ -96,7 +96,7 @@ public class Contour implements Shape, Serializable {
         int maxX = Integer.MIN_VALUE;
         int maxY = Integer.MIN_VALUE;
 
-        for (Vector3d point : controlPoints) {
+        for (ControlPoint point : controlPoints) {
             minX = (int) Math.floor(Math.min(point.getX(), minX));
             minY = (int) Math.floor(Math.min(point.getY(), minY));
             maxX = (int) Math.ceil(Math.max(point.getX(), maxX));
@@ -113,7 +113,7 @@ public class Contour implements Shape, Serializable {
         double maxX = Double.MIN_VALUE;
         double maxY = Double.MIN_VALUE;
 
-        for (Vector3d point : controlPoints) {
+        for (ControlPoint point : controlPoints) {
             minX = Math.min(point.getX(), minX);
             minY = Math.min(point.getY(), minY);
             maxX = Math.max(point.getX(), maxX);
@@ -123,12 +123,12 @@ public class Contour implements Shape, Serializable {
         return new Rectangle2D.Double(minX, minY, (maxX - minX), (maxY - minY));
     }
 
-    private Vector3d transformCoordinates(AffineTransform at, Vector3d source) {
+    private Point transformCoordinates(AffineTransform at, Point source) {
         java.awt.geom.Point2D transformed = new java.awt.geom.Point2D.Double();
         at.transform(
                 new java.awt.geom.Point2D.Double(source.getX(), source.getY()),
                 transformed);
-        return new Vector3d(transformed.getX(), transformed.getY(), 0);
+        return new Point(transformed.getX(), transformed.getY());
     }
 
     @Override
@@ -154,13 +154,13 @@ public class Contour implements Shape, Serializable {
             @Override
             public int currentSegment(double[] coords) {
                 if (index == 0) {
-                    Vector3d point = transformCoordinates(at,
+                    Point point = transformCoordinates(at,
                             generatedPoints.get(0));
                     coords[0] = point.getX();
                     coords[1] = point.getY();
                     return PathIterator.SEG_MOVETO;
                 } else if ((index > 0)) {
-                    Vector3d point = transformCoordinates(at,
+                    Point point = transformCoordinates(at,
                             generatedPoints.get(index));
                     coords[0] = point.getX();
                     coords[1] = point.getY();
@@ -213,69 +213,69 @@ public class Contour implements Shape, Serializable {
         validateCoordinates(x, y);
         
         if(notToClose(x,y)){
-        	controlPoints.add(new Vector3d(x, y, 0));
+        	controlPoints.add(new ControlPoint(x, y));
         	ContourCalc.sortPoints(controlPoints);
         	if(controlPoints.size() > 1) {        		
         		for(int i = 0; i < controlPoints.size(); i++) {
         			//search the control points to find the new point with no tension point
-        			if(controlPoints.get(i).getTensionX() == 0.0 && controlPoints.get(i).getTensionY() == 0.0) { 
+        			if(controlPoints.get(i).getTension1().getX() == 0.0 && controlPoints.get(i).getTension1().getY() == 0.0) { 
         			
         				//check to see if new control point was sorted to the beginning of the contour
         				if(i == 0) {
         					//calculate new tension point for previous control point, which for this branch is the final point
-        					List<Vector3d> tensionPointsA = ContourCalc.getTensionPoint(controlPoints.get(controlPoints.size() - 1), controlPoints.get(i));
+        					List<TensionPoint> tensionPointsA = ContourCalc.getTensionPoint(controlPoints.get(controlPoints.size() - 1), controlPoints.get(i));
             			
         					//set the tension point values of the previous control point equal to the new tension point
-        					controlPoints.get(controlPoints.size() - 1).setTensionX(tensionPointsA.get(0).getTensionX());
-        					controlPoints.get(controlPoints.size() - 1).setTensionY(tensionPointsA.get(0).getTensionY());
-        					controlPoints.get(controlPoints.size() - 1).setTensionX2(tensionPointsA.get(1).getTensionX());
-        					controlPoints.get(controlPoints.size() - 1).setTensionY2(tensionPointsA.get(1).getTensionY());
+        					controlPoints.get(controlPoints.size() - 1).getTension1().setX(tensionPointsA.get(0).getX());
+        					controlPoints.get(controlPoints.size() - 1).getTension1().setY(tensionPointsA.get(0).getY());
+        					controlPoints.get(controlPoints.size() - 1).getTension2().setX(tensionPointsA.get(1).getX());
+        					controlPoints.get(controlPoints.size() - 1).getTension2().setY(tensionPointsA.get(1).getY());
         					
         					//calculate new tension point for next control point
-        					List<Vector3d> tensionPointsB = ContourCalc.getTensionPoint(controlPoints.get(i), controlPoints.get(i + 1));
+        					List<TensionPoint> tensionPointsB = ContourCalc.getTensionPoint(controlPoints.get(i), controlPoints.get(i + 1));
             			
         					//set the tension point values of the next control point equal to the new tension point
-        					controlPoints.get(i).setTensionX(tensionPointsB.get(0).getTensionX());
-        					controlPoints.get(i).setTensionY(tensionPointsB.get(0).getTensionY());
-        					controlPoints.get(i).setTensionX2(tensionPointsB.get(1).getTensionX());
-        					controlPoints.get(i).setTensionY2(tensionPointsB.get(1).getTensionY());
+        					controlPoints.get(i).getTension1().setX(tensionPointsB.get(0).getX());
+        					controlPoints.get(i).getTension1().setY(tensionPointsB.get(0).getY());
+        					controlPoints.get(i).getTension2().setX(tensionPointsB.get(1).getX());
+        					controlPoints.get(i).getTension2().setY(tensionPointsB.get(1).getY());
             			
         				} else if(i == controlPoints.size() - 1) { //check to see if the new control point was sorted to the end of the contour
         				
         					//calculate new tension point for previous control point
-        					List<Vector3d> tensionPointsA = ContourCalc.getTensionPoint(controlPoints.get(i - 1), controlPoints.get(i));
+        					List<TensionPoint> tensionPointsA = ContourCalc.getTensionPoint(controlPoints.get(i - 1), controlPoints.get(i));
             			
         					//set the tension point values of the previous control point equal to the new tension point
-        					controlPoints.get(i - 1).setTensionX(tensionPointsA.get(0).getTensionX());
-        					controlPoints.get(i - 1).setTensionY(tensionPointsA.get(0).getTensionY());
-        					controlPoints.get(i - 1).setTensionX2(tensionPointsA.get(1).getTensionX());
-        					controlPoints.get(i - 1).setTensionY2(tensionPointsA.get(1).getTensionY());
+        					controlPoints.get(i - 1).getTension1().setX(tensionPointsA.get(0).getX());
+        					controlPoints.get(i - 1).getTension1().setY(tensionPointsA.get(0).getY());
+        					controlPoints.get(i - 1).getTension2().setX(tensionPointsA.get(1).getX());
+        					controlPoints.get(i - 1).getTension2().setY(tensionPointsA.get(1).getY());
             			
         					//calculate new tension point for next control point
-        					List<Vector3d> tensionPointsB = ContourCalc.getTensionPoint(controlPoints.get(i), controlPoints.get(0));
+        					List<TensionPoint> tensionPointsB = ContourCalc.getTensionPoint(controlPoints.get(i), controlPoints.get(0));
             			
         					//set the tension point values of the next control point equal to the new tension point
-        					controlPoints.get(i).setTensionX(tensionPointsB.get(0).getTensionX());
-        					controlPoints.get(i).setTensionY(tensionPointsB.get(0).getTensionY());
-        					controlPoints.get(i).setTensionX2(tensionPointsB.get(1).getTensionX());
-        					controlPoints.get(i).setTensionY2(tensionPointsB.get(1).getTensionY());
+        					controlPoints.get(i).getTension1().setX(tensionPointsB.get(0).getX());
+        					controlPoints.get(i).getTension1().setY(tensionPointsB.get(0).getY());
+        					controlPoints.get(i).getTension2().setX(tensionPointsB.get(1).getX());
+        					controlPoints.get(i).getTension2().setY(tensionPointsB.get(1).getY());
         				} else {
         				
         					//calculate new tension point for previous control point
-        					List<Vector3d> tensionPointsA = ContourCalc.getTensionPoint(controlPoints.get(i - 1), controlPoints.get(i));
+        					List<TensionPoint> tensionPointsA = ContourCalc.getTensionPoint(controlPoints.get(i - 1), controlPoints.get(i));
         			
         					//set the tension point values of the previous control point equal to the new tension point
-        					controlPoints.get(i - 1).setTensionX(tensionPointsA.get(0).getTensionX());
-        					controlPoints.get(i - 1).setTensionY(tensionPointsA.get(0).getTensionY());
-        					controlPoints.get(i - 1).setTensionX2(tensionPointsA.get(1).getTensionX());
-        					controlPoints.get(i - 1).setTensionY2(tensionPointsA.get(1).getTensionY());
+        					controlPoints.get(i - 1).getTension1().setX(tensionPointsA.get(0).getX());
+        					controlPoints.get(i - 1).getTension1().setY(tensionPointsA.get(0).getY());
+        					controlPoints.get(i - 1).getTension2().setX(tensionPointsA.get(1).getX());
+        					controlPoints.get(i - 1).getTension2().setY(tensionPointsA.get(1).getY());
         			
         					//calculate new tension point for next control point
-        					List<Vector3d> tensionPointsB = ContourCalc.getTensionPoint(controlPoints.get(i), controlPoints.get(i + 1));
+        					List<TensionPoint> tensionPointsB = ContourCalc.getTensionPoint(controlPoints.get(i), controlPoints.get(i + 1));
         			
         					//set the tension point values of the next control point equal to the new tension point
-        					controlPoints.get(i).setTensionX(tensionPointsB.get(0).getTensionX());
-        					controlPoints.get(i).setTensionY(tensionPointsB.get(0).getTensionY());
+        					controlPoints.get(i).getTension1().setX(tensionPointsB.get(0).getX());
+        					controlPoints.get(i).getTension1().setY(tensionPointsB.get(0).getY());
         				}
         			}        			
         		}
@@ -298,7 +298,7 @@ public class Contour implements Shape, Serializable {
     	 boolean bToClose = true;
     	 double dMinGap = 3;
 
-    	 for(Vector3d controlP : controlPoints){
+    	 for(ControlPoint controlP : controlPoints){
     		if(((Math.abs(controlP.getX() - x)) <= dMinGap) && ((Math.abs(controlP.getY() - y) <= dMinGap))){
     			return false;
     		}
@@ -318,7 +318,7 @@ public class Contour implements Shape, Serializable {
     	 double minGap = 3;
     	 boolean bDeleted = false;
     	 int index = -1;
-    	 Vector3d temp;
+    	 ControlPoint temp;
     	 double tempX, tempY;
     	 
     	 //find point that is close enough to delete 
@@ -339,13 +339,13 @@ public class Contour implements Shape, Serializable {
     		 if(controlPoints.size() != 0) {
     			 if(index == 0) {
     				 //calculate new tension point for previous control point
-    				 List<Vector3d> tensionPoints = ContourCalc.getTensionPoint(controlPoints.get(controlPoints.size() - 1), controlPoints.get(0));
+    				 List<TensionPoint> tensionPoints = ContourCalc.getTensionPoint(controlPoints.get(controlPoints.size() - 1), controlPoints.get(0));
 
     				 //set the tension point values of the previous control point equal to the new tension point
-    				 controlPoints.get(controlPoints.size() - 1).setTensionX(tensionPoints.get(0).getTensionX());
-    				 controlPoints.get(controlPoints.size() - 1).setTensionY(tensionPoints.get(0).getTensionY());
-    				 controlPoints.get(controlPoints.size() - 1).setTensionX2(tensionPoints.get(1).getTensionX());
-    				 controlPoints.get(controlPoints.size() - 1).setTensionY2(tensionPoints.get(1).getTensionY());
+    				 controlPoints.get(controlPoints.size() - 1).getTension1().setX(tensionPoints.get(0).getX());
+    				 controlPoints.get(controlPoints.size() - 1).getTension1().setY(tensionPoints.get(0).getY());
+    				 controlPoints.get(controlPoints.size() - 1).getTension2().setX(tensionPoints.get(1).getX());
+    				 controlPoints.get(controlPoints.size() - 1).getTension2().setY(tensionPoints.get(1).getY());
 
     				 //check to see if new point was put at the end of the list
     				 //unlike the addControlPoint check, the size is now one less than it previously was, so this condition occurs
@@ -354,22 +354,22 @@ public class Contour implements Shape, Serializable {
     			 } else if(index == (controlPoints.size())) {
 
     				 //calculate new tension point for previous control point
-    				 List<Vector3d> tensionPoints = ContourCalc.getTensionPoint(controlPoints.get(index - 1), controlPoints.get(0));
+    				 List<TensionPoint> tensionPoints = ContourCalc.getTensionPoint(controlPoints.get(index - 1), controlPoints.get(0));
 
     				 //set the tension point values of the previous control point equal to the new tension point
-    				 controlPoints.get(index - 1).setTensionX(tensionPoints.get(0).getTensionX());
-    				 controlPoints.get(index - 1).setTensionY(tensionPoints.get(0).getTensionY());
-    				 controlPoints.get(index - 1).setTensionX2(tensionPoints.get(1).getTensionX());
-    				 controlPoints.get(index - 1).setTensionY2(tensionPoints.get(1).getTensionY());
+    				 controlPoints.get(index - 1).getTension1().setX(tensionPoints.get(0).getX());
+    				 controlPoints.get(index - 1).getTension1().setY(tensionPoints.get(0).getY());
+    				 controlPoints.get(index - 1).getTension2().setX(tensionPoints.get(1).getX());
+    				 controlPoints.get(index - 1).getTension2().setY(tensionPoints.get(1).getY());
     			 } else {
     				 //calculate new tension point for previous control point
-    				 List<Vector3d> tensionPoints = ContourCalc.getTensionPoint(controlPoints.get(index - 1), controlPoints.get(index));
+    				 List<TensionPoint> tensionPoints = ContourCalc.getTensionPoint(controlPoints.get(index - 1), controlPoints.get(index));
 
     				 //set the tension point values of the previous control point equal to the new tension point
-    				 controlPoints.get(index - 1).setTensionX(tensionPoints.get(0).getTensionX());
-    				 controlPoints.get(index - 1).setTensionY(tensionPoints.get(0).getTensionY());
-    				 controlPoints.get(index - 1).setTensionX2(tensionPoints.get(1).getTensionX());
-    				 controlPoints.get(index - 1).setTensionY2(tensionPoints.get(1).getTensionY());
+    				 controlPoints.get(index - 1).getTension1().setX(tensionPoints.get(0).getX());
+    				 controlPoints.get(index - 1).getTension1().setY(tensionPoints.get(0).getY());
+    				 controlPoints.get(index - 1).getTension2().setX(tensionPoints.get(1).getX());
+    				 controlPoints.get(index - 1).getTension2().setY(tensionPoints.get(1).getY());
     			 }
     		 }
     		 generatedPoints = ContourCalc.generate(controlPoints, isClosedCurve()); //refresh curve
@@ -384,7 +384,7 @@ public class Contour implements Shape, Serializable {
     	 int cPointD = -1;
     	 int index = -1;
     	 double minGap = 3;
-    	 Vector3d temp;
+    	 ControlPoint temp;
     	 double tempX, tempY;
     	 
     	 for(int i = 0 ; i < controlPoints.size() ; i++){
@@ -404,14 +404,14 @@ public class Contour implements Shape, Serializable {
     	 int tPointD = -1;
     	 int index = -1;
     	 double minGap = 3;
-    	 Vector3d temp;
+    	 ControlPoint temp;
     	 double tempX, tempY;
     	 
     	 //find point that is close enough to delete
     	 for(int i = 0; i < controlPoints.size(); i ++) {
     		 temp = controlPoints.get(i);
-    		 tempX = temp.getTensionX();
-    		 tempY = temp.getTensionY();
+    		 tempX = temp.getTension1().getX();
+    		 tempY = temp.getTension1().getY();
     		 if((Math.abs(tempX - x) < minGap) && (Math.abs(tempY - y) < minGap)){
     			 index = i;
     			 //extra code to handle two tension points
@@ -423,8 +423,8 @@ public class Contour implements Shape, Serializable {
     	 }
     	 for(int i = 0; i < controlPoints.size(); i ++) {
     		 temp = controlPoints.get(i);
-    		 tempX = temp.getTensionX2();
-    		 tempY = temp.getTensionY2();
+    		 tempX = temp.getTension2().getX();
+    		 tempY = temp.getTension2().getY();
     		 if((Math.abs(tempX - x) < minGap) && (Math.abs(tempY - y) < minGap)){
     			 index = i;
     			 //extra code to handle two tension points
@@ -446,11 +446,11 @@ public class Contour implements Shape, Serializable {
 
      public void moveTensionPoint(double x, double y, int i) {
     	 if(i % 2 == 0) {
-    		 controlPoints.get(i / 2).setTensionX(x);
-    		 controlPoints.get(i / 2).setTensionY(y);
+    		 controlPoints.get(i / 2).getTension1().setX(x);
+    		 controlPoints.get(i / 2).getTension1().setY(y);
     	 } else {
-    		 controlPoints.get((i - 1) / 2).setTensionX2(x);
-    		 controlPoints.get((i - 1) / 2).setTensionY2(y);
+    		 controlPoints.get((i - 1) / 2).getTension2().setX(x);
+    		 controlPoints.get((i - 1) / 2).getTension2().setY(y);
     	 }
     	 generatedPoints = ContourCalc.generate(controlPoints, isClosedCurve());
      }
@@ -493,8 +493,8 @@ public class Contour implements Shape, Serializable {
      *
      * @return copy of the internal list
      */
-    public List<Vector3d> getControlPoints() {
-        return new Vector<Vector3d>(controlPoints);
+    public List<ControlPoint> getControlPoints() {
+        return new Vector<ControlPoint>(controlPoints);
     }
 
     /**
@@ -502,8 +502,8 @@ public class Contour implements Shape, Serializable {
      *
      * @return copy of the internal list
      */
-    public List<Vector3d> getGeneratedPoints() {
-        return new Vector<Vector3d>(generatedPoints);
+    public List<Point> getGeneratedPoints() {
+        return new Vector<Point>(generatedPoints);
     }
 
     /**
