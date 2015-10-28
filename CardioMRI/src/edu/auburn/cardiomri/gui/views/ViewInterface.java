@@ -19,7 +19,7 @@ import edu.auburn.cardiomri.gui.models.Model;
 public interface ViewInterface {
     public abstract JPanel getPanel();
 
-    public abstract Model getModel();
-
-    public abstract void setModel(Model model);
+//    public abstract Model getModel();
+//
+//    public abstract void setModel(Model model);
 }
