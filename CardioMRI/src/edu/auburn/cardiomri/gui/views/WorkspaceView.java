@@ -32,7 +32,6 @@ import edu.auburn.cardiomri.gui.ConstructImage;
 import edu.auburn.cardiomri.gui.actionperformed.ContourTypeActionPerformed;
 import edu.auburn.cardiomri.gui.actionperformed.MenuBarContourActionPerformed;
 import edu.auburn.cardiomri.gui.actionperformed.MenuBarFileActionPerformed;
-import edu.auburn.cardiomri.gui.controller.Controller;
 import edu.auburn.cardiomri.gui.models.GridModel;
 import edu.auburn.cardiomri.gui.models.ImageModel;
 import edu.auburn.cardiomri.gui.models.SelectModel;
@@ -323,7 +322,7 @@ public class WorkspaceView extends View {
         // Contour Submenu ----------------------------------------------------
         ContourTypeActionPerformed contourTypeAction = new ContourTypeActionPerformed(this);
         
-        Controller.setWorkspaceView(this);
+      
         
         JMenu addContour = new JMenu("Add Contour");
         JMenu leftVentricle = new JMenu("LV");
