@@ -6,11 +6,21 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JPopupMenu;
 
+import edu.auburn.cardiomri.gui.models.Model;
+import edu.auburn.cardiomri.gui.views.ImageView;
 import edu.auburn.cardiomri.popupmenu.view.ContourTypeMenu;
 import edu.auburn.cardiomri.popupmenu.view.SelectContextMenu;
 
 public class SelectContextMenuActionPerformed implements ActionListener {
 
+	private ImageView view;
+	private Model model;
+	
+	public SelectContextMenuActionPerformed(ImageView view){
+		this.view = view;
+		this.model = view.getModel();
+	}
+	
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
@@ -18,6 +28,9 @@ public class SelectContextMenuActionPerformed implements ActionListener {
 
 		if(action.equals("Add Contour")){
 			System.out.println(action);
+			ContourTypeMenu cTypeMenu = new ContourTypeMenu();
+			cTypeMenu.setLocation();
+			cTypeMenu.getPopup();
 
 		}
 		else if (action.equals("Add Landmark")){
