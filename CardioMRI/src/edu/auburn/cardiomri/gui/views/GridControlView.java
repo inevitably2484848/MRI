@@ -1,38 +1,31 @@
 package edu.auburn.cardiomri.gui.views;
 
 import java.awt.Component;
-import java.awt.Container;
 import java.awt.Dimension;
-import java.awt.Image;
 import java.awt.MouseInfo;
 import java.awt.event.ActionEvent;
-import java.io.IOException;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseListener;
 import java.util.concurrent.TimeUnit;
 
-import javax.imageio.ImageIO;
 import javax.swing.BoxLayout;
-import javax.swing.ButtonGroup;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
-import javax.swing.JRadioButton;
 import javax.swing.JSlider;
 import javax.swing.JToggleButton;
-import javax.swing.UIManager;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import edu.auburn.cardiomri.gui.actionperformed.ContourTypeActionPerformed;
 import edu.auburn.cardiomri.gui.models.GridModel;
-import edu.auburn.cardiomri.popupmenu.view.ContourModeMenu;
-import edu.auburn.cardiomri.popupmenu.view.LandmarkModeMenu;
-import edu.auburn.cardiomri.util.Mode;
-import javafx.scene.control.ToggleButton;
-import javafx.scene.control.ToggleGroup;
+import edu.auburn.cardiomri.popupmenu.view.ContourTypeMenu;
+import edu.auburn.cardiomri.popupmenu.view.LandmarkTypeMenu;
 
+import edu.auburn.cardiomri.util.Mode;
 
 
 /**
@@ -55,8 +48,8 @@ public class GridControlView extends View implements ChangeListener {
 	
 	protected JToggleButton contour = new JToggleButton("Add Contour"); //kw
 	protected JToggleButton landMark = new JToggleButton("Add LandMark"); //kw
-	protected JPopupMenu jpm = ContourModeMenu.popupMenuContour();
-	protected JPopupMenu lndmrkPM = LandmarkModeMenu.popupMenuLandMark();
+	protected ContourTypeMenu cntrPM = new ContourTypeMenu();
+	protected LandmarkTypeMenu lndmrkPM = new LandmarkTypeMenu();
 	protected static final int SELECT_MODE = 0;
 	protected static final int CONTOUR_MODE = 1;
 	protected static final int LANDMARK_MODE = 2;
@@ -114,6 +107,8 @@ public class GridControlView extends View implements ChangeListener {
 	 *  @author KulW
 	 */
 	public void modeToggleButton(){
+		Mode.setMode(Mode.selectMode()); //set Mode
+		
 		JPanel modePanel = new JPanel();
 	
 		contour.addActionListener(this);
@@ -130,43 +125,6 @@ public class GridControlView extends View implements ChangeListener {
 		
 		this.panel.add(modePanel);
 	} 
-	
-	
-	/** -----------------------------------------------------------------------
-	 *  mode state 
-	 *  changes mode when a toggle button is pressed.
-	 *  in Contour mode adds contour
-	 *  landmark mode adds landmark
-	 *  select mode select contours or landmarks
-	 *  @author KulW
-	 */
-	public void modeState(){
-		
-		if(contour.isSelected()){
-			lndmrkPM.setVisible(false);
-			jpm.setLocation(MouseInfo.getPointerInfo().getLocation());
-			jpm.setVisible(true);
-			Mode.setMode(CONTOUR_MODE);
-			new Toast("Contour Mode");
-		}
-		else if(landMark.isSelected()){
-			jpm.setVisible(false);
-			
-			lndmrkPM.setLocation(MouseInfo.getPointerInfo().getLocation());
-			lndmrkPM.setVisible(true);
-			
-			Mode.setMode(LANDMARK_MODE);
-			new Toast("Landmark Mode");
-		}
-		else {
-			jpm.setVisible(false);
-			lndmrkPM.setVisible(false);
-			Mode.setMode(SELECT_MODE);
-			new Toast("Select Mode");
-		}
-		
-		timer();  //popup menus close after being inactive for 9 sec
-	}
 	
 
 	
@@ -206,6 +164,7 @@ public class GridControlView extends View implements ChangeListener {
     }
     
     /**
+     * ***************** NEEDS REFACTORING ******************************
      * Currently only listening for the play and stop of the play button.
      * 
      */
@@ -226,52 +185,40 @@ public class GridControlView extends View implements ChangeListener {
         }
         else if(actionCommand.equalsIgnoreCase("contour")){  //kw
         	landMark.setSelected(false);
-        	modeState();
+        	lndmrkPM.setVisible(false);
+			if(Mode.getMode() == Mode.contourMode()){  //if already in contour mode
+				contour.setSelected(false);
+				Mode.setMode(Mode.selectMode());
+				cntrPM.hidePopup();
+			}
+			else{
+				lndmrkPM.hidePopup();
+				contour.setSelected(true);
+				cntrPM.setLocation();
+				cntrPM.getPopup();
+				Mode.setMode(Mode.contourMode());
+			}
+			//new Toast(Mode.modeToast());
         }
         else if(actionCommand.equalsIgnoreCase("landMark")){ //kw
         	contour.setSelected(false);
-        	modeState();
+        	cntrPM.hidePopup();
+        	if(Mode.getMode() == Mode.landmarkMode()){
+        		landMark.setSelected(false);
+        		Mode.setMode(Mode.selectMode());
+        		lndmrkPM.hidePopup();
+        	}
+        	else {
+        		landMark.setSelected(true);
+        		lndmrkPM.getPopup();
+        		
+        		Mode.setMode(Mode.landmarkMode());
+        	}
+        	new Toast(Mode.modeToast());
+        		
         }
-    }
+    } //*************************************************************************
     
-   
-    
-
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-
-    /**
-     *  TIMER Colapses popupMenus
-     */
-    public void timer(){
-    	if(jpm.isVisible()){
-			new Thread(){
-		            public void run() {
-		                try {
-		                    Thread.sleep(9000);
-		                    jpm.setVisible(false);
-		                    
-		                    
-		                } catch (InterruptedException e) {
-		                    e.printStackTrace();
-		                }
-		            }
-		    }.start();
-    	} // end if
-    	if(lndmrkPM.isVisible()){
-			new Thread(){
-	            public void run() {
-	                try {
-	                    Thread.sleep(9000);
-	                    lndmrkPM.setVisible(false);
-	                } catch (InterruptedException e) {
-	                    e.printStackTrace();
-	                }
-	            }
-	    }.start();
-    	}
-    }
     
     /**
      * Because the gridContorlModel would be more than a hassle, we chose to have 
@@ -330,3 +277,5 @@ public class GridControlView extends View implements ChangeListener {
         }
    }
 }
+
+
