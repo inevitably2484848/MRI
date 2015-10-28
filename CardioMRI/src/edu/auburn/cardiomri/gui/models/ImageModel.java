@@ -176,6 +176,8 @@ public class ImageModel extends Model {
     public void addLandmarkToImage(Landmark landmark){
     	this.dImage.addLandmark(landmark);
     	setActiveLandmark(landmark);
+    	setChanged();
+    	notifyObservers(dImage);
     }
     public void setActiveLandmark(Landmark landmark){
     	activeLandmark = landmark;

@@ -49,43 +49,43 @@ class PopupActionListenerLandMark extends View implements ActionListener {
 
 		if (actionCommand.equals("ARV")){
         	Mode.setMode(Mode.landmarkMode());
-        	getImageModel().addLandmarkToImage(new Landmark(LandmarkType.ARV,0.0,0.0));
+        	Mode.setNextLandmarkType(LandmarkType.ARV);
         } else if (actionCommand.equals("IRV")){
         	Mode.setMode(Mode.landmarkMode());
-        	getImageModel().addLandmarkToImage(new Landmark(LandmarkType.IRV,0.0,0.0));
+        	Mode.setNextLandmarkType(LandmarkType.IRV);
         } else if (actionCommand.equals("MS")){
         	Mode.setMode(Mode.landmarkMode());
-        	getImageModel().addLandmarkToImage(new Landmark(LandmarkType.MS,0.0,0.0));
+        	Mode.setNextLandmarkType(LandmarkType.MS);
         } else if (actionCommand.equals("LVAPEX")){
         	Mode.setMode(Mode.landmarkMode());
-        	getImageModel().addLandmarkToImage(new Landmark(LandmarkType.LVAPEX,0.0,0.0));
+        	Mode.setNextLandmarkType(LandmarkType.LVAPEX);
         } else if (actionCommand.equals("LVSEPTALBASE")){
         	Mode.setMode(Mode.landmarkMode());
-        	getImageModel().addLandmarkToImage(new Landmark(LandmarkType.LVSEPTALBASE,0.0,0.0));
+        	Mode.setNextLandmarkType(LandmarkType.LVSEPTALBASE);
         } else if (actionCommand.equals("LVLATERALBASE")){
         	Mode.setMode(Mode.landmarkMode());
-        	getImageModel().addLandmarkToImage(new Landmark(LandmarkType.LVLATERALBASE,0.0,0.0));
+        	Mode.setNextLandmarkType(LandmarkType.LVLATERALBASE);
         } else if (actionCommand.equals("LVANTERIORBASE")){
         	Mode.setMode(Mode.landmarkMode());
-        	getImageModel().addLandmarkToImage(new Landmark(LandmarkType.LVANTERIORBASE,0.0,0.0));
+        	Mode.setNextLandmarkType(LandmarkType.LVANTERIORBASE);
         } else if (actionCommand.equals("LVINFERIORBASE")){
         	Mode.setMode(Mode.landmarkMode());
-        	getImageModel().addLandmarkToImage(new Landmark(LandmarkType.LVINFERIORBASE,0.0,0.0));
+        	Mode.setNextLandmarkType(LandmarkType.LVINFERIORBASE);
         } else if (actionCommand.equals("RVAPEX")){
         	Mode.setMode(Mode.landmarkMode());
-        	getImageModel().addLandmarkToImage(new Landmark(LandmarkType.RVAPEX,0.0,0.0));
+        	Mode.setNextLandmarkType(LandmarkType.RVAPEX);
         } else if (actionCommand.equals("RVLATERALBASE")){
         	Mode.setMode(Mode.landmarkMode());
-        	getImageModel().addLandmarkToImage(new Landmark(LandmarkType.RVLATERALBASE,0.0,0.0));
+        	Mode.setNextLandmarkType(LandmarkType.RVLATERALBASE);
         } else if (actionCommand.equals("RVSEPTALBASE")){
         	Mode.setMode(Mode.landmarkMode());
-        	getImageModel().addLandmarkToImage(new Landmark(LandmarkType.RVSEPTALBASE,0.0,0.0));
+        	Mode.setNextLandmarkType(LandmarkType.RVSEPTALBASE);
         } else if (actionCommand.equals("RVANTERIORBASE")){
         	Mode.setMode(Mode.landmarkMode());
-        	getImageModel().addLandmarkToImage(new Landmark(LandmarkType.RVANTERIORBASE,0.0,0.0));
+        	Mode.setNextLandmarkType(LandmarkType.RVANTERIORBASE);
         } else if (actionCommand.equals("RVINFERIORBASE")){
         	Mode.setMode(Mode.landmarkMode());
-        	getImageModel().addLandmarkToImage(new Landmark(LandmarkType.RVINFERIORBASE,0.0,0.0));
+        	Mode.setNextLandmarkType(LandmarkType.RVINFERIORBASE);
         }
 	
 	}
