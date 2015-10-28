@@ -310,6 +310,10 @@ public class ImageView extends SingleImagePanel implements ActionListener,
     }
 
     public void mousePressed(MouseEvent e) {
+    	if (Mode.getMode() == 2){
+    		return;
+    	}
+    	//Note: should change this method to check for the nearest point class object
     	int temp1;
     	int temp2;
     	java.awt.geom.Point2D mouseClick = getImageCoordinateFromWindowCoordinate(e.getX(), e.getY());
