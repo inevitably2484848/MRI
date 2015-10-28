@@ -441,6 +441,13 @@ public class Contour implements Shape, Serializable {
      public void moveContourPoint(double x, double y, int i) {
     	 controlPoints.get(i).setX(x);
     	 controlPoints.get(i).setY(y);
+    	 
+    	 generatedPoints = ContourCalc.generate(controlPoints, isClosedCurve());
+     }
+     
+     public void moveContourPoint(double x, double y, ControlPoint point) {
+    	 point.setX(x);
+    	 point.setY(y);
     	 generatedPoints = ContourCalc.generate(controlPoints, isClosedCurve());
      }
 
@@ -452,6 +459,13 @@ public class Contour implements Shape, Serializable {
     		 controlPoints.get((i - 1) / 2).getTension2().setX(x);
     		 controlPoints.get((i - 1) / 2).getTension2().setY(y);
     	 }
+    	 generatedPoints = ContourCalc.generate(controlPoints, isClosedCurve());
+     }
+     
+     public void moveTensionPoint(double x, double y, TensionPoint point) {
+		 point.setX(x);
+		 point.setY(y);
+    	 
     	 generatedPoints = ContourCalc.generate(controlPoints, isClosedCurve());
      }
     /**

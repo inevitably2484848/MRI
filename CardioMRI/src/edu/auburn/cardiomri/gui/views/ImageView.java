@@ -38,6 +38,8 @@ import edu.auburn.cardiomri.datastructure.Contour;
 import edu.auburn.cardiomri.datastructure.Contour.Type;
 import edu.auburn.cardiomri.datastructure.Landmark;
 import edu.auburn.cardiomri.datastructure.Landmark.LandmarkType;
+import edu.auburn.cardiomri.datastructure.Point;
+import edu.auburn.cardiomri.datastructure.TensionPoint;
 import edu.auburn.cardiomri.datastructure.DICOMImage;
 import edu.auburn.cardiomri.datastructure.Vector3d;
 import edu.auburn.cardiomri.gui.ConstructImage;
@@ -53,8 +55,7 @@ public class ImageView extends SingleImagePanel implements ActionListener,
     protected JPanel imageContourPanel, panel, cPanel;
     private static final long serialVersionUID = -6920775905498293695L;
     private boolean lmrkMode = false;
-    private int cPointD = -1; //int values to act as mode flags for dragging and store dragging index value
-    private int tPointD = -1;
+    private Point clickedPoint = null;
     private Vector<Shape> visibleShapes = new Vector<Shape>();
     private ContourControlView contourPanel; // testing
     
@@ -274,7 +275,17 @@ public class ImageView extends SingleImagePanel implements ActionListener,
     	java.awt.geom.Point2D mouseClick = getImageCoordinateFromWindowCoordinate(e.getX(), e.getY());
     	
         if(!lmrkMode) {
-        	if(cPointD >= 0) {
+        	if (clickedPoint.getClass() == ControlPoint.class) {
+        		getImageModel().getSelectedContour().moveContourPoint(mouseClick.getX(), mouseClick.getY(), (ControlPoint)clickedPoint);
+        	}
+        	else if (clickedPoint.getClass() == TensionPoint.class) {
+        		getImageModel().getSelectedContour().moveTensionPoint(mouseClick.getX(), mouseClick.getY(), (TensionPoint)clickedPoint);
+        	}
+        	else if (clickedPoint.getClass() == Landmark.class) {
+        		super.mouseDragged(e);
+        		//add this code to the landmark drag when created
+        	}
+        	/*if(cPointD >= 0) {
         		getImageModel().getSelectedContour().moveContourPoint(mouseClick.getX(), mouseClick.getY(), cPointD);
         	}
         	else if(tPointD >= 0) {
@@ -283,7 +294,7 @@ public class ImageView extends SingleImagePanel implements ActionListener,
         	else {
         		super.mouseDragged(e);
         		//add this code to the landmark drag when created
-        	}
+        	}*/
         	
         	// Forces updating of control and tension points during dragging
         	DICOMImage dImage = getImageModel().getImage();
@@ -305,24 +316,16 @@ public class ImageView extends SingleImagePanel implements ActionListener,
      * 
      */
     public void mouseReleased(MouseEvent e) {
-    	cPointD = -1;
-    	tPointD = -1;
+    	clickedPoint = null;
         this.panel.requestFocusInWindow();
     }
 
     public void mousePressed(MouseEvent e) {
-    	int temp1;
-    	int temp2;
     	java.awt.geom.Point2D mouseClick = getImageCoordinateFromWindowCoordinate(e.getX(), e.getY());
     	
-    	temp1 = getImageModel().getSelectedContour().findControlPoint(mouseClick.getX(), mouseClick.getY());
-    	temp2 = getImageModel().getSelectedContour().findTensionPoint(mouseClick.getX(), mouseClick.getY());
-    	if(temp1 >= 0) {
-    		cPointD = temp1;
-    	}
-    	else if(temp2 >= 0) {
-    		tPointD = temp2;
-    	}
+    	Point closestPoint = getImageModel().findNearestPointWithinRange(mouseClick.getX(), mouseClick.getY(), 3);
+    		
+    	clickedPoint = closestPoint;
     	
     	this.panel.requestFocusInWindow();
     }
@@ -376,55 +379,55 @@ public class ImageView extends SingleImagePanel implements ActionListener,
 
         } else if (actionCommand.equals("ARV")){
         	Mode.setMode(Mode.landmarkMode());
-        	getImageModel().addLandmarkToImage(new Landmark(LandmarkType.ARV));
+        	getImageModel().addLandmarkToImage(new Landmark(LandmarkType.ARV,0.0,0.0));
         	lmrkMode = true;
         } else if (actionCommand.equals("IRV")){
         	Mode.setMode(Mode.landmarkMode());
-        	getImageModel().addLandmarkToImage(new Landmark(LandmarkType.IRV));
+        	getImageModel().addLandmarkToImage(new Landmark(LandmarkType.IRV,0.0,0.0));
         	lmrkMode = true;
         } else if (actionCommand.equals("MS")){
         	Mode.setMode(Mode.landmarkMode());
-        	getImageModel().addLandmarkToImage(new Landmark(LandmarkType.MS));
+        	getImageModel().addLandmarkToImage(new Landmark(LandmarkType.MS,0.0,0.0));
         	lmrkMode = true;
         } else if (actionCommand.equals("LVAPEX")){
         	Mode.setMode(Mode.landmarkMode());
-        	getImageModel().addLandmarkToImage(new Landmark(LandmarkType.LVAPEX));
+        	getImageModel().addLandmarkToImage(new Landmark(LandmarkType.LVAPEX,0.0,0.0));
         	lmrkMode = true;
         } else if (actionCommand.equals("LVSEPTALBASE")){
         	Mode.setMode(Mode.landmarkMode());
-        	getImageModel().addLandmarkToImage(new Landmark(LandmarkType.LVSEPTALBASE));
+        	getImageModel().addLandmarkToImage(new Landmark(LandmarkType.LVSEPTALBASE,0.0,0.0));
         	lmrkMode = true;
         } else if (actionCommand.equals("LVLATERALBASE")){
         	Mode.setMode(Mode.landmarkMode());
-        	getImageModel().addLandmarkToImage(new Landmark(LandmarkType.LVLATERALBASE));
+        	getImageModel().addLandmarkToImage(new Landmark(LandmarkType.LVLATERALBASE,0.0,0.0));
         	lmrkMode = true;
         } else if (actionCommand.equals("LVANTERIORBASE")){
         	Mode.setMode(Mode.landmarkMode());
-        	getImageModel().addLandmarkToImage(new Landmark(LandmarkType.LVANTERIORBASE));
+        	getImageModel().addLandmarkToImage(new Landmark(LandmarkType.LVANTERIORBASE,0.0,0.0));
         	lmrkMode = true;
         } else if (actionCommand.equals("LVINFERIORBASE")){
         	Mode.setMode(Mode.landmarkMode());
-        	getImageModel().addLandmarkToImage(new Landmark(LandmarkType.LVINFERIORBASE));
+        	getImageModel().addLandmarkToImage(new Landmark(LandmarkType.LVINFERIORBASE,0.0,0.0));
         	lmrkMode = true;
         } else if (actionCommand.equals("RVAPEX")){
         	Mode.setMode(Mode.landmarkMode());
-        	getImageModel().addLandmarkToImage(new Landmark(LandmarkType.RVAPEX));
+        	getImageModel().addLandmarkToImage(new Landmark(LandmarkType.RVAPEX,0.0,0.0));
         	lmrkMode = true;
         } else if (actionCommand.equals("RVLATERALBASE")){
         	Mode.setMode(Mode.landmarkMode());
-        	getImageModel().addLandmarkToImage(new Landmark(LandmarkType.RVLATERALBASE));
+        	getImageModel().addLandmarkToImage(new Landmark(LandmarkType.RVLATERALBASE,0.0,0.0));
         	lmrkMode = true;
         } else if (actionCommand.equals("RVSEPTALBASE")){
         	Mode.setMode(Mode.landmarkMode());
-        	getImageModel().addLandmarkToImage(new Landmark(LandmarkType.RVSEPTALBASE));
+        	getImageModel().addLandmarkToImage(new Landmark(LandmarkType.RVSEPTALBASE,0.0,0.0));
         	lmrkMode = true;
         } else if (actionCommand.equals("RVANTERIORBASE")){
         	Mode.setMode(Mode.landmarkMode());
-        	getImageModel().addLandmarkToImage(new Landmark(LandmarkType.RVANTERIORBASE));
+        	getImageModel().addLandmarkToImage(new Landmark(LandmarkType.RVANTERIORBASE,0.0,0.0));
         	lmrkMode = true;
         } else if (actionCommand.equals("RVINFERIORBASE")){
         	Mode.setMode(Mode.landmarkMode());
-        	getImageModel().addLandmarkToImage(new Landmark(LandmarkType.RVINFERIORBASE));
+        	getImageModel().addLandmarkToImage(new Landmark(LandmarkType.RVINFERIORBASE,0.0,0.0));
         	lmrkMode = true;
         } else if (actionCommand.equals("Delete Contour")) {
             if (getImageModel().getSelectedContour() == null) {
