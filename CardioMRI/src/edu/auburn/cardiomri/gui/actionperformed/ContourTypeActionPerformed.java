@@ -5,7 +5,6 @@ import java.awt.event.ActionListener;
 
 import edu.auburn.cardiomri.datastructure.Contour;
 import edu.auburn.cardiomri.datastructure.Contour.Type;
-import edu.auburn.cardiomri.gui.controller.Controller;
 import edu.auburn.cardiomri.gui.models.ImageModel;
 import edu.auburn.cardiomri.gui.models.Model;
 import edu.auburn.cardiomri.gui.views.ImageView;
@@ -47,9 +46,12 @@ public class ContourTypeActionPerformed  implements ActionListener {
 		Mode.setMode(Mode.contourMode());
 // change
 		
-		if(istoggled){
+		if(istoggled && ctMenu != null){
 			 this.model = getImageModel(istoggled);
 			 ctMenu.hidePopup();
+		}
+		else if(istoggled && ctMenu == null) {
+			this.model = getImageModel(istoggled);
 		}
 		
         if (actionCommand.equals("LV EPI")) {

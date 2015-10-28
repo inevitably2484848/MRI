@@ -13,6 +13,8 @@ import javax.swing.MenuElement;
 import javax.swing.MenuSelectionManager;
 import javax.swing.SwingUtilities;
 
+import edu.auburn.cardiomri.datastructure.Contour;
+import edu.auburn.cardiomri.gui.actionperformed.ContourTypeActionPerformed;
 import edu.auburn.cardiomri.gui.actionperformed.MenuMouseListener;
 import edu.auburn.cardiomri.gui.actionperformed.SelectContextMenuActionPerformed;
 import edu.auburn.cardiomri.gui.models.Model;
@@ -35,11 +37,11 @@ public class SelectContextMenu extends JPopupMenu implements MRIPopupMenu {
 	/**
 	 * 
 	 */
-
+	private  ContourTypeActionPerformed contourType;
 	private  JPopupMenu selectCM = new JPopupMenu();
 	private  MouseListener mouse = new MenuMouseListener(this);
 	private  JMenu add = new JMenu("Add");
-	private  JMenuItem contour = new JMenuItem("Contour");
+	private  JMenu contour = new JMenu("Contour");
 	private  JMenuItem landmark = new JMenuItem("Landmark");
 	private  ActionListener actionListener;
 	private  ImageView view;
@@ -47,6 +49,8 @@ public class SelectContextMenu extends JPopupMenu implements MRIPopupMenu {
 	
 	public SelectContextMenu(ImageView view){
 		this.view = view;
+		
+		contourType = new ContourTypeActionPerformed(null, true);
 		this.actionListener = new SelectContextMenuActionPerformed(view);
 		setPopup();
 		
@@ -55,11 +59,25 @@ public class SelectContextMenu extends JPopupMenu implements MRIPopupMenu {
 	public  void setPopup() {
 		selectCM.addMouseListener(mouse);
 		
-		add.add(addMenuItem(contour, "Contour"));
-		add.add(addMenuItem(landmark, "Landmark"));
+		
+		int addSepEveryTwo = 0;
+        for(Contour.Type t : Contour.Type.values()){  //loops over Contour Type enum
+        	
+        	String name = t.getGroup() + " " +  t.getName();
+        	contour.add(addMenuItem(name,t.getAbbv(), contourType));
 
+        	++addSepEveryTwo;
+        	if(addSepEveryTwo % 2 == 0){
+        		contour.addSeparator();
+        	}
+        	
+        } 
+		
+		
+		add.add(addMenu(contour));
+		add.add(addMenuItem(landmark, "Landmark"));
 		selectCM.add(addMenu(add));
-		selectCM.add(addMenuItem("Add Landmark"));
+		
 	}
 
 	public JMenu addMenu(String str){
@@ -72,6 +90,7 @@ public class SelectContextMenu extends JPopupMenu implements MRIPopupMenu {
 		jMenu.addMouseListener(mouse);
 		return jMenu;
 	}
+
 	
 	
 	public  JMenuItem addMenuItem(String str) {
@@ -87,6 +106,13 @@ public class SelectContextMenu extends JPopupMenu implements MRIPopupMenu {
 		jMenuItem.addMouseListener(mouse);
 
 		return jMenuItem;
+	}
+	public JMenuItem addMenuItem(String name, String command, ActionListener action){
+		JMenuItem newItem = new JMenuItem(name);
+		newItem.setActionCommand(command);
+		newItem.addActionListener(action);
+		newItem.addMouseListener(mouse);
+		return newItem;
 	}
 	
 	
