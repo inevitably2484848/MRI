@@ -29,6 +29,9 @@ import edu.auburn.cardiomri.datastructure.Contour;
 import edu.auburn.cardiomri.datastructure.Landmark;
 import edu.auburn.cardiomri.datastructure.Study;
 import edu.auburn.cardiomri.gui.ConstructImage;
+import edu.auburn.cardiomri.gui.actionperformed.ContourTypeActionPerformed;
+import edu.auburn.cardiomri.gui.actionperformed.MenuBarContourActionPerformed;
+import edu.auburn.cardiomri.gui.actionperformed.MenuBarFileActionPerformed;
 import edu.auburn.cardiomri.gui.controller.Controller;
 import edu.auburn.cardiomri.gui.models.GridModel;
 import edu.auburn.cardiomri.gui.models.ImageModel;
@@ -36,8 +39,6 @@ import edu.auburn.cardiomri.gui.models.SelectModel;
 import edu.auburn.cardiomri.gui.models.StartModel;
 import edu.auburn.cardiomri.gui.models.WorkspaceModel;
 import edu.auburn.cardiomri.gui.models.WorkspaceModel.State;
-import edu.auburn.cardiomri.gui.views.actionperformed.ContourTypeActionPerformed;
-import edu.auburn.cardiomri.gui.views.actionperformed.MenuBarContourActionPerformed;
 import edu.auburn.cardiomri.util.ContourUtilities;
 import edu.auburn.cardiomri.util.StudyUtilities;
 
@@ -270,31 +271,6 @@ public class WorkspaceView extends View {
         return (WorkspaceModel) this.model;
     }
     
-    /**
-     * Handles action events within the workspace. Specifically,
-     * saving and loading events.
-     * 
-     * @param e  an action event
-     */
-    public void actionPerformed(java.awt.event.ActionEvent e) {
-
-        String actionCommand = e.getActionCommand();
-
-        // System.out.println("GUIController : actionPerformed - " +
-        // actionCommand);
-
-        if (actionCommand.equals("Save Study")) {
-            this.saveStudy();
-        } else if (actionCommand.equals("Save As Study")) {
-            this.saveAsStudy();
-        } else if (actionCommand.equals("Save Contours")) {
-            this.saveContour();
-        } else if (actionCommand.equals("Load Existing Study")) {
-        	this.loadExistingStudy();
-        } else if (actionCommand.equals("Rotate Image")) {
-            this.getWorkspaceModel().rotate();
-        } 
-    }
 
     /**
      * Creates the main menu containing all functionality for the program and
@@ -304,10 +280,10 @@ public class WorkspaceView extends View {
      * @param mainImageView  the view in which to set up the menu
      */
     public void setMenu(ImageView mainImageView) {
-        // -------------------- Menu Bar -------------------------------
+        // -------------------- Menu Bar --------------------------------------
 
-        // ----- File -------
-    	
+        // ----- File ---------------------------------------------------------
+    	MenuBarFileActionPerformed mbFileAction = new MenuBarFileActionPerformed(this);
     	
         JMenu fileMenu = new JMenu("File");
 
@@ -315,41 +291,39 @@ public class WorkspaceView extends View {
         JMenu newMenu = new JMenu("New Study");
 
         JMenuItem newFromSingle = new JMenuItem("From Single DICOM");
-        newFromSingle.setActionCommand("Load Single DICOM");
-        newFromSingle.addActionListener(this); //FileAction
+        newFromSingle.setActionCommand("From Single DICOM");
+        newFromSingle.addActionListener(mbFileAction); //FileAction
         newMenu.add(newFromSingle);
 
         JMenuItem newFromFileStruct = new JMenuItem("From File Structure");
-        newFromFileStruct.setActionCommand("Create New Study");
-        newFromFileStruct.addActionListener(this); //FileAction
+        newFromFileStruct.setActionCommand("From File Structure");
+        newFromFileStruct.addActionListener(mbFileAction); //FileAction
         newMenu.add(newFromFileStruct);
 
         fileMenu.add(newMenu);
 
         JMenuItem openExisting = new JMenuItem("Open Existing (Ctrl+O)");
-        openExisting.setActionCommand("Load Existing Study");
-        openExisting.addActionListener(this); //FileAction
+        openExisting.setActionCommand("Open Existing");
+        openExisting.addActionListener(mbFileAction); //FileAction
         fileMenu.add(openExisting);
 
-        JMenuItem saveStudy = new JMenuItem("Save (Ctrl+S)");
+        JMenuItem saveStudy = new JMenuItem("Save (Ctrl+S)"); 
         saveStudy.setActionCommand("Save Study");
-        saveStudy.addActionListener(this); //FileAction
+        saveStudy.addActionListener(mbFileAction); //FileAction
         fileMenu.add(saveStudy);
 
         JMenuItem saveAsStudy = new JMenuItem("Save as (Ctrl+Shift+S)");
         saveAsStudy.setActionCommand("Save As Study");
-        saveAsStudy.addActionListener(this); //FileAction
+        saveAsStudy.addActionListener(mbFileAction); //FileAction
         fileMenu.add(saveAsStudy);
 
-        // ----- Add ------
+        // ----- Add ----------------------------------------------------------
         JMenu add = new JMenu("Add"); // change to add shape later?  //kw
 
-        // Contour Submenu
+        // Contour Submenu ----------------------------------------------------
         ContourTypeActionPerformed contourTypeAction = new ContourTypeActionPerformed(this);
         
-        //System.out.println("TESTING " + this.studyFileName);
         Controller.setWorkspaceView(this);
-        
         
         JMenu addContour = new JMenu("Add Contour");
         JMenu leftVentricle = new JMenu("LV");
@@ -357,7 +331,7 @@ public class WorkspaceView extends View {
         JMenu rightVentricle = new JMenu("RV");
         JMenu rightAtrium = new JMenu("RA");
         
-
+        // Add Contour Menus -------------------------------------------------------
         for(Contour.Type t : Contour.Type.values()){  //loops over Contour Type enum
         	String group = t.getGroup();
         	if(group.equals("LV")){
@@ -375,7 +349,7 @@ public class WorkspaceView extends View {
         	
         } // end for loop
         
-       
+//        TODO: closed and open
 //        JMenuItem closedType = new JMenuItem("Closed");
 //        closedType.setActionCommand("Closed Type");
 //        closedType.addActionListener(mainImageView);
@@ -387,7 +361,7 @@ public class WorkspaceView extends View {
 //        addContour.add(openType);
         
         
-        // ----- Landmark ------
+        // ----- Landmark -----------------------------------------------------
         //runs through the LandmarkType enum and adds every item to the menu
         JMenu landmarks = new JMenu("Add Landmark");
         
@@ -408,8 +382,9 @@ public class WorkspaceView extends View {
         addContour.add(rightAtrium);
 
 
-        // ----- Contour ------
-        MenuBarContourActionPerformed menuBarContour = new MenuBarContourActionPerformed(this); //workspace view
+        // ----- Contour ------------------------------------------------------
+        MenuBarContourActionPerformed menuBarContour = 
+        		new MenuBarContourActionPerformed(this); //workspace view
         JMenu contours = new JMenu("Contours");
         
         contours.add(addMenuItem("Save Contours (.txt File)","Save Contours", menuBarContour));
@@ -422,60 +397,15 @@ public class WorkspaceView extends View {
         contours.add(addMenuItem("Show Contours",menuBarContour));
         contours.add(addMenuItem("Hide Contours",menuBarContour));
         
-        
-//        JMenuItem saveContours = new JMenuItem("Save Contours (.txt File)");
-//        saveContours.setActionCommand("Save Contours");
-//        saveContours.addActionListener(this);
-//        contours.add(saveContours);
 
-//        JMenuItem loadContours = new JMenuItem("Load Contours");
-//        loadContours.setActionCommand("Load Contours");
-//        loadContours.addActionListener(this);
-//        contours.add(loadContours);
-        
-//        JMenuItem selectContour = new JMenuItem("Select Contour");
-//        selectContour.setActionCommand("Select Contour");
-//        selectContour.addActionListener(mainImageView);
-//        contours.add(selectContour);
-
-//        JMenuItem deleteContourAxis = new JMenuItem("Delete Contour Axis");
-//        deleteContourAxis.setActionCommand("Delete Contour Axis");
-//        deleteContourAxis.addActionListener(this);
-//        contours.add(deleteContourAxis);
-//
-//        JMenuItem deleteContour = new JMenuItem("Delete Contour");
-//        deleteContour.setActionCommand("Delete Contour");
-//        deleteContour.addActionListener(mainImageView);
-//        contours.add(deleteContour);
-
-//        JMenuItem deleteAllContours = new JMenuItem("Delete All Contours");
-//        deleteAllContours.setActionCommand("Delete All Contours");
-//        deleteAllContours.addActionListener(mainImageView);
-//        contours.add(deleteAllContours);
-        
-//        JMenuItem hideContour = new JMenuItem("Hide Contour");
-//        hideContour.setActionCommand("Hide Contour");
-//        hideContour.addActionListener(mainImageView);
-//        contours.add(hideContour);
-        
-//        JMenuItem showContours = new JMenuItem("Show Contours");
-//        showContours.setActionCommand("Show Contours");
-//        showContours.addActionListener(mainImageView);
-//        contours.add(showContours);
-//
-//        JMenuItem hideContours = new JMenuItem("Hide Contours");
-//        hideContours.setActionCommand("Hide Contours");
-//        hideContours.addActionListener(mainImageView);
-//        contours.add(hideContours);
-
-        // ----- Rotate -----
+        // ----- Rotate -------------------------------------------------------
         JMenu rotate = new JMenu("Rotate");
         JMenuItem rotateImage = new JMenuItem("Rotate Image");
         rotateImage.setActionCommand("Rotate Image");
         rotateImage.addActionListener(this);
         rotate.add(rotateImage);
 
-        // ----- Main Menu -----
+        // ----- Main Menu ----------------------------------------------------
         JMenuBar menuBar = new JMenuBar();
 
         // Add each sub menu to the top menu Bar
@@ -490,13 +420,13 @@ public class WorkspaceView extends View {
     }
 
     
-    /**
+    /** -----------------------------------------------------------------------
      * adds new JMenuItem to JMenu;
      *   ex. jMenu.add(addMenuItem(str,actionListener);
      * @param str
      * @param actionListener
      * @return JMenuItem
-     */
+     * ----------------------------------------------------------------------*/
     private JMenuItem addMenuItem(String str, ActionListener actionListener){
     	JMenuItem newItem = new JMenuItem(str);
     	newItem.setActionCommand(str);
@@ -508,7 +438,7 @@ public class WorkspaceView extends View {
     	JMenuItem newItem = new JMenuItem(str);
     	newItem.setActionCommand(actionCommand);
     	newItem.addActionListener(actionListener);
-    	
+ 
     	return newItem;
     }
     
@@ -529,7 +459,7 @@ public class WorkspaceView extends View {
      * 
      * @param study  the study to be saved
      */
-    public void saveAsStudy(Study study) {
+    private void saveAsStudy(Study study) {
         JFileChooser saveFC = fileChooser;
 
         FileFilter studyFileFilter = new FileNameExtensionFilter(
@@ -552,7 +482,7 @@ public class WorkspaceView extends View {
         }
     }
 
-    /**
+    /**  TODO: needs to move to model saveContour()
      * Creates a text file in which to write the contour data for a study and
      * calls writeContoursToFile() to perform the actual writing to the file.
      */
@@ -666,9 +596,9 @@ public class WorkspaceView extends View {
     
     
     /**
-     * 
+     *  TODO: mvc
      */
-    private void loadExistingStudy() {
+    public void loadExistingStudy() {
     	 JFileChooser loadFC = fileChooser;
     	         
     	 FileNameExtensionFilter filter1 = new FileNameExtensionFilter("SMC files", "smc");
@@ -689,9 +619,9 @@ public class WorkspaceView extends View {
     }
 
     /**
-     * 
+     * TODO: mvc
      */
-    private void saveStudy() {
+    public void saveStudy() {
     	if (studyFileName == null){
             saveAsStudy();
     	} else {
@@ -699,10 +629,11 @@ public class WorkspaceView extends View {
         }
     }
 
+    
     /**
-     * 
+     *  TODO: mvc
      */
-    private void saveAsStudy() {
+    public void saveAsStudy() {
     	JFileChooser saveFC = fileChooser;
 
         FileFilter studyFileFilter = new FileNameExtensionFilter(
