@@ -6,6 +6,8 @@ public class ControlPoint extends Point{
 	TensionPoint tPoint2;
 	public ControlPoint(double x, double y) {
 		super(x, y);
+		tPoint1 = new TensionPoint(0.0, 0.0);
+		tPoint2 = new TensionPoint(0.0, 0.0);
 	}
 	public TensionPoint getTension1() {
 		return tPoint1;
