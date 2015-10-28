@@ -31,6 +31,10 @@ public class MenuBarContourActionPerformed implements ActionListener {
 		
 		String actionCommand = actionEvent.getActionCommand();
 		
+		if (actionCommand.equals("Save Contours")) {
+            wrkspcVw.saveContour();
+        } 
+		
 		if (actionCommand.equals("Delete Contour")) {
 			if (getImageModel().getSelectedContour() == null) {
 				JOptionPane.showMessageDialog(imageContourPanel,
