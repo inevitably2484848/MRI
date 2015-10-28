@@ -17,10 +17,10 @@ import javax.swing.event.PopupMenuListener;
 
 import edu.auburn.cardiomri.datastructure.Contour;
 import edu.auburn.cardiomri.datastructure.Contour.Type;
+import edu.auburn.cardiomri.gui.actionperformed.ContourTypeActionPerformed;
 import edu.auburn.cardiomri.gui.models.ImageModel;
 import edu.auburn.cardiomri.gui.views.ImageView;
 import edu.auburn.cardiomri.gui.views.View;
-import edu.auburn.cardiomri.gui.views.actionperformed.ContourTypeActionPerformed;
 
 
 /**
@@ -73,12 +73,7 @@ public class ContourTypeMenu extends View implements MRIPopupMenu{ // extends Vi
 		return null;
 	}
 
-	@Override
-	public JMenuItem addMenuItem(String str) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
+
 	public JMenuItem addMenuItem(String name, String command, ActionListener action){
 		JMenuItem newItem = new JMenuItem(name);
 		newItem.setActionCommand(command);
@@ -88,6 +83,8 @@ public class ContourTypeMenu extends View implements MRIPopupMenu{ // extends Vi
 
 	@Override
 	public JPopupMenu getPopup() {
+		contourPop.removeAll();
+		setPopup();
 		contourPop.setVisible(true);
 		return contourPop;
 	}
@@ -117,6 +114,12 @@ public class ContourTypeMenu extends View implements MRIPopupMenu{ // extends Vi
 		contourPop.removeAll();
 		refreshPopup();
 		
+	}
+
+	@Override
+	public JMenuItem addMenuItem(String str) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

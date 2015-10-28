@@ -12,10 +12,10 @@ import edu.auburn.cardiomri.datastructure.Contour;
 import edu.auburn.cardiomri.datastructure.Landmark;
 import edu.auburn.cardiomri.datastructure.Contour.Type;
 import edu.auburn.cardiomri.datastructure.Landmark.LandmarkType;
+import edu.auburn.cardiomri.gui.actionperformed.LandmarkTypeActionPerformed;
 import edu.auburn.cardiomri.gui.models.ImageModel;
 import edu.auburn.cardiomri.gui.views.ImageView;
 import edu.auburn.cardiomri.gui.views.View;
-import edu.auburn.cardiomri.gui.views.actionperformed.LandmarkTypeActionPerformed;
 import edu.auburn.cardiomri.util.Mode;
 
 public class LandmarkTypeMenu extends JPopupMenu implements MRIPopupMenu{
