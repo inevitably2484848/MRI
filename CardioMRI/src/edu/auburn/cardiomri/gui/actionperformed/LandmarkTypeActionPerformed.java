@@ -22,43 +22,43 @@ public class LandmarkTypeActionPerformed extends View implements ActionListener 
 		LandmarkTypeMenu.staticHide();  //hides current landmarkTypeMenu
 		
 		if (actionCommand.equals("ARV")){
-        	getImageModel().addLandmarkToImage(new Landmark(LandmarkType.ARV));
+			Mode.setNextLandmarkType(LandmarkType.ARV);
         } 
 		else if (actionCommand.equals("IRV")){
-        	getImageModel().addLandmarkToImage(new Landmark(LandmarkType.IRV));
+			Mode.setNextLandmarkType(LandmarkType.IRV);
         } 
 		else if (actionCommand.equals("MS")){
-        	getImageModel().addLandmarkToImage(new Landmark(LandmarkType.MS));
+			Mode.setNextLandmarkType(LandmarkType.MS);
         } 
 		else if (actionCommand.equals("LVAPEX")){
-        	getImageModel().addLandmarkToImage(new Landmark(LandmarkType.LVAPEX));
+			Mode.setNextLandmarkType(LandmarkType.LVAPEX);
         } 
 		else if (actionCommand.equals("LVSEPTALBASE")){
-        	getImageModel().addLandmarkToImage(new Landmark(LandmarkType.LVSEPTALBASE));
+			Mode.setNextLandmarkType(LandmarkType.LVSEPTALBASE);
         } 
 		else if (actionCommand.equals("LVLATERALBASE")){
-        	getImageModel().addLandmarkToImage(new Landmark(LandmarkType.LVLATERALBASE));
+			Mode.setNextLandmarkType(LandmarkType.LVLATERALBASE);
         } 
 		else if (actionCommand.equals("LVANTERIORBASE")){
-        	getImageModel().addLandmarkToImage(new Landmark(LandmarkType.LVANTERIORBASE));
+			Mode.setNextLandmarkType(LandmarkType.LVANTERIORBASE);
         } 
 		else if (actionCommand.equals("LVINFERIORBASE")){
-        	getImageModel().addLandmarkToImage(new Landmark(LandmarkType.LVINFERIORBASE));
+			Mode.setNextLandmarkType(LandmarkType.LVINFERIORBASE);
         } 
 		else if (actionCommand.equals("RVAPEX")){
-        	getImageModel().addLandmarkToImage(new Landmark(LandmarkType.RVAPEX));
+			Mode.setNextLandmarkType(LandmarkType.RVAPEX);
         } 
 		else if (actionCommand.equals("RVLATERALBASE")){
-        	getImageModel().addLandmarkToImage(new Landmark(LandmarkType.RVLATERALBASE));
+			Mode.setNextLandmarkType(LandmarkType.RVLATERALBASE);
         } 
 		else if (actionCommand.equals("RVSEPTALBASE")){
-        	getImageModel().addLandmarkToImage(new Landmark(LandmarkType.RVSEPTALBASE));
+			Mode.setNextLandmarkType(LandmarkType.RVSEPTALBASE);
         } 
 		else if (actionCommand.equals("RVANTERIORBASE")){
-        	getImageModel().addLandmarkToImage(new Landmark(LandmarkType.RVANTERIORBASE));
+			Mode.setNextLandmarkType(LandmarkType.RVANTERIORBASE);
         } 
 		else if (actionCommand.equals("RVINFERIORBASE")){
-        	getImageModel().addLandmarkToImage(new Landmark(LandmarkType.RVINFERIORBASE));
+			Mode.setNextLandmarkType(LandmarkType.RVINFERIORBASE);
         }
 	}
 	

@@ -13,7 +13,7 @@ package edu.auburn.cardiomri.datastructure;
 
 
 
-public class Landmark {
+public class Landmark extends Point {
 	//type Enum
 	/**
 	 * Enum of Landmark types, add landmarks here and they will show up in the menu
@@ -60,23 +60,10 @@ public class Landmark {
 	 * @param y double of Y coordinates
 	 */
 	public Landmark(LandmarkType typeIn, double x, double y){
-		this();
+		super(x, y);
 		landmarkType = typeIn;
 		coordinates = new Vector3d(x,y,0);
 	}
-	/** Constructor 
-	 * 
-	 * @param typeIn Landmark type
-	 */
-	public Landmark (LandmarkType typeIn){
-		this();
-		landmarkType = typeIn;
-	}
-	/**
-	 * Default constructor
-	 */
-	private Landmark(){
-	}	
 	
 	/**
 	 * Set a Landmarks coordinates

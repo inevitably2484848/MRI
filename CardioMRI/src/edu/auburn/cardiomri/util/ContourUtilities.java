@@ -18,7 +18,10 @@ import java.util.Map;
 import java.util.Vector;
 
 import edu.auburn.cardiomri.datastructure.Contour;
+import edu.auburn.cardiomri.datastructure.ControlPoint;
 import edu.auburn.cardiomri.datastructure.DICOMImage;
+import edu.auburn.cardiomri.datastructure.Point;
+import edu.auburn.cardiomri.datastructure.TensionPoint;
 import edu.auburn.cardiomri.datastructure.Vector3d;
 import edu.auburn.cardiomri.gui.models.WorkspaceModel;
 
@@ -190,16 +193,16 @@ public final class ContourUtilities {
                  */
                 // Build list of combined tension and control points
                 int numControlPoints = c.getControlPoints().size();
-                List<Vector3d> allPoints = new ArrayList<Vector3d>();
-                List<Vector3d> controlPoints = c.getControlPoints();
-                List<Vector3d> tensionPoints = c.getTensionPoints();
+                List<Point> allPoints = new ArrayList<Point>();
+                List<ControlPoint> controlPoints = c.getControlPoints();
+                List<TensionPoint> tensionPoints = c.getTensionPoints();
                 for (int i = 0; i < numControlPoints; i++)
                 {
                 	allPoints.add(tensionPoints.get(i*2));
                 	allPoints.add(controlPoints.get(i));
                 	allPoints.add(tensionPoints.get(i*2 + 1));
                 }
-                for (Vector3d point : allPoints) {
+                for (Point point : allPoints) {
                     writer.write(BigDecimal.valueOf(point.getX())
                             .setScale(4, BigDecimal.ROUND_UP)
                             + "\t"
@@ -224,8 +227,7 @@ public final class ContourUtilities {
                 String header = c.getIntFromType() + "\n"
                         + numPoints + "\n";
                 writer.write(header);
-                for (Vector3d point : c
-                        .getGeneratedPoints()) {
+                for (Point point : c.getGeneratedPoints()) {
                     writer.write(BigDecimal.valueOf(point.getX())
                             .setScale(4, BigDecimal.ROUND_UP)
                             + "\t"
