@@ -6,6 +6,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.PathIterator;
 import java.awt.geom.Rectangle2D;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -519,6 +520,16 @@ public class Contour implements Shape, Serializable {
     public List<Point> getGeneratedPoints() {
         return new Vector<Point>(generatedPoints);
     }
+    
+    public List<TensionPoint> getTensionPoints() {
+    	List<TensionPoint> tensionPoints = new ArrayList<TensionPoint>();
+    	for (ControlPoint controlPoint : controlPoints)
+    	{
+    		tensionPoints.add(controlPoint.getTension1());
+    		tensionPoints.add(controlPoint.getTension2());
+    	}
+		return tensionPoints;
+    }
 
     /**
      * Get whether this contour is a closed curve or open curve
@@ -561,17 +572,43 @@ public class Contour implements Shape, Serializable {
     }
 
     public enum Type {
-        DEFAULT, DEFAULT_CLOSED, // Example of something that is always a closed
-        // contour
-        DEFAULT_OPEN, LV_EPI, LV_ENDO, RV_EPI, RV_ENDO, LA_EPI, LA_ENDO, RA_EPI, RA_ENDO
+//        DEFAULT, DEFAULT_CLOSED, // Example of something that is always a closed
+//        // contour
+//        DEFAULT_OPEN, 
+    	
+        LV_EPI ("LV EPI","Epicardial", "LV"), 
+        LV_ENDO ("LV ENDO","Endocardial", "LV"), 
+        RV_EPI ("RV EPI", "Epicardial", "RV"), 
+        RV_ENDO ("RV ENDO","Endocardial", "RV"), 
+        LA_EPI ("LA EPI","Epicardial" ,"LA"), 
+        LA_ENDO ("LA ENDO","Endocardial", "LA"), 
+        RA_EPI ("RA EPI","Epicardial", "RA"), 
+        RA_ENDO ("RA ENDO","Endocardial", "RA");
+        
+		private String name;
+		private String abbv;
+		private String group;
+        private Type(String abbv, String str, String group){
+        	this.name = str;
+        	this.abbv = abbv;
+        	this.group = group;
+        }
+        
+        public String getName(){
+        	return name;
+        }
+        public String getAbbv(){
+        	return abbv;
+        }
+        
+        public String getGroup(){
+        	return group;
+        }
     }
 
     public String toString() {
         String output = "";
         switch (this.getContourType()) {
-            case DEFAULT:
-                output += "DEFAULT";
-                break;
             case LA_ENDO:
                 output += "LEFT ATRIUM ENDOCARDIAL";
                 break;
@@ -612,9 +649,7 @@ public class Contour implements Shape, Serializable {
     static {
         Map<Type, Boolean> tempIsClosedContour = new HashMap<Type, Boolean>();
 
-        tempIsClosedContour.put(Type.DEFAULT, Boolean.TRUE);
-        tempIsClosedContour.put(Type.DEFAULT_CLOSED, Boolean.TRUE);
-        tempIsClosedContour.put(Type.DEFAULT_OPEN, Boolean.FALSE);
+
         tempIsClosedContour.put(Type.LA_ENDO, Boolean.TRUE);
         tempIsClosedContour.put(Type.LA_EPI, Boolean.TRUE);
         tempIsClosedContour.put(Type.LV_ENDO, Boolean.TRUE);
@@ -656,10 +691,7 @@ public class Contour implements Shape, Serializable {
 
         
         Map<Integer, Type> tempIntegerToType = new HashMap<Integer, Type>();
-        //Control Points
-        tempIntegerToType.put(1, Type.DEFAULT);			
-        tempIntegerToType.put(2, Type.DEFAULT_OPEN);
-        tempIntegerToType.put(3, Type.DEFAULT_CLOSED);
+
         tempIntegerToType.put(16, Type.LA_ENDO);		//LA2
         tempIntegerToType.put(17, Type.LA_EPI);			//LA2
         tempIntegerToType.put(32, Type.LV_ENDO);		//LA4
@@ -670,9 +702,6 @@ public class Contour implements Shape, Serializable {
         tempIntegerToType.put(81, Type.RV_EPI);			//FP2
         
         //Generated Points
-        tempIntegerToType.put(4, Type.DEFAULT);
-        tempIntegerToType.put(5, Type.DEFAULT_OPEN);
-        tempIntegerToType.put(6, Type.DEFAULT_CLOSED);
         tempIntegerToType.put(20, Type.LA_ENDO);
         tempIntegerToType.put(21, Type.LA_EPI);
         tempIntegerToType.put(36, Type.LV_ENDO);
@@ -685,9 +714,6 @@ public class Contour implements Shape, Serializable {
         
         
         Map<Type, Integer> tempTypeToInteger = new HashMap<Type, Integer>();
-        tempTypeToInteger.put(Type.DEFAULT, 4);
-        tempTypeToInteger.put(Type.DEFAULT_CLOSED, 5);
-        tempTypeToInteger.put(Type.DEFAULT_OPEN, 6);
         tempTypeToInteger.put(Type.LA_ENDO, 20);		//LA2
         tempTypeToInteger.put(Type.LA_EPI, 21);			//LA2
         tempTypeToInteger.put(Type.LV_ENDO, 36);		//LA4
@@ -701,9 +727,6 @@ public class Contour implements Shape, Serializable {
         
         Map<Type, Integer> tempTypeToControlInteger = new HashMap<Type, Integer>();
         // TODO fine tune exact types/integer values
-        tempTypeToControlInteger.put(Type.DEFAULT, 1);
-        tempTypeToControlInteger.put(Type.DEFAULT_CLOSED, 2);
-        tempTypeToControlInteger.put(Type.DEFAULT_OPEN, 3);
         tempTypeToControlInteger.put(Type.LA_ENDO, 16);			//LA2
         tempTypeToControlInteger.put(Type.LA_EPI, 17);			//LA2
         tempTypeToControlInteger.put(Type.LV_ENDO, 32);			//LA4

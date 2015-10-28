@@ -21,7 +21,7 @@ public class ContourCalcTest {
 
     @Before
     public void setUp() {
-        contour = new Contour(Contour.Type.DEFAULT);
+        contour = new Contour(Contour.Type.LV_EPI);
         contour.addControlPoint(1, 2);
         contour.addControlPoint(3, 4);
         contour.addControlPoint(5, 6);

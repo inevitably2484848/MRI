@@ -1,9 +1,6 @@
 package edu.auburn.cardiomri.gui.views;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.MouseInfo;
 import java.awt.Shape;
@@ -13,7 +10,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionListener;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.GeneralPath;
 import java.util.Observable;
@@ -21,21 +17,14 @@ import java.util.Observer;
 import java.util.Vector;
 
 import javax.swing.AbstractAction;
-import javax.swing.DefaultListModel;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
-import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
 import com.pixelmed.display.SingleImagePanel;
 
 import edu.auburn.cardiomri.datastructure.Contour;
-import edu.auburn.cardiomri.datastructure.Contour.Type;
 import edu.auburn.cardiomri.datastructure.Landmark;
 import edu.auburn.cardiomri.datastructure.Landmark.LandmarkType;
 import edu.auburn.cardiomri.datastructure.Point;
@@ -46,6 +35,8 @@ import edu.auburn.cardiomri.gui.ConstructImage;
 import edu.auburn.cardiomri.gui.models.ImageModel;
 import edu.auburn.cardiomri.gui.models.Model;
 import edu.auburn.cardiomri.popupmenu.view.ContourContextMenu;
+import edu.auburn.cardiomri.popupmenu.view.LandmarkContextMenu;
+import edu.auburn.cardiomri.popupmenu.view.SelectContextMenu;
 import edu.auburn.cardiomri.util.Mode;
 import edu.auburn.cardiomri.datastructure.ControlPoint;
 
@@ -59,8 +50,14 @@ public class ImageView extends SingleImagePanel implements ActionListener,
     private Vector<Shape> visibleShapes = new Vector<Shape>();
     private ContourControlView contourPanel; // testing
     
-    protected JPopupMenu ccm;// = ContourContextMenu.popupContextMenu(); //kw
+    public ContourContextMenu ccm;// = ContourContextMenu.popupContextMenu(); //kw
     private int ccmIndex = 0;
+    
+    public JPopupMenu lmcm; //LandmarkContextMenu()
+    private int lmcmIndex = 0;
+    
+    public SelectContextMenu scm; //SelectContextMenu();
+    private int scmIndex = 0;
     
     /**
      * Redraws the DICOMImage, updates the selected contour's control points,
@@ -69,10 +66,6 @@ public class ImageView extends SingleImagePanel implements ActionListener,
     public void update(Observable obs, Object obj) {
         if (obj.getClass() == DICOMImage.class) {
             DICOMImage dImage = getImageModel().getImage();
-//            System.out.println("\n\nCall ContourControlView");
-//            ContourControlView contourPanel = new ContourControlView(dImage);  //KW
-//            JPanel temp = contourPanel.getPanel(); //kw
-//            updateControlPanel(temp,dImage); //kw
 
             dirtySource(new ConstructImage(dImage));
             visibleShapes.clear();
@@ -220,9 +213,10 @@ public class ImageView extends SingleImagePanel implements ActionListener,
     				ccm.removeAll();
     			}
     			ccmIndex = 1;
-    			ccm = ContourContextMenu.popupContextMenu();
-   			 	ccm.setLocation(MouseInfo.getPointerInfo().getLocation());
-   			 	ccm.setVisible(true);
+    			ccm = new ContourContextMenu();
+    			ccm.getPopup();
+   			 	ccm.setLocation();
+   			 	
     			
     		}
     	} 
@@ -236,7 +230,14 @@ public class ImageView extends SingleImagePanel implements ActionListener,
             	lmrkMode = false;
     		}
     		else if(SwingUtilities.isRightMouseButton(e)){
-    			
+    			if(lmcmIndex == 1){
+    				lmcm.removeAll();
+    			}
+    			lmcmIndex = 1;
+    			lmcm = LandmarkContextMenu.popupContextMenu();
+    			lmcm.setLocation(MouseInfo.getPointerInfo().getLocation());
+    			lmcm.setVisible(true);
+
     		}
     		
     	} //-------------------------------------------------------------------
@@ -244,16 +245,23 @@ public class ImageView extends SingleImagePanel implements ActionListener,
     		
     		//leftClick select closest contour or landMark
     		 if (SwingUtilities.isLeftMouseButton(e)) {
-    	            getImageModel().selectContour(mouseClick.getX(), mouseClick.getY());
+    	            getImageModel().selectContour(mouseClick.getX(), mouseClick.getY());      
     	     } 
     		// rightClick context menu
     		 else {
-    			 getImageModel().deleteSelectedContour();
-
+//    			 getImageModel().deleteSelectedContour();
+    			 if(scmIndex == 1){
+    				 scm.removeAll();
+    				 scm.hidePopup();
+    				 
+    			 }
+    			 System.out.println("right click");
+    			 scmIndex = 1;
+    			 scm = new SelectContextMenu(this);//SelectContextMenu.setPopup();
+    			 scm.getPopup();
+    			 scm.setLocation();
     		 }
-    		 
-    		 
-    		 
+
     	} //-------------------------------------------------------------------
     	
 //        if (SwingUtilities.isRightMouseButton(e)) {
@@ -327,170 +335,21 @@ public class ImageView extends SingleImagePanel implements ActionListener,
         this.panel.requestFocusInWindow();
     }
 
+
+    
+    
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
     public void mousePressed(MouseEvent e) {
     	java.awt.geom.Point2D mouseClick = getImageCoordinateFromWindowCoordinate(e.getX(), e.getY());
     	
     	clickedPoint = getImageModel().findNearestPointWithinRange(mouseClick.getX(), mouseClick.getY(), 3);
     	
     	this.panel.requestFocusInWindow();
-    }
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        String actionCommand = e.getActionCommand();
-
-        if (actionCommand.equals("CONTOUR_MODE")){
-        	Mode.setMode(Mode.contourMode());
-        }
-        else if (actionCommand.equals("LANDMARK_MODE")){
-        	Mode.setMode(Mode.landmarkMode());
-        }
-        else if (actionCommand.equals("Default Type")) {
-        	getImageModel().addContourToImage(new Contour(Type.DEFAULT));
-        } 
-        else if (actionCommand.equals("LV EPI")) {
-        	Mode.setMode(Mode.contourMode());
-            getImageModel().addContourToImage(new Contour(Type.LV_EPI));
-        } 
-        else if (actionCommand.equals("LV ENDO")) {
-        	Mode.setMode(Mode.contourMode());
-            getImageModel().addContourToImage(new Contour(Type.LV_ENDO));
-        } 
-        else if (actionCommand.equals("LA EPI")) {
-        	Mode.setMode(Mode.contourMode());
-            getImageModel().addContourToImage(new Contour(Type.LA_EPI));
-        } 
-        else if (actionCommand.equals("LA ENDO")) {
-        	Mode.setMode(Mode.contourMode());
-            getImageModel().addContourToImage(new Contour(Type.LA_ENDO));
-        } 
-        else if (actionCommand.equals("RV EPI")) {
-        	Mode.setMode(Mode.contourMode());
-            getImageModel().addContourToImage(new Contour(Type.RV_EPI));
-        } 
-        else if (actionCommand.equals("RV ENDO")) {
-        	Mode.setMode(Mode.contourMode());
-            getImageModel().addContourToImage(new Contour(Type.RV_ENDO));
-
-        } else if (actionCommand.equals("RA EPI")) {
-        	Mode.setMode(Mode.contourMode());
-            getImageModel().addContourToImage(new Contour(Type.RA_EPI));
-
-        } else if (actionCommand.equals("RA ENDO")) {
-        	Mode.setMode(Mode.contourMode());
-            getImageModel().addContourToImage(new Contour(Type.RA_ENDO));
-
-        } else if (actionCommand.equals("ARV")){
-        	Mode.setMode(Mode.landmarkMode());
-        	Mode.setNextLandmarkType(LandmarkType.ARV);
-        	lmrkMode = true;
-        } else if (actionCommand.equals("IRV")){
-        	Mode.setMode(Mode.landmarkMode());
-        	Mode.setNextLandmarkType(LandmarkType.IRV);
-        	lmrkMode = true;
-        } else if (actionCommand.equals("MS")){
-        	Mode.setMode(Mode.landmarkMode());
-        	Mode.setNextLandmarkType(LandmarkType.MS);
-        	lmrkMode = true;
-        } else if (actionCommand.equals("LVAPEX")){
-        	Mode.setMode(Mode.landmarkMode());
-        	Mode.setNextLandmarkType(LandmarkType.LVAPEX);
-        	lmrkMode = true;
-        } else if (actionCommand.equals("LVSEPTALBASE")){
-        	Mode.setMode(Mode.landmarkMode());
-        	Mode.setNextLandmarkType(LandmarkType.LVSEPTALBASE);
-        	lmrkMode = true;
-        } else if (actionCommand.equals("LVLATERALBASE")){
-        	Mode.setMode(Mode.landmarkMode());
-        	Mode.setNextLandmarkType(LandmarkType.LVLATERALBASE);
-        	lmrkMode = true;
-        } else if (actionCommand.equals("LVANTERIORBASE")){
-        	Mode.setMode(Mode.landmarkMode());
-        	Mode.setNextLandmarkType(LandmarkType.LVANTERIORBASE);
-        	lmrkMode = true;
-        } else if (actionCommand.equals("LVINFERIORBASE")){
-        	Mode.setMode(Mode.landmarkMode());
-        	Mode.setNextLandmarkType(LandmarkType.LVINFERIORBASE);
-        	lmrkMode = true;
-        } else if (actionCommand.equals("RVAPEX")){
-        	Mode.setMode(Mode.landmarkMode());
-        	Mode.setNextLandmarkType(LandmarkType.RVAPEX);
-        	lmrkMode = true;
-        } else if (actionCommand.equals("RVLATERALBASE")){
-        	Mode.setMode(Mode.landmarkMode());
-        	Mode.setNextLandmarkType(LandmarkType.RVLATERALBASE);
-        	lmrkMode = true;
-        } else if (actionCommand.equals("RVSEPTALBASE")){
-        	Mode.setMode(Mode.landmarkMode());
-        	Mode.setNextLandmarkType(LandmarkType.RVSEPTALBASE);
-        	lmrkMode = true;
-        } else if (actionCommand.equals("RVANTERIORBASE")){
-        	Mode.setMode(Mode.landmarkMode());
-        	Mode.setNextLandmarkType(LandmarkType.RVANTERIORBASE);
-        	lmrkMode = true;
-        } else if (actionCommand.equals("RVINFERIORBASE")){
-        	Mode.setMode(Mode.landmarkMode());
-        	Mode.setNextLandmarkType(LandmarkType.RVINFERIORBASE);
-        	lmrkMode = true;
-        } else if (actionCommand.equals("Delete Contour")) {
-            if (getImageModel().getSelectedContour() == null) {
-                JOptionPane.showMessageDialog(imageContourPanel,
-                        "Please select a contour to delete.");
-            } else {
-                getImageModel().deleteSelectedContour();
-            }
-        } else if (actionCommand.equals("Hide Contour")) {
-            if (getImageModel().getSelectedContour() == null) {
-                JOptionPane.showMessageDialog(imageContourPanel,
-                        "Please select a contour to hide.");
-            } else {
-                getImageModel().hideSelectedContour();
-            }
-
-        } else if (actionCommand.equals("Select Contour")) {
-            Vector<Contour> visibleContours = getImageModel()
-                    .getVisibleContours();
-            if (visibleContours.size() > 0) {
-                Contour[] contours = new Contour[visibleContours.size()];
-                visibleContours.toArray(contours);
-
-                Contour c = (Contour) JOptionPane.showInputDialog(
-                        imageContourPanel, "Select Contour: ", "Contours",
-                        JOptionPane.PLAIN_MESSAGE, null, contours, "ham");
-
-                getImageModel().setSelectedContour(c);
-            } else {
-                JOptionPane.showMessageDialog(imageContourPanel,
-                        "There are no visible contours to select.");
-            }
-        } else if (actionCommand.equals("Hide Contours")) {
-            if (getImageModel().getContours() == null
-                    || getImageModel().getContours().size() == 0) {
-                JOptionPane.showMessageDialog(imageContourPanel,
-                        "There are no contours to hide.");
-            } else {
-                getImageModel().hideAllContours();
-            }
-        } else if (actionCommand.equals("Show Contours")) {
-            if (getImageModel().getHiddenContours() == null
-                    || getImageModel().getHiddenContours().size() == 0) {
-                JOptionPane.showMessageDialog(imageContourPanel,
-                        "There are no contours to show.");
-            } else {
-                getImageModel().showAllContours();
-            }
-        } else if (actionCommand.equals("Delete All Contours")) {
-            if (getImageModel().getContours() == null
-                    || getImageModel().getContours().size() == 0) {
-                JOptionPane.showMessageDialog(imageContourPanel,
-                        "There are no contours to delete.");
-            } else {
-                getImageModel().deleteAllContours();
-            }
-        }
-        this.panel.requestFocusInWindow();
     }
 
     private void addKeyBindings(JPanel panel) {
@@ -593,5 +452,7 @@ public class ImageView extends SingleImagePanel implements ActionListener,
                     (int) ActionEvent.ACTION_PERFORMED, this.comand));
         }
     }
+
+
 
 }

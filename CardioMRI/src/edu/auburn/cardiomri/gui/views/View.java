@@ -107,7 +107,6 @@ public abstract class View implements Observer, ViewInterface, MouseListener,
     /**
      * @see edu.auburn.cardiomri.gui.views.ViewInterface#getModel()
      */
-    @Override
     public Model getModel() {
         return model;
     }
@@ -115,7 +114,7 @@ public abstract class View implements Observer, ViewInterface, MouseListener,
     /**
      * @see edu.auburn.cardiomri.gui.views.ViewInterface#setModel(edu.auburn.cardiomri.gui.models.Model)
      */
-    @Override
+
     public void setModel(Model model) {
         this.model = model;
         model.addObserver(this);
