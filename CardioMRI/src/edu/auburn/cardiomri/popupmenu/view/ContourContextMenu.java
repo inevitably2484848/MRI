@@ -66,7 +66,7 @@ public class ContourContextMenu extends JPopupMenu implements MRIPopupMenu{
 		return null;
 	}
 
-	@Override
+	
 	public JPopupMenu getPopup() {
 		contourPop.setVisible(true);
 		contourPop.repaint();
@@ -74,19 +74,19 @@ public class ContourContextMenu extends JPopupMenu implements MRIPopupMenu{
 		return contourPop;
 	}
 
-	@Override
+	
 	public void hidePopup() {
 		contourPop.setVisible(false);
 	}
 
-	@Override
+
 	public void refreshPopup() {
 		contourPop.revalidate();
 		contourPop.repaint();
 		
 	}
 
-	@Override
+
 	public void setLocation() {
 		contourPop.setLocation(MouseInfo.getPointerInfo().getLocation());
 		refreshPopup();
