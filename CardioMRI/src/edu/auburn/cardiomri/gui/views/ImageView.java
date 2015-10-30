@@ -50,7 +50,7 @@ public class ImageView extends SingleImagePanel implements ActionListener,
     public ContourContextMenu ccm;// = ContourContextMenu.popupContextMenu(); //kw
     private int ccmIndex = 0;
     
-    public JPopupMenu lmcm; //LandmarkContextMenu()
+    public LandmarkContextMenu lmcm; //LandmarkContextMenu()
     private int lmcmIndex = 0;
     
     public SelectContextMenu scm; //SelectContextMenu();
@@ -227,9 +227,9 @@ public class ImageView extends SingleImagePanel implements ActionListener,
     				lmcm.removeAll();
     			}
     			lmcmIndex = 1;
-    			lmcm = LandmarkContextMenu.popupContextMenu();
-    			lmcm.setLocation(MouseInfo.getPointerInfo().getLocation());
-    			lmcm.setVisible(true);
+    			lmcm = new LandmarkContextMenu();
+    			lmcm.setLocation();
+    			lmcm.getPopup();
 
     		}
     		
