@@ -35,7 +35,7 @@ public class SelectContextMenu extends JPopupMenu implements MRIPopupMenu, Mouse
 	private  JMenu contour = new JMenu("Contour");
 	private  JMenu landmark = new JMenu("Landmark");
 	private  ActionListener actionListener;
-	private  ImageView view;
+	//private  ImageView view;
 	private int index = 0;
 	private boolean isFirst = true;
 	
@@ -47,7 +47,7 @@ public class SelectContextMenu extends JPopupMenu implements MRIPopupMenu, Mouse
 	 * @param view
 	 */
 	public SelectContextMenu(ImageView view){
-		this.view = view;
+		//this.view = view;
 		contourType = new ContourTypeActionPerformed(this, true);
 		landmarkType = new LandmarkTypeActionPerformed(this, true);
 		this.actionListener = new SelectContextMenuActionPerformed(view);
