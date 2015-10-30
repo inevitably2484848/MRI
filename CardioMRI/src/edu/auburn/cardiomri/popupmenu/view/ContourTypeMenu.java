@@ -1,25 +1,16 @@
 package edu.auburn.cardiomri.popupmenu.view;
 
 import java.awt.MouseInfo;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.event.MouseAdapter;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
-import javax.swing.event.PopupMenuEvent;
-import javax.swing.event.PopupMenuListener;
 
 import edu.auburn.cardiomri.datastructure.Contour;
-import edu.auburn.cardiomri.datastructure.Contour.Type;
 import edu.auburn.cardiomri.gui.actionperformed.ContourTypeActionPerformed;
-import edu.auburn.cardiomri.gui.models.ImageModel;
-import edu.auburn.cardiomri.gui.views.ImageView;
 import edu.auburn.cardiomri.gui.views.View;
 
 
@@ -125,7 +116,7 @@ public class ContourTypeMenu extends View implements MRIPopupMenu, MouseListener
 	
 	// Mouse listeners =========================================================
 	private int index = 0;
-	private boolean isFirst = true;
+	//private boolean isFirst = true;
 	
 	
 	@Override
