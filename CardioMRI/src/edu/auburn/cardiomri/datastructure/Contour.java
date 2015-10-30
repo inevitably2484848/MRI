@@ -59,7 +59,9 @@ public class Contour implements Shape, Serializable {
         List<ControlPoint> newList = new Vector<ControlPoint>();
         for (ControlPoint point : points) {
             validateCoordinates(point.getX(), point.getY());
-            newList.add(new ControlPoint(point.getX(), point.getY()));
+            validateCoordinates(point.getTension1().getX(), point.getTension1().getY());
+            validateCoordinates(point.getTension2().getX(), point.getTension2().getY());
+            newList.add(point);
         }
 
         controlPoints = newList;
