@@ -3,6 +3,7 @@ package edu.auburn.cardiomri.popupmenu.view;
 import java.awt.MouseInfo;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 import javax.swing.JMenu;
@@ -17,13 +18,14 @@ import edu.auburn.cardiomri.gui.views.Toast;
 import edu.auburn.cardiomri.gui.views.View;
 import edu.auburn.cardiomri.util.Mode;
 
-public class ContourContextMenu extends JPopupMenu implements MRIPopupMenu{
+public class ContourContextMenu extends JPopupMenu implements MRIPopupMenu, MouseListener{
 
 	/**
 	 * Populates the Popup Menu
 	 * @return JPopupMenu
 	 */
 	private JPopupMenu contourPop = new JPopupMenu();
+	
 	
 	public ContourContextMenu(){
 		contourPop.setLightWeightPopupEnabled(true);
@@ -32,11 +34,12 @@ public class ContourContextMenu extends JPopupMenu implements MRIPopupMenu{
 	
 	@Override
 	public void setPopup() {
-
+		contourPop.addMouseListener(this);
 		ImageModel imageModel = ImageView.getImageModelStatic();
 		
 		if(imageModel.getSelectedContour() != null){
 			JMenuItem done = new JMenuItem("Done Adding");
+			done.addMouseListener(this);
 			done.setActionCommand("Done Adding");
 			done.addActionListener(new ActionListener(){
 	            @Override
@@ -90,7 +93,6 @@ public class ContourContextMenu extends JPopupMenu implements MRIPopupMenu{
 	public void setLocation() {
 		contourPop.setLocation(MouseInfo.getPointerInfo().getLocation());
 		refreshPopup();
-		
 	}
 	
 	@Override
@@ -107,6 +109,78 @@ public class ContourContextMenu extends JPopupMenu implements MRIPopupMenu{
 	 */
 	public static ImageModel getImageModel(){
 		return ImageView.getImageModelStatic();
+	}
+
+	
+	// Mouse listeners =========================================================
+	private int index = 0;
+	private boolean isFirst = true;
+	
+	
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		
+		if(e.getComponent().getClass().getSimpleName().equalsIgnoreCase("JPopupMenu")){
+			if(isFirst){
+				isFirst= false;
+			}
+			else{
+				index--;
+				if(index == 0){
+					hidePopup();
+				}
+			}
+		}
+		if(e.getComponent().getClass().getSimpleName().equalsIgnoreCase("JMenu")){
+			((JMenu)e.getSource()).setArmed(true);
+			((JMenu)e.getSource()).setPopupMenuVisible(true);
+			index++;
+
+		}
+		if(e.getComponent().getClass().getSimpleName().equalsIgnoreCase("JMenuItem")){
+			((JMenuItem)e.getSource()).setArmed(true);
+		}
+
+		
+	}
+	
+	@Override
+	public void mouseExited(MouseEvent e) {
+	
+		if(e.getComponent().getClass().getSimpleName().equalsIgnoreCase("JPopupMenu")){
+			 ++index;
+		}
+		if(e.getComponent().getClass().getSimpleName().equalsIgnoreCase("JMENU")){
+			((JMenu)e.getSource()).setArmed(false);
+			((JMenu)e.getSource()).setPopupMenuVisible(false);	
+			index--;
+		}
+		if(e.getComponent().getClass().getSimpleName().equalsIgnoreCase("JMENUITEM")) {
+			((JMenuItem)e.getSource()).setArmed(false);
+		}
+
+	}
+
+	public int getIndex(){
+		return index;
 	}
 
 

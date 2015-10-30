@@ -12,6 +12,7 @@ import edu.auburn.cardiomri.gui.views.Toast;
 import edu.auburn.cardiomri.gui.views.View;
 import edu.auburn.cardiomri.gui.views.WorkspaceView;
 import edu.auburn.cardiomri.popupmenu.view.ContourTypeMenu;
+import edu.auburn.cardiomri.popupmenu.view.SelectContextMenu;
 import edu.auburn.cardiomri.util.Mode;
 
 public class ContourTypeActionPerformed  implements ActionListener {
@@ -27,6 +28,7 @@ public class ContourTypeActionPerformed  implements ActionListener {
 	private boolean istoggled;
 	private ImageModel model;
 	private ContourTypeMenu ctMenu;
+	private SelectContextMenu selectMenu;
 	public ContourTypeActionPerformed(View view){
 		this.wrkspcVw  =view;
 		istoggled = false;
@@ -36,6 +38,12 @@ public class ContourTypeActionPerformed  implements ActionListener {
 	
 	public ContourTypeActionPerformed(ContourTypeMenu ctMenu, boolean toggle){
 		this.ctMenu = ctMenu;
+		this.istoggled = toggle;
+		//System.out.println("TESTING " + wrkspcVw.toString());
+	}
+	
+	public ContourTypeActionPerformed(SelectContextMenu selectMenu, boolean toggle){
+		this.selectMenu = selectMenu;
 		this.istoggled = toggle;
 		//System.out.println("TESTING " + wrkspcVw.toString());
 	}
@@ -50,8 +58,9 @@ public class ContourTypeActionPerformed  implements ActionListener {
 			 this.model = getImageModel(istoggled);
 			 ctMenu.hidePopup();
 		}
-		else if(istoggled && ctMenu == null) {
+		else if(istoggled && selectMenu != null) {
 			this.model = getImageModel(istoggled);
+			selectMenu.hidePopup();
 		}
 		
         if (actionCommand.equals("LV EPI")) {

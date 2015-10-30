@@ -10,14 +10,33 @@ import edu.auburn.cardiomri.gui.views.ImageView;
 import edu.auburn.cardiomri.gui.views.Toast;
 import edu.auburn.cardiomri.gui.views.View;
 import edu.auburn.cardiomri.popupmenu.view.LandmarkTypeMenu;
+import edu.auburn.cardiomri.popupmenu.view.SelectContextMenu;
 import edu.auburn.cardiomri.util.Mode;
 
 public class LandmarkTypeActionPerformed extends View implements ActionListener {
+	
+	private SelectContextMenu selectMenu;
+	private boolean istoggled;
+	
+	public LandmarkTypeActionPerformed(){
 
+	}
+	
+	public LandmarkTypeActionPerformed(SelectContextMenu selectMenu, boolean toggle){
+		this.selectMenu = selectMenu;
+		this.istoggled = toggle;
+	}
+	
+	
 	@Override
 	public void actionPerformed(ActionEvent actionEvent) {
 		String actionCommand = actionEvent.getActionCommand();
 		Mode.setMode(Mode.landmarkMode());
+		
+		if(istoggled && selectMenu != null) {
+			this.model = getImageModel();
+			selectMenu.hidePopup();
+		}
 		
 		LandmarkTypeMenu.staticHide();  //hides current landmarkTypeMenu
 		

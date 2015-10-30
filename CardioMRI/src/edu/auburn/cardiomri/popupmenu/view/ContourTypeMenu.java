@@ -31,7 +31,7 @@ import edu.auburn.cardiomri.gui.views.View;
  *
  */
 
-public class ContourTypeMenu extends View implements MRIPopupMenu{ // extends View implements MouseListener {
+public class ContourTypeMenu extends View implements MRIPopupMenu, MouseListener{ // extends View implements MouseListener {
 	
 	/**
 	 * Populates the Popup Menu
@@ -76,6 +76,7 @@ public class ContourTypeMenu extends View implements MRIPopupMenu{ // extends Vi
 
 	public JMenuItem addMenuItem(String name, String command, ActionListener action){
 		JMenuItem newItem = new JMenuItem(name);
+		newItem.addMouseListener(this);
 		newItem.setActionCommand(command);
 		newItem.addActionListener(action);
 		return newItem;
@@ -121,6 +122,60 @@ public class ContourTypeMenu extends View implements MRIPopupMenu{ // extends Vi
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	// Mouse listeners =========================================================
+	private int index = 0;
+	private boolean isFirst = true;
+	
+	
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		
+		if(e.getComponent().getClass().getSimpleName().equalsIgnoreCase("JMenu")){
+			((JMenu)e.getSource()).setArmed(true);
+			//((JMenu)e.getSource()).setPopupMenuVisible(true);
+
+		}
+		if(e.getComponent().getClass().getSimpleName().equalsIgnoreCase("JMenuItem")){
+			((JMenuItem)e.getSource()).setArmed(true);
+		}
+
+		
+	}
+	
+	@Override
+	public void mouseExited(MouseEvent e) {
+		if(e.getComponent().getClass().getSimpleName().equalsIgnoreCase("JMENU")){
+			((JMenu)e.getSource()).setArmed(false);
+			//((JMenu)e.getSource()).setPopupMenuVisible(false);	
+		}
+		if(e.getComponent().getClass().getSimpleName().equalsIgnoreCase("JMENUITEM")) {
+			((JMenuItem)e.getSource()).setArmed(false);
+		}
+	}
+
+	public int getIndex(){
+		return index;
+	}
+
 
 }
 
