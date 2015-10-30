@@ -10,16 +10,17 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 
-import edu.auburn.cardiomri.datastructure.Contour;
-import edu.auburn.cardiomri.datastructure.Contour.Type;
 import edu.auburn.cardiomri.gui.models.ImageModel;
 import edu.auburn.cardiomri.gui.views.ImageView;
 import edu.auburn.cardiomri.gui.views.Toast;
-import edu.auburn.cardiomri.gui.views.View;
 import edu.auburn.cardiomri.util.Mode;
 
 public class ContourContextMenu extends JPopupMenu implements MRIPopupMenu, MouseListener{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6889988991064856782L;
 	/**
 	 * Populates the Popup Menu
 	 * @return JPopupMenu
