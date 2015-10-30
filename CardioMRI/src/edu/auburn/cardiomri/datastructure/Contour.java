@@ -51,13 +51,13 @@ public class Contour implements Shape, Serializable {
         generatedPoints = new Vector<Point>();
     }
 
-    public void setControlPoints(List<Vector3d> points) {
+    public void setControlPoints(List<ControlPoint> points) {
         if (points == null) {
             throw new NullPointerException("List cannot be null");
         }
 
         List<ControlPoint> newList = new Vector<ControlPoint>();
-        for (Vector3d point : points) {
+        for (ControlPoint point : points) {
             validateCoordinates(point.getX(), point.getY());
             newList.add(new ControlPoint(point.getX(), point.getY()));
         }

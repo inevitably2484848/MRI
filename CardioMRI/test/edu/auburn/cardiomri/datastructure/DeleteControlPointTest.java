@@ -11,7 +11,7 @@ import org.junit.Test;
 public class DeleteControlPointTest {
 
     private Contour contour;
-    private List<Vector3d> controlPoints;
+    private List<ControlPoint> controlPoints;
     
     @Before
     public void setUp() {
