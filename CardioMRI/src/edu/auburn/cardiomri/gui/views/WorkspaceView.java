@@ -401,7 +401,7 @@ public class WorkspaceView extends View {
         JMenu rotate = new JMenu("Rotate");
         JMenuItem rotateImage = new JMenuItem("Rotate Image");
         rotateImage.setActionCommand("Rotate Image");
-        rotateImage.addActionListener(this);
+        rotateImage.addActionListener(mbFileAction);
         rotate.add(rotateImage);
 
         // ----- Main Menu ----------------------------------------------------
