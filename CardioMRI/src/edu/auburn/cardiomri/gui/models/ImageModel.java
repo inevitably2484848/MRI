@@ -8,8 +8,10 @@ import javafx.geometry.Point2D;
 import edu.auburn.cardiomri.datastructure.Contour;
 import edu.auburn.cardiomri.datastructure.DICOMImage;
 import edu.auburn.cardiomri.datastructure.Landmark;
+import edu.auburn.cardiomri.datastructure.Point;
 import edu.auburn.cardiomri.datastructure.Vector3d;
 import edu.auburn.cardiomri.util.ContourCalc;
+import edu.auburn.cardiomri.datastructure.ControlPoint;
 
 public class ImageModel extends Model {
     protected DICOMImage dImage;
@@ -117,6 +119,50 @@ public class ImageModel extends Model {
     public Vector<Landmark> getLandmarks(){
     	return dImage.getLandmarks();
     }
+    
+    public Vector<Point> getAllVisiblePoints() {
+    	Vector<Point> visiblePoints = new Vector<Point>();
+    	
+    	Vector<Landmark> visibleLandmarks = getVisibleLandmarks();
+    	for (Landmark landmark: visibleLandmarks) {
+    		visiblePoints.add(landmark);
+    	}
+    	
+    	Vector<Contour> visibleContours = getVisibleContours();
+    	for (Contour contour: visibleContours) {
+    		List<ControlPoint> visibleControlPoints = contour.getControlPoints();
+    		for (ControlPoint controlPoint: visibleControlPoints) {
+    			visiblePoints.add(controlPoint);
+    			visiblePoints.add(controlPoint.getTension1());
+    			visiblePoints.add(controlPoint.getTension2());
+    		}
+    	}
+    	
+    	return visiblePoints;
+    }
+    
+    public Point findNearestPointWithinRange(double x, double y, int range) {
+    	int maxDistance = 3;
+    	Point nearestPoint = null;
+    	
+    	Vector<Point> allVisiblePoints = getAllVisiblePoints();
+    	for (Point point: allVisiblePoints) {
+    		if ((Math.abs(point.getX() - x) < maxDistance) && (Math.abs(point.getY() - y) < maxDistance)) {
+    			if (nearestPoint == null) {
+    				nearestPoint = point;
+    			}
+    			else {
+    				if ((Math.abs(point.getX() - x) + Math.abs(point.getY() - y)) 
+    						< (Math.abs(nearestPoint.getX() - x) + Math.abs(nearestPoint.getY() - y))) {
+    					nearestPoint = point;
+    				}
+    			}
+    		}
+    	}
+    	
+    	return nearestPoint;
+    }
+    
     /**
      * Adds a contour to the image and sets it as the selected contour.
      * 
@@ -131,6 +177,8 @@ public class ImageModel extends Model {
     public void addLandmarkToImage(Landmark landmark){
     	this.dImage.addLandmark(landmark);
     	setActiveLandmark(landmark);
+    	setChanged();
+    	notifyObservers(dImage);
     }
     public void setActiveLandmark(Landmark landmark){
     	activeLandmark = landmark;
@@ -203,7 +251,7 @@ public class ImageModel extends Model {
      * @param y
      */
     public void selectContour(double x, double y) {
-        Vector3d pointClicked = new Vector3d(x, y, 0);
+        ControlPoint pointClicked = new ControlPoint(x, y);
         float delta = Float.MAX_VALUE;
         Contour closest = null;
 
