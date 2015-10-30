@@ -14,6 +14,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import edu.auburn.cardiomri.datastructure.Contour;
+import edu.auburn.cardiomri.datastructure.ControlPoint;
 import edu.auburn.cardiomri.datastructure.DICOMImage;
 import edu.auburn.cardiomri.datastructure.Vector3d;
 
@@ -55,12 +56,13 @@ public class LoadContoursTest {
                 .size());
     }
 
+    
     @Test
     public void testReadInOneContourForOneImageWith1ContourExistingCheckNotDeleted() {
-        Vector3d p1 = new Vector3d(1.0, 2.0, 0.0);
-        Vector3d p2 = new Vector3d(3.0, 4.0, 0.0);
+    	ControlPoint p1 = new ControlPoint(1.0, 2.0);
+    	ControlPoint p2 = new ControlPoint(3.0, 4.0);
 
-        List<Vector3d> controlPoints = new Vector<Vector3d>();
+        List<ControlPoint> controlPoints = new Vector<ControlPoint>();
         controlPoints.add(p1);
         controlPoints.add(p2);
 
@@ -75,5 +77,5 @@ public class LoadContoursTest {
 
         assertEquals(2, image1.getContours().size());
     }
-
+	
 }

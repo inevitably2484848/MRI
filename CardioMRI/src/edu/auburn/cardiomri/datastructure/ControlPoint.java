@@ -12,7 +12,17 @@ public class ControlPoint extends Point{
 	public TensionPoint getTension1() {
 		return tPoint1;
 	}
+	
 	public TensionPoint getTension2() {
 		return tPoint2;
+	}
+	
+	
+	public void setTension1(TensionPoint tpoint) {
+		tPoint1 = tpoint;
+	}
+	
+	public void setTension2(TensionPoint tpoint) {
+		tPoint2 = tpoint;
 	}
 }
