@@ -17,6 +17,7 @@ public class MenuBarFileActionPerformed implements ActionListener {
 		
 		String action = actionCommand.getActionCommand();
 
+		
 		if (action.equals("Save Study")) { 
             this.wrkspcVw.saveStudy();
         } 
@@ -32,8 +33,9 @@ public class MenuBarFileActionPerformed implements ActionListener {
 		else if (action.equals("From File Structure")){
 			
 		}
-		else if (actionCommand.equals("Rotate Image")) {   
-            this.wrkspcVw.getWorkspaceModel().rotate();
+		else if (action.equals("Rotate Image")) {   
+			
+            wrkspcVw.getWorkspaceModel().rotate();
         } 
 	}
 

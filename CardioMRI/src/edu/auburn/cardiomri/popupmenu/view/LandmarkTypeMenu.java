@@ -1,7 +1,6 @@
 package edu.auburn.cardiomri.popupmenu.view;
 
 import java.awt.MouseInfo;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -10,14 +9,8 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 
-import edu.auburn.cardiomri.datastructure.Contour;
 import edu.auburn.cardiomri.datastructure.Landmark;
-import edu.auburn.cardiomri.datastructure.Contour.Type;
-import edu.auburn.cardiomri.datastructure.Landmark.LandmarkType;
 import edu.auburn.cardiomri.gui.actionperformed.LandmarkTypeActionPerformed;
-import edu.auburn.cardiomri.gui.models.ImageModel;
-import edu.auburn.cardiomri.gui.views.ImageView;
-import edu.auburn.cardiomri.gui.views.View;
 import edu.auburn.cardiomri.util.Mode;
 
 public class LandmarkTypeMenu extends JPopupMenu implements MRIPopupMenu, MouseListener{
@@ -25,7 +18,7 @@ public class LandmarkTypeMenu extends JPopupMenu implements MRIPopupMenu, MouseL
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = -2260919009948844704L;
 	public static JPopupMenu staticMenu;
 	public JPopupMenu landmarkPop = new JPopupMenu();
 	
