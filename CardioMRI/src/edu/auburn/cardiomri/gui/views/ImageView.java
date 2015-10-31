@@ -349,6 +349,8 @@ public class ImageView extends SingleImagePanel implements ActionListener,
     	
     	clickedPoint = getImageModel().findNearestPointWithinRange(mouseClick.getX(), mouseClick.getY(), 3);
     	
+    	super.mousePressed(e);
+    	
     	this.panel.requestFocusInWindow();
     }
 
