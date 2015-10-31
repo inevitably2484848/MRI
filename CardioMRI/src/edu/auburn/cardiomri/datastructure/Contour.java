@@ -279,6 +279,8 @@ public class Contour implements Shape, Serializable {
         					//set the tension point values of the next control point equal to the new tension point
         					controlPoints.get(i).getTension1().setX(tensionPointsB.get(0).getX());
         					controlPoints.get(i).getTension1().setY(tensionPointsB.get(0).getY());
+        					controlPoints.get(i).getTension2().setX(tensionPointsB.get(1).getX());
+        					controlPoints.get(i).getTension2().setY(tensionPointsB.get(1).getY());
         				}
         			}        			
         		}
