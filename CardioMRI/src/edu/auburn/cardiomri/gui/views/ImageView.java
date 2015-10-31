@@ -224,7 +224,6 @@ public class ImageView extends SingleImagePanel implements ActionListener,
     		//left click add landMark
     		if (SwingUtilities.isLeftMouseButton(e)) {    			
     			Mode.setMode(Mode.selectMode());
-            	Mode.setNextLandmarkType(null);
             	
             	getImageModel().addLandmarkToImage(new Landmark(Mode.getNextLandmarkType(), mouseClick.getX(), mouseClick.getY()));
             	lmrkMode = false;
