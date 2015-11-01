@@ -22,6 +22,7 @@ import javax.swing.event.ChangeListener;
 
 import edu.auburn.cardiomri.gui.actionperformed.ContourTypeActionPerformed;
 import edu.auburn.cardiomri.gui.models.GridModel;
+import edu.auburn.cardiomri.gui.models.ImageModel;
 import edu.auburn.cardiomri.popupmenu.view.ContourTypeMenu;
 import edu.auburn.cardiomri.popupmenu.view.LandmarkTypeMenu;
 
@@ -50,9 +51,7 @@ public class GridControlView extends View implements ChangeListener {
 	protected JToggleButton landMark = new JToggleButton("Add LandMark"); //kw
 	protected ContourTypeMenu cntrPM = new ContourTypeMenu();
 	protected LandmarkTypeMenu lndmrkPM = new LandmarkTypeMenu();
-	protected static final int SELECT_MODE = 0;
-	protected static final int CONTOUR_MODE = 1;
-	protected static final int LANDMARK_MODE = 2;
+
 	
 	/**
 	 * Sets panel to visible, adds slider to panel
@@ -198,7 +197,6 @@ public class GridControlView extends View implements ChangeListener {
 				cntrPM.getPopup();
 				Mode.setMode(Mode.contourMode());
 			}
-			//new Toast(Mode.modeToast());
         }
         else if(actionCommand.equalsIgnoreCase("landMark")){ //kw
         	contour.setSelected(false);
@@ -217,8 +215,20 @@ public class GridControlView extends View implements ChangeListener {
         	new Toast(Mode.modeToast());
         		
         }
+        
+        if(getImageModel().getSelectedContour() != null){
+        	getImageModel().setSelectedContour(null);
+        }
+
     } //*************************************************************************
     
+	/**
+	 * gets Image model 
+	 * @return
+	 */
+	public static ImageModel getImageModel(){
+		return ImageView.getImageModelStatic();
+	}
     
     /**
      * Because the gridContorlModel would be more than a hassle, we chose to have 
