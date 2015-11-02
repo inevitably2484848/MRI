@@ -14,6 +14,7 @@ import java.util.Vector;
 
 import javafx.geometry.Point2D;
 import edu.auburn.cardiomri.datastructure.Contour;
+import edu.auburn.cardiomri.datastructure.ControlPoint;
 import edu.auburn.cardiomri.datastructure.DICOMImage;
 import edu.auburn.cardiomri.datastructure.Group;
 import edu.auburn.cardiomri.datastructure.Slice;
@@ -60,6 +61,71 @@ public class WorkspaceModel extends Model {
     	setIndices(s, t, i);
     }
 
+    /**
+     * Reads a text file containing the contour data for one or more images in
+     * a study. The method creates new Contour objects and associates them with 
+     * with the appropriate image. 
+     * 
+     * @param file  the text file from which to read the contour data
+     * @param SOPInstanceUIDToDICOMImage  a hashmap containing all of the
+     * DICOM images with their SOPInstanceUIDs as keys
+     */
+    public void loadContour(File file,
+            Map<String, DICOMImage> SOPInstanceUIDToDICOMImage) {
+          Vector<Contour> contours;
+        List<ControlPoint> controlPoints;
+
+        String sopInstanceUID;
+        String[] line = new String[2];
+        @SuppressWarnings("unused")
+        String lineCheck;
+
+        int contourType;
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(file));
+            while (reader.readLine() != null) {
+                contours = new Vector<Contour>();
+                sopInstanceUID = reader.readLine();
+                contourType = Integer.parseInt(reader.readLine());
+                
+                while ((lineCheck = reader.readLine()) != "-1") {
+                    controlPoints = new Vector<ControlPoint>();
+                    while ((line = reader.readLine().split("\t")).length >= 2) {
+                        float x = Float.parseFloat(line[0]);
+                        float y = Float.parseFloat(line[1]);
+                        controlPoints.add(new ControlPoint(x, y));
+                    }
+                    
+                    // Only add contours to image if it is a control point contour
+                    if (Contour.isControlPointFromInt(contourType))
+                    {
+                    	Contour contour = new Contour(
+                    			Contour.getTypeFromInt(contourType));
+                    
+                    	contour.setControlPoints(controlPoints);
+                    	contours.add(contour);
+                    }
+                    
+                    if (line[0].equals("-1")) {
+                        break;
+                    } else {
+                        contourType = Integer.parseInt(line[0]);
+                    }
+                }
+                DICOMImage image = SOPInstanceUIDToDICOMImage
+                        .get(sopInstanceUID);
+                image.getContours().addAll(contours);
+
+                setIndices(s, t, i);
+
+            }
+            reader.close();
+        } catch (IOException x) {
+            System.err.format("IOException: %s%n", x);
+        }
+
+
+    }
 
     /**
      * Setter for the current study. If the study is null or contains less than

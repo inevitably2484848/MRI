@@ -10,57 +10,43 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 
-import edu.auburn.cardiomri.gui.models.ImageModel;
-import edu.auburn.cardiomri.gui.views.ImageView;
 import edu.auburn.cardiomri.gui.views.Toast;
+import edu.auburn.cardiomri.gui.views.View;
 import edu.auburn.cardiomri.util.Mode;
 
-public class ContourContextMenu extends JPopupMenu implements MRIPopupMenu, MouseListener{
+public class LandmarkContextMenu extends View implements MRIPopupMenu, MouseListener{
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -6889988991064856782L;
 	/**
 	 * Populates the Popup Menu
 	 * @return JPopupMenu
 	 */
-	private JPopupMenu contourPop = new JPopupMenu();
+	private JPopupMenu landmarkPop = new JPopupMenu();
 	
-	
-	public ContourContextMenu(){
-		contourPop.setLightWeightPopupEnabled(true);
+	public LandmarkContextMenu(){
+
 		setPopup();
-	}
+
+	}	
 	
 	@Override
 	public void setPopup() {
-		contourPop.addMouseListener(this);
-		ImageModel imageModel = ImageView.getImageModelStatic();
-		
-		if(imageModel.getSelectedContour() != null){
-			JMenuItem done = new JMenuItem("Done Adding");
-			done.addMouseListener(this);
-			done.setActionCommand("Done Adding");
-			done.addActionListener(new ActionListener(){
-	            @Override
-	            public void actionPerformed(ActionEvent e){
-	    			getImageModel().setSelectedContour(null);
-	    			Mode.setMode(Mode.selectMode());
-	    			new Toast(Mode.modeToast());
-	    			contourPop.setVisible(false);
-	    			contourPop.removeAll();
-	            }
-	        });
-			contourPop.add(done);
-		}
-		
-
+		//ImageModel imageModel = ImageView.getImageModelStatic();
+		JMenuItem done = new JMenuItem("Done Adding");
+		done.setActionCommand("Done Adding");
+		done.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e){
+				Mode.setMode(Mode.selectMode());
+				new Toast(Mode.modeToast());
+				landmarkPop.setVisible(false);
+				landmarkPop.removeAll();
+			}
+		});
+		landmarkPop.add(done);		
 	}
 
 	@Override
 	public JMenu addMenu(String str) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -70,46 +56,38 @@ public class ContourContextMenu extends JPopupMenu implements MRIPopupMenu, Mous
 		return null;
 	}
 
-	
+	@Override
 	public JPopupMenu getPopup() {
-		contourPop.setVisible(true);
-		contourPop.repaint();
-		contourPop.revalidate();
-		return contourPop;
+		landmarkPop.setVisible(true);
+		landmarkPop.repaint();
+		landmarkPop.revalidate();
+		return landmarkPop;
 	}
 
-	
+	@Override
 	public void hidePopup() {
-		contourPop.setVisible(false);
-	}
-
-
-	public void refreshPopup() {
-		contourPop.revalidate();
-		contourPop.repaint();
+		landmarkPop.setVisible(false);
 		
 	}
 
-
-	public void setLocation() {
-		contourPop.setLocation(MouseInfo.getPointerInfo().getLocation());
-		refreshPopup();
+	@Override
+	public void refreshPopup() {
+		landmarkPop.repaint();
+		landmarkPop.revalidate();
 	}
-	
+
+	@Override
+	public void setLocation() {
+		landmarkPop.setLocation(MouseInfo.getPointerInfo().getLocation());
+		refreshPopup();
+		
+	}
+
 	@Override
 	public void removeAll() {
-		contourPop.removeAll();
-		contourPop.setVisible(false);
+		landmarkPop.removeAll();
 		refreshPopup();
 		
-	}
-	
-	/**
-	 * gets Image model to add contour type
-	 * @return
-	 */
-	public static ImageModel getImageModel(){
-		return ImageView.getImageModelStatic();
 	}
 
 	
@@ -184,6 +162,9 @@ public class ContourContextMenu extends JPopupMenu implements MRIPopupMenu, Mous
 		return index;
 	}
 
-
-
+	
+	
 }
+
+
+

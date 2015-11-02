@@ -21,7 +21,9 @@ import org.junit.Test;
 
 import edu.auburn.cardiomri.datastructure.Contour;
 import edu.auburn.cardiomri.datastructure.Contour.Type;
+import edu.auburn.cardiomri.datastructure.ControlPoint;
 import edu.auburn.cardiomri.datastructure.DICOMImage;
+import edu.auburn.cardiomri.datastructure.Point;
 import edu.auburn.cardiomri.datastructure.Vector3d;
 
 public class SaveContoursTest {
@@ -58,14 +60,14 @@ public class SaveContoursTest {
     public void test001SaveOneContourOnOneImageTwoControlPoints()
             throws IOException {
 
-        Vector3d p1 = new Vector3d(1.0000, 2.0000, 0.0);
-        Vector3d p2 = new Vector3d(3.0000, 4.0000, 0.0);
+    	ControlPoint p1 = new ControlPoint(1.0000, 2.0000);
+    	ControlPoint p2 = new ControlPoint(3.0000, 4.0000);
 
-        List<Vector3d> controlPoints = new Vector<Vector3d>();
+        List<ControlPoint> controlPoints = new Vector<ControlPoint>();
         controlPoints.add(p1);
         controlPoints.add(p2);
 
-        Contour c1 = new Contour(Contour.Type.DEFAULT);
+        Contour c1 = new Contour(Contour.Type.LV_EPI);
         c1.setControlPoints(controlPoints); // automatically generates other
                                             // points
 
@@ -81,13 +83,13 @@ public class SaveContoursTest {
             i++;
         }
 
-        controlPoints = new Vector<Vector3d>();
+        controlPoints = new Vector<ControlPoint>();
         controlPoints = c1.getControlPoints();
         assertEquals(2, Integer.parseInt(reader.readLine()));
 
         String[] line = new String[2];
 
-        for (Vector3d p : controlPoints) {
+        for (ControlPoint p : controlPoints) {
             double x = p.getX();
             double y = p.getY();
             line = reader.readLine().split("\t");
@@ -104,12 +106,12 @@ public class SaveContoursTest {
             i++;
         }
         
-        List<Vector3d> generatedPoints = new Vector<Vector3d>();
+        List<Point> generatedPoints = new Vector<Point>();
         generatedPoints = c1.getGeneratedPoints();
         // With only 2 control points, no extra points are generated
         assertEquals(2, Integer.parseInt(reader.readLine()));
 
-        for (Vector3d p : generatedPoints) {
+        for (Point p : generatedPoints) {
             double x = p.getX();
             double y = p.getY();
             line = reader.readLine().split("\t");
@@ -122,17 +124,17 @@ public class SaveContoursTest {
     public void test002SaveOneContourOnOneImageThreeControlPoints()
             throws IOException {
 
-        Vector3d p1 = new Vector3d(1.0, 2.0, 0.0);
-        Vector3d p2 = new Vector3d(3.0, 4.0, 0.0);
-        Vector3d p3 = new Vector3d(5.0, 6.0, 0.0);
+    	ControlPoint p1 = new ControlPoint(1.0, 2.0);
+    	ControlPoint p2 = new ControlPoint(3.0, 4.0);
+    	ControlPoint p3 = new ControlPoint(5.0, 6.0);
 
-        List<Vector3d> controlPoints = new Vector<Vector3d>();
+        List<ControlPoint> controlPoints = new Vector<ControlPoint>();
         controlPoints.add(p3);
 
         controlPoints.add(p2);
         controlPoints.add(p1);
 
-        Contour c1 = new Contour(Contour.Type.DEFAULT);
+        Contour c1 = new Contour(Contour.Type.LV_EPI);
         c1.setControlPoints(controlPoints); // automatically generates other
                                             // points
 
@@ -149,13 +151,13 @@ public class SaveContoursTest {
         }
 
         
-        controlPoints = new Vector<Vector3d>();
+        controlPoints = new Vector<ControlPoint>();
         controlPoints = c1.getControlPoints();
         assertEquals(3, Integer.parseInt(reader.readLine()));
 
         String[] line = new String[2];
 
-        for (Vector3d p : controlPoints) {
+        for (ControlPoint p : controlPoints) {
             BigDecimal x = BigDecimal.valueOf(p.getX()).setScale(4,
                     BigDecimal.ROUND_UP);
             BigDecimal y = BigDecimal.valueOf(p.getY()).setScale(4,
@@ -176,12 +178,12 @@ public class SaveContoursTest {
             i++;
         }
         
-        List<Vector3d> generatedPoints = new Vector<Vector3d>();
+        List<Point> generatedPoints = new Vector<Point>();
         generatedPoints = c1.getGeneratedPoints();
         // Generate 99 extra points per control point
         assertEquals(3*99, Integer.parseInt(reader.readLine()));	
 
-        for (Vector3d p : generatedPoints) {
+        for (Point p : generatedPoints) {
             BigDecimal x = BigDecimal.valueOf(p.getX()).setScale(4,
                     BigDecimal.ROUND_UP);
             BigDecimal y = BigDecimal.valueOf(p.getY()).setScale(4,
@@ -212,12 +214,12 @@ public class SaveContoursTest {
     	for (Type type : types) {
     		this.tearDown();		// Fixes issues with appending file multiple times
     		this.setUp();
-	        Vector3d p1 = new Vector3d(1.0, 2.0, 0.0);
-	        Vector3d p2 = new Vector3d(3.0, 4.0, 0.0);
-	        Vector3d p3 = new Vector3d(5.0, 6.0, 0.0);
-	        Vector3d p4 = new Vector3d(7.0, 8.0, 0.0);
+    		ControlPoint p1 = new ControlPoint(1.0, 2.0);
+    		ControlPoint p2 = new ControlPoint(3.0, 4.0);
+    		ControlPoint p3 = new ControlPoint(5.0, 6.0);
+    		ControlPoint p4 = new ControlPoint(7.0, 8.0);
 	
-	        List<Vector3d> controlPoints = new Vector<Vector3d>();
+	        List<ControlPoint> controlPoints = new Vector<ControlPoint>();
 	        controlPoints.add(p4);
 	        controlPoints.add(p3);
 	        controlPoints.add(p2);
@@ -240,14 +242,14 @@ public class SaveContoursTest {
 	        }
 	
 	        
-	        controlPoints = new Vector<Vector3d>();
+	        controlPoints = new Vector<ControlPoint>();
 	        controlPoints = c1.getControlPoints();
 	        String t = reader.readLine();
 	        assertEquals(4, Integer.parseInt(t));
 	
 	        String[] line = new String[2];
 	
-	        for (Vector3d p : controlPoints) {
+	        for (ControlPoint p : controlPoints) {
 	            BigDecimal x = BigDecimal.valueOf(p.getX()).setScale(4,
 	                    BigDecimal.ROUND_UP);
 	            BigDecimal y = BigDecimal.valueOf(p.getY()).setScale(4,
@@ -268,12 +270,12 @@ public class SaveContoursTest {
 	            i++;
 	        }
 	        
-	        List<Vector3d> generatedPoints = new Vector<Vector3d>();
+	        List<Point> generatedPoints = new Vector<Point>();
 	        generatedPoints = c1.getGeneratedPoints();
 	        // Generate 99 extra points per control point
 	        assertEquals(4*99, Integer.parseInt(reader.readLine()));	
 	
-	        for (Vector3d p : generatedPoints) {
+	        for (Point p : generatedPoints) {
 	            BigDecimal x = BigDecimal.valueOf(p.getX()).setScale(4,
 	                    BigDecimal.ROUND_UP);
 	            BigDecimal y = BigDecimal.valueOf(p.getY()).setScale(4,

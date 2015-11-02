@@ -1,7 +1,6 @@
 package edu.auburn.cardiomri.popupmenu.view;
 
 import java.awt.MouseInfo;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -10,53 +9,43 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 
-import edu.auburn.cardiomri.gui.models.ImageModel;
-import edu.auburn.cardiomri.gui.views.ImageView;
-import edu.auburn.cardiomri.gui.views.Toast;
+import edu.auburn.cardiomri.datastructure.Landmark;
+import edu.auburn.cardiomri.gui.actionperformed.LandmarkTypeActionPerformed;
 import edu.auburn.cardiomri.util.Mode;
 
-public class ContourContextMenu extends JPopupMenu implements MRIPopupMenu, MouseListener{
-
+public class LandmarkTypeMenu extends JPopupMenu implements MRIPopupMenu, MouseListener{
+	
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -6889988991064856782L;
-	/**
-	 * Populates the Popup Menu
-	 * @return JPopupMenu
-	 */
-	private JPopupMenu contourPop = new JPopupMenu();
+	private static final long serialVersionUID = -2260919009948844704L;
+	public static JPopupMenu staticMenu;
+	public JPopupMenu landmarkPop = new JPopupMenu();
 	
-	
-	public ContourContextMenu(){
-		contourPop.setLightWeightPopupEnabled(true);
+	public LandmarkTypeMenu(){
 		setPopup();
 	}
 	
+	
 	@Override
-	public void setPopup() {
-		contourPop.addMouseListener(this);
-		ImageModel imageModel = ImageView.getImageModelStatic();
+	public void setPopup(){
+	
+		ActionListener actionListener = new LandmarkTypeActionPerformed();
 		
-		if(imageModel.getSelectedContour() != null){
-			JMenuItem done = new JMenuItem("Done Adding");
-			done.addMouseListener(this);
-			done.setActionCommand("Done Adding");
-			done.addActionListener(new ActionListener(){
-	            @Override
-	            public void actionPerformed(ActionEvent e){
-	    			getImageModel().setSelectedContour(null);
-	    			Mode.setMode(Mode.selectMode());
-	    			new Toast(Mode.modeToast());
-	    			contourPop.setVisible(false);
-	    			contourPop.removeAll();
-	            }
-	        });
-			contourPop.add(done);
-		}
+		Mode.setMode(Mode.landmarkMode());
 		
-
+        for (Landmark.LandmarkType t : Landmark.LandmarkType.values() ){
+        	JMenuItem tmp = new JMenuItem(t.abbv());
+        	tmp.setActionCommand(t.abbv());
+        	tmp.addActionListener(actionListener);
+        	tmp.addMouseListener(this);
+        	tmp.setToolTipText(t.toString());
+        	landmarkPop.add(tmp);
+        }
+        
+        staticMenu = landmarkPop;
 	}
+	
 
 	@Override
 	public JMenu addMenu(String str) {
@@ -70,54 +59,43 @@ public class ContourContextMenu extends JPopupMenu implements MRIPopupMenu, Mous
 		return null;
 	}
 
-	
-	public JPopupMenu getPopup() {
-		contourPop.setVisible(true);
-		contourPop.repaint();
-		contourPop.revalidate();
-		return contourPop;
-	}
-
-	
-	public void hidePopup() {
-		contourPop.setVisible(false);
-	}
-
-
-	public void refreshPopup() {
-		contourPop.revalidate();
-		contourPop.repaint();
-		
-	}
-
-
-	public void setLocation() {
-		contourPop.setLocation(MouseInfo.getPointerInfo().getLocation());
-		refreshPopup();
-	}
-	
 	@Override
-	public void removeAll() {
-		contourPop.removeAll();
-		contourPop.setVisible(false);
+	public JPopupMenu getPopup() {
+		landmarkPop.setVisible(true);
+		setLocation();
+		refreshPopup();
+		return landmarkPop;
+	}
+
+	@Override
+	public void hidePopup() {
+		landmarkPop.setVisible(false);
 		refreshPopup();
 		
 	}
-	
-	/**
-	 * gets Image model to add contour type
-	 * @return
-	 */
-	public static ImageModel getImageModel(){
-		return ImageView.getImageModelStatic();
+
+	@Override
+	public void refreshPopup() {
+		// TODO Auto-generated method stub
+		landmarkPop.revalidate();
+		landmarkPop.repaint();
+		
 	}
 
+	@Override
+	public void setLocation() {
+		// TODO Auto-generated method stub
+		landmarkPop.setLocation(MouseInfo.getPointerInfo().getLocation());
+		refreshPopup();
+	}
+	
+	public static void staticHide(){
+		staticMenu.setVisible(false);
+	}
 	
 	// Mouse listeners =========================================================
 	private int index = 0;
 	private boolean isFirst = true;
-	
-	
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		// TODO Auto-generated method stub
@@ -183,7 +161,7 @@ public class ContourContextMenu extends JPopupMenu implements MRIPopupMenu, Mous
 	public int getIndex(){
 		return index;
 	}
-
-
-
+	
 }
+
+	
