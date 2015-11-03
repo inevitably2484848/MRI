@@ -3,6 +3,7 @@ package edu.auburn.cardiomri;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
+import edu.auburn.cardiomri.gui.models.WorkflowModel;
 import edu.auburn.cardiomri.gui.models.WorkspaceModel;
 import edu.auburn.cardiomri.gui.models.WorkspaceModel.State;
 import edu.auburn.cardiomri.gui.views.WorkspaceView;
@@ -20,6 +21,7 @@ public class RunMVC {
 
     protected WorkspaceView workspaceView;
     protected WorkspaceModel workspaceModel;
+    protected WorkflowModel workflowModel;
 
     public RunMVC() {
         try {
@@ -32,7 +34,12 @@ public class RunMVC {
         workspaceModel = new WorkspaceModel();
         workspaceView = new WorkspaceView();
         workspaceView.setModel(workspaceModel);
-        workspaceModel.setCurrentState(State.START);
+        
+        workflowModel = new WorkflowModel();
+        workflowModel.setWorkspaceModel(workspaceModel);
+        workflowModel.setWorkspaceView(workspaceView);
+        workspaceView.setWorkflowModel(workflowModel);
+        workflowModel.update();
     }
 
 }
