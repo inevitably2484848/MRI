@@ -59,16 +59,29 @@ public class Landmark extends Point {
 	 * @param y double of Y coordinates
 	 */
 	public Landmark(LandmarkType typeIn, double x, double y){
-		super(x, y);
-		landmarkType = typeIn;
-		
+			super(x, y);
+			landmarkType = typeIn;
 	}
-	
+	public LandmarkType getType(){
+		return this.landmarkType;
+	}
 	/**
 	 * Set a Landmarks coordinates
 	 * @param x double X coordinates
 	 * @param y double Y coordinates
 	 */
+	
+	@Override
+	public boolean equals(Object b){
+		if(!(b instanceof Landmark)) {
+			return false;
+		}
+		else if (this.getType() == ((Landmark) b).getType()){
+			return true;
+		}
+		else return false;
+	}
+	
 	public void setLandmarkCoordinates(double x, double y){
 		super.setX(x);
 		super.setY(y);
