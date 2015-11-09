@@ -51,7 +51,6 @@ public class Landmark extends Point {
 			return abbv;
 		}
 	}
-	private Vector3d coordinates;
 	private LandmarkType landmarkType;
 	/**
 	 * Constructor with type and coordinates
@@ -92,7 +91,10 @@ public class Landmark extends Point {
 		String out = "[" + super.getX() + "," + super.getY() + "]";
 		return out;
 	}
-	
+	public void moveLandmark(double x, double y){
+		super.setX(x);
+		super.setY(y);
+	}
 
 }
 

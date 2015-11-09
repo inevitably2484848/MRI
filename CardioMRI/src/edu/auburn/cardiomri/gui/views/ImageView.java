@@ -293,7 +293,7 @@ public class ImageView extends SingleImagePanel implements ActionListener,
         		getImageModel().getSelectedContour().moveTensionPoint(mouseClick.getX(), mouseClick.getY(), (TensionPoint)clickedPoint);
         	}
         	else if (clickedPoint != null && clickedPoint.getClass() == Landmark.class) {
-        		
+        		((Landmark) clickedPoint).moveLandmark(mouseClick.getX(),mouseClick.getY());
         		//add this code to the landmark drag when created
         	}
         	else {
