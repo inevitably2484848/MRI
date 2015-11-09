@@ -32,7 +32,6 @@ import edu.auburn.cardiomri.util.StudyUtilities;
  * @author Moniz
  */
 public class WorkspaceModel extends Model {
-    protected State currentState;
     protected Study study;
     protected Map<ImageModel, Group> imageToGroup;
     private int temp4CH = -1;
@@ -44,7 +43,7 @@ public class WorkspaceModel extends Model {
      */
     public WorkspaceModel() {
         super();
-        currentState = State.UNDEFINED;
+//        currentState = State.UNDEFINED;
         imageToGroup = new HashMap<ImageModel, Group>();
     }
 
@@ -63,7 +62,6 @@ public class WorkspaceModel extends Model {
     }
 
     /**
-<<<<<<< HEAD
      * Reads a text file containing the contour data for one or more images in
      * a study. The method creates new Contour objects and associates them with 
      * with the appropriate image. 
@@ -141,15 +139,6 @@ public class WorkspaceModel extends Model {
      */
     public void setStudy(Study study) {
         this.study = study;
-        if (study == null) {
-            setCurrentState(State.START);
-        } else if (study.getUIDToImage().size() < 1) {
-            setCurrentState(State.START);
-        } else if (!hasValidIndices()) {
-            setCurrentState(State.GROUP_SELECTION);
-        } else {
-            setCurrentState(State.WORKSPACE);
-        }
     }
 
     /**
@@ -183,25 +172,6 @@ public class WorkspaceModel extends Model {
         return isValid;
     }
 
-    /**
-     * Getter for the current state.
-     * 
-     * @return
-     */
-    public State getCurrentState() {
-        return currentState;
-    }
-
-    /**
-     * Updates the current state and notifies observers with the change.
-     * 
-     * @param currentState
-     */
-    public void setCurrentState(State currentState) {
-        this.currentState = currentState;
-        setChanged();
-        notifyObservers(currentState);
-    }
 
     /**
      * Adds the ImageModel, Group pair to the internal map. When WorkspaceView
@@ -313,8 +283,6 @@ public class WorkspaceModel extends Model {
     	study.setFourChamber(study.getTwoChamber());
     	study.setTwoChamber(study.getShortAxis());
     	study.setShortAxis(temp4CH);
-    	setChanged();
-    	notifyObservers(currentState);
     }
     
 }
