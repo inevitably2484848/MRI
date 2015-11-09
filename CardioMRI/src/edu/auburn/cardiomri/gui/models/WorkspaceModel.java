@@ -14,6 +14,7 @@ import java.util.Vector;
 
 import javafx.geometry.Point2D;
 import edu.auburn.cardiomri.datastructure.Contour;
+import edu.auburn.cardiomri.datastructure.ControlPoint;
 import edu.auburn.cardiomri.datastructure.DICOMImage;
 import edu.auburn.cardiomri.datastructure.Group;
 import edu.auburn.cardiomri.datastructure.Slice;
@@ -74,7 +75,7 @@ public class WorkspaceModel extends Model {
     public void loadContour(File file,
             Map<String, DICOMImage> SOPInstanceUIDToDICOMImage) {
           Vector<Contour> contours;
-        List<Vector3d> controlPoints;
+        List<ControlPoint> controlPoints;
 
         String sopInstanceUID;
         String[] line = new String[2];
@@ -90,11 +91,11 @@ public class WorkspaceModel extends Model {
                 contourType = Integer.parseInt(reader.readLine());
                 
                 while ((lineCheck = reader.readLine()) != "-1") {
-                    controlPoints = new Vector<Vector3d>();
+                    controlPoints = new Vector<ControlPoint>();
                     while ((line = reader.readLine().split("\t")).length >= 2) {
                         float x = Float.parseFloat(line[0]);
                         float y = Float.parseFloat(line[1]);
-                        controlPoints.add(new Vector3d(x, y, 0));
+                        controlPoints.add(new ControlPoint(x, y));
                     }
                     
                     // Only add contours to image if it is a control point contour

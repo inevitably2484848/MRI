@@ -36,8 +36,8 @@ public final class ContourUtilities {
 	
 	public static void loadContour(File file, Map<String, DICOMImage> SOPInstanceUIDToDICOMImage) {
         Vector<Contour> contours;
-        List<Vector3d> controlPoints;
-        List<Vector3d> tensionPoints;
+        List<ControlPoint> controlPoints;
+        List<TensionPoint> tensionPoints;
 
         String sopInstanceUID;
         String[] line = new String[2];
@@ -60,8 +60,8 @@ public final class ContourUtilities {
 	                	int controlPointIdx = 1;
 	                	int tensionPointsPerControlPoint = 2;
 	                	
-	                    controlPoints = new Vector<Vector3d>();
-	                    tensionPoints = new Vector<Vector3d>();
+	                    controlPoints = new Vector<ControlPoint>();
+	                    tensionPoints = new Vector<TensionPoint>();
 	                    while ((line = reader.readLine().split("\t")).length >= 2) {
 	                    	
 	                    	float x = Float.parseFloat(line[0]);
@@ -69,23 +69,21 @@ public final class ContourUtilities {
 	                        
 	                    	if (pointIdx == controlPointIdx)	// control point
 		                    {
-		                        controlPoints.add(new Vector3d(x, y, 0));
+		                        controlPoints.add(new ControlPoint(x, y));
 		                    }
 	                    	else	// tension point
 	                    	{
-	                    		tensionPoints.add(new Vector3d(x, y, 0));
+	                    		tensionPoints.add(new TensionPoint(x, y));
 	                    	}
 	                    	
 	                    	pointIdx = (pointIdx + 1) % (tensionPointsPerControlPoint + 1);
 	                    }
 	                    
                     	int tensionPointIdx = 0;
-                    	for (Vector3d controlPoint : controlPoints)
+                    	for (ControlPoint controlPoint : controlPoints)
                     	{
-                    		controlPoint.setTensionX(tensionPoints.get(tensionPointIdx).getX());
-                    		controlPoint.setTensionY(tensionPoints.get(tensionPointIdx).getY());
-                    		controlPoint.setTensionX2(tensionPoints.get(tensionPointIdx+1).getX());
-                    		controlPoint.setTensionY2(tensionPoints.get(tensionPointIdx+1).getY());
+                    		controlPoint.setTension1(tensionPoints.get(tensionPointIdx));
+                    		controlPoint.setTension2(tensionPoints.get(tensionPointIdx+1));
                     		tensionPointIdx += 2;
                     	}
                     	

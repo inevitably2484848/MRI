@@ -30,6 +30,7 @@ import edu.auburn.cardiomri.datastructure.Landmark;
 import edu.auburn.cardiomri.datastructure.Study;
 import edu.auburn.cardiomri.gui.ConstructImage;
 import edu.auburn.cardiomri.gui.actionperformed.ContourTypeActionPerformed;
+import edu.auburn.cardiomri.gui.actionperformed.LandmarkTypeActionPerformed;
 import edu.auburn.cardiomri.gui.actionperformed.MenuBarContourActionPerformed;
 import edu.auburn.cardiomri.gui.actionperformed.MenuBarFileActionPerformed;
 import edu.auburn.cardiomri.gui.models.GridModel;
@@ -321,7 +322,7 @@ public class WorkspaceView extends View {
 
         // Contour Submenu ----------------------------------------------------
         ContourTypeActionPerformed contourTypeAction = new ContourTypeActionPerformed(this);
-        
+        LandmarkTypeActionPerformed landmarkTypeAction = new LandmarkTypeActionPerformed();
       
         
         JMenu addContour = new JMenu("Add Contour");
@@ -368,7 +369,7 @@ public class WorkspaceView extends View {
         for (Landmark.LandmarkType t : Landmark.LandmarkType.values() ){
         	JMenuItem tmp = new JMenuItem(t.abbv());
         	tmp.setActionCommand(t.abbv());
-        	tmp.addActionListener(mainImageView);
+        	tmp.addActionListener(landmarkTypeAction);
         	tmp.setToolTipText(t.toString());
         	landmarks.add(tmp);
         }
@@ -401,7 +402,7 @@ public class WorkspaceView extends View {
         JMenu rotate = new JMenu("Rotate");
         JMenuItem rotateImage = new JMenuItem("Rotate Image");
         rotateImage.setActionCommand("Rotate Image");
-        rotateImage.addActionListener(this);
+        rotateImage.addActionListener(mbFileAction);
         rotate.add(rotateImage);
 
         // ----- Main Menu ----------------------------------------------------

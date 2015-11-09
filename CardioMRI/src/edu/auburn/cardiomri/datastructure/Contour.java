@@ -51,15 +51,17 @@ public class Contour implements Shape, Serializable {
         generatedPoints = new Vector<Point>();
     }
 
-    public void setControlPoints(List<Vector3d> points) {
+    public void setControlPoints(List<ControlPoint> points) {
         if (points == null) {
             throw new NullPointerException("List cannot be null");
         }
 
         List<ControlPoint> newList = new Vector<ControlPoint>();
-        for (Vector3d point : points) {
+        for (ControlPoint point : points) {
             validateCoordinates(point.getX(), point.getY());
-            newList.add(new ControlPoint(point.getX(), point.getY()));
+            validateCoordinates(point.getTension1().getX(), point.getTension1().getY());
+            validateCoordinates(point.getTension2().getX(), point.getTension2().getY());
+            newList.add(point);
         }
 
         controlPoints = newList;
@@ -277,6 +279,8 @@ public class Contour implements Shape, Serializable {
         					//set the tension point values of the next control point equal to the new tension point
         					controlPoints.get(i).getTension1().setX(tensionPointsB.get(0).getX());
         					controlPoints.get(i).getTension1().setY(tensionPointsB.get(0).getY());
+        					controlPoints.get(i).getTension2().setX(tensionPointsB.get(1).getX());
+        					controlPoints.get(i).getTension2().setY(tensionPointsB.get(1).getY());
         				}
         			}        			
         		}

@@ -53,7 +53,7 @@ public class ImageView extends SingleImagePanel implements ActionListener,
     public ContourContextMenu ccm;// = ContourContextMenu.popupContextMenu(); //kw
     private int ccmIndex = 0;
     
-    public JPopupMenu lmcm; //LandmarkContextMenu()
+    public LandmarkContextMenu lmcm; //LandmarkContextMenu()
     private int lmcmIndex = 0;
     
     public SelectContextMenu scm; //SelectContextMenu();
@@ -224,7 +224,6 @@ public class ImageView extends SingleImagePanel implements ActionListener,
     		//left click add landMark
     		if (SwingUtilities.isLeftMouseButton(e)) {    			
     			Mode.setMode(Mode.selectMode());
-            	Mode.setNextLandmarkType(null);
             	
             	getImageModel().addLandmarkToImage(new Landmark(Mode.getNextLandmarkType(), mouseClick.getX(), mouseClick.getY()));
             	lmrkMode = false;
@@ -234,9 +233,9 @@ public class ImageView extends SingleImagePanel implements ActionListener,
     				lmcm.removeAll();
     			}
     			lmcmIndex = 1;
-    			lmcm = LandmarkContextMenu.popupContextMenu();
-    			lmcm.setLocation(MouseInfo.getPointerInfo().getLocation());
-    			lmcm.setVisible(true);
+    			lmcm = new LandmarkContextMenu();
+    			lmcm.setLocation();
+    			lmcm.getPopup();
 
     		}
     		
@@ -349,6 +348,8 @@ public class ImageView extends SingleImagePanel implements ActionListener,
     	java.awt.geom.Point2D mouseClick = getImageCoordinateFromWindowCoordinate(e.getX(), e.getY());
     	
     	clickedPoint = getImageModel().findNearestPointWithinRange(mouseClick.getX(), mouseClick.getY(), 3);
+    	
+    	super.mousePressed(e);
     	
     	this.panel.requestFocusInWindow();
     }

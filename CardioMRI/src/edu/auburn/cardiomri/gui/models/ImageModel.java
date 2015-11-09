@@ -18,6 +18,7 @@ public class ImageModel extends Model {
     protected Contour selected;
     protected Landmark activeLandmark;
     protected List<Contour> hiddenContours;
+    
 
     public ImageModel() {
         super();
