@@ -47,6 +47,7 @@ public class SelectContextMenu extends JPopupMenu implements MRIPopupMenu, Mouse
 	 * @param view
 	 */
 	public SelectContextMenu(ImageView view){
+		super();
 		//this.view = view;
 		contourType = new ContourTypeActionPerformed(this, true);
 		landmarkType = new LandmarkTypeActionPerformed(this, true);
@@ -169,7 +170,7 @@ public class SelectContextMenu extends JPopupMenu implements MRIPopupMenu, Mouse
 	}
 	
 	
-	// Mouse listeners =========================================================
+// Mouse listeners =========================================================
 	
 	@Override
 	public void mouseClicked(MouseEvent e) {
@@ -193,6 +194,8 @@ public class SelectContextMenu extends JPopupMenu implements MRIPopupMenu, Mouse
 	public void mouseEntered(MouseEvent e) {
 		
 		if(e.getComponent().getClass().getSimpleName().equalsIgnoreCase("JPopupMenu")){
+			
+			System.out.println("ENTERED PopUP");
 			if(isFirst){
 				isFirst= false;
 			}
@@ -220,6 +223,7 @@ public class SelectContextMenu extends JPopupMenu implements MRIPopupMenu, Mouse
 	public void mouseExited(MouseEvent e) {
 	
 		if(e.getComponent().getClass().getSimpleName().equalsIgnoreCase("JPopupMenu")){
+			System.out.println("EXited PopUP");
 			 ++index;
 		}
 		if(e.getComponent().getClass().getSimpleName().equalsIgnoreCase("JMENU")){
