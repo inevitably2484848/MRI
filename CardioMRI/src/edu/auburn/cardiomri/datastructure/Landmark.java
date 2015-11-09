@@ -62,7 +62,7 @@ public class Landmark extends Point {
 	public Landmark(LandmarkType typeIn, double x, double y){
 		super(x, y);
 		landmarkType = typeIn;
-		coordinates = new Vector3d(x,y,0);
+		
 	}
 	
 	/**
@@ -71,15 +71,17 @@ public class Landmark extends Point {
 	 * @param y double Y coordinates
 	 */
 	public void setLandmarkCoordinates(double x, double y){
-		coordinates = new Vector3d(x,y,0);
-		System.out.println("landmarks coordinates set: " + this.toString());
+		super.setX(x);
+		super.setY(y);
+		//System.out.println("landmarks coordinates set: " + this.toString());
 	}
 	/**
 	 * get a landmarks coordinates
 	 * @return Vector3d Landmarks coordinates
 	 */
-	public Vector3d getCoordinates(){
-		return coordinates;
+	public double[] getCoordinates(){
+		double output[] = {super.getX() , super.getY()};
+		return output;
 	}
 	
 	/**
@@ -87,7 +89,7 @@ public class Landmark extends Point {
 	 * @return String
 	 */
 	public String toString(){
-		String out = "[" + coordinates.getX() + "," + coordinates.getY() + "]";
+		String out = "[" + super.getX() + "," + super.getY() + "]";
 		return out;
 	}
 	
