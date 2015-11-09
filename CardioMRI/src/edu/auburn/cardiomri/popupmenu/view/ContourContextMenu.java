@@ -10,6 +10,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 
+import edu.auburn.cardiomri.gui.actionperformed.ContourContextMenuActionPerformed;
 import edu.auburn.cardiomri.gui.models.ImageModel;
 import edu.auburn.cardiomri.gui.views.ImageView;
 import edu.auburn.cardiomri.gui.views.Toast;
@@ -26,7 +27,7 @@ public class ContourContextMenu extends JPopupMenu implements MRIPopupMenu, Mous
 	 * @return JPopupMenu
 	 */
 	private JPopupMenu contourPop = new JPopupMenu();
-	
+	private ContourContextMenuActionPerformed contextMenuListener;
 	
 	public ContourContextMenu(){
 		contourPop.setLightWeightPopupEnabled(true);
@@ -37,23 +38,43 @@ public class ContourContextMenu extends JPopupMenu implements MRIPopupMenu, Mous
 	public void setPopup() {
 		contourPop.addMouseListener(this);
 		ImageModel imageModel = ImageView.getImageModelStatic();
+		contextMenuListener = new ContourContextMenuActionPerformed(imageModel, this);
 		
-		if(imageModel.getSelectedContour() != null){
-			JMenuItem done = new JMenuItem("Done Adding");
-			done.addMouseListener(this);
-			done.setActionCommand("Done Adding");
-			done.addActionListener(new ActionListener(){
-	            @Override
-	            public void actionPerformed(ActionEvent e){
-	    			getImageModel().setSelectedContour(null);
-	    			Mode.setMode(Mode.selectMode());
-	    			new Toast(Mode.modeToast());
-	    			contourPop.setVisible(false);
-	    			contourPop.removeAll();
-	            }
-	        });
-			contourPop.add(done);
-		}
+//		if(imageModel.getControlPoint() != null){
+			contourPop.add(addMenuItem("Delete Point"));
+//			if( Point is Locked) {
+//			contourPop.add(addMenuItem("UnLock Point"))
+//			}
+//			else{
+				contourPop.add(addMenuItem("Lock Point"));
+//			}
+//			
+//		}
+		
+		
+		
+		
+		contourPop.add(addMenuItem("Delete Contour"));
+		contourPop.add(addMenuItem("Hide Contour"));
+		
+		JMenuItem done = new JMenuItem("Done Adding");
+		done.addMouseListener(this);
+		done.setActionCommand("Done Adding");  //closes contour context menu and de-selects selected contour
+		done.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e){
+    			getImageModel().setSelectedContour(null);
+    			Mode.setMode(Mode.selectMode());
+    			new Toast(Mode.modeToast());
+    			contourPop.setVisible(false);
+    			contourPop.removeAll();
+            }
+        });
+		contourPop.add(done);
+			
+			
+		
+		
 		
 
 	}
@@ -66,8 +87,10 @@ public class ContourContextMenu extends JPopupMenu implements MRIPopupMenu, Mous
 
 	@Override
 	public JMenuItem addMenuItem(String str) {
-		// TODO Auto-generated method stub
-		return null;
+		JMenuItem newItem = new JMenuItem(str);
+		newItem.addMouseListener(this);
+		newItem.addActionListener(contextMenuListener);
+		return newItem;
 	}
 
 	
