@@ -47,7 +47,15 @@ public class ImageView extends SingleImagePanel implements ActionListener,
     private static final long serialVersionUID = -6920775905498293695L;
     private boolean lmrkMode = false;
     private Point clickedPoint = null;
+    private Vector<Shape> redShapes = new Vector<Shape>();
+    private Vector<Shape> orangeShapes = new Vector<Shape>();
+    private Vector<Shape> blueShapes = new Vector<Shape>();
+    private Vector<Shape> whiteShapes = new Vector<Shape>();
+    /*
     private Vector<Shape> visibleShapes = new Vector<Shape>();
+    private Vector<Shape> selectedShapes = new Vector<Shape>();
+    private Vector<Shape> visibleTensionPointShapes = new Vector<Shape>();
+    */
     private ContourControlView contourPanel; // testing
     
     public ContourContextMenu ccm;// = ContourContextMenu.popupContextMenu(); //kw
@@ -65,17 +73,52 @@ public class ImageView extends SingleImagePanel implements ActionListener,
      */
     public void update(Observable obs, Object obj) {
         if (obj.getClass() == DICOMImage.class) {
-            DICOMImage dImage = getImageModel().getImage();
-
-            dirtySource(new ConstructImage(dImage));
-            visibleShapes.clear();
-            updateSelectedContour(getImageModel().getSelectedContour());
-            updateVisibleContours(getImageModel().getVisibleContours());
-            updateVisibleLandmarks(getImageModel().getVisibleLandmarks());
-            updateTensionPoints(getImageModel().getSelectedContour());
-            this.setPreDefinedShapes(visibleShapes);
-            refresh();
+            this.redraw();
         }
+    }
+    
+    public void redraw() {
+    	DICOMImage dImage = getImageModel().getImage();
+
+        dirtySource(new ConstructImage(dImage));
+        /*visibleShapes.clear();
+        selectedShapes.clear();
+        visibleTensionPointShapes.clear();
+        
+        */
+        
+        clearShapes();
+        
+        updateContours(getImageModel().getContours());
+        updateLandmarks(getImageModel().getLandmarks());
+        
+        /*updateSelectedContour(getImageModel().getSelectedContour());
+        updateVisibleContours(getImageModel().getVisibleContours());
+        
+        updateVisibleLandmarks(getImageModel().getVisibleLandmarks());
+        updateSelectedLandmark(getImageModel().getSelectedLandmark());*/
+        
+        colorShapes();
+        
+        /*this.setPreDefinedShapes(visibleShapes);
+        this.setLocalizerShapes(selectedShapes);
+        this.setPreDefinedShapes(visibleTensionPointShapes);
+        this.setPreDefinedShapes(visibleTensionPointShapes);*/
+        refresh();
+    }
+    
+    private void clearShapes() {
+    	this.redShapes.clear();
+    	this.blueShapes.clear();
+    	this.orangeShapes.clear();
+    	this.whiteShapes.clear();
+    }
+    
+    private void colorShapes() {
+    	this.setSelectedDrawingShapes(redShapes);
+    	this.setPreDefinedShapes(blueShapes);
+    	this.setPersistentDrawingShapes(orangeShapes);
+    	this.setLocalizerShapes(whiteShapes);
     }
 
     /**
@@ -84,31 +127,104 @@ public class ImageView extends SingleImagePanel implements ActionListener,
      * 
      * @param contour The currently selected contour
      */
-    private void updateSelectedContour(Contour contour) {
+    /*private void updateSelectedContour(Contour contour) {
         
         if (contour != null) {
             for (ControlPoint controlPoint : contour.getControlPoints()) {
             	Ellipse2D ellipse = new Ellipse2D.Double(controlPoint.getX(),
                         controlPoint.getY(), 2, 2);
-                visibleShapes.add(ellipse);
+                selectedShapes.add(ellipse);
             }
+            updateTensionPoints(contour);
+        }
+    }*/
+    
+    private void updateLandmarks(Vector<Landmark> landmarks) {
+    	for (Landmark landmark: landmarks) {
+    		if (landmark != null) {	
+    			if (landmark.isVisible()) {
+    				double x = landmark.getCoordinates().getX();
+	        		double y = landmark.getCoordinates().getY();
+	        		GeneralPath cross = new GeneralPath();
+	        		//horizontal component
+	        		cross.moveTo(x-1, y);
+	        		cross.lineTo(x+1, y);
+	        		//vertical component
+	        		cross.moveTo(x,y-1);
+	        		cross.lineTo(x,y+1);
+	        		
+	        		colorShape(cross, landmark.getColor());
+    			}
+        	}
+    	}
+    }
+    
+    private void updateContours(Vector<Contour> contours) {
+    	for (Contour contour: contours) {
+    		updateContour(contour);
+    	}
+    }
+    
+    private void updateContour(Contour contour) {
+    	if (contour != null) {
+    		if (contour.isVisible()) {
+    			
+    			colorShape(contour, contour.getColor());
+    		
+	    		if (contour.isSelected()) {
+	    			
+		            for (ControlPoint controlPoint : contour.getControlPoints()) {
+		            	
+		            	Ellipse2D controlPointEllipse = new Ellipse2D.Double(controlPoint.getX(),
+		                        controlPoint.getY(), 2, 2);
+		            	
+		            	TensionPoint tensionPoint1 = controlPoint.getTension1();
+		            	TensionPoint tensionPoint2 = controlPoint.getTension2();
+		            	
+		            	Ellipse2D tensionPoint1Ellipse = new Ellipse2D.Double(tensionPoint1.getX(), tensionPoint1.getY(), 1, 1);
+		    			Ellipse2D tensionPoint2Ellipse = new Ellipse2D.Double(tensionPoint2.getX(), tensionPoint2.getY(), 1, 1);
+		    			
+		            	colorShape(controlPointEllipse, controlPoint.getColor());
+		            	colorShape(tensionPoint1Ellipse, tensionPoint1.getColor());
+		            	colorShape(tensionPoint2Ellipse, tensionPoint2.getColor());
+		            }
+	    		}
+    		}
         }
     }
     
-    private void updateTensionPoints(Contour contour) {
-    	
-    	if(contour != null) {
-    		for (ControlPoint controlPoint : contour.getControlPoints()) {
-    			Ellipse2D ellipse = new Ellipse2D.Double(controlPoint.getTension1().getX(), controlPoint.getTension1().getY(), 2, 2);
-    			Ellipse2D ellipse2 = new Ellipse2D.Double(controlPoint.getTension2().getX(), controlPoint.getTension2().getY(), 2, 2);
-    			visibleShapes.add(ellipse);
-    			visibleShapes.add(ellipse2);
-    		}
-        }   
+    private void colorShape(Shape shape, Color color) {
+    	if (color == Color.BLUE) {
+    		this.blueShapes.add(shape);
+    	}
+    	else if (color == Color.ORANGE) {
+    		this.orangeShapes.add(shape);
+    	}
+    	else if (color == Color.RED) {
+    		this.redShapes.add(shape);
+    	}
+    	else if (color == Color.WHITE) {
+    		this.whiteShapes.add(shape);
+    	}
     }
     
+    /*private void updateSelectedLandmark(Landmark landmark) {
+    	if (landmark != null) {	
+    		double x = landmark.getCoordinates().getX();
+    		double y = landmark.getCoordinates().getY();
+    		GeneralPath cross = new GeneralPath();
+    		//horizontal component
+    		cross.moveTo(x-1, y);
+    		cross.lineTo(x+1, y);
+    		//vertical component
+    		cross.moveTo(x,y-1);
+    		cross.lineTo(x,y+1);
+    		selectedShapes.add(cross);
+    	}
+    }*/
+    
 
-    private void updateVisibleLandmarks(Vector<Landmark> landmarks){
+    /*private void updateVisibleLandmarks(Vector<Landmark> landmarks){
     	for (Landmark l:landmarks){
     		double x = l.getCoordinates().getX();
     		double y = l.getCoordinates().getY();
@@ -119,9 +235,9 @@ public class ImageView extends SingleImagePanel implements ActionListener,
     		//vertical component
     		cross.moveTo(x,y-1);
     		cross.lineTo(x,y+1);
-    		visibleShapes.add(cross);
+    		visibleTensionPointShapes.add(cross);
     	}
-    }
+    }*/
     
 
     /**
@@ -244,7 +360,10 @@ public class ImageView extends SingleImagePanel implements ActionListener,
     		
     		//leftClick select closest contour or landMark
     		 if (SwingUtilities.isLeftMouseButton(e)) {
-    	            getImageModel().selectContour(mouseClick.getX(), mouseClick.getY());      
+    	            //getImageModel().selectContour(mouseClick.getX(), mouseClick.getY());
+    	            
+    	            getImageModel().selectClosestAnnotation(mouseClick.getX(), mouseClick.getY());
+    	            
     	     } 
     		// rightClick context menu
     		 else {
@@ -311,15 +430,7 @@ public class ImageView extends SingleImagePanel implements ActionListener,
         	}*/
         	
         	// Forces updating of control and tension points during dragging
-        	DICOMImage dImage = getImageModel().getImage();
-            dirtySource(new ConstructImage(dImage));
-            visibleShapes.clear();
-            updateSelectedContour(getImageModel().getSelectedContour());
-            updateVisibleContours(getImageModel().getVisibleContours());
-            updateVisibleLandmarks(getImageModel().getVisibleLandmarks());
-            updateTensionPoints(getImageModel().getSelectedContour());
-            this.setPreDefinedShapes(visibleShapes);
-            refresh();
+        	this.redraw();
         }
         this.panel.requestFocusInWindow();
     }
@@ -348,7 +459,7 @@ public class ImageView extends SingleImagePanel implements ActionListener,
     	java.awt.geom.Point2D mouseClick = getImageCoordinateFromWindowCoordinate(e.getX(), e.getY());
     	
     	clickedPoint = getImageModel().findNearestPointWithinRange(mouseClick.getX(), mouseClick.getY(), 3);
-    	
+
     	super.mousePressed(e);
     	
     	this.panel.requestFocusInWindow();

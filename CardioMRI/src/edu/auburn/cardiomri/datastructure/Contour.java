@@ -1,5 +1,6 @@
 package edu.auburn.cardiomri.datastructure;
 
+import java.awt.Color;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
@@ -28,6 +29,11 @@ import edu.auburn.cardiomri.util.ContourCalc;
  */
 public class Contour implements Shape, Serializable {
     private static final long serialVersionUID = 6179619427503035482L;
+    
+    boolean isSelected = true;
+    boolean isVisible = true;
+    
+    static Color color = Color.RED;
 
     // XY coordinates of points the user clicked
     private List<ControlPoint> controlPoints;
@@ -49,6 +55,26 @@ public class Contour implements Shape, Serializable {
     private Contour() {
         controlPoints = new Vector<ControlPoint>();
         generatedPoints = new Vector<Point>();
+    }
+    
+    public boolean isSelected() {
+    	return this.isSelected;
+    }
+    
+    public void isSelected(boolean isSelected) {
+    	this.isSelected = isSelected;
+    }
+    
+    public boolean isVisible() {
+    	return this.isVisible;
+    }
+    
+    public void isVisible(boolean isVisible) {
+    	this.isVisible = isVisible;
+    }
+    
+    public Color getColor() {
+    	return Contour.color;
     }
 
     public void setControlPoints(List<ControlPoint> points) {
