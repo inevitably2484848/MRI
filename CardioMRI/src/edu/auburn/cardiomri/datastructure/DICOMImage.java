@@ -740,7 +740,13 @@ public class DICOMImage implements Serializable {
     		this.landmarks.add(landmark);
     	}
     }
- 
+    public boolean deleteLandmark(Landmark landmark){
+    	if(landmarks.contains(landmark)){
+    		landmarks.remove(landmarks.indexOf(landmark));
+    		return true;
+    	}
+    	else return false;
+    }
     public Vector<Landmark> getLandmarks(){
     	return this.landmarks;
     }
