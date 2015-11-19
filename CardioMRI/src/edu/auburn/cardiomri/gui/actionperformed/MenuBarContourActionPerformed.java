@@ -31,8 +31,8 @@ public class MenuBarContourActionPerformed implements ActionListener {
 		
 		String actionCommand = actionEvent.getActionCommand();
 		
-		if (actionCommand.equals("Save Contours")) {
-            wrkspcVw.saveContour();
+		if (actionCommand.equals("Save Annotations")) {
+            wrkspcVw.saveAnnotations();
         } 
 		
 		if (actionCommand.equals("Delete Contour")) {

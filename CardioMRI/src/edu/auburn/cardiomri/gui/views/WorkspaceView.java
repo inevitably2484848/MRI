@@ -270,8 +270,8 @@ public class WorkspaceView extends View {
             this.saveStudy();
         } else if (actionCommand.equals("Save As Study")) {
             this.saveAsStudy();
-        } else if (actionCommand.equals("Save Contours")) {
-            this.saveContour();
+        } else if (actionCommand.equals("Save Annotations")) {
+            this.saveAnnotations();
         } else if (actionCommand.equals("Load Existing Study")) {
         	this.loadExistingStudy();
         } else if (actionCommand.equals("Rotate Image")) {
@@ -402,7 +402,7 @@ public class WorkspaceView extends View {
         		new MenuBarContourActionPerformed(this); //workspace view
         JMenu contours = new JMenu("Contours");
         
-        contours.add(addMenuItem("Save Contours (.txt File)","Save Contours", menuBarContour));
+        contours.add(addMenuItem("Save Annotations (.txt File)","Save Annotations", menuBarContour));
         contours.add(addMenuItem("Load Contours",menuBarContour));
         contours.add(addMenuItem("Select Contour",menuBarContour));
         contours.add(addMenuItem("Delete Contour Axis",menuBarContour));
@@ -501,7 +501,7 @@ public class WorkspaceView extends View {
      * Creates a text file in which to write the contour data for a study and
      * calls writeContoursToFile() to perform the actual writing to the file.
      */
-    public void saveContour() {
+    public void saveAnnotations() {
         JFileChooser saveFC = fileChooser;
         
         FileFilter studyFileFilter = new FileNameExtensionFilter(
@@ -518,7 +518,7 @@ public class WorkspaceView extends View {
         		newContourFileName = newContourFileName.concat(".txt");
         	}
         	
-        	ContourUtilities.writeContoursToFile(getWorkspaceModel().getStudy()
+        	ContourUtilities.writeAnnotationsToFile(getWorkspaceModel().getStudy()
         			.getUIDToImage(), newContourFileName);
         }
         else if (response == JFileChooser.CANCEL_OPTION) {
