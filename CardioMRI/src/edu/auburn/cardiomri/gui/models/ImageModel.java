@@ -358,6 +358,10 @@ public class ImageModel extends Model {
     	setChanged();
     	notifyObservers(dImage);
     }
+    public void deleteLandmarkFromImage(Landmark landmark){
+    	this.dImage.deleteLandmark(landmark);
+    }
+    
     public void setActiveLandmark(Landmark landmark){
     	activeLandmark = landmark;
     }

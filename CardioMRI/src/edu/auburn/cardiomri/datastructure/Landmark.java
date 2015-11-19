@@ -48,6 +48,7 @@ public class Landmark extends Point {
 			return abbv;
 		}
 	}
+
 	boolean isSelected = false;
 	boolean isVisible = true;
 	
@@ -55,6 +56,7 @@ public class Landmark extends Point {
 	static Color unselectedColor = Color.WHITE;
 	
 	private Vector3d coordinates;
+
 	private LandmarkType landmarkType;
 	/**
 	 * Constructor with type and coordinates
@@ -63,10 +65,13 @@ public class Landmark extends Point {
 	 * @param y double of Y coordinates
 	 */
 	public Landmark(LandmarkType typeIn, double x, double y){
-		super(x, y);
-		landmarkType = typeIn;
-		coordinates = new Vector3d(x,y,0);
+			super(x, y);
+			landmarkType = typeIn;
 	}
+	public LandmarkType getType(){
+		return this.landmarkType;
+	}
+
 	
 	public boolean isSelected() {
 		return this.isSelected;
@@ -93,21 +98,36 @@ public class Landmark extends Point {
 		}
 	}
 	
+
 	/**
 	 * Set a Landmarks coordinates
 	 * @param x double X coordinates
 	 * @param y double Y coordinates
 	 */
+	
+	@Override
+	public boolean equals(Object b){
+		if(!(b instanceof Landmark)) {
+			return false;
+		}
+		else if (this.getType() == ((Landmark) b).getType()){
+			return true;
+		}
+		else return false;
+	}
+	
 	public void setLandmarkCoordinates(double x, double y){
-		coordinates = new Vector3d(x,y,0);
-		System.out.println("landmarks coordinates set: " + this.toString());
+		super.setX(x);
+		super.setY(y);
+		//System.out.println("landmarks coordinates set: " + this.toString());
 	}
 	/**
 	 * get a landmarks coordinates
 	 * @return Vector3d Landmarks coordinates
 	 */
-	public Vector3d getCoordinates(){
-		return coordinates;
+	public double[] getCoordinates(){
+		double output[] = {super.getX() , super.getY()};
+		return output;
 	}
 	
 	/**
@@ -115,10 +135,13 @@ public class Landmark extends Point {
 	 * @return String
 	 */
 	public String toString(){
-		String out = "[" + coordinates.getX() + "," + coordinates.getY() + "]";
+		String out = this.landmarkType.abbv + ": [" + super.getX() + "," + super.getY() + "]";
 		return out;
 	}
-	
+	public void moveLandmark(double x, double y){
+		super.setX(x);
+		super.setY(y);
+	}
 
 }
 
