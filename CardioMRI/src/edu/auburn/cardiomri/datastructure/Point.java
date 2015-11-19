@@ -36,4 +36,5 @@ public class Point {
         Point midpoint = new Point(midX, midY);
         return midpoint;
 	}
+	
 }
