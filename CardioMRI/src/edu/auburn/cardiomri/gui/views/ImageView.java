@@ -143,8 +143,8 @@ public class ImageView extends SingleImagePanel implements ActionListener,
     	for (Landmark landmark: landmarks) {
     		if (landmark != null) {	
     			if (landmark.isVisible()) {
-    				double x = landmark.getCoordinates().getX();
-	        		double y = landmark.getCoordinates().getY();
+    				double x = landmark.getCoordinates()[0];
+	        		double y = landmark.getCoordinates()[1];
 	        		GeneralPath cross = new GeneralPath();
 	        		//horizontal component
 	        		cross.moveTo(x-1, y);
