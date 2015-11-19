@@ -1,8 +1,7 @@
 
 package edu.auburn.cardiomri.datastructure;
 
-
-
+import java.awt.Color;
 
 /**
  * This class is a datastructure for storing a landmark point and implements 
@@ -10,8 +9,6 @@ package edu.auburn.cardiomri.datastructure;
  * @author F. Davis Quarles
  *
  */
-
-
 
 public class Landmark extends Point {
 	//type Enum
@@ -51,6 +48,15 @@ public class Landmark extends Point {
 			return abbv;
 		}
 	}
+
+	boolean isSelected = false;
+	boolean isVisible = true;
+	
+	static Color selectedColor = Color.RED;
+	static Color unselectedColor = Color.WHITE;
+	
+	private Vector3d coordinates;
+
 	private LandmarkType landmarkType;
 	/**
 	 * Constructor with type and coordinates
@@ -65,6 +71,34 @@ public class Landmark extends Point {
 	public LandmarkType getType(){
 		return this.landmarkType;
 	}
+
+	
+	public boolean isSelected() {
+		return this.isSelected;
+	}
+	
+	public void isSelected(boolean isSelected) {
+		this.isSelected = isSelected;
+	}
+	
+	public boolean isVisible() {
+		return this.isVisible;
+	}
+	
+	public void isVisible(boolean isVisible) {
+		this.isVisible = isVisible;
+	}
+	
+	public Color getColor() {
+		if (this.isSelected) {
+			return Landmark.selectedColor;
+		}
+		else {
+			return Landmark.unselectedColor;
+		}
+	}
+	
+
 	/**
 	 * Set a Landmarks coordinates
 	 * @param x double X coordinates

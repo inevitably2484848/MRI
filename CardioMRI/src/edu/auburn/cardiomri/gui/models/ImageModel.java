@@ -9,13 +9,17 @@ import edu.auburn.cardiomri.datastructure.Contour;
 import edu.auburn.cardiomri.datastructure.DICOMImage;
 import edu.auburn.cardiomri.datastructure.Landmark;
 import edu.auburn.cardiomri.datastructure.Point;
+import edu.auburn.cardiomri.datastructure.TensionPoint;
 import edu.auburn.cardiomri.datastructure.Vector3d;
 import edu.auburn.cardiomri.util.ContourCalc;
 import edu.auburn.cardiomri.datastructure.ControlPoint;
 
 public class ImageModel extends Model {
     protected DICOMImage dImage;
-    protected Contour selected;
+    protected Contour selectedContour;
+    protected ControlPoint selectedControlPoint;
+    protected TensionPoint selectedTensionPoint;
+    protected Landmark selectedLandmark;
     protected Landmark activeLandmark;
     protected List<Contour> hiddenContours;
     
@@ -33,7 +37,8 @@ public class ImageModel extends Model {
         }
 
         this.dImage = dImage;
-        selected = null;
+        selectedContour = null;
+        selectedLandmark = null;
         hiddenContours.clear();
 
         setChanged();
@@ -50,11 +55,11 @@ public class ImageModel extends Model {
      */
     public boolean addControlPoint(double x, double y) {
         
-    	if (selected == null) {
+    	if (selectedContour == null) {
             return false;
         }
-        if(selected.notToClose(x, y)){
-	        selected.addControlPoint(x, y);  //Contour.java
+        if(selectedContour.notToClose(x, y)){
+	        selectedContour.addControlPoint(x, y);  //Contour.java
 	        setChanged();
 	        notifyObservers(dImage);
 	        
@@ -75,7 +80,7 @@ public class ImageModel extends Model {
      * -----------------------------------------------------------------------*/
     public boolean deleteControlPoint(double x, double y){
     	
-    	if(!(selected.deleteControlPoint(x,y))){
+    	if(!(selectedContour.deleteControlPoint(x,y))){
     		return false;
     	}
     	setChanged();
@@ -88,7 +93,7 @@ public class ImageModel extends Model {
      */
     public void deleteAllContours() {
         dImage.getContours().clear();
-        selected = null;
+        selectedContour = null;
         hiddenContours.clear();
 
         setChanged();
@@ -163,6 +168,174 @@ public class ImageModel extends Model {
     	return nearestPoint;
     }
     
+    public Point findNearestPoint(double x, double y) {
+    	Point nearestPoint = null;
+    	
+    	Vector<Point> allVisiblePoints = getAllVisiblePoints();
+    	for (Point point: allVisiblePoints) {
+			if (nearestPoint == null) {
+				nearestPoint = point;
+			}
+			else {
+				if ((Math.abs(point.getX() - x) + Math.abs(point.getY() - y)) 
+						< (Math.abs(nearestPoint.getX() - x) + Math.abs(nearestPoint.getY() - y))) {
+					nearestPoint = point;
+				}
+			}
+    	}
+    	
+    	return nearestPoint;
+    }
+    
+    public Contour findNearestContour(double x, double y) {
+    	ControlPoint pointClicked = new ControlPoint(x, y);
+        float delta = Float.MAX_VALUE;
+    	Contour nearestContour = null;
+    	
+    	for (Contour contour : getVisibleContours()) {
+            if (contour.getControlPoints().size() == 0) {
+                continue;
+            }
+
+            float newDelta = ContourCalc.getDeltaArcLength(contour,
+                    pointClicked);
+            if (newDelta < delta) {
+                delta = newDelta;
+                nearestContour = contour;
+            }
+        }
+    	
+    	return nearestContour;
+    }
+    
+    public Landmark findNearestLandmark(double x, double y) {
+    	ControlPoint pointClicked = new ControlPoint(x, y);
+        float delta = Float.MAX_VALUE;
+    	Landmark nearestLandmark = null;
+    	
+    	for (Landmark landmark: getVisibleLandmarks()) {
+    		if (nearestLandmark == null) {
+    			nearestLandmark = landmark;
+			}
+			else {
+				if ((Math.abs(landmark.getX() - x) + Math.abs(landmark.getY() - y)) 
+						< (Math.abs(nearestLandmark.getX() - x) + Math.abs(nearestLandmark.getY() - y))) {
+					nearestLandmark = landmark;
+				}
+			}
+    	}
+    	
+    	return nearestLandmark;
+    }
+    
+    public void selectClosestAnnotation(double x, double y) {
+    	Point nearestPoint = findNearestPoint(x, y);
+
+    	if (selectedControlPoint != null) {
+    		selectedControlPoint.isSelected(false);
+    	}
+    	selectedControlPoint = null;
+    	
+    	if (selectedTensionPoint != null) {
+    		selectedTensionPoint.isSelected(false);
+    	}
+    	selectedTensionPoint = null;
+    	
+    	if (nearestPoint != null && nearestPoint.getClass() == ControlPoint.class) {
+    		Contour newSelectedContour = getContainingContour(nearestPoint);
+    		
+    		if (newSelectedContour == selectedContour) { // control point in currently selected contour
+    			selectedControlPoint = (ControlPoint) nearestPoint;
+    			selectedControlPoint.isSelected(true);
+    			System.out.println("contour control point selected");
+    		}
+    		else {	// control point in unselected contour
+    			if (selectedContour != null) {
+            		selectedContour.isSelected(false);
+            	}
+    			
+    			selectedContour = newSelectedContour;
+        		selectedContour.isSelected(true);
+        		System.out.println("contour selected");
+    		}
+    		
+    		if (selectedLandmark != null) {
+        		selectedLandmark.isSelected(false);
+        		selectedLandmark = null;
+        	}
+    	}
+    	else if (nearestPoint != null && nearestPoint.getClass() == TensionPoint.class) {
+    		Contour newSelectedContour = getContainingContour(nearestPoint);
+    		
+    		if (newSelectedContour == selectedContour) { // tension point in currently selected contour
+    			selectedTensionPoint = (TensionPoint) nearestPoint;
+    			selectedTensionPoint.isSelected(true);
+    			System.out.println("contour tension point selected");
+    		}
+    		else {	// tension point in unselected contour
+    			if (selectedContour != null) {
+            		selectedContour.isSelected(false);
+            	}
+    			
+    			selectedContour = newSelectedContour;
+        		selectedContour.isSelected(true);
+        		System.out.println("contour selected");
+    		}
+    		
+    		if (selectedLandmark != null) {
+        		selectedLandmark.isSelected(false);
+        		selectedLandmark = null;
+        	}
+    	}
+    	else if (nearestPoint != null && nearestPoint.getClass() == Landmark.class) {
+    		if (selectedLandmark != null) {
+        		selectedLandmark.isSelected(false);
+        	}
+    		
+    		selectedLandmark = (Landmark)nearestPoint;
+    		selectedLandmark.isSelected(true);
+    		System.out.println("landmark selected");
+
+    		if (selectedContour != null) {
+        		selectedContour.isSelected(false);
+        		selectedContour = null;
+        	}
+    	}
+    	
+    	setChanged();
+        notifyObservers(dImage);
+    }
+    
+    public Contour getContainingContour(ControlPoint point) {
+    	Contour containingContour = null;
+    	
+    	for (Contour contour : getVisibleContours()) {
+            if (contour.getControlPoints().contains(point)) {
+            	containingContour = contour;
+            	break;
+            }
+        }
+    	
+    	return containingContour;
+    }
+    
+    public Contour getContainingContour(Point point) {
+    	Contour containingContour = null;
+    	
+    	for (Contour contour : getVisibleContours()) {
+            if (contour.getControlPoints().contains(point)) {
+            	containingContour = contour;
+            	break;
+            }
+            if (contour.getTensionPoints().contains(point)) {
+            	containingContour = contour;
+            	break;
+            } 
+        }
+    	
+    	return containingContour;
+    }
+    
     /**
      * Adds a contour to the image and sets it as the selected contour.
      * 
@@ -175,8 +348,13 @@ public class ImageModel extends Model {
     }
     
     public void addLandmarkToImage(Landmark landmark){
+    	if (selectedLandmark != null) {
+    		selectedLandmark.isSelected(false);
+    	}
     	this.dImage.addLandmark(landmark);
     	setActiveLandmark(landmark);
+    	selectedLandmark = landmark;
+    	landmark.isSelected(true);
     	setChanged();
     	notifyObservers(dImage);
     }
@@ -192,17 +370,22 @@ public class ImageModel extends Model {
     	setChanged();
         notifyObservers(dImage);
     }
+    
+    public Landmark getSelectedLandmark() {
+    	return this.selectedLandmark;
+    }
+    
     /**
      * Hides the currently selected contour.
      */
     public void hideSelectedContour() {
-        if (selected == null) {
+        if (selectedContour == null) {
             // throw NPE?
             return;
         }
 
-        hiddenContours.add(selected);
-        selected = null;
+        hiddenContours.add(selectedContour);
+        selectedContour = null;
 
         setChanged();
         notifyObservers(dImage);
@@ -213,7 +396,7 @@ public class ImageModel extends Model {
      */
     public void hideAllContours() {
         hiddenContours.addAll(getVisibleContours());
-        selected = null;
+        selectedContour = null;
 
         setChanged();
         notifyObservers(dImage);
@@ -233,12 +416,12 @@ public class ImageModel extends Model {
      * Removes the selected contour from the list of all contours.
      */
     public void deleteSelectedContour() {
-        if (selected == null) {
+        if (selectedContour == null) {
             // throw error?
             return;
         }
 
-        dImage.getContours().remove(selected);
+        dImage.getContours().remove(selectedContour);
         setSelectedContour(null);
 
         setChanged();
@@ -255,22 +438,7 @@ public class ImageModel extends Model {
      * @param y
      */
     public void selectContour(double x, double y) {
-        ControlPoint pointClicked = new ControlPoint(x, y);
-        float delta = Float.MAX_VALUE;
-        Contour closest = null;
-
-        for (Contour contour : getVisibleContours()) {
-            if (contour.getControlPoints().size() == 0) {
-                continue;
-            }
-
-            float newDelta = ContourCalc.getDeltaArcLength(contour,
-                    pointClicked);
-            if (newDelta < delta) {
-                delta = newDelta;
-                closest = contour;
-            }
-        }
+        Contour closest = findNearestContour(x, y);
 
         setSelectedContour(closest);
     }
@@ -280,7 +448,7 @@ public class ImageModel extends Model {
     }
 
     public void setSelectedContour(Contour contour) {
-        selected = contour;
+        selectedContour = contour;
         setChanged();
         notifyObservers(dImage);
     }
@@ -290,7 +458,7 @@ public class ImageModel extends Model {
     }
 
     public Contour getSelectedContour() {
-        return selected;
+        return selectedContour;
     }
 
     public List<Contour> getHiddenContours() {

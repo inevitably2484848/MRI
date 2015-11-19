@@ -37,6 +37,7 @@ import edu.auburn.cardiomri.gui.models.GridModel;
 import edu.auburn.cardiomri.gui.models.ImageModel;
 import edu.auburn.cardiomri.gui.models.SelectModel;
 import edu.auburn.cardiomri.gui.models.StartModel;
+import edu.auburn.cardiomri.gui.models.WorkflowModel;
 import edu.auburn.cardiomri.gui.models.WorkspaceModel;
 import edu.auburn.cardiomri.gui.models.WorkspaceModel.State;
 import edu.auburn.cardiomri.util.ContourUtilities;
@@ -58,6 +59,7 @@ public class WorkspaceView extends View {
     protected String studyFileName;
     protected ImageView imageView; //kw
     public static JPanel ccvPanel;
+    protected WorkflowModel workflowModel;
     
     
     /**
@@ -71,149 +73,121 @@ public class WorkspaceView extends View {
                 .setCurrentDirectory(new File(System.getProperty("user.dir")));
         createFrame();
     }
-   
-
     
-    /**
-     * If the object parameter is a state of the WorkspaceModel, 
-     * this method adds the required panels to the frame and creates
-     *  the necessary views and models based on the state.
-     * <p>
-     * If in the START state, the start view and model are created and the
-     * starting options are displayed.
-     * <p>
-     * If in the GROUP_SELECTION state, the select view and model are created 
-     * so the user can choose which groups to display where.
-     * <p>
-     * If in the WORKSPACE state, the main image, two chamber, and four chamber
-     * models and views are created and the appropriate images are displayed. 
-     * The grid view and model are set up and all of the panes are added to the
-     * frame. 
-     * <p>
-     * If the object is a study, setStudy() is called to update the study.
-     * <p>
-     * If the object is an int array, the indices within the workspace 
-     * model are updated accordingly so that the various images are 
-     * correctly updated.
-     * 
-     * @param obs  the class calling notifyObservers()
-     * @param obj  the object that has been changed, thus signaling this method
-     */
+    public void startState() {
+    	this.disposeFrame();
+        this.createFrame();
+
+        StartModel startModel = new StartModel();
+        StartView startView = new StartView();
+        startView.setModel(startModel);
+        startModel.addObserver(this);
+
+        appFrame.setSize(600, 400);
+        this.appFrame.add(startView.getPanel());
+        appFrame.setIconImage(new ImageIcon("res/CardiacMRI_icon.png").getImage());
+        appFrame.setVisible(true);
+    }
+    
+    public void groupSelectionState() {
+    	this.disposeFrame();
+        this.createFrame();
+
+        Study study = getWorkspaceModel().getStudy();
+        SelectModel selectModel = new SelectModel(study);
+        SelectView selectView = new SelectView(selectModel);
+        selectView.setModel(selectModel);
+        selectModel.addObserver(this);
+
+        appFrame.setSize(WORKSPACE_WIDTH, WORKSPACE_HEIGHT);
+        this.appFrame.add(selectView.getPanel());
+        appFrame.setVisible(true);
+    }
+    
+    public void workspaceState() {
+    	this.disposeFrame();
+        this.createFrame();
+        StartModel.setLoadFalse();
+
+        Study study = getWorkspaceModel().getStudy();
+        ImageModel mainImageModel, twoChamberModel, fourChamberModel;
+        ImageView mainImageView, twoChamberView, fourChamberView;
+
+        mainImageModel = new ImageModel();
+        twoChamberModel = new ImageModel();
+        fourChamberModel = new ImageModel();
+
+        mainImageView = new ImageView(new ConstructImage(
+                study.getCurrentImage()));
+        twoChamberView = new ImageView(new ConstructImage(
+                study.getCurrentImage()));
+        fourChamberView = new ImageView(new ConstructImage(
+                study.getCurrentImage()));
+
+        mainImageView.setModel(mainImageModel);
+        twoChamberView.setModel(twoChamberModel);
+        fourChamberView.setModel(fourChamberModel);
+
+        GridModel gridModel = new GridModel();
+        GridView gridView = new GridView();
+        gridView.setModel(gridModel);
+
+        GridControlView gridControl = new GridControlView();
+        gridControl.setModel(gridModel);
+
+        MultipleImageView multipleImages = new MultipleImageView();
+        multipleImages.setModel(gridModel);
+
+        ContourControlView contourControl = new ContourControlView(null);  //preBuild
+        contourControl.setModel(mainImageModel);
+ 
+        getWorkspaceModel().addImage(mainImageModel,
+                study.getShortAxisGroup());
+        getWorkspaceModel().addImage(twoChamberModel,
+                study.getTwoChamberGroup());
+        getWorkspaceModel().addImage(fourChamberModel,
+                study.getFourChamberGroup());
+
+        mainImageModel.addObserver(this);
+        gridModel.addObserver(this);
+
+        gridModel.setGroup(study.getShortAxisGroup());
+        gridView.setupGrid();
+
+        getWorkspaceModel().setIndices(0, 0, 0);
+
+        LeftPanel leftPanel = new LeftPanel(gridView, gridControl,
+                multipleImages);
+
+        RightPanel rightPanel = new RightPanel(mainImageView,
+                twoChamberView, fourChamberView, contourControl);
+
+        // add to appFrame
+        appFrame.setSize(WORKSPACE_WIDTH, WORKSPACE_HEIGHT);
+
+        JSplitPane allPanes = new JSplitPane(
+                JSplitPane.HORIZONTAL_SPLIT, true,
+                leftPanel.getPanel(), rightPanel.getPanel());
+
+        allPanes.setDividerLocation(WORKSPACE_WIDTH / 4);
+
+        mainComponent = allPanes;
+        this.addKeyBindings(gridView);
+        
+        //kw
+        setMainImageView(mainImageView);
+        setMenu(mainImageView);
+        this.appFrame.add(mainComponent);
+        appFrame.setVisible(true);
+        appFrame.revalidate();  //kw
+        appFrame.repaint();  //kw
+        
+    }
+    
     public void update(Observable obs, Object obj) {
-        if (obj.getClass() == State.class) {
-            State currentState = (State) obj;
-            if (StartModel.getLoadStudy()){
-            	currentState = State.WORKSPACE;
-            }
-            if (currentState == State.START) {
-                this.disposeFrame();
-                this.createFrame();
-
-                StartModel startModel = new StartModel();
-                StartView startView = new StartView();
-                startView.setModel(startModel);
-                startModel.addObserver(this);
-
-                appFrame.setSize(600, 400);
-                this.appFrame.add(startView.getPanel());
-                appFrame.setIconImage(new ImageIcon("res/CardiacMRI_icon.png").getImage());
-                appFrame.setVisible(true);
-
-            } else if (currentState == State.GROUP_SELECTION) {
-                this.disposeFrame();
-                this.createFrame();
-
-                Study study = getWorkspaceModel().getStudy();
-                SelectModel selectModel = new SelectModel(study);
-                SelectView selectView = new SelectView(selectModel);
-                selectView.setModel(selectModel);
-                selectModel.addObserver(this);
-
-                appFrame.setSize(WORKSPACE_WIDTH, WORKSPACE_HEIGHT);
-                this.appFrame.add(selectView.getPanel());
-                appFrame.setVisible(true);
-
-            } else if (currentState == State.WORKSPACE) {
-                this.disposeFrame();
-                this.createFrame();
-                StartModel.setLoadFalse();
-
-                Study study = getWorkspaceModel().getStudy();
-                ImageModel mainImageModel, twoChamberModel, fourChamberModel;
-                ImageView mainImageView, twoChamberView, fourChamberView;
-
-                mainImageModel = new ImageModel();
-                twoChamberModel = new ImageModel();
-                fourChamberModel = new ImageModel();
-
-                mainImageView = new ImageView(new ConstructImage(
-                        study.getCurrentImage()));
-                twoChamberView = new ImageView(new ConstructImage(
-                        study.getCurrentImage()));
-                fourChamberView = new ImageView(new ConstructImage(
-                        study.getCurrentImage()));
-
-                mainImageView.setModel(mainImageModel);
-                twoChamberView.setModel(twoChamberModel);
-                fourChamberView.setModel(fourChamberModel);
-
-                GridModel gridModel = new GridModel();
-                GridView gridView = new GridView();
-                gridView.setModel(gridModel);
-
-                GridControlView gridControl = new GridControlView();
-                gridControl.setModel(gridModel);
-
-                MultipleImageView multipleImages = new MultipleImageView();
-                multipleImages.setModel(gridModel);
-
-                ContourControlView contourControl = new ContourControlView(null);  //preBuild
-                contourControl.setModel(mainImageModel);
-         
-                getWorkspaceModel().addImage(mainImageModel,
-                        study.getShortAxisGroup());
-                getWorkspaceModel().addImage(twoChamberModel,
-                        study.getTwoChamberGroup());
-                getWorkspaceModel().addImage(fourChamberModel,
-                        study.getFourChamberGroup());
-
-                mainImageModel.addObserver(this);
-                gridModel.addObserver(this);
-
-                gridModel.setGroup(study.getShortAxisGroup());
-                gridView.setupGrid();
-
-                getWorkspaceModel().setIndices(0, 0, 0);
-
-                LeftPanel leftPanel = new LeftPanel(gridView, gridControl,
-                        multipleImages);
-
-                RightPanel rightPanel = new RightPanel(mainImageView,
-                        twoChamberView, fourChamberView, contourControl);
-
-                // add to appFrame
-                appFrame.setSize(WORKSPACE_WIDTH, WORKSPACE_HEIGHT);
-
-                JSplitPane allPanes = new JSplitPane(
-                        JSplitPane.HORIZONTAL_SPLIT, true,
-                        leftPanel.getPanel(), rightPanel.getPanel());
-
-                allPanes.setDividerLocation(WORKSPACE_WIDTH / 4);
-
-                mainComponent = allPanes;
-                this.addKeyBindings(gridView);
-                
-                //set imageView so I can call it from actionPerformed
-                setMainImageView(mainImageView); 
-       
-                setMenu(mainImageView);
-                this.appFrame.add(mainComponent);
-                appFrame.setVisible(true);
-                appFrame.revalidate();  //kw
-                appFrame.repaint();  //kw
-            }
-        } else if (obj.getClass() == Study.class) {
+        if (obj.getClass() == Study.class) {
             getWorkspaceModel().setStudy((Study) obj);
+            getWorkflowModel().update();
         } else if (obj.getClass() == int[].class) {
             int[] indices = (int[]) obj;
             getWorkspaceModel().setIndices(indices[0], indices[1], indices[2]);
@@ -271,6 +245,47 @@ public class WorkspaceView extends View {
         return (WorkspaceModel) this.model;
     }
     
+    public void setWorkflowModel(WorkflowModel workflowModel) {
+    	this.workflowModel = workflowModel;
+    }
+    
+    public WorkflowModel getWorkflowModel() {
+    	return this.workflowModel;
+    }
+    
+    /**
+     * Handles action events within the workspace. Specifically,
+     * saving and loading events.
+     * 
+     * @param e  an action event
+     */
+    public void actionPerformed(java.awt.event.ActionEvent e) {
+
+        String actionCommand = e.getActionCommand();
+
+        // System.out.println("GUIController : actionPerformed - " +
+        // actionCommand);
+
+        if (actionCommand.equals("Save Study")) {
+            this.saveStudy();
+        } else if (actionCommand.equals("Save As Study")) {
+            this.saveAsStudy();
+        } else if (actionCommand.equals("Save Contours")) {
+            this.saveContour();
+        } else if (actionCommand.equals("Load Existing Study")) {
+        	this.loadExistingStudy();
+        } else if (actionCommand.equals("Rotate Image")) {
+            this.getWorkspaceModel().rotate();
+            this.getWorkflowModel().update();
+        } else if (actionCommand.equals("Load Contours")) {
+            try {
+                this.setUpLoad();
+            } catch (IOException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
+        }
+    }
 
     /**
      * Creates the main menu containing all functionality for the program and
@@ -609,12 +624,13 @@ public class WorkspaceView extends View {
     	 String loadFileName;
     	 if (returnVal == JFileChooser.APPROVE_OPTION) {
     		 loadFileName = loadFC.getSelectedFile().getPath();
-    	     this.disposeFrame();
+    		 this.disposeFrame();
     	     this.getWorkspaceModel().setStudy(StudyUtilities.loadStudy(loadFileName));
+    	     this.getWorkflowModel().update();
     	         
-    	     } else if (returnVal == JFileChooser.CANCEL_OPTION) {
-    	             // System.out.println("Choose to Cancel");
-    	     }
+    	 } else if (returnVal == JFileChooser.CANCEL_OPTION) {
+    		 //System.out.println("Choose to Cancel");
+    	 }
     	  
     }
 
