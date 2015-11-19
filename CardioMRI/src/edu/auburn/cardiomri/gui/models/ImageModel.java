@@ -12,6 +12,7 @@ import edu.auburn.cardiomri.datastructure.Point;
 import edu.auburn.cardiomri.datastructure.TensionPoint;
 import edu.auburn.cardiomri.datastructure.Vector3d;
 import edu.auburn.cardiomri.util.ContourCalc;
+import edu.auburn.cardiomri.util.Mode;
 import edu.auburn.cardiomri.datastructure.ControlPoint;
 
 public class ImageModel extends Model {
@@ -71,13 +72,13 @@ public class ImageModel extends Model {
     }
     
     
-    /** -----------------------------------------------------------------------
+    /**************************************************************************
      * deleteControlPoint - if you click on an existing point it is removed.
      * @author KulW
      * @param x
      * @param y
      * @return
-     * -----------------------------------------------------------------------*/
+     *************************************************************************/
     public boolean deleteControlPoint(double x, double y){
     	
     	if(!(selectedContour.deleteControlPoint(x,y))){
@@ -295,7 +296,9 @@ public class ImageModel extends Model {
     		selectedLandmark = (Landmark)nearestPoint;
     		selectedLandmark.isSelected(true);
     		System.out.println("landmark selected");
-
+    		
+    		Mode.setMode(Mode.landmarkMode());
+    		
     		if (selectedContour != null) {
         		selectedContour.isSelected(false);
         		selectedContour = null;

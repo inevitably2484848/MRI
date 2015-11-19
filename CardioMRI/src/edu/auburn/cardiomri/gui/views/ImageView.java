@@ -140,8 +140,8 @@ public class ImageView extends SingleImagePanel implements ActionListener,
     	for (Landmark landmark: landmarks) {
     		if (landmark != null) {	
     			if (landmark.isVisible()) {
-    				double x = landmark.getCoordinates().getX();
-	        		double y = landmark.getCoordinates().getY();
+    				double x = landmark.getX();
+	        		double y = landmark.getY();
 	        		GeneralPath cross = new GeneralPath();
 	        		//horizontal component
 	        		cross.moveTo(x-1, y);
@@ -295,34 +295,35 @@ public class ImageView extends SingleImagePanel implements ActionListener,
         super(sImg);
     }
 
-    /**
-     * Handle mouse click events. Left clicks add a control point. Right clicks
-     * select the nearest visible contour.
-     */
+    /**************************************************************************
+     * Handle mouse click events. 
+     * Depending on which ever mode you are in the mouse click will react
+     * differently.
+     * Mode 1: ContourMode
+     * Mode 2: LandmarkMode
+     * Mode 3: SelectMode
+     *************************************************************************/
     public void mouseClicked(MouseEvent e) {
 
     	int mode = Mode.getMode(); //kw
     	
-    	System.out.println("MODE : " + mode);
+    	//System.out.println("MODE : " + mode);
     	
-    	java.awt.geom.Point2D mouseClick = 
-    			getImageCoordinateFromWindowCoordinate(e.getX(), e.getY());
+    	java.awt.geom.Point2D mouseClick =  getImageCoordinateFromWindowCoordinate(e.getX(), e.getY());
     	
-    	if(mode == 1){ // adding contour mode  --------------------------------
-    		
-    		//left click add contour point
+    	if(mode == 1){ 
+    		// CONTOUR MODE
     		if(SwingUtilities.isLeftMouseButton(e)){
 	    		if (!getImageModel().addControlPoint(mouseClick.getX(),mouseClick.getY())) {
 	                System.err.println("currentContour is null");
 	            }
     		}
-    		//RC context menu if contour selected
     		else if(SwingUtilities.isRightMouseButton(e)){
-    			contourCM = new ContourContextMenu(getImageModel());
+    			contourCM = new ContourContextMenu(getImageModel()); //open context menu
     		}
     	} 
-    	else if (mode == 2){ //landmark mode ----------------------------------
-    		//left click add landMark
+    	else if (mode == 2){ 
+    		//landmark mode
     		if (SwingUtilities.isLeftMouseButton(e)) {    			
     			Mode.setMode(Mode.selectMode());
             	
@@ -333,24 +334,39 @@ public class ImageView extends SingleImagePanel implements ActionListener,
     			landmarkCM = new LandmarkContextMenu(getImageModel());
     		}
     		
-    	} //-------------------------------------------------------------------
-    	else { //select mode --------------------------------------------------
-    		
-    		//leftClick select closest contour or landMark
+    	}
+    	else { 
+    		// SELECT MODE
     		 if (SwingUtilities.isLeftMouseButton(e)) {
-    	            
-    	            getImageModel().selectClosestAnnotation(mouseClick.getX(), mouseClick.getY());
-    	            
+    			 getImageModel().selectClosestAnnotation(mouseClick.getX(), mouseClick.getY());
     	     } 
-    		// rightClick context menu
     		 else if(SwingUtilities.isRightMouseButton(e)){
     			 selectCM = new SelectContextMenu(getImageModel());
     		 }
 
-    	} //-------------------------------------------------------------------
-
+    	} 
         this.panel.requestFocusInWindow();
+    } // END MOUSE CLICK
+    
+    /**************************************************************************
+     * MouseMoved checks and see if cursor is in the contextmenus.
+     * if mouse is not the in the same range as a menu close menu
+     * @param MouseEvent
+     *************************************************************************/
+    public void mouseMoved(MouseEvent e){
+
+    	if(contourCM != null && !(contourCM.isInBox())){
+    		contourCM.setVisible(false);
+    	}
+    	else if( landmarkCM != null && !(landmarkCM.isInBox())){
+    		landmarkCM.setVisible(false);
+    	}
+    	else if( selectCM != null && !(selectCM.isInBox())){
+    		selectCM.setVisible(false);
+    	}
     }
+    
+    
     
     public void mouseDragged(MouseEvent e) {
     	java.awt.geom.Point2D mouseClick = getImageCoordinateFromWindowCoordinate(e.getX(), e.getY());
@@ -397,18 +413,7 @@ public class ImageView extends SingleImagePanel implements ActionListener,
         this.panel.requestFocusInWindow();
     }
 
-    public void mouseMoved(MouseEvent e){
-
-    	if(contourCM != null && !(contourCM.isInBox())){
-    		contourCM.setVisible(false);
-    	}
-    	else if( landmarkCM != null && !(landmarkCM.isInBox())){
-    		landmarkCM.setVisible(false);
-    	}
-    	else if( selectCM != null && !(selectCM.isInBox())){
-    		selectCM.setVisible(false);
-    	}
-    }
+ 
   
     
 	@Override
