@@ -101,7 +101,7 @@ public class Landmark extends Point {
 	 * @return String
 	 */
 	public String toString(){
-		String out = "[" + super.getX() + "," + super.getY() + "]";
+		String out = this.landmarkType.abbv + ": [" + super.getX() + "," + super.getY() + "]";
 		return out;
 	}
 	public void moveLandmark(double x, double y){

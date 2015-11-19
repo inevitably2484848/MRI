@@ -117,7 +117,7 @@ public class ImageModel extends Model {
     	return visibleLandmarks;
     }
     public Vector<Landmark> getLandmarks(){
-    	return dImage.getLandmarks();s
+    	return dImage.getLandmarks();
     }
     
     public Vector<Point> getAllVisiblePoints() {
