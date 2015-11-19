@@ -57,4 +57,12 @@ public class ControlPoint extends Point{
 			return ControlPoint.contourSelectedColor;
 		}
 	}
+
+	public boolean isSelected() {
+		return this.isSelected;
+	}
+	
+	public void isSelected(boolean b) {
+		this.isSelected = b;
+	}
 }

@@ -21,6 +21,14 @@ public class TensionPoint extends Point {
 		}
 	}
 	
+	public boolean isSelected() {
+		return this.isSelected;
+	}
+	
+	public void isSelected(boolean b) {
+		this.isSelected = b;
+	}
+	
 	@Override
 	public boolean equals(Object obj) {
 		if (obj instanceof TensionPoint) {

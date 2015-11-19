@@ -360,7 +360,6 @@ public class ImageView extends SingleImagePanel implements ActionListener,
     		
     		//leftClick select closest contour or landMark
     		 if (SwingUtilities.isLeftMouseButton(e)) {
-    	            //getImageModel().selectContour(mouseClick.getX(), mouseClick.getY());
     	            
     	            getImageModel().selectClosestAnnotation(mouseClick.getX(), mouseClick.getY());
     	            
@@ -403,6 +402,7 @@ public class ImageView extends SingleImagePanel implements ActionListener,
     
     public void mouseDragged(MouseEvent e) {
     	java.awt.geom.Point2D mouseClick = getImageCoordinateFromWindowCoordinate(e.getX(), e.getY());
+    	
     	
         if(!lmrkMode) {
         	if (clickedPoint != null && clickedPoint.getClass() == ControlPoint.class) {
@@ -459,7 +459,7 @@ public class ImageView extends SingleImagePanel implements ActionListener,
     	java.awt.geom.Point2D mouseClick = getImageCoordinateFromWindowCoordinate(e.getX(), e.getY());
     	
     	clickedPoint = getImageModel().findNearestPointWithinRange(mouseClick.getX(), mouseClick.getY(), 3);
-
+    	getImageModel().selectClosestAnnotation(mouseClick.getX(), mouseClick.getY());
     	super.mousePressed(e);
     	
     	this.panel.requestFocusInWindow();

@@ -17,6 +17,8 @@ import edu.auburn.cardiomri.datastructure.ControlPoint;
 public class ImageModel extends Model {
     protected DICOMImage dImage;
     protected Contour selectedContour;
+    protected ControlPoint selectedControlPoint;
+    protected TensionPoint selectedTensionPoint;
     protected Landmark selectedLandmark;
     protected Landmark activeLandmark;
     protected List<Contour> hiddenContours;
@@ -227,32 +229,77 @@ public class ImageModel extends Model {
     }
     
     public void selectClosestAnnotation(double x, double y) {
-    	if (selectedContour != null) {
-    		selectedContour.isSelected(false);
-    		selectedContour = null;
-    	}
-    	if (selectedLandmark != null) {
-    		selectedLandmark.isSelected(false);
-    		selectedLandmark = null;
-    	}
-    	
     	Point nearestPoint = findNearestPoint(x, y);
+
+    	if (selectedControlPoint != null) {
+    		selectedControlPoint.isSelected(false);
+    	}
+    	selectedControlPoint = null;
+    	
+    	if (selectedTensionPoint != null) {
+    		selectedTensionPoint.isSelected(false);
+    	}
+    	selectedTensionPoint = null;
     	
     	if (nearestPoint != null && nearestPoint.getClass() == ControlPoint.class) {
-    		selectedContour = getContainingContour(nearestPoint);
-    		selectedContour.isSelected(true);
-    		System.out.println("contour selected");
+    		Contour newSelectedContour = getContainingContour(nearestPoint);
+    		
+    		if (newSelectedContour == selectedContour) { // control point in currently selected contour
+    			selectedControlPoint = (ControlPoint) nearestPoint;
+    			selectedControlPoint.isSelected(true);
+    			System.out.println("contour control point selected");
+    		}
+    		else {	// control point in unselected contour
+    			if (selectedContour != null) {
+            		selectedContour.isSelected(false);
+            	}
+    			
+    			selectedContour = newSelectedContour;
+        		selectedContour.isSelected(true);
+        		System.out.println("contour selected");
+    		}
+    		
+    		if (selectedLandmark != null) {
+        		selectedLandmark.isSelected(false);
+        		selectedLandmark = null;
+        	}
     	}
     	else if (nearestPoint != null && nearestPoint.getClass() == TensionPoint.class) {
-    		selectedContour = getContainingContour(nearestPoint);
-    		selectedContour.isSelected(true);
-    		System.out.println("contour selected");
+    		Contour newSelectedContour = getContainingContour(nearestPoint);
+    		
+    		if (newSelectedContour == selectedContour) { // tension point in currently selected contour
+    			selectedTensionPoint = (TensionPoint) nearestPoint;
+    			selectedTensionPoint.isSelected(true);
+    			System.out.println("contour tension point selected");
+    		}
+    		else {	// tension point in unselected contour
+    			if (selectedContour != null) {
+            		selectedContour.isSelected(false);
+            	}
+    			
+    			selectedContour = newSelectedContour;
+        		selectedContour.isSelected(true);
+        		System.out.println("contour selected");
+    		}
+    		
+    		if (selectedLandmark != null) {
+        		selectedLandmark.isSelected(false);
+        		selectedLandmark = null;
+        	}
     	}
     	else if (nearestPoint != null && nearestPoint.getClass() == Landmark.class) {
+    		if (selectedLandmark != null) {
+        		selectedLandmark.isSelected(false);
+        	}
+    		
     		selectedLandmark = (Landmark)nearestPoint;
     		selectedLandmark.isSelected(true);
     		System.out.println("landmark selected");
-    		//add this code to the landmark drag when created
+
+    		if (selectedContour != null) {
+        		selectedContour.isSelected(false);
+        		selectedContour = null;
+        	}
     	}
     	
     	setChanged();
