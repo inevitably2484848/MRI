@@ -24,7 +24,7 @@ public class LandmarkContextMenuActionPerformed implements ActionListener{
 	public void actionPerformed(ActionEvent e) {
 		String action = e.getActionCommand();
 		
-		if(action.equals("Done Adding")){
+		if(action.equals("Done Adding") ||action.equals("Done Editing") ){
 			Mode.setMode(Mode.selectMode());
 			new Toast(Mode.modeToast());
 			menu.setVisible(false);
@@ -32,11 +32,20 @@ public class LandmarkContextMenuActionPerformed implements ActionListener{
 		}
 		else if(action.equals("Delete Landmark")){
 			
+			imageModel.deleteLandmarkFromImage(imageModel.getSelectedLandmark());
+			
+			
 			Mode.setMode(Mode.selectMode());
 			new Toast(Mode.modeToast());
 			menu.setVisible(false);
 		}
 		else if(action.equals("Hide Landmark")){
+			
+		}
+		else if(action.equals("Hide All Landmark")){
+			
+		}
+		else if(action.equals("Un-Hide All Landmarks")){
 			
 		}
 		

@@ -3,16 +3,21 @@ package edu.auburn.cardiomri.popupmenu.view;
 import java.awt.Dimension;
 import java.awt.Point;
 
+import edu.auburn.cardiomri.datastructure.Landmark;
 import edu.auburn.cardiomri.gui.actionperformed.LandmarkContextMenuActionPerformed;
 import edu.auburn.cardiomri.gui.models.ImageModel;
 import edu.auburn.cardiomri.gui.views.View;
 
-public class LandmarkContextMenu extends View {
+/******************************************************************************
+ * LandMark Context Menu:
+ * This is the menu for when you are in landmark mode and you right click
+ * @author Kullen  (kullen@auburn.edu)
+ *@version 11/19/2015
+ *******************************************************************************/
 
-	/**
-	 * Populates the Popup Menu
-	 * @return JPopupMenu
-	 */
+
+public class LandmarkContextMenu {
+
 	private ContextMenu menu = new ContextMenu();
 	private LandmarkContextMenuActionPerformed actionListener;
 	private ImageModel imageModel;
@@ -29,12 +34,26 @@ public class LandmarkContextMenu extends View {
 	public ContextMenu setPopup() {
 		actionListener = new LandmarkContextMenuActionPerformed(imageModel, menu);
 		menu.setLocation();
-		menu.addLabel("landmark name");
-		menu.add(new MySeparator());
-		menu.addMenuItem("Delete Landmark" , actionListener);
-		menu.addMenuItem("Hide Landmark" , actionListener);
-		menu.addMenuItem("Done Adding" , actionListener);
 		
+		if(imageModel.getSelectedLandmark() != null){
+			
+			//If There is a selected LandMark
+			
+			menu.addLabel(imageModel.getSelectedLandmark().getType().toString());
+			menu.add(new MySeparator());
+			menu.addMenuItem("Delete Landmark" , actionListener);
+			menu.addMenuItem("Hide Landmark" , actionListener);
+			menu.addMenuItem("Hide All Landmarks", actionListener);
+			menu.addMenuItem("Un-Hide All Landmarks", actionListener);
+			menu.addMenuItem("Done Editing", actionListener);
+		
+		}
+		else{
+			menu.addLabel("No Landmark Type Selected");
+			menu.add(new MySeparator());
+			menu.addMenuItem("Done Adding" , actionListener);
+		}
+
 		menu.setVisible(true);
 		menu.getBox();
 		

@@ -12,6 +12,16 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 
+/******************************************************************************
+ * Context Menu:
+ * Menu Class for all contextMenus / JPopupMenus
+ * When you create a context menu and add features to that menu all of them will
+ * have the same mouse listener.
+ * Additional notes at the bottom
+ * @author Kullen (kullen@auburn.edu)
+ * @version 11/19/2015
+ *****************************************************************************/
+
 public class ContextMenu extends JPopupMenu implements MouseListener{
 
 	private JPopupMenu menu;
@@ -236,5 +246,18 @@ public class ContextMenu extends JPopupMenu implements MouseListener{
 	@Override
 	public void mouseReleased(MouseEvent e) { }
 	
+/******************************************************************************
+ * Additional Notes
+ * 
+ * To make the MouseOff Menu to close work we added a mouseMoved method to ImageView
+ * That when a mouse is moved outside the frame of the contextmenu to close menu.
+ * 
+ * To close a context menu with mouse Off add it to the mouseMoved method in ImageView
+ * look at the existing calls to see how it works
+ * 
+ *****************************************************************************/
+	
 }
+
+
 
