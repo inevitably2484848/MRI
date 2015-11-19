@@ -181,8 +181,8 @@ public class ImageView extends SingleImagePanel implements ActionListener,
 		            	TensionPoint tensionPoint1 = controlPoint.getTension1();
 		            	TensionPoint tensionPoint2 = controlPoint.getTension2();
 		            	
-		            	Ellipse2D tensionPoint1Ellipse = new Ellipse2D.Double(tensionPoint1.getX(), tensionPoint1.getY(), 1, 1);
-		    			Ellipse2D tensionPoint2Ellipse = new Ellipse2D.Double(tensionPoint2.getX(), tensionPoint2.getY(), 1, 1);
+		            	Ellipse2D tensionPoint1Ellipse = new Ellipse2D.Double(tensionPoint1.getX(), tensionPoint1.getY(), 2, 2);
+		    			Ellipse2D tensionPoint2Ellipse = new Ellipse2D.Double(tensionPoint2.getX(), tensionPoint2.getY(), 2, 2);
 		    			
 		            	colorShape(controlPointEllipse, controlPoint.getColor());
 		            	colorShape(tensionPoint1Ellipse, tensionPoint1.getColor());
