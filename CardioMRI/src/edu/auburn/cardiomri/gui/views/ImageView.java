@@ -50,14 +50,11 @@ public class ImageView extends SingleImagePanel implements ActionListener,
     private Vector<Shape> visibleShapes = new Vector<Shape>();
     private ContourControlView contourPanel; // testing
     
-    public ContourContextMenu ccm;// = ContourContextMenu.popupContextMenu(); //kw
-    private int ccmIndex = 0;
+    public ContourContextMenu contourCM;// = ContourContextMenu.popupContextMenu(); //kw
+    public LandmarkContextMenu landmarkCM; //LandmarkContextMenu()
+    public SelectContextMenu selectCM; //SelectContextMenu();
     
-    public LandmarkContextMenu lmcm; //LandmarkContextMenu()
-    private int lmcmIndex = 0;
-    
-    public SelectContextMenu scm; //SelectContextMenu();
-    private int scmIndex = 0;
+
     
     /**
      * Redraws the DICOMImage, updates the selected contour's control points,
@@ -204,20 +201,8 @@ public class ImageView extends SingleImagePanel implements ActionListener,
 	            }
     		}
     		//RC context menu if contour selected
-    			// Delete
-    			// lock tension points
-    			// properties
     		else if(SwingUtilities.isRightMouseButton(e)){
-    			//getImageModel().setSelectedContour(null);
-    			if(ccmIndex == 1){
-    				ccm.removeAll();
-    			}
-    			ccmIndex = 1;
-    			ccm = new ContourContextMenu();
-    			ccm.getPopup();
-   			 	ccm.setLocation();
-   			 	
-    			
+    			contourCM = new ContourContextMenu(getImageModel());
     		}
     	} 
     	else if (mode == 2){ //landmark mode ----------------------------------
@@ -229,14 +214,7 @@ public class ImageView extends SingleImagePanel implements ActionListener,
             	lmrkMode = false;
     		}
     		else if(SwingUtilities.isRightMouseButton(e)){
-    			if(lmcmIndex == 1){
-    				lmcm.removeAll();
-    			}
-    			lmcmIndex = 1;
-    			lmcm = new LandmarkContextMenu();
-    			lmcm.setLocation();
-    			lmcm.getPopup();
-
+    			landmarkCM = new LandmarkContextMenu(getImageModel());
     		}
     		
     	} //-------------------------------------------------------------------
@@ -247,37 +225,11 @@ public class ImageView extends SingleImagePanel implements ActionListener,
     	            getImageModel().selectContour(mouseClick.getX(), mouseClick.getY());      
     	     } 
     		// rightClick context menu
-    		 else {
-//    			 getImageModel().deleteSelectedContour();
-    			 if(scmIndex == 1){
-    				 scm.removeAll();
-    				 scm.hidePopup();
-    				 
-    			 }
-    			 System.out.println("right click");
-    			 scmIndex = 1;
-    			 scm = new SelectContextMenu(this);//SelectContextMenu.setPopup();
-    			 scm.getPopup();
-    			 scm.setLocation();
+    		 else if(SwingUtilities.isRightMouseButton(e)){
+    			 selectCM = new SelectContextMenu(getImageModel());
     		 }
 
     	} //-------------------------------------------------------------------
-    	
-//        if (SwingUtilities.isRightMouseButton(e)) {
-//            getImageModel().selectContour(mouseClick.getX(), mouseClick.getY());
-//        } 
-//        else {
-//            if (!lmrkMode){
-//            	if (!getImageModel().addControlPoint(mouseClick.getX(),
-//                    mouseClick.getY())) {
-//                System.err.println("currentContour is null");
-//            	}
-//            }
-//            else {
-//            	getImageModel().setLandmarkCoordinates(mouseClick.getX(), mouseClick.getY());
-//            	lmrkMode = false;
-//            }
-//        }
 
         this.panel.requestFocusInWindow();
     }
@@ -334,8 +286,19 @@ public class ImageView extends SingleImagePanel implements ActionListener,
         this.panel.requestFocusInWindow();
     }
 
+    public void mouseMoved(MouseEvent e){
 
-    
+    	if(contourCM != null && !(contourCM.isInBox())){
+    		contourCM.setVisible(false);
+    	}
+    	else if( landmarkCM != null && !(landmarkCM.isInBox())){
+    		landmarkCM.setVisible(false);
+    	}
+    	else if( selectCM != null && !(selectCM.isInBox())){
+    		selectCM.setVisible(false);
+    	}
+    }
+  
     
 	@Override
 	public void actionPerformed(ActionEvent e) {

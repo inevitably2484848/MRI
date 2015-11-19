@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JPopupMenu;
 
+import edu.auburn.cardiomri.gui.models.ImageModel;
 import edu.auburn.cardiomri.gui.models.Model;
 import edu.auburn.cardiomri.gui.views.ImageView;
 import edu.auburn.cardiomri.gui.views.View;
@@ -17,9 +18,9 @@ public class SelectContextMenuActionPerformed implements ActionListener {
 	private ImageView view;
 	private Model model;
 	
-	public SelectContextMenuActionPerformed(ImageView view){
-		this.view = view;
-		this.model = view.getModel();
+	public SelectContextMenuActionPerformed(ImageModel imageModel){
+
+		this.model = imageModel;
 	}
 	
 	@Override

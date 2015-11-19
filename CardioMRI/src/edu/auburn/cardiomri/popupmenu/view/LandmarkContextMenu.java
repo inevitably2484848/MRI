@@ -1,170 +1,62 @@
 package edu.auburn.cardiomri.popupmenu.view;
 
-import java.awt.MouseInfo;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.awt.Dimension;
+import java.awt.Point;
 
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import javax.swing.JPopupMenu;
-
-import edu.auburn.cardiomri.gui.views.Toast;
+import edu.auburn.cardiomri.gui.actionperformed.LandmarkContextMenuActionPerformed;
+import edu.auburn.cardiomri.gui.models.ImageModel;
 import edu.auburn.cardiomri.gui.views.View;
-import edu.auburn.cardiomri.util.Mode;
 
-public class LandmarkContextMenu extends View implements MRIPopupMenu, MouseListener{
+public class LandmarkContextMenu extends View {
 
 	/**
 	 * Populates the Popup Menu
 	 * @return JPopupMenu
 	 */
-	private JPopupMenu landmarkPop = new JPopupMenu();
+	private ContextMenu menu = new ContextMenu();
+	private LandmarkContextMenuActionPerformed actionListener;
+	private ImageModel imageModel;
 	
-	public LandmarkContextMenu(){
-
+	
+	public LandmarkContextMenu(ImageModel imageModel){
+		menu.setMenu(menu);
+		this.imageModel = imageModel;
 		setPopup();
 
 	}	
 	
-	@Override
-	public void setPopup() {
-		//ImageModel imageModel = ImageView.getImageModelStatic();
-		JMenuItem done = new JMenuItem("Done Adding");
-		done.setActionCommand("Done Adding");
-		done.addActionListener(new ActionListener(){
-			@Override
-			public void actionPerformed(ActionEvent e){
-				Mode.setMode(Mode.selectMode());
-				new Toast(Mode.modeToast());
-				landmarkPop.setVisible(false);
-				landmarkPop.removeAll();
-			}
-		});
-		landmarkPop.add(done);		
-	}
 
-	@Override
-	public JMenu addMenu(String str) {
-		return null;
-	}
-
-	@Override
-	public JMenuItem addMenuItem(String str) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public JPopupMenu getPopup() {
-		landmarkPop.setVisible(true);
-		landmarkPop.repaint();
-		landmarkPop.revalidate();
-		return landmarkPop;
-	}
-
-	@Override
-	public void hidePopup() {
-		landmarkPop.setVisible(false);
+	public ContextMenu setPopup() {
+		actionListener = new LandmarkContextMenuActionPerformed(imageModel, menu);
+		menu.setLocation();
+		menu.addLabel("landmark name");
+		menu.add(new MySeparator());
+		menu.addMenuItem("Delete Landmark" , actionListener);
+		menu.addMenuItem("Hide Landmark" , actionListener);
+		menu.addMenuItem("Done Adding" , actionListener);
 		
-	}
-
-	@Override
-	public void refreshPopup() {
-		landmarkPop.repaint();
-		landmarkPop.revalidate();
-	}
-
-	@Override
-	public void setLocation() {
-		landmarkPop.setLocation(MouseInfo.getPointerInfo().getLocation());
-		refreshPopup();
+		menu.setVisible(true);
+		menu.getBox();
 		
-	}
-
-	@Override
-	public void removeAll() {
-		landmarkPop.removeAll();
-		refreshPopup();
-		
-	}
-
-	
-	// Mouse listeners =========================================================
-	private int index = 0;
-	private boolean isFirst = true;
-	
-	
-	@Override
-	public void mouseClicked(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mousePressed(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseEntered(MouseEvent e) {
-		
-		if(e.getComponent().getClass().getSimpleName().equalsIgnoreCase("JPopupMenu")){
-			if(isFirst){
-				isFirst= false;
-			}
-			else{
-				index--;
-				if(index == 0){
-					hidePopup();
-				}
-			}
-		}
-		if(e.getComponent().getClass().getSimpleName().equalsIgnoreCase("JMenu")){
-			((JMenu)e.getSource()).setArmed(true);
-			((JMenu)e.getSource()).setPopupMenuVisible(true);
-			index++;
-
-		}
-		if(e.getComponent().getClass().getSimpleName().equalsIgnoreCase("JMenuItem")){
-			((JMenuItem)e.getSource()).setArmed(true);
-		}
-
-		
+		return menu;
 	}
 	
-	@Override
-	public void mouseExited(MouseEvent e) {
-	
-		if(e.getComponent().getClass().getSimpleName().equalsIgnoreCase("JPopupMenu")){
-			 ++index;
-		}
-		if(e.getComponent().getClass().getSimpleName().equalsIgnoreCase("JMENU")){
-			((JMenu)e.getSource()).setArmed(false);
-			((JMenu)e.getSource()).setPopupMenuVisible(false);	
-			index--;
-		}
-		if(e.getComponent().getClass().getSimpleName().equalsIgnoreCase("JMENUITEM")) {
-			((JMenuItem)e.getSource()).setArmed(false);
-		}
 
+	public  Dimension getSize(){
+		return menu.getSize();
 	}
-
-	public int getIndex(){
-		return index;
+	
+	public Point getLocation(){
+		return menu.getLocation();
 	}
+	
+	public boolean isInBox(){
+		return menu.isInBox();
+	}
+	
+	public void setVisible(boolean b){
+		menu.setVisible(b);
+	}
+	
 
-	
-	
 }
-
-
-
