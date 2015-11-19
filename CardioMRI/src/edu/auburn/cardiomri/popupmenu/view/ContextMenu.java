@@ -18,28 +18,54 @@ public class ContextMenu extends JPopupMenu implements MouseListener{
 	private int x1,y1,x2,y2;
 	private final int BUFFER = 7;
 	
-	
+	/**************************************************************************
+	 * Sets param menu to this.menu, setLocation of popup menu, 
+	 * and adds mouselistener
+	 * @param JPopupMenu menu
+	 *************************************************************************/	
 	public void setMenu(JPopupMenu menu){
 		this.menu = menu;
 		menu.addMouseListener(this);
 		setLocation();
 	}
-
+	
+	/**************************************************************************
+	 *  Add new JMenu to menu (ContextMenu)
+	 * 
+	 * @param str
+	 * @param action
+	 *************************************************************************/	
 	public void addMenu(String str, ActionListener action) {
-		// TODO Auto-generated method stub
+		JMenu subMenu = new JMenu(str);
+		subMenu.addMouseListener(this);
+		subMenu.addActionListener(action);
+		menu.add(subMenu);
 	}
 	
+	/**************************************************************************
+	 *  Add new JMenu to menu (ContextMenu)
+	 * 
+	 * @param subMenu
+	 * @param action
+	 *************************************************************************/	
 	public void addMenu(JMenu subMenu, ActionListener action) { 
 		subMenu.addActionListener(action);
 		subMenu.addMouseListener(this);
 		menu.add(subMenu);
 	}
 	
+	/**************************************************************************
+	 *  return JMenu. Adds the context menu's Mouse listener and action listener
+	 *  What ever you need to add a menu to and need the mouse listener for
+	 *  ex use: <MENU>.add(<CONTEXTMENU>.addSubMenu(<SUBMENU>, <ACTION>))
+	 * @param subMenu
+	 * @param action
+	 * @return JMenu
+	 *************************************************************************/	
 	public JMenu addSubMenu(JMenu subMenu,  ActionListener action){
 		subMenu.addActionListener(action);
 		subMenu.addMouseListener(this);
 		return subMenu;
-		
 	}
 
 	/**************************************************************************
@@ -56,6 +82,14 @@ public class ContextMenu extends JPopupMenu implements MouseListener{
 		menu.add(newItem);
 	}
 	
+	/**************************************************************************
+	 *  Return MenuItem; So you can add items to other menus and not just the 
+	 *  Context Menu
+	 * 
+	 * @param str
+	 * @param action
+	 * @return JMenuItem
+	 *************************************************************************/
 	public JMenuItem addMenuItemTo(String str, ActionListener action){
 		JMenuItem newItem = new JMenuItem(str);
 		newItem.setActionCommand(str);
@@ -96,7 +130,6 @@ public class ContextMenu extends JPopupMenu implements MouseListener{
 	public void setLocation() {
 		y1 = (int) MouseInfo.getPointerInfo().getLocation().getY();
 		x1 = (int) MouseInfo.getPointerInfo().getLocation().getX();
-		//menu.setLocation(MouseInfo.getPointerInfo().getLocation());
 		setLocationManually(x1,y1);
 	}
 	
@@ -157,17 +190,15 @@ public class ContextMenu extends JPopupMenu implements MouseListener{
 		return true;
 	}
 	
-
-//MOUSE LISTENER
-
+	/**************************************************************************
+	 *  MouseListener arms and disarms menu items and opens submenus
+	 *  
+	 * mouseEntered: Arms and opens popups
+	 * mouseExited: disArms and closes popups
+	 * 
+	 **************************************************************************/
 	@Override
 	public void mouseEntered(MouseEvent e) {
-		
-//		if(!(isInBox())){
-//			menu.setVisible(false);
-//			return;
-//		}
-		
 		
 		if(e.getComponent().getClass().getSimpleName().equalsIgnoreCase("JMenu")){
 			((JMenu)e.getSource()).setArmed(true);
@@ -179,15 +210,9 @@ public class ContextMenu extends JPopupMenu implements MouseListener{
 		}
 		
 	}
-
-
+	
 	@Override
 	public void mouseExited(MouseEvent e) {
-		
-//		if(!(isInBox())){
-//			menu.setVisible(false);
-//			return;
-//		}
 		
 		if(e.getComponent().getClass().getSimpleName().equalsIgnoreCase("JMENU")){
 			((JMenu)e.getSource()).setArmed(false);
@@ -199,6 +224,7 @@ public class ContextMenu extends JPopupMenu implements MouseListener{
 		
 	}
 	
+	// NOT USED
 	@Override
 	public void mouseClicked(MouseEvent e) { }
 
