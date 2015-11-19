@@ -20,6 +20,7 @@ import java.util.Vector;
 import edu.auburn.cardiomri.datastructure.Contour;
 import edu.auburn.cardiomri.datastructure.ControlPoint;
 import edu.auburn.cardiomri.datastructure.DICOMImage;
+import edu.auburn.cardiomri.datastructure.Landmark;
 import edu.auburn.cardiomri.datastructure.Point;
 import edu.auburn.cardiomri.datastructure.TensionPoint;
 import edu.auburn.cardiomri.datastructure.Vector3d;
@@ -126,7 +127,57 @@ public final class ContourUtilities {
 
 
     }
-    
+	
+	
+	
+	public static void writeAnnotationsToFile(
+			Map<String, DICOMImage> SOPInstanceUIDToDICOMImage, String path) {
+		
+		ContourUtilities.writeContoursToFile(SOPInstanceUIDToDICOMImage, path);
+		ContourUtilities.writeLandmarksToFile(SOPInstanceUIDToDICOMImage, path);
+	}
+	
+	
+	public static void writeLandmarksToFile(
+            Map<String, DICOMImage> SOPInstanceUIDToDICOMImage, String path) {
+        Vector<Landmark> landmarks;
+        PrintWriter writer = null;
+
+        File f = new File(path);
+
+        try {
+            writer = new PrintWriter(new BufferedWriter(
+                    new FileWriter(f, false)));
+            for (DICOMImage image : SOPInstanceUIDToDICOMImage.values()) {
+                landmarks = image.getLandmarks();
+                if (landmarks.size() < 1) {
+                    continue;
+                } else {
+                	writer.write("\n" + image.getSopInstanceUID() + "\n");
+                    for (Landmark l: landmarks) {
+                            int numPoints = 1;
+                            String header = l.getIntFromType() + "\n"
+                                    + numPoints + "\n";
+                            writer.write(header);
+                            
+                            writer.write(BigDecimal.valueOf(l.getX())
+                                    .setScale(4, BigDecimal.ROUND_UP)
+                                    + "\t"
+                                    + BigDecimal.valueOf(l.getY())
+                                            .setScale(4,
+                                                     BigDecimal.ROUND_UP)
+                                    + "\n");
+                        }
+                    
+                    writer.write((-1) + "\n");
+                }
+            }
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+	
     /**
      * Writes the contour data to the specified path for all images
      * containing contours. The file format is as follows: 
