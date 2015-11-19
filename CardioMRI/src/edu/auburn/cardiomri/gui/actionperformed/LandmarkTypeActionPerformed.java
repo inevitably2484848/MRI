@@ -4,7 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import edu.auburn.cardiomri.datastructure.Landmark;
-import edu.auburn.cardiomri.datastructure.Landmark.LandmarkType;
+import edu.auburn.cardiomri.datastructure.Landmark.Type;
 import edu.auburn.cardiomri.gui.models.ImageModel;
 import edu.auburn.cardiomri.gui.views.ImageView;
 import edu.auburn.cardiomri.gui.views.Toast;
@@ -41,43 +41,43 @@ public class LandmarkTypeActionPerformed extends View implements ActionListener 
 		LandmarkTypeMenu.staticHide();  //hides current landmarkTypeMenu
 		
 		if (actionCommand.equals("ARV")){
-			Mode.setNextLandmarkType(LandmarkType.ARV);
+			Mode.setNextLandmarkType(Type.ARV);
         } 
 		else if (actionCommand.equals("IRV")){
-			Mode.setNextLandmarkType(LandmarkType.IRV);
+			Mode.setNextLandmarkType(Type.IRV);
         } 
 		else if (actionCommand.equals("MS")){
-			Mode.setNextLandmarkType(LandmarkType.MS);
+			Mode.setNextLandmarkType(Type.MS);
         } 
 		else if (actionCommand.equals("LVAPEX")){
-			Mode.setNextLandmarkType(LandmarkType.LVAPEX);
+			Mode.setNextLandmarkType(Type.LVAPEX);
         } 
 		else if (actionCommand.equals("LVSEPTALBASE")){
-			Mode.setNextLandmarkType(LandmarkType.LVSEPTALBASE);
+			Mode.setNextLandmarkType(Type.LVSEPTALBASE);
         } 
 		else if (actionCommand.equals("LVLATERALBASE")){
-			Mode.setNextLandmarkType(LandmarkType.LVLATERALBASE);
+			Mode.setNextLandmarkType(Type.LVLATERALBASE);
         } 
 		else if (actionCommand.equals("LVANTERIORBASE")){
-			Mode.setNextLandmarkType(LandmarkType.LVANTERIORBASE);
+			Mode.setNextLandmarkType(Type.LVANTERIORBASE);
         } 
 		else if (actionCommand.equals("LVINFERIORBASE")){
-			Mode.setNextLandmarkType(LandmarkType.LVINFERIORBASE);
+			Mode.setNextLandmarkType(Type.LVINFERIORBASE);
         } 
 		else if (actionCommand.equals("RVAPEX")){
-			Mode.setNextLandmarkType(LandmarkType.RVAPEX);
+			Mode.setNextLandmarkType(Type.RVAPEX);
         } 
 		else if (actionCommand.equals("RVLATERALBASE")){
-			Mode.setNextLandmarkType(LandmarkType.RVLATERALBASE);
+			Mode.setNextLandmarkType(Type.RVLATERALBASE);
         } 
 		else if (actionCommand.equals("RVSEPTALBASE")){
-			Mode.setNextLandmarkType(LandmarkType.RVSEPTALBASE);
+			Mode.setNextLandmarkType(Type.RVSEPTALBASE);
         } 
 		else if (actionCommand.equals("RVANTERIORBASE")){
-			Mode.setNextLandmarkType(LandmarkType.RVANTERIORBASE);
+			Mode.setNextLandmarkType(Type.RVANTERIORBASE);
         } 
 		else if (actionCommand.equals("RVINFERIORBASE")){
-			Mode.setNextLandmarkType(LandmarkType.RVINFERIORBASE);
+			Mode.setNextLandmarkType(Type.RVINFERIORBASE);
         }
 	}
 	

@@ -35,8 +35,14 @@ import edu.auburn.cardiomri.gui.models.WorkspaceModel;
  */
 public final class ContourUtilities {
 	
-	public static void loadContour(File file, Map<String, DICOMImage> SOPInstanceUIDToDICOMImage) {
-        Vector<Contour> contours;
+	public static void loadAnnotations(File file, Map<String, DICOMImage> SOPInstanceUIDToDICOMImage) {
+		loadContours(file, SOPInstanceUIDToDICOMImage);
+		loadLandmarks(file, SOPInstanceUIDToDICOMImage);
+
+    }
+	
+	public static void loadContours(File file, Map<String, DICOMImage> SOPInstanceUIDToDICOMImage) {
+		Vector<Contour> contours;
         List<ControlPoint> controlPoints;
         List<TensionPoint> tensionPoints;
 
@@ -53,8 +59,18 @@ public final class ContourUtilities {
                 sopInstanceUID = reader.readLine();
                 contourType = Integer.parseInt(reader.readLine());
                 
+                
+
+                if (Contour.isControlPointFromInt(contourType) == null)	// not contour type
+                {
+                	while ((lineCheck = reader.readLine()) != "-1") {
+                		if (lineCheck.equals("-1")) {
+	                        break;
+	                    }
+                	}
+                }
                 // Only add contours to image if it is a control point contour
-                if (Contour.isControlPointFromInt(contourType))
+                else if (Contour.isControlPointFromInt(contourType))
                 {
 	                while ((lineCheck = reader.readLine()) != "-1") {
 	                	int pointIdx = 0;
@@ -124,9 +140,61 @@ public final class ContourUtilities {
         } catch (IOException x) {
             System.err.format("IOException: %s%n", x);
         }
+	}
+	
+	public static void loadLandmarks(File file, Map<String, DICOMImage> SOPInstanceUIDToDICOMImage) {
+		Vector<Landmark> landmarks;
 
+        String sopInstanceUID;
+        String[] line = new String[2];
+        @SuppressWarnings("unused")
+        String lineCheck;
 
-    }
+        int landmarkType;
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(file));
+            while (reader.readLine() != null) {
+                landmarks = new Vector<Landmark>();
+                sopInstanceUID = reader.readLine();
+                landmarkType = Integer.parseInt(reader.readLine());
+                
+                if (Landmark.isLandmarkFromInt(landmarkType) == null)	// Not landmark type section
+                {
+                	while ((lineCheck = reader.readLine()) != "-1") {
+                		if (lineCheck.equals("-1")) {
+	                        break;
+	                    }
+                	}
+                }
+                else
+                {
+	                while ((lineCheck = reader.readLine()) != "-1") {
+	
+	                    while ((line = reader.readLine().split("\t")).length >= 2) {
+	                    	
+	                    	float x = Float.parseFloat(line[0]);
+	                        float y = Float.parseFloat(line[1]);
+	                        
+	                        landmarks.add(new Landmark(Landmark.getTypeFromInt(landmarkType), x, y));
+	                        
+	                    }
+	                    
+	                    if (line[0].equals("-1")) {
+	                        break;
+	                    }
+	                }
+                }
+
+                DICOMImage image = SOPInstanceUIDToDICOMImage
+                        .get(sopInstanceUID);
+                image.getLandmarks().addAll(landmarks);
+
+            }
+            reader.close();
+        } catch (IOException x) {
+            System.err.format("IOException: %s%n", x);
+        }
+	}
 	
 	
 	
@@ -147,7 +215,7 @@ public final class ContourUtilities {
 
         try {
             writer = new PrintWriter(new BufferedWriter(
-                    new FileWriter(f, false)));
+                    new FileWriter(f, true)));
             for (DICOMImage image : SOPInstanceUIDToDICOMImage.values()) {
                 landmarks = image.getLandmarks();
                 if (landmarks.size() < 1) {

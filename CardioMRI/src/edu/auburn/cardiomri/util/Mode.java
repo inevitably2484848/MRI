@@ -1,7 +1,7 @@
 package edu.auburn.cardiomri.util;
 
 import edu.auburn.cardiomri.gui.views.Toast;
-import edu.auburn.cardiomri.datastructure.Landmark.LandmarkType;
+import edu.auburn.cardiomri.datastructure.Landmark.Type;
 
 /**
  * Mode is used on the mouseclick listen. 
@@ -17,7 +17,7 @@ public class Mode {
 	private static final int CONTOUR_MODE 	= 1;
 	private static final int LANDMARK_MODE 	= 2;
 	
-	protected static LandmarkType nextLandmarkType = null;
+	protected static Type nextLandmarkType = null;
 	
     public static int getMode(){
     	return mode;
@@ -46,11 +46,11 @@ public class Mode {
     	new Toast(modeToast());
     }
     
-    public static LandmarkType getNextLandmarkType() {
+    public static Type getNextLandmarkType() {
     	return nextLandmarkType;
     }
     
-    public static void setNextLandmarkType(LandmarkType type) {
+    public static void setNextLandmarkType(Type type) {
     	nextLandmarkType = type;
     }
     

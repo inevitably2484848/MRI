@@ -575,18 +575,18 @@ public class Contour implements Shape, Serializable {
      *
      * @param contourTypeIn the type of contour
      */
-    public void setContourType(Type contourTypeIn) {
+    public void setType(Type contourTypeIn) {
         contourType = contourTypeIn;
         generatedPoints = ContourCalc.generate(controlPoints, isClosedCurve());
     }
 
-    public Type getContourType() {
+    public Type getType() {
         return contourType;
     }
     
 
     public Integer getIntFromType() {
-        return Contour.TYPE_TO_INTEGER.get(getContourType());
+        return Contour.TYPE_TO_INTEGER.get(getType());
     }
 
     public static Type getTypeFromInt(int contourType) {
@@ -594,10 +594,10 @@ public class Contour implements Shape, Serializable {
     }
     
     public Integer getIntFromTypeControlPoints() {
-    	return Contour.TYPE_TO_CONTROL_INTEGER.get(getContourType());
+    	return Contour.TYPE_TO_CONTROL_INTEGER.get(getType());
     }
     
-    public static boolean isControlPointFromInt(int contourType) { 
+    public static Boolean isControlPointFromInt(int contourType) { 
     	return Contour.IS_CONTROL_POINT_CONTOUR.get(contourType);
     }
 
@@ -638,7 +638,7 @@ public class Contour implements Shape, Serializable {
 
     public String toString() {
         String output = "";
-        switch (this.getContourType()) {
+        switch (this.getType()) {
             case LA_ENDO:
                 output += "LEFT ATRIUM ENDOCARDIAL";
                 break;

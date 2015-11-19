@@ -76,7 +76,7 @@ public class SelectContextMenu extends JPopupMenu implements MRIPopupMenu, Mouse
         } 
         
         //pulled from Landmark Menu Bar
-        for (Landmark.LandmarkType t : Landmark.LandmarkType.values() ){
+        for (Landmark.Type t : Landmark.Type.values() ){
         	JMenuItem tmp = new JMenuItem(t.abbv());
         	tmp.setActionCommand(t.abbv());
         	tmp.addMouseListener(this);

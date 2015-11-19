@@ -101,7 +101,7 @@ public class MenuBarContourActionPerformed implements ActionListener {
 				getImageModel().deleteAllContours();
 			}
 		}
-		else if (actionCommand.equals("Load Contours")) {
+		else if (actionCommand.equals("Load Annotations")) {
             try {
             	wrkspcVw.setUpLoad();
             } catch (IOException e1) {

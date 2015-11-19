@@ -26,7 +26,7 @@ import com.pixelmed.display.SingleImagePanel;
 
 import edu.auburn.cardiomri.datastructure.Contour;
 import edu.auburn.cardiomri.datastructure.Landmark;
-import edu.auburn.cardiomri.datastructure.Landmark.LandmarkType;
+import edu.auburn.cardiomri.datastructure.Landmark.Type;
 import edu.auburn.cardiomri.datastructure.Point;
 import edu.auburn.cardiomri.datastructure.TensionPoint;
 import edu.auburn.cardiomri.datastructure.DICOMImage;
@@ -143,8 +143,8 @@ public class ImageView extends SingleImagePanel implements ActionListener,
     	for (Landmark landmark: landmarks) {
     		if (landmark != null) {	
     			if (landmark.isVisible()) {
-    				double x = landmark.getCoordinates().getX();
-	        		double y = landmark.getCoordinates().getY();
+    				double x = landmark.getX();
+	        		double y = landmark.getY();
 	        		GeneralPath cross = new GeneralPath();
 	        		//horizontal component
 	        		cross.moveTo(x-1, y);

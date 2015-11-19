@@ -385,6 +385,8 @@ public class ImageModel extends Model {
         }
 
         hiddenContours.add(selectedContour);
+        selectedContour.isSelected(false);
+        selectedContour.isVisible(false);
         selectedContour = null;
 
         setChanged();
@@ -396,7 +398,10 @@ public class ImageModel extends Model {
      */
     public void hideAllContours() {
         hiddenContours.addAll(getVisibleContours());
+        selectedContour.isSelected(false);
+        selectedContour.isVisible(false);
         selectedContour = null;
+        
 
         setChanged();
         notifyObservers(dImage);
@@ -422,6 +427,8 @@ public class ImageModel extends Model {
         }
 
         dImage.getContours().remove(selectedContour);
+        selectedContour.isSelected(false);
+        selectedContour.isVisible(false);
         setSelectedContour(null);
 
         setChanged();
@@ -449,6 +456,9 @@ public class ImageModel extends Model {
 
     public void setSelectedContour(Contour contour) {
         selectedContour = contour;
+        if (selectedContour != null) {
+        	selectedContour.isSelected(true);
+        }
         setChanged();
         notifyObservers(dImage);
     }
