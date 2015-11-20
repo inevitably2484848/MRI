@@ -32,6 +32,9 @@ public class Contour implements Shape, Serializable {
     
     boolean isSelected = true;
     boolean isVisible = true;
+    boolean notMoved = true;
+    double x;
+    double y;
     
     static Color color = Color.RED;
 
@@ -497,15 +500,25 @@ public class Contour implements Shape, Serializable {
      }
      
      public void moveContour(double x, double y) {
-    	 for(ControlPoint cPoint: controlPoints) {
-    		 dragPoint(x, y, cPoint);
-    	 }
     	 
-    	 for (TensionPoint tPoint: tensionPoints) {
-    		 dragPoint(x, y, tPoint);
+    	 if(notMoved) {
+    		 this.x = x;
+    		 this.y = y;
+    		 notMoved = false;
+    	 } else {
+    		 double deltaX = x - this.x;
+    		 double deltaY = y - this.y;
+	    	 for(ControlPoint cPoint: controlPoints) {
+	    		 dragPoint(deltaX, deltaY, cPoint);
+	    	 }
+	    	 
+	    	 for (TensionPoint tPoint: tensionPoints) {
+	    		 dragPoint(deltaX, deltaY, tPoint);
+	    	 }	    	 
+	    	 generatedPoints = ContourCalc.generate(controlPoints, isClosedCurve());
+	    	 this.x = x;
+	    	 this.y = y;
     	 }
-    	 
-    	 generatedPoints = ContourCalc.generate(controlPoints, isClosedCurve());
      }
      
     /**
