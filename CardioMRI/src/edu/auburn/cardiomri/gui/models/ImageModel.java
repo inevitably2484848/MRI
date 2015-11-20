@@ -667,4 +667,12 @@ public class ImageModel extends Model {
 		setChanged();
 		notifyObservers(e);
 	}
+	
+	public boolean isControlPointLocked() {
+		return selectedControlPoint.getLock();
+	}
+	
+	public void setControlPointLocked(boolean b) {
+		selectedControlPoint.setLock(b);
+	}
 }
