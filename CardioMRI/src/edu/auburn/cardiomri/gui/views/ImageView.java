@@ -2,7 +2,6 @@ package edu.auburn.cardiomri.gui.views;
 
 import java.awt.Color;
 import java.awt.GridLayout;
-import java.awt.MouseInfo;
 import java.awt.Shape;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -19,7 +18,6 @@ import java.util.Vector;
 
 import javax.swing.AbstractAction;
 import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
@@ -27,11 +25,9 @@ import com.pixelmed.display.SingleImagePanel;
 
 import edu.auburn.cardiomri.datastructure.Contour;
 import edu.auburn.cardiomri.datastructure.Landmark;
-import edu.auburn.cardiomri.datastructure.Landmark.LandmarkType;
 import edu.auburn.cardiomri.datastructure.Point;
 import edu.auburn.cardiomri.datastructure.TensionPoint;
 import edu.auburn.cardiomri.datastructure.DICOMImage;
-import edu.auburn.cardiomri.datastructure.Vector3d;
 import edu.auburn.cardiomri.gui.ConstructImage;
 import edu.auburn.cardiomri.gui.models.ImageModel;
 import edu.auburn.cardiomri.gui.models.Model;
@@ -53,12 +49,6 @@ public class ImageView extends SingleImagePanel implements ActionListener,
     private Vector<Shape> orangeShapes = new Vector<Shape>();
     private Vector<Shape> blueShapes = new Vector<Shape>();
     private Vector<Shape> whiteShapes = new Vector<Shape>();
-    /*
-    private Vector<Shape> visibleShapes = new Vector<Shape>();
-    private Vector<Shape> selectedShapes = new Vector<Shape>();
-    private Vector<Shape> visibleTensionPointShapes = new Vector<Shape>();
-    */
-    private ContourControlView contourPanel; // testing
     
     public ContourContextMenu contourCM;// = ContourContextMenu.popupContextMenu(); //kw
     public LandmarkContextMenu landmarkCM; //LandmarkContextMenu()
@@ -80,29 +70,14 @@ public class ImageView extends SingleImagePanel implements ActionListener,
     	DICOMImage dImage = getImageModel().getImage();
 
         dirtySource(new ConstructImage(dImage));
-        /*visibleShapes.clear();
-        selectedShapes.clear();
-        visibleTensionPointShapes.clear();
-        
-        */
         
         clearShapes();
         
         updateContours(getImageModel().getContours());
         updateLandmarks(getImageModel().getLandmarks());
         
-        /*updateSelectedContour(getImageModel().getSelectedContour());
-        updateVisibleContours(getImageModel().getVisibleContours());
-        
-        updateVisibleLandmarks(getImageModel().getVisibleLandmarks());
-        updateSelectedLandmark(getImageModel().getSelectedLandmark());*/
-        
         colorShapes();
         
-        /*this.setPreDefinedShapes(visibleShapes);
-        this.setLocalizerShapes(selectedShapes);
-        this.setPreDefinedShapes(visibleTensionPointShapes);
-        this.setPreDefinedShapes(visibleTensionPointShapes);*/
         refresh();
     }
     
@@ -120,23 +95,6 @@ public class ImageView extends SingleImagePanel implements ActionListener,
     	this.setLocalizerShapes(whiteShapes);
     }
 
-    /**
-     * Updates the set of control points that should be drawn onto the screen.
-     * Control points are drawn as 2x2 ellipses.
-     * 
-     * @param contour The currently selected contour
-     */
-    /*private void updateSelectedContour(Contour contour) {
-        
-        if (contour != null) {
-            for (ControlPoint controlPoint : contour.getControlPoints()) {
-            	Ellipse2D ellipse = new Ellipse2D.Double(controlPoint.getX(),
-                        controlPoint.getY(), 2, 2);
-                selectedShapes.add(ellipse);
-            }
-            updateTensionPoints(contour);
-        }
-    }*/
     
     private void updateLandmarks(Vector<Landmark> landmarks) {
     	for (Landmark landmark: landmarks) {
@@ -242,48 +200,6 @@ public class ImageView extends SingleImagePanel implements ActionListener,
     	else if (color == Color.WHITE) {
     		this.whiteShapes.add(shape);
     	}
-    }
-    
-    /*private void updateSelectedLandmark(Landmark landmark) {
-    	if (landmark != null) {	
-    		double x = landmark.getCoordinates().getX();
-    		double y = landmark.getCoordinates().getY();
-    		GeneralPath cross = new GeneralPath();
-    		//horizontal component
-    		cross.moveTo(x-1, y);
-    		cross.lineTo(x+1, y);
-    		//vertical component
-    		cross.moveTo(x,y-1);
-    		cross.lineTo(x,y+1);
-    		selectedShapes.add(cross);
-    	}
-    }*/
-    
-
-    /*private void updateVisibleLandmarks(Vector<Landmark> landmarks){
-    	for (Landmark l:landmarks){
-    		double x = l.getCoordinates()[0];
-    		double y = l.getCoordinates()[1];
-    		GeneralPath cross = new GeneralPath();
-    		//horizontal component
-    		cross.moveTo(x-1, y);
-    		cross.lineTo(x+1, y);
-    		//vertical component
-    		cross.moveTo(x,y-1);
-    		cross.lineTo(x,y+1);
-    		visibleTensionPointShapes.add(cross);
-    	}
-    }*/
-    
-
-    /**
-     * Updates the list of contours to be drawn onto the screen
-     * 
-     * @param contours List of Contour objects
-     */
-    private void updateVisibleContours(Vector<Contour> contours) {
-        this.setSelectedDrawingShapes(contours);
-        //contourPanel.refreshView(contours); //KW
     }
 
 
@@ -457,7 +373,6 @@ public class ImageView extends SingleImagePanel implements ActionListener,
     
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
 		
 	}
 
