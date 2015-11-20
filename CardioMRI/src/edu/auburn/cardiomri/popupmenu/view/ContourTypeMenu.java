@@ -40,7 +40,6 @@ public class ContourTypeMenu extends View implements MRIPopupMenu, MouseListener
 
 		ActionListener actionListener = new ContourTypeActionPerformed(this, true);
 		contourPop.setLightWeightPopupEnabled(true);
-		contourPop.add("Choose a Type");
 		contourPop.addSeparator();
 		
 		int addSepEveryTwo = 0;
