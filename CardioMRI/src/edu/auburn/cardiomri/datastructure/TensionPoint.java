@@ -8,8 +8,23 @@ public class TensionPoint extends Point {
 	static Color selectedTensionPointColor = Color.RED;
 	static Color selectedContourColor = Color.BLUE;
 	
+	private ControlPoint cPoint;
+	
+	public TensionPoint(double x, double y, ControlPoint cPoint) {
+		super(x, y);
+		this.cPoint = cPoint;
+	}
+	
 	public TensionPoint(double x, double y) {
 		super(x, y);
+	}
+	
+	public ControlPoint getControlPoint() {
+		return this.cPoint;
+	}
+	
+	public void setControlPoint(ControlPoint cPoint) {
+		this.cPoint = cPoint;
 	}
 	
 	public Color getColor() {
