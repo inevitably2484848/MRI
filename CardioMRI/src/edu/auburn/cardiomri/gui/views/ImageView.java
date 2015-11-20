@@ -191,6 +191,34 @@ public class ImageView extends SingleImagePanel implements ActionListener,
 			            	colorShape(tensionPoint2Ellipse, tensionPoint2.getColor());
 		            	}
 		            }
+		            
+//		            for(int i = 0; i < contour.getControlPoints().size(); i++) {
+//		            	
+//		            	ControlPoint controlPoint = contour.getControlPoints().get(i);
+//		            	
+//		            	Ellipse2D controlPointEllipse = new Ellipse2D.Double(controlPoint.getX(),
+//		                        controlPoint.getY(), 2, 2);
+//		            	
+//		            	TensionPoint tensionPoint1 = controlPoint.getTension1();
+//		            	TensionPoint tensionPoint2 = controlPoint.getTension2();
+//		            	
+//		            	Ellipse2D tensionPoint1Ellipse = new Ellipse2D.Double(tensionPoint1.getX(), tensionPoint1.getY(), 2, 2);
+//		    			Ellipse2D tensionPoint2Ellipse = new Ellipse2D.Double(tensionPoint2.getX(), tensionPoint2.getY(), 2, 2);
+//		    			
+//		            	colorShape(controlPointEllipse, controlPoint.getColor());
+//		            	if(contour.getControlPoints().size() > 1) {
+//		            		//check to not draw tension points of the final curve if the bezier curve is open
+//		            		if(i == 0 || i == (contour.getControlPoints().size() - 1)) {
+//		            			if(contour.isClosedCurve()) {
+//		            				colorShape(tensionPoint1Ellipse, tensionPoint1.getColor());
+//		            				colorShape(tensionPoint2Ellipse, tensionPoint2.getColor());
+//		            			}
+//		            		} else {
+//	            				colorShape(tensionPoint1Ellipse, tensionPoint1.getColor());
+//	            				colorShape(tensionPoint2Ellipse, tensionPoint2.getColor());
+//		            		}
+//		            	}
+//		            }
 	    		}
     		}
         }
@@ -430,10 +458,14 @@ public class ImageView extends SingleImagePanel implements ActionListener,
 
     public void mousePressed(MouseEvent e) {
 
-    	java.awt.geom.Point2D mouseClick = getImageCoordinateFromWindowCoordinate(e.getX(), e.getY());
+    	if (Mode.getMode() == Mode.selectMode()) {
+ 
+	    	java.awt.geom.Point2D mouseClick = getImageCoordinateFromWindowCoordinate(e.getX(), e.getY());
+	    	
+	    	clickedPoint = getImageModel().findNearestPointWithinRange(mouseClick.getX(), mouseClick.getY(), 3);
+	    	getImageModel().selectClosestAnnotationWithinRange(mouseClick.getX(), mouseClick.getY(), 15);
+    	}
     	
-    	clickedPoint = getImageModel().findNearestPointWithinRange(mouseClick.getX(), mouseClick.getY(), 3);
-    	getImageModel().selectClosestAnnotationWithinRange(mouseClick.getX(), mouseClick.getY(), 15);
     	super.mousePressed(e);
     	
     	this.panel.requestFocusInWindow();
