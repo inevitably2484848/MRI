@@ -29,12 +29,14 @@ public class ContourContextMenuActionPerformed implements ActionListener {
 		if(actionCommand.equalsIgnoreCase("Delete Contour")){
 			imageModel.deleteSelectedContour();
 			Mode.setMode(Mode.selectMode());
+			GridControlView.depressToggles();
 		}
 		else if(actionCommand.equalsIgnoreCase("Hide Contour")){
 			System.out.println(imageModel.getSelectedContour().toString());
 			
 			imageModel.hideSelectedContour();
 			Mode.setMode(Mode.selectMode());
+			GridControlView.depressToggles();
 		}
 		else if(actionCommand.equalsIgnoreCase("Lock Point")){
 			imageModel.setControlPointLocked(true);

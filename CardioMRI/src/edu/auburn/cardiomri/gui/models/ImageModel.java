@@ -587,6 +587,8 @@ public class ImageModel extends Model {
         }
 
         hiddenContours.add(selectedContour);
+        selectedContour.isSelected(false);
+        selectedContour.isVisible(false);
         selectedContour = null;
         
         setChanged();
