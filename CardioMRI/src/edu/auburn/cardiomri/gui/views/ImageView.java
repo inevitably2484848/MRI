@@ -140,8 +140,11 @@ public class ImageView extends SingleImagePanel implements ActionListener,
     	for (Landmark landmark: landmarks) {
     		if (landmark != null) {	
     			if (landmark.isVisible()) {
-    				double x = landmark.getX();
-	        		double y = landmark.getY();
+
+    				double x = landmark.getCoordinates()[0];
+	        		double y = landmark.getCoordinates()[1];
+
+
 	        		GeneralPath cross = new GeneralPath();
 	        		//horizontal component
 	        		cross.moveTo(x-1, y);
@@ -156,6 +159,7 @@ public class ImageView extends SingleImagePanel implements ActionListener,
     	}
     }
     
+
     private void updateContours(Vector<Contour> contours) {
     	for (Contour contour: contours) {
     		updateContour(contour);
@@ -182,8 +186,10 @@ public class ImageView extends SingleImagePanel implements ActionListener,
 		    			Ellipse2D tensionPoint2Ellipse = new Ellipse2D.Double(tensionPoint2.getX(), tensionPoint2.getY(), 2, 2);
 		    			
 		            	colorShape(controlPointEllipse, controlPoint.getColor());
-		            	colorShape(tensionPoint1Ellipse, tensionPoint1.getColor());
-		            	colorShape(tensionPoint2Ellipse, tensionPoint2.getColor());
+		            	if(contour.getControlPoints().size() > 1) {
+			            	colorShape(tensionPoint1Ellipse, tensionPoint1.getColor());
+			            	colorShape(tensionPoint2Ellipse, tensionPoint2.getColor());
+		            	}
 		            }
 	    		}
     		}
@@ -337,7 +343,7 @@ public class ImageView extends SingleImagePanel implements ActionListener,
     	else { 
     		// SELECT MODE
     		 if (SwingUtilities.isLeftMouseButton(e)) {
-    			 getImageModel().selectClosestAnnotation(mouseClick.getX(), mouseClick.getY());
+    			 getImageModel().selectClosestAnnotationWithinRange(mouseClick.getX(), mouseClick.getY(), 30);
     	     } 
     		 else if(SwingUtilities.isRightMouseButton(e)){
     			 selectCM = new SelectContextMenu(getImageModel());
@@ -426,7 +432,7 @@ public class ImageView extends SingleImagePanel implements ActionListener,
     	java.awt.geom.Point2D mouseClick = getImageCoordinateFromWindowCoordinate(e.getX(), e.getY());
     	
     	clickedPoint = getImageModel().findNearestPointWithinRange(mouseClick.getX(), mouseClick.getY(), 3);
-    	getImageModel().selectClosestAnnotation(mouseClick.getX(), mouseClick.getY());
+    	getImageModel().selectClosestAnnotationWithinRange(mouseClick.getX(), mouseClick.getY(), 15);
     	super.mousePressed(e);
     	
     	this.panel.requestFocusInWindow();
