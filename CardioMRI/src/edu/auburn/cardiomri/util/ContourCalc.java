@@ -102,19 +102,6 @@ public final class ContourCalc {
         //ContourCalc.sortPoints(controlPoints);
         
         for(int i = 0; i < controlPoints.size() - 1 ; i++) {
-      	  
-      	  //checks to make sure tension points that have already been calculated or moved by the user are not overwritten
-          //shouldn't need to check both tension points
-      	  if(controlPoints.get(i).getTension1().getX() == 0.0 && controlPoints.get(i).getTension1().getY() == 0.0) {
-      		  
-      		  //create tension point from two control points of a segment
-      		  tPoints = getTensionPoint(controlPoints.get(i), centroid);
-   
-      		  //represent this tension point within the corresponding control point
-      		  controlPoints.get(i).setTension1(tPoints.get(0));
-      		  controlPoints.get(i).setTension2(tPoints.get(1));
-  		  
-      	  }      	  
       	  //generate points for every segment of the curve
       	  curvePoints = genCurve(controlPoints.get(i), controlPoints.get(i + 1));
       	  
@@ -124,14 +111,6 @@ public final class ContourCalc {
         
         //only close the contour if boolean is selected
         if(isClosed) {
-	        tPoints = getTensionPoint(controlPoints.get(controlPoints.size() - 1), centroid);
-	 
-	    	if(controlPoints.get(controlPoints.size() - 1).getTension1().getX() == 0.0 && controlPoints.get(controlPoints.size() - 1).getTension1().getY() == 0.0) {
-		        controlPoints.get(controlPoints.size() - 1).setTension1(tPoints.get(0));
-		        controlPoints.get(controlPoints.size() - 1).setTension2(tPoints.get(1));
-
-	    	}
-	        //final curve from the last point to the initial point
 	        curvePoints = genCurve(controlPoints.get(controlPoints.size() - 1), controlPoints.get(0));
 	        
 	        generatedPoints.addAll(curvePoints);

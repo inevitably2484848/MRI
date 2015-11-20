@@ -252,56 +252,23 @@ public class Contour implements Shape, Serializable {
     				if(controlPoints.get(i).getTension2().getX() == 0.0 && controlPoints.get(i).getTension2().getY() == 0.0) {
 						//check to see if new control point was sorted to the beginning of the contour
     					if(i == 0) {
-	    					//calculate and set the new tension point for the previous control point
-//	    					tPoints.addAll(ContourCalc.getTensionPoint(controlPoints.get(controlPoints.size() - 1), centroid));
-//	    					controlPoints.get(controlPoints.size() - 1).setTension2(tPoints.get(1));
-//	    					tPoints.clear();
-	    					
-	    					//calculate and set the new tension point for the new control point
 	    					tPoints.addAll(ContourCalc.getTensionPoint(controlPoints.get(i), centroid));
 	    					controlPoints.get(i).setTension1(tPoints.get(0));
 	    					controlPoints.get(i).setTension2(tPoints.get(1));
 	    					tPoints.clear();
-	    					
-	    					//calculate and set the new tension point for the next control point
-//	    					tPoints.addAll(ContourCalc.getTensionPoint(controlPoints.get(i + 1), centroid));
-//	    					controlPoints.get(i + 1).setTension1(tPoints.get(0));
-//	    					tPoints.clear();
     					}
     					//check to see if new control point was sorted to the end of the contour
 	    				else if (i == controlPoints.size() - 1) {
-	    					//calculate and set the new tension point for the previous control point
-//	    					tPoints.addAll(ContourCalc.getTensionPoint(controlPoints.get(i - 1), centroid));
-//	    					controlPoints.get(i - 1).setTension2(tPoints.get(1));
-//	    					tPoints.clear();
-	    					
-	    					//calculate and set the new tension point for the new control point
 	    					tPoints.addAll(ContourCalc.getTensionPoint(controlPoints.get(i), centroid));
 	    					controlPoints.get(i).setTension1(tPoints.get(0));
 	    					controlPoints.get(i).setTension2(tPoints.get(1));
 	    					tPoints.clear();
-	    					
-	    					//calculate and set the new tension point for the next control point
-//	    					tPoints.addAll(ContourCalc.getTensionPoint(controlPoints.get(0), centroid));
-//	    					controlPoints.get(0).setTension1(tPoints.get(0));
-//	    					tPoints.clear();
 	    				}
 	    				else {
-	    					//calculate and set the new tension point for the previous control point
-//	    					tPoints.addAll(ContourCalc.getTensionPoint(controlPoints.get(i - 1), centroid));
-//	    					controlPoints.get(i - 1).setTension2(tPoints.get(1));
-//	    					tPoints.clear();
-	    					
-	    					//calculate and set the new tension point for the new control point
 	    					tPoints.addAll(ContourCalc.getTensionPoint(controlPoints.get(i), centroid));
 	    					controlPoints.get(i).setTension1(tPoints.get(0));
 	    					controlPoints.get(i).setTension2(tPoints.get(1));
-	    					tPoints.clear();
-	    					
-	    					//calculate and set the new tension point for the next control point
-//	    					tPoints.addAll(ContourCalc.getTensionPoint(controlPoints.get(i + 1), centroid));
-//	    					controlPoints.get(i + 1).setTension1(tPoints.get(0));
-//	    					tPoints.clear();	    					
+	    					tPoints.clear(); 					
 	    				}
     				}
     			}
