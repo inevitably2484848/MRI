@@ -378,12 +378,43 @@ public class ImageView extends SingleImagePanel implements ActionListener,
 
     public void mousePressed(MouseEvent e) {
 
-    	java.awt.geom.Point2D mouseClick = getImageCoordinateFromWindowCoordinate(e.getX(), e.getY());
-    	clickedPoint = getImageModel().findNearestPointWithinRange(mouseClick.getX(), mouseClick.getY(), 3);
+    	if (SwingUtilities.isLeftMouseButton(e)) {
+    		java.awt.geom.Point2D mouseClick = getImageCoordinateFromWindowCoordinate(e.getX(), e.getY());
+        	clickedPoint = getImageModel().findNearestPointWithinRange(mouseClick.getX(), mouseClick.getY(), 3);
+        	
+        	if (Mode.getMode() == Mode.selectMode()) {
+    	    	getImageModel().selectClosestAnnotationWithinRange(mouseClick.getX(), mouseClick.getY(), 15);
+        	}
+	    } 
+		else if(SwingUtilities.isRightMouseButton(e)){
+			java.awt.geom.Point2D mouseClick = getImageCoordinateFromWindowCoordinate(e.getX(), e.getY());
+			clickedPoint = getImageModel().findNearestPointWithinRange(mouseClick.getX(), mouseClick.getY(), 10);
+
+			if (clickedPoint != null) {
+				if (clickedPoint.getClass() == Landmark.class) {
+					if (Mode.getMode() == Mode.selectMode()) {
+						getImageModel().selectClosestAnnotationWithinRange(mouseClick.getX(), mouseClick.getY(), 15);
+					}
+				}
+				
+				if (clickedPoint.getClass() == ControlPoint.class) {
+					if (Mode.getMode() == Mode.selectMode()) {
+						getImageModel().selectClosestAnnotationWithinRange(mouseClick.getX(), mouseClick.getY(), 15);
+					}
+				}
+				else if (clickedPoint.getClass() == TensionPoint.class) {
+					if (Mode.getMode() == Mode.selectMode()) {
+						getImageModel().selectClosestAnnotationWithinRange(mouseClick.getX(), mouseClick.getY(), 15);
+					}
+				}
+				
+			}
+			else {
+				
+			}
+			
+		}
     	
-    	if (Mode.getMode() == Mode.selectMode()) {
-	    	getImageModel().selectClosestAnnotationWithinRange(mouseClick.getX(), mouseClick.getY(), 15);
-    	}
     	
     	super.mousePressed(e);
     	
