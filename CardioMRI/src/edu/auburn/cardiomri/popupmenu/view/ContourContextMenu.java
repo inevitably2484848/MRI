@@ -52,7 +52,6 @@ public class ContourContextMenu  {
 		contourPop.addMenuItem("Hide Contour", contextMenuListener);
 		contourPop.addMenuItem("Lock Point (need Point Locked)", contextMenuListener);
 		contourPop.addMenuItem("Unlock Point (need Point Locked)", contextMenuListener);
-		contourPop.addMenuItem("Delete Point (need Point Selected)", contextMenuListener);
 		contourPop.addMenuItem("Done Adding", contextMenuListener);
 
 		
