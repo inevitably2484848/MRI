@@ -29,6 +29,7 @@ public class ImageModel extends Model {
     public ImageModel() {
         super();
         hiddenContours = new Vector<Contour>();
+        hiddenLandmarks = new Vector<Landmark>();
     }
 
     public void setCurrentImage(DICOMImage dImage) {
@@ -390,6 +391,7 @@ public class ImageModel extends Model {
     
     public void setActiveLandmark(Landmark landmark){
     	activeLandmark = landmark;
+    	selectedLandmark = landmark;
     }
     public void setLandmarkCoordinates(double x, double y){
     	activeLandmark.setLandmarkCoordinates(x,y);
@@ -427,7 +429,6 @@ public class ImageModel extends Model {
     public void hideAllContours() {
         hiddenContours.addAll(getVisibleContours());
         selectedContour = null;
-
         setChanged();
         notifyObservers(dImage);
     }
@@ -435,7 +436,10 @@ public class ImageModel extends Model {
     	if (selectedLandmark == null){
     		return;
     	}
+    	System.out.print(selectedLandmark.toString());
     	hiddenLandmarks.add(selectedLandmark);
+    	selectedLandmark.isSelected(false);
+    	selectedLandmark.isVisible(false);
     	selectedLandmark = null;
     	
     	setChanged();
@@ -445,11 +449,17 @@ public class ImageModel extends Model {
     public void hideAllLandmarks(){
     	hiddenLandmarks.addAll(getVisibleLandmarks());
     	selectedLandmark = null;
-    	
+    	for (Landmark lm: hiddenLandmarks){
+    		lm.isSelected(false);
+    		lm.isVisible(false);
+    	}
     	setChanged();
     	notifyObservers(dImage);
     }
     public void showAllLandmarks(){
+    	for (Landmark lm: hiddenLandmarks){
+    		lm.isVisible(true);
+    	}
     	hiddenLandmarks.clear();
     	
     	setChanged();
