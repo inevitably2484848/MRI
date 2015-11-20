@@ -32,30 +32,38 @@ public class ContourContextMenu  {
 		contourPop.setLocation();
 
 		// Label Menu
-		contourPop.addLabel(imageModel.getSelectedContour().toString());
-		contourPop.add(new MySeparator());
 		
-		
-		
-		if(imageModel.getSelectedControlPoint() != null){
-			contourPop.addMenuItem("Delete Point", contextMenuListener);
-			if( imageModel.isControlPointLocked()) {
-				contourPop.addMenuItem("Unlock Smooth", contextMenuListener);
-			}
-			else{
-				contourPop.addMenuItem("Lock Smooth", contextMenuListener);
+		if(imageModel.getSelectedContour() != null){
+			contourPop.addLabel(imageModel.getSelectedContour().toString());
+			contourPop.add(new MySeparator());
+			
+			if(imageModel.getSelectedControlPoint() != null){
+				contourPop.addMenuItem("Delete Point", contextMenuListener);
+				if( imageModel.isControlPointLocked()) {
+					contourPop.addMenuItem("Unlock Smooth", contextMenuListener);
+				}
+				else{
+					contourPop.addMenuItem("Lock Smooth", contextMenuListener);
+				}
+				
 			}
 			
+			contourPop.addMenuItem("Delete Contour", contextMenuListener);
+			contourPop.addMenuItem("Hide Contour", contextMenuListener);
+
+			contourPop.addMenuItem("Done Adding", contextMenuListener);
+			
 		}
-		
-		contourPop.addMenuItem("Delete Contour", contextMenuListener);
-		contourPop.addMenuItem("Hide Contour", contextMenuListener);
-
-		contourPop.addMenuItem("Done Adding", contextMenuListener);
-
+		else {
+			contourPop.addLabel("Please Select A Contour Type");
+		}
 		
 		contourPop.setVisible(true);
 		contourPop.getBox();
+		
+
+		
+		
 		
 		return contourPop;
 	}

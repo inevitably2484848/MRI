@@ -372,6 +372,7 @@ public class ImageView extends SingleImagePanel implements ActionListener,
 	            }
     		}
     		else if(SwingUtilities.isRightMouseButton(e)){
+    			
     			contourCM = new ContourContextMenu(getImageModel()); //open context menu
 
     		}
