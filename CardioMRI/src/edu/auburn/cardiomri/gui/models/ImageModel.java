@@ -12,6 +12,7 @@ import edu.auburn.cardiomri.datastructure.Point;
 import edu.auburn.cardiomri.datastructure.TensionPoint;
 import edu.auburn.cardiomri.datastructure.Vector3d;
 import edu.auburn.cardiomri.util.ContourCalc;
+import edu.auburn.cardiomri.util.Mode;
 import edu.auburn.cardiomri.datastructure.ControlPoint;
 
 public class ImageModel extends Model {
@@ -46,14 +47,14 @@ public class ImageModel extends Model {
         notifyObservers(dImage);
     }
 
-    /**
+    /**************************************************************************
      * Adds a control point to the currently selected contour. If no contour is
      * selected, returns false.
      * 
      * @param x
      * @param y
      * @return true if point was added, false otherwise
-     */
+     *************************************************************************/
     public boolean addControlPoint(double x, double y) {
         
     	if (selectedContour == null) {
@@ -72,13 +73,13 @@ public class ImageModel extends Model {
     }
     
     
-    /** -----------------------------------------------------------------------
+    /**************************************************************************
      * deleteControlPoint - if you click on an existing point it is removed.
      * @author KulW
      * @param x
      * @param y
      * @return
-     * -----------------------------------------------------------------------*/
+     *************************************************************************/
     public boolean deleteControlPoint(double x, double y){
     	
     	if(!(selectedContour.deleteControlPoint(x,y))){
@@ -100,6 +101,8 @@ public class ImageModel extends Model {
         setChanged();
         notifyObservers(dImage);
     }
+    
+
 
     /**
      * Get the list of contours that should be drawn onto the screen.
@@ -122,6 +125,10 @@ public class ImageModel extends Model {
     	
     	return visibleLandmarks;
     }
+    
+
+    
+    
     public Vector<Landmark> getLandmarks(){
     	return dImage.getLandmarks();
     }
@@ -296,7 +303,9 @@ public class ImageModel extends Model {
     		selectedLandmark = (Landmark)nearestPoint;
     		selectedLandmark.isSelected(true);
     		System.out.println("landmark selected");
-
+    		
+    		Mode.setMode(Mode.landmarkMode());
+    		
     		if (selectedContour != null) {
         		selectedContour.isSelected(false);
         		selectedContour = null;
@@ -359,9 +368,25 @@ public class ImageModel extends Model {
     	setChanged();
     	notifyObservers(dImage);
     }
+    
+    
     public void deleteLandmarkFromImage(Landmark landmark){
     	this.dImage.deleteLandmark(landmark);
+  
     }
+    
+    /**************************************************************************
+    * Deletes All Landmarks
+    * loops through landmarks list and deletes one by one.
+    *************************************************************************/
+    public void deleteAllLandmark(){
+    	Vector<Landmark> visibleLandmarks = getLandmarks();
+  	  
+    	for(Landmark landmark : visibleLandmarks){
+    		deleteLandmarkFromImage(landmark);
+  	  	}
+    }
+    
     
     public void setActiveLandmark(Landmark landmark){
     	activeLandmark = landmark;
@@ -374,6 +399,10 @@ public class ImageModel extends Model {
     
     public Landmark getSelectedLandmark() {
     	return this.selectedLandmark;
+    }
+    
+    public ControlPoint getSelectedControlPoint(){
+    	return this.selectedControlPoint;
     }
     
     /**

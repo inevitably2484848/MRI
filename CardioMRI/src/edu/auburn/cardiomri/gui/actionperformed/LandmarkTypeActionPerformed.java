@@ -3,6 +3,8 @@ package edu.auburn.cardiomri.gui.actionperformed;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.JPopupMenu;
+
 import edu.auburn.cardiomri.datastructure.Landmark;
 import edu.auburn.cardiomri.datastructure.Landmark.LandmarkType;
 import edu.auburn.cardiomri.gui.models.ImageModel;
@@ -15,14 +17,14 @@ import edu.auburn.cardiomri.util.Mode;
 
 public class LandmarkTypeActionPerformed extends View implements ActionListener {
 	
-	private SelectContextMenu selectMenu;
+	private JPopupMenu selectMenu;
 	private boolean istoggled;
 	
 	public LandmarkTypeActionPerformed(){
 
 	}
 	
-	public LandmarkTypeActionPerformed(SelectContextMenu selectMenu, boolean toggle){
+	public LandmarkTypeActionPerformed(JPopupMenu selectMenu, boolean toggle){
 		this.selectMenu = selectMenu;
 		this.istoggled = toggle;
 	}
@@ -35,7 +37,7 @@ public class LandmarkTypeActionPerformed extends View implements ActionListener 
 		
 		if(istoggled && selectMenu != null) {
 			this.model = getImageModel();
-			selectMenu.hidePopup();
+			selectMenu.setVisible(false);
 		}
 		
 		LandmarkTypeMenu.staticHide();  //hides current landmarkTypeMenu

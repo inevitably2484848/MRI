@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JPopupMenu;
 
+import edu.auburn.cardiomri.gui.models.ImageModel;
 import edu.auburn.cardiomri.gui.models.Model;
 import edu.auburn.cardiomri.gui.views.ImageView;
 import edu.auburn.cardiomri.gui.views.View;
@@ -15,11 +16,11 @@ import edu.auburn.cardiomri.popupmenu.view.SelectContextMenu;
 public class SelectContextMenuActionPerformed implements ActionListener {
 
 	private ImageView view;
-	private Model model;
+	private ImageModel imageModel;
 	
-	public SelectContextMenuActionPerformed(ImageView view){
-		this.view = view;
-		this.model = view.getModel();
+	public SelectContextMenuActionPerformed(ImageModel imageModel){
+
+		this.imageModel = imageModel;
 	}
 	
 	@Override
@@ -36,6 +37,14 @@ public class SelectContextMenuActionPerformed implements ActionListener {
 		}
 		else if (action.equals("Add Landmark")){
 			System.out.println(action);
+		}
+		else if (action.equals("Delete Point")){
+			imageModel.deleteControlPoint(
+					imageModel.getSelectedControlPoint().getX(), 
+					imageModel.getSelectedControlPoint().getY());
+		}
+		else if (action.equals("Edit Contour")){
+			
 		}
 	}
 
