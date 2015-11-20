@@ -46,6 +46,7 @@ public class SelectContextMenuActionPerformed implements ActionListener {
 		}
 		else if (action.equals("Edit Contour")){
 			Mode.setMode(Mode.contourMode());
+			menu.setVisible(false);
 		}
 		else if (action.equals("Delete Landmark")){
 			imageModel.deleteLandmarkFromImage(imageModel.getSelectedLandmark());
