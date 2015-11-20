@@ -76,7 +76,11 @@ public class ImageModel extends Model {
 	        
 	        return true;
         }
-        return false;
+        else {
+        	deleteControlPoint(x,y);
+        	return false;
+        }
+        
     }
     
     
