@@ -376,8 +376,7 @@ public class ImageModel extends Model {
     
     /**************************************************************************
     * Deletes All Landmarks
-    *
-    *
+    * loops through landmarks list and deletes one by one.
     *************************************************************************/
     public void deleteAllLandmark(){
     	Vector<Landmark> visibleLandmarks = getLandmarks();
