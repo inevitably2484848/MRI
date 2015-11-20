@@ -65,7 +65,14 @@ public class SelectContextMenu {
 			menu.addMenuItem("Edit Contour", actionListener);
 		}
 		if(imageModel.getSelectedLandmark() != null){
+			menu.addLabel(imageModel.getSelectedLandmark().getType().toString());
+			menu.add(new MySeparator());
 			menu.addMenuItem("Delete Landmark", actionListener);
+			menu.addMenuItem("Delete All Landmarks", actionListener);
+			menu.addMenuItem("Hide Landmark", actionListener);
+			menu.addMenuItem("Hide All Landmarks", actionListener);
+			menu.addMenuItem("Un-Hide All Landmarks", actionListener);
+			menu.add(new MySeparator());
 		}
 		
 		
