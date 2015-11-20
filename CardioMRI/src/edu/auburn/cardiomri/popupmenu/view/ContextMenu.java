@@ -201,7 +201,7 @@ public class ContextMenu extends JPopupMenu implements MouseListener{
 	}
 	
 	/**************************************************************************
-	 *  MouseListener arms and disarms menu items and opens submenus
+	 * MouseListener arms and disarms menu items and opens submenus
 	 *  
 	 * mouseEntered: Arms and opens popups
 	 * mouseExited: disArms and closes popups
@@ -213,7 +213,6 @@ public class ContextMenu extends JPopupMenu implements MouseListener{
 		if(e.getComponent().getClass().getSimpleName().equalsIgnoreCase("JMenu")){
 			((JMenu)e.getSource()).setArmed(true);
 			((JMenu)e.getSource()).setPopupMenuVisible(true);
-
 		}
 		if(e.getComponent().getClass().getSimpleName().equalsIgnoreCase("JMenuItem")){
 			((JMenuItem)e.getSource()).setArmed(true);
@@ -223,7 +222,6 @@ public class ContextMenu extends JPopupMenu implements MouseListener{
 	
 	@Override
 	public void mouseExited(MouseEvent e) {
-		
 		if(e.getComponent().getClass().getSimpleName().equalsIgnoreCase("JMENU")){
 			((JMenu)e.getSource()).setArmed(false);
 			((JMenu)e.getSource()).setPopupMenuVisible(false);
@@ -231,17 +229,14 @@ public class ContextMenu extends JPopupMenu implements MouseListener{
 		if(e.getComponent().getClass().getSimpleName().equalsIgnoreCase("JMENUITEM")) {
 			((JMenuItem)e.getSource()).setArmed(false);
 		}
-		
 	}
-	
+
 	// NOT USED
 	@Override
 	public void mouseClicked(MouseEvent e) { }
 
-
 	@Override
 	public void mousePressed(MouseEvent e) {  }
-
 
 	@Override
 	public void mouseReleased(MouseEvent e) { }
