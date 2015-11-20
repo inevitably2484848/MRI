@@ -23,6 +23,7 @@ public class ImageModel extends Model {
     protected Landmark selectedLandmark;
     protected Landmark activeLandmark;
     protected List<Contour> hiddenContours;
+    protected List<Landmark> hiddenLandmarks;
     
 
     public ImageModel() {
@@ -442,7 +443,30 @@ public class ImageModel extends Model {
         setChanged();
         notifyObservers(dImage);
     }
-
+    public void hideSelectedLandmark(){
+    	if (selectedLandmark == null){
+    		return;
+    	}
+    	hiddenLandmarks.add(selectedLandmark);
+    	selectedLandmark = null;
+    	
+    	setChanged();
+    	notifyObservers(dImage);
+    		
+    }
+    public void hideAllLandmarks(){
+    	hiddenLandmarks.addAll(getVisibleLandmarks());
+    	selectedLandmark = null;
+    	
+    	setChanged();
+    	notifyObservers(dImage);
+    }
+    public void showAllLandmarks(){
+    	hiddenLandmarks.clear();
+    	
+    	setChanged();
+    	notifyObservers(dImage);
+    }
     /**
      * Sets all contours as visible.
      */
