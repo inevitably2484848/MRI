@@ -2148,11 +2148,11 @@ System.err.println("SingleImagePanel.paintComponent(): is 3 component");
 
 //long drawAnnotationsTime = System.currentTimeMillis();
 		Color interactiveColor = Color.red;
-		Color persistentColor = Color.green;
+		Color persistentColor = Color.orange;
 		Color selectedColor = Color.red;
-		Color localizerColor = Color.green;
+		Color localizerColor = Color.white;
 		Color volumeLocalizationColor = Color.blue;
-		Color preDefinedColor = Color.yellow;
+		Color preDefinedColor = Color.blue;
 		Color perFrameDrawingColor = Color.red;
 		int lineWidth = 2;	// in display (not source image) pixels
 		Font preDefinedFont = new Font("SansSerif",Font.BOLD,14);

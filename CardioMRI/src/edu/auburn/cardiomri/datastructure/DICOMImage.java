@@ -729,9 +729,24 @@ public class DICOMImage implements Serializable {
         this.contours.add(contour);
     }
     public void addLandmark(Landmark landmark){
-    	this.landmarks.add(landmark);
+    	if(landmark.getType() == null){
+    		return;
+    	}
+    	if(landmarks.contains(landmark)){
+    		landmarks.set(landmarks.indexOf(landmark), landmark);
+    		//System.out.println("landmark already in");
+    	}
+    	else{
+    		this.landmarks.add(landmark);
+    	}
     }
- 
+    public boolean deleteLandmark(Landmark landmark){
+    	if(landmarks.contains(landmark)){
+    		landmarks.remove(landmarks.indexOf(landmark));
+    		return true;
+    	}
+    	else return false;
+    }
     public Vector<Landmark> getLandmarks(){
     	return this.landmarks;
     }

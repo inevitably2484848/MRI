@@ -1,6 +1,12 @@
 package edu.auburn.cardiomri.datastructure;
 
+import java.awt.Color;
+
 public class TensionPoint extends Point {
+	boolean isSelected = false;
+	
+	static Color selectedTensionPointColor = Color.RED;
+	static Color selectedContourColor = Color.BLUE;
 	
 	private ControlPoint cPoint;
 	
@@ -13,6 +19,7 @@ public class TensionPoint extends Point {
 		super(x, y);
 	}
 	
+<<<<<<< HEAD
 	public ControlPoint getControlPoint() {
 		return this.cPoint;
 	}
@@ -21,4 +28,34 @@ public class TensionPoint extends Point {
 		this.cPoint = cPoint;
 	}
 	
+=======
+	public Color getColor() {
+		if (this.isSelected) {
+			return TensionPoint.selectedTensionPointColor;
+		}
+		else {
+			return TensionPoint.selectedContourColor;
+		}
+	}
+	
+	public boolean isSelected() {
+		return this.isSelected;
+	}
+	
+	public void isSelected(boolean b) {
+		this.isSelected = b;
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof TensionPoint) {
+			TensionPoint tp = (TensionPoint)obj;
+			if (tp.getX() == this.getX() &&
+				tp.getY() == this.getY()) {
+				return true;
+			}
+		}
+		return false;
+	}
+>>>>>>> dev
 }
