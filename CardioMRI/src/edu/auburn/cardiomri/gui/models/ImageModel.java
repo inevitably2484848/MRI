@@ -4,13 +4,11 @@ import java.awt.event.ActionEvent;
 import java.util.List;
 import java.util.Vector;
 
-import javafx.geometry.Point2D;
 import edu.auburn.cardiomri.datastructure.Contour;
 import edu.auburn.cardiomri.datastructure.DICOMImage;
 import edu.auburn.cardiomri.datastructure.Landmark;
 import edu.auburn.cardiomri.datastructure.Point;
 import edu.auburn.cardiomri.datastructure.TensionPoint;
-import edu.auburn.cardiomri.datastructure.Vector3d;
 import edu.auburn.cardiomri.util.ContourCalc;
 import edu.auburn.cardiomri.util.Mode;
 import edu.auburn.cardiomri.datastructure.ControlPoint;
@@ -306,6 +304,9 @@ public class ImageModel extends Model {
     		if (newSelectedContour == selectedContour) { // tension point in currently selected contour
     			selectedTensionPoint = (TensionPoint) nearestPoint;
     			selectedTensionPoint.isSelected(true);
+    			
+    			selectedControlPoint = selectedTensionPoint.getControlPoint();
+    			selectedControlPoint.isSelected(true);
     			System.out.println("contour tension point selected");
     		}
     		else {	// tension point in unselected contour
@@ -706,5 +707,9 @@ public class ImageModel extends Model {
 	
 	public void setControlPointLocked(boolean b) {
 		selectedControlPoint.setLock(b);
+	}
+	
+	public void moveContour(double x, double y, Point point) {
+		selectedContour.moveContour(x, y, point);
 	}
 }

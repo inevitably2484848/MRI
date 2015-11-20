@@ -191,6 +191,11 @@ public final class ContourCalc {
  		double distanceBX = b.getTension1().getX() - a.getTension2().getX();
  		double distanceBY = b.getTension1().getY() - a.getTension2().getY();
  		
+ 		if(distanceBX == 0 || distanceBY == 0) {
+ 			distanceBX = 0.1;
+ 			distanceBY = 0.1;
+ 		}
+ 		
  		//calculates the distance vector to the second control point from the second tension
  		double distanceCX = b.getX() - b.getTension1().getX();
  		double distanceCY = b.getY() - b.getTension1().getY();
