@@ -593,7 +593,7 @@ public class ImageModel extends Model {
 
         hiddenContours.add(selectedContour);
         selectedContour = null;
-
+        
         setChanged();
         notifyObservers(dImage);
     }
@@ -682,5 +682,13 @@ public class ImageModel extends Model {
 	public void arrowAction(ActionEvent e) {
 		setChanged();
 		notifyObservers(e);
+	}
+	
+	public boolean isControlPointLocked() {
+		return selectedControlPoint.getLock();
+	}
+	
+	public void setControlPointLocked(boolean b) {
+		selectedControlPoint.setLock(b);
 	}
 }

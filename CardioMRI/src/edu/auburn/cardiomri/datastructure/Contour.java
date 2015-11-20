@@ -452,10 +452,12 @@ public class Contour implements Shape, Serializable {
 		 point.setY(y);
     	 
 		 //send the partner tension point
-		 if(index == 1) {
-			 alignTensionPoint(x, y, point.getControlPoint().getTension2());
-		 } else {
-			 alignTensionPoint(x, y, point.getControlPoint().getTension1());
+		 if(point.getControlPoint().getLock()){
+			 if(index == 1) {
+				 alignTensionPoint(x, y, point.getControlPoint().getTension2());
+			 } else {
+				 alignTensionPoint(x, y, point.getControlPoint().getTension1());
+			 }
 		 }
 		 
     	 generatedPoints = ContourCalc.generate(controlPoints, isClosedCurve());
