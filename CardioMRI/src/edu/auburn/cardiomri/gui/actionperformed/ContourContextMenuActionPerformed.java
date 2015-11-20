@@ -39,7 +39,7 @@ public class ContourContextMenuActionPerformed implements ActionListener {
 		else if(actionCommand.equalsIgnoreCase("Lock Point (need Point Locked)")){
 			
 		}
-		else if(actionCommand.equalsIgnoreCase("Unlock Point (need Point Locked)")){
+		else if(actionCommand.equalsIgnoreCase("Unlock Point")){
 			
 		}
 		else if(actionCommand.equalsIgnoreCase("Delete Point")){
