@@ -113,6 +113,10 @@ public class MenuBarContourActionPerformed implements ActionListener {
 			if(getImageModel().getSelectedLandmark() != null){
 				getImageModel().deleteLandmarkFromImage(getImageModel().getSelectedLandmark());
 			}
+			else{
+				JOptionPane.showMessageDialog(imageContourPanel,
+                "Please select a landmark to delete."); 
+			}
 			
 			
 		}
@@ -120,7 +124,13 @@ public class MenuBarContourActionPerformed implements ActionListener {
 			getImageModel().deleteAllLandmark();
 		}
 		else if(actionCommand.equals("Hide Landmark")){
-			getImageModel().hideSelectedLandmark();
+			if(getImageModel().getSelectedLandmark() != null){
+				getImageModel().hideSelectedLandmark();
+			}
+			else{
+				JOptionPane.showMessageDialog(imageContourPanel,
+                "Please select a landmark to hide."); 
+			}
 			
 		}
 		

@@ -105,31 +105,25 @@ public class StartView extends View {
         }
     }
 
+    
     /**
      * Opens a JFileChooser that allows the user to select a Directory, which
      * will then be iterated through to generate a new Study object.
      *
      */
     public void createNewStudy() {
-    	
-    	//commented a bunch of stuff out for testing
-    	//when finished testing uncomment and delete testing stuff
-        //fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);  // **
+        fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 
-        //int returnVal = fileChooser.showOpenDialog(this.panel); //**
-        boolean x = true; //testing remove later
-        if(x == true) {  //testing remove later
-        //if (returnVal == JFileChooser.APPROVE_OPTION) { //**
-        	
-           // String directory = fileChooser.getSelectedFile().getAbsolutePath(); //**
-            
-            Path path = Paths.get(System.getProperty("user.dir") + "/res/SCCOR/05DAC002/BAS");
-            
-            
+        int returnVal = fileChooser.showOpenDialog(this.panel);
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+
+            String directory = fileChooser.getSelectedFile().getAbsolutePath();
+            Path path = Paths.get(directory);
+
             DICOMFileTreeWalker fileTreeWalker = new DICOMFileTreeWalker();
 
             Study study = fileTreeWalker.addFileTreeToStudy(path, new Study());
-            
+
             this.getStartModel().setStudy(study);
         } else {
             // System.out.println("FileChooser : Canceled choosing directory");
