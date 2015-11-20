@@ -31,6 +31,8 @@ public class ContourContextMenuActionPerformed implements ActionListener {
 			Mode.setMode(Mode.selectMode());
 		}
 		else if(actionCommand.equalsIgnoreCase("Hide Contour")){
+			System.out.println(imageModel.getSelectedContour().toString());
+			
 			imageModel.hideSelectedContour();
 			Mode.setMode(Mode.selectMode());
 		}
