@@ -81,9 +81,9 @@ public class SelectView extends View {
         String actionCommand = event.getActionCommand();
 
         if (actionCommand.equals(CONTINUE)) {
-        	getModel().setShortAxis(7);   //*  TESTING REMOVE 
-        	getModel().setTwoChamber(5);  //*  TESTING REMOVE 
-        	getModel().setFourChamber(6); //*  TESTING REMOVE 
+//        	getModel().setShortAxis(7);   //*  TESTING REMOVE 
+//        	getModel().setTwoChamber(5);  //*  TESTING REMOVE 
+//        	getModel().setFourChamber(6); //*  TESTING REMOVE 
             if (!getModel().validateStudy()) {
                 // TODO: Show a dialog box with the error
             }
@@ -92,13 +92,13 @@ public class SelectView extends View {
 
             if (actionCommand.equals(SHORT_AXIS)) {
             	
-                //getModel().setShortAxis(comboBox.getSelectedIndex());
+                getModel().setShortAxis(comboBox.getSelectedIndex());
             } else if (actionCommand.equals(TWO_CHAMBER)) {
             	
-                //getModel().setTwoChamber(comboBox.getSelectedIndex());
+                getModel().setTwoChamber(comboBox.getSelectedIndex());
             } else if (actionCommand.equals(FOUR_CHAMBER)) {
             	
-                //getModel().setFourChamber(comboBox.getSelectedIndex());
+                getModel().setFourChamber(comboBox.getSelectedIndex());
             }
         }
 
