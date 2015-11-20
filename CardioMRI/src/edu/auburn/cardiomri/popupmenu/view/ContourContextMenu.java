@@ -36,17 +36,17 @@ public class ContourContextMenu  {
 		if(imageModel.getSelectedContour() != null){
 			contourPop.addLabel(imageModel.getSelectedContour().toString());
 			contourPop.add(new MySeparator());
-			
-			if(imageModel.getSelectedControlPoint() != null){
-				contourPop.addMenuItem("Delete Point", contextMenuListener);
-				if( imageModel.isControlPointLocked()) {
-					contourPop.addMenuItem("Unlock Smooth", contextMenuListener);
-				}
-				else{
-					contourPop.addMenuItem("Lock Smooth", contextMenuListener);
-				}
-				
-			}
+// Not editing points in contour mode			
+//			if(imageModel.getSelectedControlPoint() != null){
+//				contourPop.addMenuItem("Delete Point", contextMenuListener);
+//				if( imageModel.isControlPointLocked()) {
+//					contourPop.addMenuItem("Unlock Smooth", contextMenuListener);
+//				}
+//				else{
+//					contourPop.addMenuItem("Lock Smooth", contextMenuListener);
+//				}
+//				
+//			}
 			
 			contourPop.addMenuItem("Delete Contour", contextMenuListener);
 			contourPop.addMenuItem("Hide Contour", contextMenuListener);

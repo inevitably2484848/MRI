@@ -38,6 +38,13 @@ public class ContourContextMenuActionPerformed implements ActionListener {
 			Mode.setMode(Mode.selectMode());
 			GridControlView.depressToggles();
 		}
+		else if(actionCommand.equalsIgnoreCase("Hide All Contours")){
+			System.out.println(imageModel.getSelectedContour().toString());
+			
+			imageModel.hideAllContours();
+			Mode.setMode(Mode.selectMode());
+			GridControlView.depressToggles();
+		}
 		else if(actionCommand.equalsIgnoreCase("Lock Smooth")){
 			imageModel.setControlPointLocked(true);
 		}
