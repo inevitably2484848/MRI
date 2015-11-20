@@ -304,6 +304,9 @@ public class ImageModel extends Model {
     		if (newSelectedContour == selectedContour) { // tension point in currently selected contour
     			selectedTensionPoint = (TensionPoint) nearestPoint;
     			selectedTensionPoint.isSelected(true);
+    			
+    			selectedControlPoint = selectedTensionPoint.getControlPoint();
+    			selectedControlPoint.isSelected(true);
     			System.out.println("contour tension point selected");
     		}
     		else {	// tension point in unselected contour

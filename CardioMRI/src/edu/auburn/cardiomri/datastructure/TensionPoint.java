@@ -6,7 +6,7 @@ public class TensionPoint extends Point {
 	boolean isSelected = false;
 	boolean isVisible = true;
 	
-	static Color selectedTensionPointColor = Color.RED;
+	static Color selectedTensionPointColor = Color.BLUE;
 	static Color selectedContourColor = Color.BLUE;
 	
 	private ControlPoint cPoint;
