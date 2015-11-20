@@ -101,6 +101,8 @@ public final class ContourUtilities {
                     	{
                     		controlPoint.setTension1(tensionPoints.get(tensionPointIdx));
                     		controlPoint.setTension2(tensionPoints.get(tensionPointIdx+1));
+                    		controlPoint.getTension1().setControlPoint(controlPoint);
+                    		controlPoint.getTension2().setControlPoint(controlPoint);
                     		tensionPointIdx += 2;
                     	}
                     	

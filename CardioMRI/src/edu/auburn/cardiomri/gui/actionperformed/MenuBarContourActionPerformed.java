@@ -109,7 +109,29 @@ public class MenuBarContourActionPerformed implements ActionListener {
                 e1.printStackTrace();
             }
         }
-
+		else if (actionCommand.equals("Delete Landmark")){
+			if(getImageModel().getSelectedLandmark() != null){
+				getImageModel().deleteLandmarkFromImage(getImageModel().getSelectedLandmark());
+			}
+			
+			
+		}
+		else if(actionCommand.equals("Delete All Landmarks")){
+			getImageModel().deleteAllLandmark();
+		}
+		else if(actionCommand.equals("Hide Landmark")){
+			getImageModel().hideSelectedLandmark();
+			
+		}
+		
+		else if(actionCommand.equals("Hide All Landmarks")){
+			getImageModel().hideAllLandmarks();
+			
+		}
+		else if(actionCommand.equals("Un-Hide All Landmarks")){
+			getImageModel().showAllLandmarks();
+			
+		}
 		
 		
 	}

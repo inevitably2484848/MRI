@@ -4,6 +4,7 @@ import java.awt.Color;
 
 public class ControlPoint extends Point{
 	boolean isSelected = false;
+	boolean isLocked = true;
 	
 	static Color pointSelectedColor = Color.RED;
 	static Color contourSelectedColor = Color.ORANGE;
@@ -14,8 +15,8 @@ public class ControlPoint extends Point{
 	
 	public ControlPoint(double x, double y) {
 		super(x, y);
-		tPoint1 = new TensionPoint(0.0, 0.0);
-		tPoint2 = new TensionPoint(0.0, 0.0);
+		tPoint1 = new TensionPoint(0.0, 0.0, this);
+		tPoint2 = new TensionPoint(0.0, 0.0, this);
 	}
 	
 	public TensionPoint getTension1() {
@@ -64,5 +65,13 @@ public class ControlPoint extends Point{
 	
 	public void isSelected(boolean b) {
 		this.isSelected = b;
+	}
+	
+	public void setLock(boolean b) {
+		this.isLocked = b;
+	}
+	
+	public boolean getLock() {
+		return this.isLocked;
 	}
 }

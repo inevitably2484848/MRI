@@ -33,6 +33,7 @@ import edu.auburn.cardiomri.gui.actionperformed.ContourTypeActionPerformed;
 import edu.auburn.cardiomri.gui.actionperformed.LandmarkTypeActionPerformed;
 import edu.auburn.cardiomri.gui.actionperformed.MenuBarContourActionPerformed;
 import edu.auburn.cardiomri.gui.actionperformed.MenuBarFileActionPerformed;
+import edu.auburn.cardiomri.gui.actionperformed.SelectContextMenuActionPerformed;
 import edu.auburn.cardiomri.gui.models.GridModel;
 import edu.auburn.cardiomri.gui.models.ImageModel;
 import edu.auburn.cardiomri.gui.models.SelectModel;
@@ -412,6 +413,15 @@ public class WorkspaceView extends View {
         contours.add(addMenuItem("Show Contours",menuBarContour));
         contours.add(addMenuItem("Hide Contours",menuBarContour));
         
+        //------ Landmark -----------------------------------------------------
+        MenuBarContourActionPerformed menuBarLandmark = 
+        		new MenuBarContourActionPerformed(this);
+        JMenu lmMenu = new JMenu("Landmarks");
+        lmMenu.add(addMenuItem("Delete Landmark", menuBarLandmark));
+        lmMenu.add(addMenuItem("Delete All Landmarks", menuBarLandmark));
+        lmMenu.add(addMenuItem("Hide Landmark", menuBarLandmark));
+        lmMenu.add(addMenuItem("Hide All Landmarks", menuBarLandmark));
+        lmMenu.add(addMenuItem("Un-Hide All Landmarks", menuBarLandmark));
 
         // ----- Rotate -------------------------------------------------------
         JMenu rotate = new JMenu("Rotate");
@@ -427,6 +437,7 @@ public class WorkspaceView extends View {
         menuBar.add(fileMenu);
         menuBar.add(add);
         menuBar.add(contours);
+        menuBar.add(lmMenu);
         menuBar.add(rotate);
 
         appFrame.setJMenuBar(menuBar);
