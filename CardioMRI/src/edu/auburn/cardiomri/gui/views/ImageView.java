@@ -414,15 +414,20 @@ public class ImageView extends SingleImagePanel implements ActionListener,
     	
         if(!lmrkMode) {
         	if (clickedPoint != null && clickedPoint.getClass() == ControlPoint.class) {
-        		if (this.controlPressed) {
+        		if (this.controlPressed) {	// translate entire contour with control+drag
         			getImageModel().moveContour(mouseClick.getX(), mouseClick.getY(), clickedPoint);
         		}
-        		else {
+        		else {	// move single control point without control pressed
         			getImageModel().getSelectedContour().moveContourPoint(mouseClick.getX(), mouseClick.getY(), (ControlPoint)clickedPoint);
         		}
         	}
         	else if (clickedPoint != null && clickedPoint.getClass() == TensionPoint.class) {
-        		getImageModel().getSelectedContour().moveTensionPoint(mouseClick.getX(), mouseClick.getY(), (TensionPoint)clickedPoint);
+        		if (this.controlPressed) {	// translate entire contour with control+drag
+        			getImageModel().moveContour(mouseClick.getX(), mouseClick.getY(), clickedPoint);
+        		}
+        		else {	// move single tension point without control pressed
+        			getImageModel().getSelectedContour().moveTensionPoint(mouseClick.getX(), mouseClick.getY(), (TensionPoint)clickedPoint);
+        		}
         	}
         	else if (clickedPoint != null && clickedPoint.getClass() == Landmark.class) {
         		((Landmark) clickedPoint).moveLandmark(mouseClick.getX(),mouseClick.getY());
@@ -430,16 +435,6 @@ public class ImageView extends SingleImagePanel implements ActionListener,
         	else {
         		super.mouseDragged(e);
         	}
-        	/*if(cPointD >= 0) {
-        		getImageModel().getSelectedContour().moveContourPoint(mouseClick.getX(), mouseClick.getY(), cPointD);
-        	}
-        	else if(tPointD >= 0) {
-        		getImageModel().getSelectedContour().moveTensionPoint(mouseClick.getX(), mouseClick.getY(), tPointD);	
-        	}
-        	else {
-        		super.mouseDragged(e);
-        		//add this code to the landmark drag when created
-        	}*/
         	
         	// Forces updating of control and tension points during dragging
         	this.redraw();
