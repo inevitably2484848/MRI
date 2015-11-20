@@ -609,7 +609,10 @@ public class ImageModel extends Model {
      * Sets all contours as visible.
      */
     public void showAllContours() {
-        hiddenContours.clear();
+        for(Contour contour : hiddenContours){
+        	contour.isVisible(true);
+        }
+    	hiddenContours.clear();
 
         setChanged();
         notifyObservers(dImage);
