@@ -590,7 +590,7 @@ public class ImageModel extends Model {
 
         hiddenContours.add(selectedContour);
         selectedContour = null;
-
+        
         setChanged();
         notifyObservers(dImage);
     }

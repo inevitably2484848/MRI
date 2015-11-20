@@ -36,11 +36,11 @@ public class ContourContextMenuActionPerformed implements ActionListener {
 			imageModel.hideSelectedContour();
 			Mode.setMode(Mode.selectMode());
 		}
-		else if(actionCommand.equalsIgnoreCase("Lock Point (need Point Locked)")){
-			
+		else if(actionCommand.equalsIgnoreCase("Lock Point")){
+			imageModel.setControlPointLocked(true);
 		}
-		else if(actionCommand.equalsIgnoreCase("Unlock Point (need Point Locked)")){
-			
+		else if(actionCommand.equalsIgnoreCase("Unlock Point")){
+			imageModel.setControlPointLocked(false);
 		}
 		else if(actionCommand.equalsIgnoreCase("Delete Point")){
 
