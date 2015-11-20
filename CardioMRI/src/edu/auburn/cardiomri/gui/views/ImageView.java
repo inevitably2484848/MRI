@@ -344,7 +344,7 @@ public class ImageView extends SingleImagePanel implements ActionListener,
     	else { 
     		// SELECT MODE
     		 if (SwingUtilities.isLeftMouseButton(e)) {
-    			 getImageModel().selectClosestAnnotation(mouseClick.getX(), mouseClick.getY());
+    			 getImageModel().selectClosestAnnotationWithinRange(mouseClick.getX(), mouseClick.getY(), 30);
     	     } 
     		 else if(SwingUtilities.isRightMouseButton(e)){
     			 selectCM = new SelectContextMenu(getImageModel());
@@ -433,7 +433,7 @@ public class ImageView extends SingleImagePanel implements ActionListener,
     	java.awt.geom.Point2D mouseClick = getImageCoordinateFromWindowCoordinate(e.getX(), e.getY());
     	
     	clickedPoint = getImageModel().findNearestPointWithinRange(mouseClick.getX(), mouseClick.getY(), 3);
-    	getImageModel().selectClosestAnnotation(mouseClick.getX(), mouseClick.getY());
+    	getImageModel().selectClosestAnnotationWithinRange(mouseClick.getX(), mouseClick.getY(), 15);
     	super.mousePressed(e);
     	
     	this.panel.requestFocusInWindow();
