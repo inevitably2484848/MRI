@@ -430,10 +430,14 @@ public class ImageView extends SingleImagePanel implements ActionListener,
 
     public void mousePressed(MouseEvent e) {
 
-    	java.awt.geom.Point2D mouseClick = getImageCoordinateFromWindowCoordinate(e.getX(), e.getY());
+    	if (Mode.getMode() == Mode.selectMode()) {
+ 
+	    	java.awt.geom.Point2D mouseClick = getImageCoordinateFromWindowCoordinate(e.getX(), e.getY());
+	    	
+	    	clickedPoint = getImageModel().findNearestPointWithinRange(mouseClick.getX(), mouseClick.getY(), 3);
+	    	getImageModel().selectClosestAnnotationWithinRange(mouseClick.getX(), mouseClick.getY(), 15);
+    	}
     	
-    	clickedPoint = getImageModel().findNearestPointWithinRange(mouseClick.getX(), mouseClick.getY(), 3);
-    	getImageModel().selectClosestAnnotationWithinRange(mouseClick.getX(), mouseClick.getY(), 15);
     	super.mousePressed(e);
     	
     	this.panel.requestFocusInWindow();
