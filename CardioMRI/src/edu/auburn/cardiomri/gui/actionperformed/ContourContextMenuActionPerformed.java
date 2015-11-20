@@ -38,10 +38,10 @@ public class ContourContextMenuActionPerformed implements ActionListener {
 			Mode.setMode(Mode.selectMode());
 			GridControlView.depressToggles();
 		}
-		else if(actionCommand.equalsIgnoreCase("Lock Point")){
+		else if(actionCommand.equalsIgnoreCase("Lock Smooth")){
 			imageModel.setControlPointLocked(true);
 		}
-		else if(actionCommand.equalsIgnoreCase("Unlock Point")){
+		else if(actionCommand.equalsIgnoreCase("Unlock Smooth")){
 			imageModel.setControlPointLocked(false);
 		}
 		else if(actionCommand.equalsIgnoreCase("Delete Point")){

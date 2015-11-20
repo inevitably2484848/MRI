@@ -49,6 +49,10 @@ public class SelectContextMenuActionPerformed implements ActionListener {
 			Mode.setMode(Mode.contourMode());
 			menu.setVisible(false);
 		}
+
+		else if(action.equals("Un-Hide Contours")){
+			imageModel.showAllContours();
+		}
 		else if (action.equals("Delete Landmark")){
 			if(imageModel.getSelectedLandmark() != null){
 				imageModel.deleteLandmarkFromImage(imageModel.getSelectedLandmark());
@@ -71,6 +75,7 @@ public class SelectContextMenuActionPerformed implements ActionListener {
 			imageModel.showAllLandmarks();
 			menu.setVisible(false);
 		}
+		menu.setVisible(false);
 	}
 
 }

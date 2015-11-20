@@ -475,13 +475,16 @@ public class ImageModel extends Model {
     
    
     /**************************************************************************
+     * ************************************************************************
      *  LANDMARK
      * 
+     * ************************************************************************
      *************************************************************************/
     public void addLandmarkToImage(Landmark landmark){
     	if (selectedLandmark != null) {
     		selectedLandmark.isSelected(false);
     	}
+    	
     	
     	this.dImage.addLandmark(landmark);
     	setChanged();
@@ -561,6 +564,10 @@ public class ImageModel extends Model {
     	setChanged();
     	notifyObservers(dImage);
     }
+    
+    public List<Landmark> getHiddenLandmarks(){
+    	return this.hiddenLandmarks;
+    }
     /**************************************************************************
      *  CONTROL POINTS
      *************************************************************************/
@@ -600,6 +607,11 @@ public class ImageModel extends Model {
      */
     public void hideAllContours() {
         hiddenContours.addAll(getVisibleContours());
+        
+        for(Contour contour : hiddenContours){
+        	contour.isSelected(false);
+        	contour.isVisible(false);
+        }
         selectedContour = null;
         setChanged();
         notifyObservers(dImage);

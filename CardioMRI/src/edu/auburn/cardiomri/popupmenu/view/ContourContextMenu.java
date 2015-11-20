@@ -40,10 +40,10 @@ public class ContourContextMenu  {
 		if(imageModel.getSelectedControlPoint() != null){
 			contourPop.addMenuItem("Delete Point", contextMenuListener);
 			if( imageModel.isControlPointLocked()) {
-				contourPop.addMenuItem("Unlock Point", contextMenuListener);
+				contourPop.addMenuItem("Unlock Smooth", contextMenuListener);
 			}
 			else{
-				contourPop.addMenuItem("Lock Point", contextMenuListener);
+				contourPop.addMenuItem("Lock Smooth", contextMenuListener);
 			}
 			
 		}

@@ -8,6 +8,7 @@ import javax.swing.JMenuItem;
 
 import edu.auburn.cardiomri.datastructure.Contour;
 import edu.auburn.cardiomri.datastructure.Landmark;
+import edu.auburn.cardiomri.gui.actionperformed.ContourContextMenuActionPerformed;
 import edu.auburn.cardiomri.gui.actionperformed.ContourTypeActionPerformed;
 import edu.auburn.cardiomri.gui.actionperformed.LandmarkTypeActionPerformed;
 import edu.auburn.cardiomri.gui.actionperformed.SelectContextMenuActionPerformed;
@@ -29,7 +30,7 @@ public class SelectContextMenu {
 
 	private  ContourTypeActionPerformed contourType;
 	private  LandmarkTypeActionPerformed landmarkType;
-	
+	private  ContourContextMenuActionPerformed contourCMListener;
 	private  JMenu add = new JMenu("Add");
 	private  JMenu contour = new JMenu("Contour");
 	private  JMenu landmark = new JMenu("Landmark");
@@ -47,6 +48,7 @@ public class SelectContextMenu {
 		this.imageModel = imageModel;
 		contourType = new ContourTypeActionPerformed(menu, true);
 		landmarkType = new LandmarkTypeActionPerformed(menu, true);
+		contourCMListener = new ContourContextMenuActionPerformed(imageModel, menu);
 		setPopup();
 	}
 	
@@ -60,6 +62,12 @@ public class SelectContextMenu {
 
 		if(imageModel.getSelectedControlPoint() != null){
 			menu.addMenuItem("Delete Point", actionListener);
+			if( imageModel.isControlPointLocked()) {
+				menu.addMenuItem("Unlock Smooth", contourCMListener);
+			}
+			else{
+				menu.addMenuItem("Lock Smooth", contourCMListener);
+			}
 		}
 		if(imageModel.getSelectedContour() != null){
 			menu.addMenuItem("Edit Contour", actionListener);
@@ -71,10 +79,21 @@ public class SelectContextMenu {
 			menu.addMenuItem("Delete All Landmarks", actionListener);
 			menu.addMenuItem("Hide Landmark", actionListener);
 			menu.addMenuItem("Hide All Landmarks", actionListener);
-			menu.addMenuItem("Un-Hide All Landmarks", actionListener);
 			menu.add(new MySeparator());
 		}
 		
+		
+		if(imageModel.getSelectedControlPoint() == null &&
+				imageModel.getSelectedContour() == null &&
+				imageModel.getSelectedLandmark() == null){
+			if(!imageModel.getHiddenContours().isEmpty()){
+				menu.addMenuItem("Un-Hide Contours", actionListener);
+			}
+			if(!imageModel.getHiddenLandmarks().isEmpty()){
+				menu.addMenuItem("Un-Hide All Landmarks", actionListener);
+			}
+		
+		}
 		
 		
 		

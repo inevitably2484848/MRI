@@ -402,18 +402,22 @@ public class ImageView extends SingleImagePanel implements ActionListener,
         this.panel.requestFocusInWindow();
     } // END MOUSE CLICK
     
-    
+    /**************************************************************************
+     *  CLOSE ALL OPEN MENUS
+     *************************************************************************/
     public void closeOpenMenus(){
-    	
-    	System.err.println("Closing Menus");
+  
     	if(selectCM != null && selectCM.isVisible()){
-			 selectCM.setVisible(false);
+			selectCM.setVisible(false);
+    		selectCM= null;
 		 }
     	if(landmarkCM != null && landmarkCM.isVisible()){
 			 landmarkCM.setVisible(false);
+			 landmarkCM = null;
 		 }
     	if(contourCM != null && contourCM.isVisible()){
 			 contourCM.setVisible(false);
+			 contourCM = null;
 		 }
     }
     
