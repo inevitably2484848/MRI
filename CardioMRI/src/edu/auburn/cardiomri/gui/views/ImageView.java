@@ -362,6 +362,7 @@ public class ImageView extends SingleImagePanel implements ActionListener,
     			Mode.setMode(Mode.selectMode());
             	getImageModel().addLandmarkToImage(new Landmark(Mode.getNextLandmarkType(), mouseClick.getX(), mouseClick.getY()));
             	getImageModel().setActiveLandmark(null);
+            	GridControlView.depressToggles();
     		}
     		else if(SwingUtilities.isRightMouseButton(e)){
     			landmarkCM = new LandmarkContextMenu(getImageModel());
