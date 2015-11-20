@@ -532,7 +532,7 @@ public class ImageModel extends Model {
      */
     public void hideSelectedContour() {
         if (selectedContour == null) {
-            // throw NPE?
+            System.err.println("no selected Contour");
             return;
         }
 
