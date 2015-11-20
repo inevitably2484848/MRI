@@ -9,6 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.GeneralPath;
@@ -41,11 +42,12 @@ import edu.auburn.cardiomri.util.Mode;
 import edu.auburn.cardiomri.datastructure.ControlPoint;
 
 public class ImageView extends SingleImagePanel implements ActionListener,
-        ViewInterface, Observer {
+        ViewInterface, Observer, KeyListener {
     protected Model model;
     protected JPanel imageContourPanel, panel, cPanel;
     private static final long serialVersionUID = -6920775905498293695L;
     private boolean lmrkMode = false;
+    private boolean controlPressed = false;
     private Point clickedPoint = null;
     private Vector<Shape> redShapes = new Vector<Shape>();
     private Vector<Shape> orangeShapes = new Vector<Shape>();
@@ -319,6 +321,7 @@ public class ImageView extends SingleImagePanel implements ActionListener,
         panel.add(this);
         panel.setFocusable(true);
         addKeyBindings(panel);
+        panel.addKeyListener(this);
         return panel;
     }
     
@@ -411,8 +414,12 @@ public class ImageView extends SingleImagePanel implements ActionListener,
     	
         if(!lmrkMode) {
         	if (clickedPoint != null && clickedPoint.getClass() == ControlPoint.class) {
-        		//getImageModel().getSelectedContour().moveContourPoint(mouseClick.getX(), mouseClick.getY(), (ControlPoint)clickedPoint);
-        		getImageModel().moveContour(mouseClick.getX(), mouseClick.getY(), clickedPoint);
+        		if (this.controlPressed) {
+        			getImageModel().moveContour(mouseClick.getX(), mouseClick.getY(), clickedPoint);
+        		}
+        		else {
+        			getImageModel().getSelectedContour().moveContourPoint(mouseClick.getX(), mouseClick.getY(), (ControlPoint)clickedPoint);
+        		}
         	}
         	else if (clickedPoint != null && clickedPoint.getClass() == TensionPoint.class) {
         		getImageModel().getSelectedContour().moveTensionPoint(mouseClick.getX(), mouseClick.getY(), (TensionPoint)clickedPoint);
@@ -527,6 +534,30 @@ public class ImageView extends SingleImagePanel implements ActionListener,
                 "Show Contours");
         panel.getActionMap().put("Show Contours",
                 this.new ControlKeyAction("Show Contours", this));
+        
+        panel.getInputMap().put(
+                KeyStroke.getKeyStroke(KeyEvent.VK_F, commandKey),
+                "Show Contours");
+        panel.getActionMap().put("Show Contours",
+                this.new ControlKeyAction("Show Contours", this));
+    }
+    
+    
+    public void keyTyped(KeyEvent e) {
+    }
+
+    
+    public void keyPressed(KeyEvent e) {
+    	if (e.getKeyCode() == KeyEvent.VK_CONTROL) {
+            this.controlPressed = true;
+        }
+    }
+
+    
+    public void keyReleased(KeyEvent e) {
+    	if (e.getKeyCode() == KeyEvent.VK_CONTROL) {
+            this.controlPressed = false;
+        }
     }
 
     /**
@@ -573,7 +604,6 @@ public class ImageView extends SingleImagePanel implements ActionListener,
                     (int) ActionEvent.ACTION_PERFORMED, this.comand));
         }
     }
-
-
-
+    
+    
 }
