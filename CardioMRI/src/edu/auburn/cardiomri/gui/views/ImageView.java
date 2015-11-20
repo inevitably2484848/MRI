@@ -60,7 +60,7 @@ public class ImageView extends SingleImagePanel implements ActionListener,
     
     public ContourContextMenu contourCM;// = ContourContextMenu.popupContextMenu(); //kw
     public LandmarkContextMenu landmarkCM; //LandmarkContextMenu()
-    public SelectContextMenu selectCM; //SelectContextMenu();
+    public SelectContextMenu selectCM ; //SelectContextMenu();
     
 
     
@@ -75,6 +75,8 @@ public class ImageView extends SingleImagePanel implements ActionListener,
     }
     
     public void redraw() {
+
+
     	DICOMImage dImage = getImageModel().getImage();
 
         dirtySource(new ConstructImage(dImage));
@@ -357,7 +359,7 @@ public class ImageView extends SingleImagePanel implements ActionListener,
     public void mouseClicked(MouseEvent e) {
 
     	int mode = Mode.getMode(); //kw
-    	
+    	closeOpenMenus();
     	//System.out.println("MODE : " + mode);
     	
     	java.awt.geom.Point2D mouseClick =  getImageCoordinateFromWindowCoordinate(e.getX(), e.getY());
@@ -371,6 +373,7 @@ public class ImageView extends SingleImagePanel implements ActionListener,
     		}
     		else if(SwingUtilities.isRightMouseButton(e)){
     			contourCM = new ContourContextMenu(getImageModel()); //open context menu
+
     		}
     	} 
     	else if (mode == 2){ 
@@ -382,7 +385,7 @@ public class ImageView extends SingleImagePanel implements ActionListener,
             	GridControlView.depressToggles();
     		}
     		else if(SwingUtilities.isRightMouseButton(e)){
-    			landmarkCM = new LandmarkContextMenu(getImageModel());
+    	    	landmarkCM = new LandmarkContextMenu(getImageModel());
     		}
     		
     	}
@@ -399,13 +402,28 @@ public class ImageView extends SingleImagePanel implements ActionListener,
         this.panel.requestFocusInWindow();
     } // END MOUSE CLICK
     
+    
+    public void closeOpenMenus(){
+    	
+    	System.err.println("Closing Menus");
+    	if(selectCM != null && selectCM.isVisible()){
+			 selectCM.setVisible(false);
+		 }
+    	if(landmarkCM != null && landmarkCM.isVisible()){
+			 landmarkCM.setVisible(false);
+		 }
+    	if(contourCM != null && contourCM.isVisible()){
+			 contourCM.setVisible(false);
+		 }
+    }
+    
     /**************************************************************************
      * MouseMoved checks and see if cursor is in the contextmenus.
      * if mouse is not the in the same range as a menu close menu
      * @param MouseEvent
      *************************************************************************/
     public void mouseMoved(MouseEvent e){
-
+    	
     	if(contourCM != null && !(contourCM.isInBox())){
     		contourCM.setVisible(false);
     	}

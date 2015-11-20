@@ -63,6 +63,9 @@ public class ContourContextMenu  {
 	public void setVisible(boolean b){
 		contourPop.setVisible(b);
 	}
+	public boolean isVisible(){
+		return contourPop.isVisible();
+	}
 	public  Dimension getSize(){
 		return contourPop.getSize();
 	}

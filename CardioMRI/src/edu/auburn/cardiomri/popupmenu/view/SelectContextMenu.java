@@ -124,6 +124,10 @@ public class SelectContextMenu {
 		menu.setVisible(b);
 	}
 	
+	public boolean isVisible(){
+		return menu.isVisible();
+	}
+	
 
 
 
