@@ -55,13 +55,19 @@ public class SelectContextMenu {
 	 * 
 	 *************************************************************************/
 	public  ContextMenu setPopup() {
-		actionListener = new SelectContextMenuActionPerformed(imageModel);
+		actionListener = new SelectContextMenuActionPerformed(imageModel,menu);
 		menu.setLocation();
 
 		if(imageModel.getSelectedControlPoint() != null){
-//			menu.addMenuItem("Delete Point", actionListener);
-			menu.addMenuItem("Edit Contour (Can we find what contour the point is on?)", actionListener);
+			menu.addMenuItem("Delete Point", actionListener);
 		}
+		if(imageModel.getSelectedContour() != null){
+			menu.addMenuItem("Edit Contour", actionListener);
+		}
+		if(imageModel.getSelectedLandmark() != null){
+			menu.addMenuItem("Delete Landmark", actionListener);
+		}
+		
 		
 		
 		
