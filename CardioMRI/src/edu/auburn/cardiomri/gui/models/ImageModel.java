@@ -692,7 +692,7 @@ public class ImageModel extends Model {
 		selectedControlPoint.setLock(b);
 	}
 	
-	public void moveContour(double x, double y) {
-		selectedContour.moveContour(x, y);
+	public void moveContour(double x, double y, Point point) {
+		selectedContour.moveContour(x, y, point);
 	}
 }

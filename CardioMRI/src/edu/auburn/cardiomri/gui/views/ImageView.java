@@ -412,7 +412,7 @@ public class ImageView extends SingleImagePanel implements ActionListener,
         if(!lmrkMode) {
         	if (clickedPoint != null && clickedPoint.getClass() == ControlPoint.class) {
         		//getImageModel().getSelectedContour().moveContourPoint(mouseClick.getX(), mouseClick.getY(), (ControlPoint)clickedPoint);
-        		getImageModel().moveContour(mouseClick.getX(), mouseClick.getY());
+        		getImageModel().moveContour(mouseClick.getX(), mouseClick.getY(), clickedPoint);
         	}
         	else if (clickedPoint != null && clickedPoint.getClass() == TensionPoint.class) {
         		getImageModel().getSelectedContour().moveTensionPoint(mouseClick.getX(), mouseClick.getY(), (TensionPoint)clickedPoint);
