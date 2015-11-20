@@ -371,6 +371,7 @@ public class ImageView extends SingleImagePanel implements ActionListener,
     			Mode.setMode(Mode.selectMode());
             	getImageModel().addLandmarkToImage(new Landmark(Mode.getNextLandmarkType(), mouseClick.getX(), mouseClick.getY()));
             	getImageModel().setActiveLandmark(null);
+            	GridControlView.depressToggles();
     		}
     		else if(SwingUtilities.isRightMouseButton(e)){
     			landmarkCM = new LandmarkContextMenu(getImageModel());
@@ -423,7 +424,6 @@ public class ImageView extends SingleImagePanel implements ActionListener,
         	}
         	else if (clickedPoint != null && clickedPoint.getClass() == Landmark.class) {
         		((Landmark) clickedPoint).moveLandmark(mouseClick.getX(),mouseClick.getY());
-        		//add this code to the landmark drag when created
         	}
         	else {
         		super.mouseDragged(e);
@@ -466,11 +466,10 @@ public class ImageView extends SingleImagePanel implements ActionListener,
 
     public void mousePressed(MouseEvent e) {
 
+    	java.awt.geom.Point2D mouseClick = getImageCoordinateFromWindowCoordinate(e.getX(), e.getY());
+    	clickedPoint = getImageModel().findNearestPointWithinRange(mouseClick.getX(), mouseClick.getY(), 3);
+    	
     	if (Mode.getMode() == Mode.selectMode()) {
- 
-	    	java.awt.geom.Point2D mouseClick = getImageCoordinateFromWindowCoordinate(e.getX(), e.getY());
-	    	
-	    	clickedPoint = getImageModel().findNearestPointWithinRange(mouseClick.getX(), mouseClick.getY(), 3);
 	    	getImageModel().selectClosestAnnotationWithinRange(mouseClick.getX(), mouseClick.getY(), 15);
     	}
     	

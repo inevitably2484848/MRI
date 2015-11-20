@@ -47,8 +47,13 @@ public class GridControlView extends View implements ChangeListener {
 	protected int playSpeed;
 	protected RunPlaybutton runner;
 	
-	protected JToggleButton contour = new JToggleButton("Add Contour"); //kw
-	protected JToggleButton landMark = new JToggleButton("Add LandMark"); //kw
+	public static JToggleButton contour = new JToggleButton("Add Contour"); //kw
+	public static JToggleButton landMark = new JToggleButton("Add LandMark"); //kw
+	
+ 
+	
+	
+	
 	protected ContourTypeMenu cntrPM = new ContourTypeMenu();
 	protected LandmarkTypeMenu lndmrkPM = new LandmarkTypeMenu();
 
@@ -221,6 +226,22 @@ public class GridControlView extends View implements ChangeListener {
         }
 
     } //*************************************************************************
+    
+    
+    /****************************************************************************
+     * 
+     ***************************************************************************/
+    public static void depressToggles(){
+    	System.out.println("X");
+    	if(contour.isSelected()){
+    		contour.setSelected(false);
+    	}
+    	else{
+    		landMark.setSelected(false);
+    	}
+    	
+    }
+    
     
 	/**
 	 * gets Image model 
