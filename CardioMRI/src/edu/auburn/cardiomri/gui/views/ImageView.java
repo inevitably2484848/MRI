@@ -156,20 +156,7 @@ public class ImageView extends SingleImagePanel implements ActionListener,
     	}
     }
     
-<<<<<<< HEAD
-    private void updateTensionPoints(Contour contour) {
-    	
-    	if(contour != null) {
-    		for (ControlPoint controlPoint : contour.getControlPoints()) {
-    			if(contour.getControlPoints().size() > 1) {
-	    			Ellipse2D ellipse = new Ellipse2D.Double(controlPoint.getTension1().getX(), controlPoint.getTension1().getY(), 2, 2);
-	    			Ellipse2D ellipse2 = new Ellipse2D.Double(controlPoint.getTension2().getX(), controlPoint.getTension2().getY(), 2, 2);
-	    			visibleShapes.add(ellipse);
-	    			visibleShapes.add(ellipse2);
-    			}
-    		}
-        }   
-=======
+
     private void updateContours(Vector<Contour> contours) {
     	for (Contour contour: contours) {
     		updateContour(contour);
@@ -196,13 +183,14 @@ public class ImageView extends SingleImagePanel implements ActionListener,
 		    			Ellipse2D tensionPoint2Ellipse = new Ellipse2D.Double(tensionPoint2.getX(), tensionPoint2.getY(), 2, 2);
 		    			
 		            	colorShape(controlPointEllipse, controlPoint.getColor());
-		            	colorShape(tensionPoint1Ellipse, tensionPoint1.getColor());
-		            	colorShape(tensionPoint2Ellipse, tensionPoint2.getColor());
+		            	if(contour.getControlPoints().size() > 1) {
+			            	colorShape(tensionPoint1Ellipse, tensionPoint1.getColor());
+			            	colorShape(tensionPoint2Ellipse, tensionPoint2.getColor());
+		            	}
 		            }
 	    		}
     		}
         }
->>>>>>> dev
     }
     
     private void colorShape(Shape shape, Color color) {

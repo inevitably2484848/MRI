@@ -19,7 +19,6 @@ public class TensionPoint extends Point {
 		super(x, y);
 	}
 	
-<<<<<<< HEAD
 	public ControlPoint getControlPoint() {
 		return this.cPoint;
 	}
@@ -28,7 +27,6 @@ public class TensionPoint extends Point {
 		this.cPoint = cPoint;
 	}
 	
-=======
 	public Color getColor() {
 		if (this.isSelected) {
 			return TensionPoint.selectedTensionPointColor;
@@ -57,5 +55,4 @@ public class TensionPoint extends Point {
 		}
 		return false;
 	}
->>>>>>> dev
 }
