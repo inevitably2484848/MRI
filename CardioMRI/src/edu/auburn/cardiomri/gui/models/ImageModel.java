@@ -303,7 +303,7 @@ public class ImageModel extends Model {
     		selectedLandmark.isSelected(true);
     		System.out.println("landmark selected");
     		
-    		Mode.setMode(Mode.landmarkMode());
+    		//Mode.setMode(Mode.landmarkMode());
     		
     		if (selectedContour != null) {
         		selectedContour.isSelected(false);
@@ -355,15 +355,18 @@ public class ImageModel extends Model {
         setSelectedContour(contour);
         
     }
+
     
+   
+    /**************************************************************************
+     *  LANDMARK
+     * 
+     *************************************************************************/
     public void addLandmarkToImage(Landmark landmark){
     	if (selectedLandmark != null) {
     		selectedLandmark.isSelected(false);
     	}
     	this.dImage.addLandmark(landmark);
-    	setActiveLandmark(landmark);
-    	selectedLandmark = landmark;
-    	landmark.isSelected(true);
     	setChanged();
     	notifyObservers(dImage);
     }
@@ -371,7 +374,12 @@ public class ImageModel extends Model {
     
     public void deleteLandmarkFromImage(Landmark landmark){
     	this.dImage.deleteLandmark(landmark);
-  
+    	setActiveLandmark(null);
+    	landmark.isSelected(false);
+    	selectedLandmark = null;
+    	setChanged();
+    	notifyObservers(dImage);
+    	
     }
     
     /**************************************************************************
@@ -386,7 +394,6 @@ public class ImageModel extends Model {
   	  	}
     }
     
-    
     public void setActiveLandmark(Landmark landmark){
     	activeLandmark = landmark;
     }
@@ -400,9 +407,21 @@ public class ImageModel extends Model {
     	return this.selectedLandmark;
     }
     
+    /**************************************************************************
+     *  CONTROL POINTS
+     *************************************************************************/
+    
+    
     public ControlPoint getSelectedControlPoint(){
     	return this.selectedControlPoint;
     }
+    
+    
+    
+    /*************************************************************************
+     * CONTOUR
+     *************************************************************************/
+    
     
     /**
      * Hides the currently selected contour.

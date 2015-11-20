@@ -326,9 +326,8 @@ public class ImageView extends SingleImagePanel implements ActionListener,
     		//landmark mode
     		if (SwingUtilities.isLeftMouseButton(e)) {    			
     			Mode.setMode(Mode.selectMode());
-            	
             	getImageModel().addLandmarkToImage(new Landmark(Mode.getNextLandmarkType(), mouseClick.getX(), mouseClick.getY()));
-            	lmrkMode = false;
+            	getImageModel().setActiveLandmark(null);
     		}
     		else if(SwingUtilities.isRightMouseButton(e)){
     			landmarkCM = new LandmarkContextMenu(getImageModel());
