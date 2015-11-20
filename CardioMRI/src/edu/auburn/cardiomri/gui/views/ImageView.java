@@ -99,10 +99,12 @@ public class ImageView extends SingleImagePanel implements ActionListener,
     	
     	if(contour != null) {
     		for (ControlPoint controlPoint : contour.getControlPoints()) {
-    			Ellipse2D ellipse = new Ellipse2D.Double(controlPoint.getTension1().getX(), controlPoint.getTension1().getY(), 2, 2);
-    			Ellipse2D ellipse2 = new Ellipse2D.Double(controlPoint.getTension2().getX(), controlPoint.getTension2().getY(), 2, 2);
-    			visibleShapes.add(ellipse);
-    			visibleShapes.add(ellipse2);
+    			if(contour.getControlPoints().size() > 1) {
+	    			Ellipse2D ellipse = new Ellipse2D.Double(controlPoint.getTension1().getX(), controlPoint.getTension1().getY(), 2, 2);
+	    			Ellipse2D ellipse2 = new Ellipse2D.Double(controlPoint.getTension2().getX(), controlPoint.getTension2().getY(), 2, 2);
+	    			visibleShapes.add(ellipse);
+	    			visibleShapes.add(ellipse2);
+    			}
     		}
         }   
     }
