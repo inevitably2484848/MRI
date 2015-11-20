@@ -148,7 +148,9 @@ public class ImageView extends SingleImagePanel implements ActionListener,
 		            	TensionPoint tensionPoint1 = controlPoint.getTension1();
 		            	TensionPoint tensionPoint2 = controlPoint.getTension2();
 		            	
-		            	if (controlPoint.isSelected() || tensionPoint1.isSelected() || tensionPoint2.isSelected()) {
+		            	if ((Mode.getMode() == Mode.contourMode()) || 
+		            		(controlPoint.isSelected() || tensionPoint1.isSelected() || tensionPoint2.isSelected()))
+		            	{
 			            
 			            	Ellipse2D tensionPoint1Ellipse = new Ellipse2D.Double(tensionPoint1.getX(), tensionPoint1.getY(), 2, 2);
 			    			Ellipse2D tensionPoint2Ellipse = new Ellipse2D.Double(tensionPoint2.getX(), tensionPoint2.getY(), 2, 2);
