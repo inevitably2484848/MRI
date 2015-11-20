@@ -442,25 +442,30 @@ public class Contour implements Shape, Serializable {
      public void moveTensionPoint(double x, double y, TensionPoint point) {
     	 //find out which tension point this is before modifying it
     	 int index;
+		 double oldX = point.getX();
+		 double oldY = point.getY();
+		 
     	 if(point.getControlPoint().getTension1().getX() == point.getX()) {
     		 index = 1;
     	 } else {
     		 index = 2;
     	 }
     	 
-		 point.setX(x);
-		 point.setY(y);
-    	 
-		 //send the partner tension point
-		 if(point.getControlPoint().getLock()){
-			 if(index == 1) {
-				 alignTensionPoint(x, y, point.getControlPoint().getTension2());
-			 } else {
-				 alignTensionPoint(x, y, point.getControlPoint().getTension1());
+    	 if(point.getControlPoint().getX() != x && point.getControlPoint().getY() != y) {
+    		 point.setX(x);
+    		 point.setY(y);
+
+			 //send the partner tension point
+			 if(point.getControlPoint().getLock()){
+				 if(index == 1) {
+					 alignTensionPoint(x, y, point.getControlPoint().getTension2());
+				 } else {
+					 alignTensionPoint(x, y, point.getControlPoint().getTension1());
+				 }
 			 }
-		 }
-		 
-    	 generatedPoints = ContourCalc.generate(controlPoints, isClosedCurve());
+			 
+			 generatedPoints = ContourCalc.generate(controlPoints, isClosedCurve());
+    	 }
      }
      
      public void alignTensionPoint(double x, double y, TensionPoint point) {
