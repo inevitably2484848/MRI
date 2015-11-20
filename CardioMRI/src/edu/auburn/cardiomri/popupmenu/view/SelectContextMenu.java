@@ -60,7 +60,6 @@ public class SelectContextMenu {
 
 		if(imageModel.getSelectedControlPoint() != null){
 			menu.addMenuItem("Delete Point", actionListener);
-
 		}
 		if(imageModel.getSelectedContour() != null){
 			menu.addMenuItem("Edit Contour", actionListener);
@@ -68,6 +67,7 @@ public class SelectContextMenu {
 		if(imageModel.getSelectedLandmark() != null){
 			menu.addMenuItem("Delete Landmark", actionListener);
 		}
+		
 		
 		
 		
