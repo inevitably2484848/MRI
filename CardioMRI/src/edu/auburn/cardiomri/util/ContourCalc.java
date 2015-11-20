@@ -7,11 +7,9 @@ import java.util.Vector;
 import edu.auburn.cardiomri.datastructure.Point;
 import edu.auburn.cardiomri.datastructure.ControlPoint;
 import edu.auburn.cardiomri.datastructure.TensionPoint;
-import javafx.geometry.Point2D;
 import toxi.geom.Spline2D;
 import toxi.geom.Vec2D;
 import edu.auburn.cardiomri.datastructure.Contour;
-import edu.auburn.cardiomri.datastructure.Vector3d;
 
 public final class ContourCalc {
     /**
@@ -88,10 +86,6 @@ public final class ContourCalc {
         if (controlPoints.size() < 2 ) {
       	  return new Vector<Point>(controlPoints);
         }
-        
-        Point centroid = calcCentroid(controlPoints);
-        
-        List<TensionPoint> tPoints = new Vector<TensionPoint>();
         
         //final points that will make the contour
         List<Point> generatedPoints = new Vector<Point>(); 
