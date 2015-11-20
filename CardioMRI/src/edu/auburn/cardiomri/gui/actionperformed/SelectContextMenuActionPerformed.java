@@ -9,17 +9,19 @@ import javax.swing.JPopupMenu;
 import edu.auburn.cardiomri.gui.models.ImageModel;
 import edu.auburn.cardiomri.gui.models.Model;
 import edu.auburn.cardiomri.gui.views.ImageView;
+import edu.auburn.cardiomri.gui.views.Toast;
 import edu.auburn.cardiomri.gui.views.View;
 import edu.auburn.cardiomri.popupmenu.view.ContourTypeMenu;
 import edu.auburn.cardiomri.popupmenu.view.SelectContextMenu;
+import edu.auburn.cardiomri.util.Mode;
 
 public class SelectContextMenuActionPerformed implements ActionListener {
 
-	private ImageView view;
+	private JPopupMenu menu;
 	private ImageModel imageModel;
 	
-	public SelectContextMenuActionPerformed(ImageModel imageModel){
-
+	public SelectContextMenuActionPerformed(ImageModel imageModel, JPopupMenu menu){
+		this.menu = menu;
 		this.imageModel = imageModel;
 	}
 	
@@ -44,7 +46,30 @@ public class SelectContextMenuActionPerformed implements ActionListener {
 					imageModel.getSelectedControlPoint().getY());
 		}
 		else if (action.equals("Edit Contour")){
-			
+			Mode.setMode(Mode.contourMode());
+			menu.setVisible(false);
+		}
+		else if (action.equals("Delete Landmark")){
+			if(imageModel.getSelectedLandmark() != null){
+				imageModel.deleteLandmarkFromImage(imageModel.getSelectedLandmark());
+			}
+			menu.setVisible(false);
+		}
+		else if(action.equals("Delete All Landmarks")){
+			imageModel.deleteAllLandmark();
+		}
+		else if(action.equals("Hide Landmark")){
+			imageModel.hideSelectedLandmark();
+			menu.setVisible(false);
+		}
+	
+		else if(action.equals("Hide All Landmarks")){
+			imageModel.hideAllLandmarks();
+			menu.setVisible(false);
+		}
+		else if(action.equals("Un-Hide All Landmarks")){
+			imageModel.showAllLandmarks();
+			menu.setVisible(false);
 		}
 	}
 

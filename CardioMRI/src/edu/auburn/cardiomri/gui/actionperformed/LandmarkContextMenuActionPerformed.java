@@ -34,19 +34,21 @@ public class LandmarkContextMenuActionPerformed implements ActionListener{
 			
 			imageModel.deleteLandmarkFromImage(imageModel.getSelectedLandmark());
 			
-			
 			Mode.setMode(Mode.selectMode());
 			new Toast(Mode.modeToast());
 			menu.setVisible(false);
 		}
+		
 		else if(action.equals("Hide Landmark")){
+			imageModel.hideSelectedLandmark();
 			
 		}
+		
 		else if(action.equals("Hide All Landmark")){
-			
+			imageModel.hideAllLandmarks();
 		}
 		else if(action.equals("Un-Hide All Landmarks")){
-			
+			imageModel.showAllLandmarks();
 		}
 		
 		

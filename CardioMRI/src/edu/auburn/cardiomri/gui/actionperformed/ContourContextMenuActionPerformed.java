@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JPopupMenu;
 
 import edu.auburn.cardiomri.gui.models.ImageModel;
+import edu.auburn.cardiomri.gui.views.GridControlView;
 import edu.auburn.cardiomri.gui.views.Toast;
 import edu.auburn.cardiomri.popupmenu.view.ContourContextMenu;
 import edu.auburn.cardiomri.util.Mode;
@@ -30,6 +31,8 @@ public class ContourContextMenuActionPerformed implements ActionListener {
 			Mode.setMode(Mode.selectMode());
 		}
 		else if(actionCommand.equalsIgnoreCase("Hide Contour")){
+			System.out.println(imageModel.getSelectedContour().toString());
+			
 			imageModel.hideSelectedContour();
 			Mode.setMode(Mode.selectMode());
 		}
@@ -51,6 +54,7 @@ public class ContourContextMenuActionPerformed implements ActionListener {
 			imageModel.setSelectedContour(null);
 			menu.setVisible(false);
 			Mode.setMode(Mode.selectMode());
+			GridControlView.depressToggles();
 		}
 		
 		menu.setVisible(false);

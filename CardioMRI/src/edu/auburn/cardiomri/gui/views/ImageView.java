@@ -173,8 +173,10 @@ public class ImageView extends SingleImagePanel implements ActionListener,
     			colorShape(contour, contour.getColor());
     		
 	    		if (contour.isSelected()) {
-	    			
-		            for (ControlPoint controlPoint : contour.getControlPoints()) {
+		            
+		            for(int i = 0; i < contour.getControlPoints().size(); i++) {
+		            	
+		            	ControlPoint controlPoint = contour.getControlPoints().get(i);
 		            	
 		            	Ellipse2D controlPointEllipse = new Ellipse2D.Double(controlPoint.getX(),
 		                        controlPoint.getY(), 2, 2);
@@ -185,7 +187,7 @@ public class ImageView extends SingleImagePanel implements ActionListener,
 		            	TensionPoint tensionPoint2 = controlPoint.getTension2();
 		            	
 		            	if (controlPoint.isSelected() || tensionPoint1.isSelected() || tensionPoint2.isSelected()) {
-			            	
+			            
 			            	Ellipse2D tensionPoint1Ellipse = new Ellipse2D.Double(tensionPoint1.getX(), tensionPoint1.getY(), 2, 2);
 			    			Ellipse2D tensionPoint2Ellipse = new Ellipse2D.Double(tensionPoint2.getX(), tensionPoint2.getY(), 2, 2);
 			    			
@@ -218,7 +220,6 @@ public class ImageView extends SingleImagePanel implements ActionListener,
 		            				tensionPoint2.isVisible(true);
 			            		}
 			            	}
->>>>>>> Stashed changes
 		            	}
 			        }
 	    		}
@@ -362,9 +363,9 @@ public class ImageView extends SingleImagePanel implements ActionListener,
     		//landmark mode
     		if (SwingUtilities.isLeftMouseButton(e)) {    			
     			Mode.setMode(Mode.selectMode());
-            	
             	getImageModel().addLandmarkToImage(new Landmark(Mode.getNextLandmarkType(), mouseClick.getX(), mouseClick.getY()));
-            	lmrkMode = false;
+            	getImageModel().setActiveLandmark(null);
+            	GridControlView.depressToggles();
     		}
     		else if(SwingUtilities.isRightMouseButton(e)){
     			landmarkCM = new LandmarkContextMenu(getImageModel());
@@ -374,7 +375,7 @@ public class ImageView extends SingleImagePanel implements ActionListener,
     	else { 
     		// SELECT MODE
     		 if (SwingUtilities.isLeftMouseButton(e)) {
-    			 getImageModel().selectClosestAnnotationWithinRange(mouseClick.getX(), mouseClick.getY(), 30);
+    			 //getImageModel().selectClosestAnnotationWithinRange(mouseClick.getX(), mouseClick.getY(), 30);
     	     } 
     		 else if(SwingUtilities.isRightMouseButton(e)){
     			 selectCM = new SelectContextMenu(getImageModel());
@@ -417,7 +418,6 @@ public class ImageView extends SingleImagePanel implements ActionListener,
         	}
         	else if (clickedPoint != null && clickedPoint.getClass() == Landmark.class) {
         		((Landmark) clickedPoint).moveLandmark(mouseClick.getX(),mouseClick.getY());
-        		//add this code to the landmark drag when created
         	}
         	else {
         		super.mouseDragged(e);
@@ -461,9 +461,12 @@ public class ImageView extends SingleImagePanel implements ActionListener,
     public void mousePressed(MouseEvent e) {
 
     	java.awt.geom.Point2D mouseClick = getImageCoordinateFromWindowCoordinate(e.getX(), e.getY());
-    	
     	clickedPoint = getImageModel().findNearestPointWithinRange(mouseClick.getX(), mouseClick.getY(), 3);
-    	getImageModel().selectClosestAnnotationWithinRange(mouseClick.getX(), mouseClick.getY(), 15);
+    	
+    	if (Mode.getMode() == Mode.selectMode()) {
+	    	getImageModel().selectClosestAnnotationWithinRange(mouseClick.getX(), mouseClick.getY(), 15);
+    	}
+    	
     	super.mousePressed(e);
     	
     	this.panel.requestFocusInWindow();
