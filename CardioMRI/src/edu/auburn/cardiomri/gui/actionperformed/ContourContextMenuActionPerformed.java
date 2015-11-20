@@ -39,14 +39,18 @@ public class ContourContextMenuActionPerformed implements ActionListener {
 		else if(actionCommand.equalsIgnoreCase("Unlock Point (need Point Locked)")){
 			
 		}
-		else if(actionCommand.equalsIgnoreCase("Delete Point (need Point Selected)")){
+		else if(actionCommand.equalsIgnoreCase("Delete Point")){
+
+			imageModel.deleteControlPoint(
+					imageModel.getSelectedControlPoint().getX(), 
+					imageModel.getSelectedControlPoint().getY());
+			Mode.setMode(Mode.selectMode());
 			
 		}
 		else if(actionCommand.equalsIgnoreCase("Done Adding")){
 			imageModel.setSelectedContour(null);
 			menu.setVisible(false);
 			Mode.setMode(Mode.selectMode());
-			new Toast(Mode.modeToast());
 		}
 		
 		menu.setVisible(false);

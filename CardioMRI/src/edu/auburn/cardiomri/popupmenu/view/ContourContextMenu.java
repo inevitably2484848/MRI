@@ -6,16 +6,15 @@ import edu.auburn.cardiomri.gui.actionperformed.ContourContextMenuActionPerforme
 import edu.auburn.cardiomri.gui.models.ImageModel;
 import edu.auburn.cardiomri.gui.views.ImageView;
 
+/******************************************************************************
+ * Contour Context Menu
+ * This menu is for when you are in contour mode
+ * @author Kullen (kullen@auburn.edu)
+ * @verison 11/19/2015
+ *****************************************************************************/
 
 public class ContourContextMenu  {
 
-	/**
-	 * Populates the Popup Menu
-	 * @return JPopupMenu
-	 */
-//	private static final long serialVersionUID = -6889988991064856782L;
-//	private JPopupMenu contourPop = new JPopupMenu();
-//	private ContourContextMenuActionPerformed contextMenuListener;
 	
 	private ImageModel imageModel;
 	private ContextMenu contourPop = new ContextMenu();
@@ -23,9 +22,7 @@ public class ContourContextMenu  {
 	
 	public ContourContextMenu(ImageModel imageModel){
 		this.imageModel = imageModel;
-		
 		contourPop.setMenu(contourPop);
-		
 		setPopup();
 	}
 	
@@ -33,23 +30,23 @@ public class ContourContextMenu  {
 	public ContextMenu setPopup() {
 		contextMenuListener = new ContourContextMenuActionPerformed(imageModel, contourPop);
 		contourPop.setLocation();
+
 		// Label Menu
 		contourPop.addLabel(imageModel.getSelectedContour().toString());
 		contourPop.add(new MySeparator());
 		
 		
 		
-//WAITING ON POINT CLASS	
-//		if(imageModel.getControlPoint() != null){
+		if(imageModel.getSelectedControlPoint() != null){
 			contourPop.addMenuItem("Delete Point", contextMenuListener);
 //			if( Point is Locked) {
 //			contourPop.add(addMenuItem("UnLock Point"))
 //			}
-//			else{
-				contourPop.addMenuItem("Lock Point", contextMenuListener);
-//			}
+////			else{
+//				contourPop.addMenuItem("Lock Point", contextMenuListener);
+////			}
 //			
-//		}
+		}
 		
 		contourPop.addMenuItem("Delete Contour", contextMenuListener);
 		contourPop.addMenuItem("Hide Contour", contextMenuListener);

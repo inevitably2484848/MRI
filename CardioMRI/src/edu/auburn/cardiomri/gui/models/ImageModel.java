@@ -46,14 +46,14 @@ public class ImageModel extends Model {
         notifyObservers(dImage);
     }
 
-    /**
+    /**************************************************************************
      * Adds a control point to the currently selected contour. If no contour is
      * selected, returns false.
      * 
      * @param x
      * @param y
      * @return true if point was added, false otherwise
-     */
+     *************************************************************************/
     public boolean addControlPoint(double x, double y) {
         
     	if (selectedContour == null) {
@@ -100,6 +100,8 @@ public class ImageModel extends Model {
         setChanged();
         notifyObservers(dImage);
     }
+    
+
 
     /**
      * Get the list of contours that should be drawn onto the screen.
@@ -122,6 +124,10 @@ public class ImageModel extends Model {
     	
     	return visibleLandmarks;
     }
+    
+
+    
+    
     public Vector<Landmark> getLandmarks(){
     	return dImage.getLandmarks();
     }
@@ -361,9 +367,26 @@ public class ImageModel extends Model {
     	setChanged();
     	notifyObservers(dImage);
     }
+    
+    
     public void deleteLandmarkFromImage(Landmark landmark){
     	this.dImage.deleteLandmark(landmark);
+  
     }
+    
+    /**************************************************************************
+    * Deletes All Landmarks
+    *
+    *
+    *************************************************************************/
+    public void deleteAllLandmark(){
+    	Vector<Landmark> visibleLandmarks = getLandmarks();
+  	  
+    	for(Landmark landmark : visibleLandmarks){
+    		deleteLandmarkFromImage(landmark);
+  	  	}
+    }
+    
     
     public void setActiveLandmark(Landmark landmark){
     	activeLandmark = landmark;
@@ -376,6 +399,10 @@ public class ImageModel extends Model {
     
     public Landmark getSelectedLandmark() {
     	return this.selectedLandmark;
+    }
+    
+    public ControlPoint getSelectedControlPoint(){
+    	return this.selectedControlPoint;
     }
     
     /**

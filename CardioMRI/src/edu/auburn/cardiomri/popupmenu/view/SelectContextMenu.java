@@ -13,21 +13,20 @@ import edu.auburn.cardiomri.gui.actionperformed.LandmarkTypeActionPerformed;
 import edu.auburn.cardiomri.gui.actionperformed.SelectContextMenuActionPerformed;
 import edu.auburn.cardiomri.gui.models.ImageModel;
 
-/**
+/******************************************************************************
  * Select Context Menu: 
- * 	When a user right clicks on the Image View when in select mode this menu
+ * 	When a user right clicks on the ImageView when in select mode this menu
  * 	pop ups.
  * @author Kullen
  *
- */
+ *****************************************************************************/
 
 public class SelectContextMenu {
 
 	private ContextMenu menu = new ContextMenu();
 	private SelectContextMenuActionPerformed actionListener;
 	private  ImageModel imageModel;
-	
-	
+
 	private  ContourTypeActionPerformed contourType;
 	private  LandmarkTypeActionPerformed landmarkType;
 	
@@ -37,12 +36,12 @@ public class SelectContextMenu {
 	
 	
 	
-	/**
+	/**************************************************************************
 	 * Constructor
 	 *  select menu uses its own action listener and Contour Type 
 	 *  and Landmark Type action Listener. 
 	 * @param view
-	 */
+	 *************************************************************************/
 	public SelectContextMenu(ImageModel imageModel){
 		menu.setMenu(menu);
 		this.imageModel = imageModel;
@@ -51,14 +50,21 @@ public class SelectContextMenu {
 		setPopup();
 	}
 	
-	/**
+	/*************************************************************************
 	 * setPopup() builds menu
 	 * 
-	 */
+	 *************************************************************************/
 	public  ContextMenu setPopup() {
 		actionListener = new SelectContextMenuActionPerformed(imageModel);
 		menu.setLocation();
 
+		if(imageModel.getSelectedControlPoint() != null){
+//			menu.addMenuItem("Delete Point", actionListener);
+			menu.addMenuItem("Edit Contour (Can we find what contour the point is on?)", actionListener);
+		}
+		
+		
+		
 		//contour types subMenu
 		int addSepEveryTwo = 0;
         for(Contour.Type t : Contour.Type.values()){  //loops over Contour Type enum
@@ -78,12 +84,10 @@ public class SelectContextMenu {
         	 landmark.add(menu.addMenuItemTo(t.abbv(), landmarkType));
         }
 		
-		
 		add.add(menu.addSubMenu(landmark,landmarkType));
 		
 		//add the add menu to the SelectMenu
 		menu.addMenu(add, actionListener);
-		
 		
 		menu.setVisible(true);
 		menu.getBox();
