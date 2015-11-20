@@ -212,19 +212,27 @@ public class ImageView extends SingleImagePanel implements ActionListener,
 		            			if(contour.isClosedCurve()) {
 		            				colorShape(tensionPoint1Ellipse, tensionPoint1.getColor());
 		            			}
+		            			else {
+		            				tensionPoint1.isVisible(false);
+		            			}
 		            			colorShape(tensionPoint2Ellipse, tensionPoint2.getColor());
-		            			
+		            			tensionPoint2.isVisible(true);
 		            		} 
 		            		else if(i == (contour.getControlPoints().size() - 1)) {
 		            			if(contour.isClosedCurve()) {
 			            			colorShape(tensionPoint2Ellipse, tensionPoint2.getColor());
 		            			}
+		            			else {
+		            				tensionPoint2.isVisible(false);
+		            			}
 		            			colorShape(tensionPoint1Ellipse, tensionPoint1.getColor());
-		            			
+		            			tensionPoint1.isVisible(true);
 		            		}
 		            		else {
 	            				colorShape(tensionPoint1Ellipse, tensionPoint1.getColor());
 	            				colorShape(tensionPoint2Ellipse, tensionPoint2.getColor());
+	            				tensionPoint1.isVisible(true);
+	            				tensionPoint2.isVisible(true);
 		            		}
 		            	}
 		            }

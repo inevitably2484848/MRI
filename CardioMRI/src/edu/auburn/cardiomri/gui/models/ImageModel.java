@@ -125,15 +125,22 @@ public class ImageModel extends Model {
         Vector<Contour> visibleContours = new Vector<Contour>();
 
         for (Contour contour : getContours()) {
-            if (!hiddenContours.contains(contour)) {
+            if (contour.isVisible()) {
                 visibleContours.add(contour);
             }
         }
 
         return visibleContours;
     }
+    
     public Vector<Landmark> getVisibleLandmarks() {
-    	Vector<Landmark> visibleLandmarks = getLandmarks();
+    	Vector<Landmark> visibleLandmarks = new Vector<Landmark>();
+    	
+    	for (Landmark landmark : getLandmarks()) {
+    		if (landmark.isVisible()) {
+    			visibleLandmarks.add(landmark);
+    		}
+    	}
     	
     	return visibleLandmarks;
     }
@@ -150,7 +157,9 @@ public class ImageModel extends Model {
     	
     	Vector<Landmark> visibleLandmarks = getVisibleLandmarks();
     	for (Landmark landmark: visibleLandmarks) {
-    		visiblePoints.add(landmark);
+    		if (landmark.isVisible()) {
+    			visiblePoints.add(landmark);
+    		}
     	}
     	
     	Vector<Contour> visibleContours = getVisibleContours();
@@ -158,8 +167,12 @@ public class ImageModel extends Model {
     		List<ControlPoint> visibleControlPoints = contour.getControlPoints();
     		for (ControlPoint controlPoint: visibleControlPoints) {
     			visiblePoints.add(controlPoint);
-    			visiblePoints.add(controlPoint.getTension1());
-    			visiblePoints.add(controlPoint.getTension2());
+    			if (controlPoint.getTension1().isVisible()) {
+    				visiblePoints.add(controlPoint.getTension1());
+    			}
+    			if (controlPoint.getTension2().isVisible()) {
+    				visiblePoints.add(controlPoint.getTension2());
+    			}
     		}
     	}
     	
