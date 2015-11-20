@@ -179,18 +179,48 @@ public class ImageView extends SingleImagePanel implements ActionListener,
 		            	Ellipse2D controlPointEllipse = new Ellipse2D.Double(controlPoint.getX(),
 		                        controlPoint.getY(), 2, 2);
 		            	
+		            	colorShape(controlPointEllipse, controlPoint.getColor());
+		            	
 		            	TensionPoint tensionPoint1 = controlPoint.getTension1();
 		            	TensionPoint tensionPoint2 = controlPoint.getTension2();
 		            	
-		            	Ellipse2D tensionPoint1Ellipse = new Ellipse2D.Double(tensionPoint1.getX(), tensionPoint1.getY(), 2, 2);
-		    			Ellipse2D tensionPoint2Ellipse = new Ellipse2D.Double(tensionPoint2.getX(), tensionPoint2.getY(), 2, 2);
-		    			
-		            	colorShape(controlPointEllipse, controlPoint.getColor());
-		            	if(contour.getControlPoints().size() > 1) {
-			            	colorShape(tensionPoint1Ellipse, tensionPoint1.getColor());
-			            	colorShape(tensionPoint2Ellipse, tensionPoint2.getColor());
+		            	if (controlPoint.isSelected() || tensionPoint1.isSelected() || tensionPoint2.isSelected()) {
+			            	
+			            	Ellipse2D tensionPoint1Ellipse = new Ellipse2D.Double(tensionPoint1.getX(), tensionPoint1.getY(), 2, 2);
+			    			Ellipse2D tensionPoint2Ellipse = new Ellipse2D.Double(tensionPoint2.getX(), tensionPoint2.getY(), 2, 2);
+			    			
+			            	if(contour.getControlPoints().size() > 1) {
+			            		//check to not draw tension points of the final curve if the bezier curve is open
+			            		if(i == 0) {
+			            			if(contour.isClosedCurve()) {
+			            				colorShape(tensionPoint1Ellipse, tensionPoint1.getColor());
+			            			}
+			            			else {
+			            				tensionPoint1.isVisible(false);
+			            			}
+			            			colorShape(tensionPoint2Ellipse, tensionPoint2.getColor());
+			            			tensionPoint2.isVisible(true);
+			            		} 
+			            		else if(i == (contour.getControlPoints().size() - 1)) {
+			            			if(contour.isClosedCurve()) {
+				            			colorShape(tensionPoint2Ellipse, tensionPoint2.getColor());
+			            			}
+			            			else {
+			            				tensionPoint2.isVisible(false);
+			            			}
+			            			colorShape(tensionPoint1Ellipse, tensionPoint1.getColor());
+			            			tensionPoint1.isVisible(true);
+			            		}
+			            		else {
+		            				colorShape(tensionPoint1Ellipse, tensionPoint1.getColor());
+		            				colorShape(tensionPoint2Ellipse, tensionPoint2.getColor());
+		            				tensionPoint1.isVisible(true);
+		            				tensionPoint2.isVisible(true);
+			            		}
+			            	}
+>>>>>>> Stashed changes
 		            	}
-		            }
+			        }
 	    		}
     		}
         }

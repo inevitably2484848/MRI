@@ -5,7 +5,7 @@ import java.awt.Color;
 public class TensionPoint extends Point {
 	boolean isSelected = false;
 	
-	static Color selectedTensionPointColor = Color.RED;
+	static Color selectedTensionPointColor = Color.BLUE;
 	static Color selectedContourColor = Color.BLUE;
 	
 	private ControlPoint cPoint;
