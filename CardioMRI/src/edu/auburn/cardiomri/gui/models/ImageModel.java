@@ -471,6 +471,7 @@ public class ImageModel extends Model {
     	if (selectedLandmark != null) {
     		selectedLandmark.isSelected(false);
     	}
+    	
     	this.dImage.addLandmark(landmark);
     	setChanged();
     	notifyObservers(dImage);
@@ -493,10 +494,14 @@ public class ImageModel extends Model {
     *************************************************************************/
     public void deleteAllLandmark(){
     	Vector<Landmark> visibleLandmarks = getLandmarks();
-  	  
-    	for(Landmark landmark : visibleLandmarks){
-    		deleteLandmarkFromImage(landmark);
-  	  	}
+  	  	visibleLandmarks.clear();
+//    	for(Landmark landmark : visibleLandmarks){
+//    		deleteLandmarkFromImage(landmark);
+//  	  	}
+  	  	setChanged();
+  	  	notifyObservers(dImage);
+  	  	selectedLandmark = null;
+  	  	
     }
     
     public void setActiveLandmark(Landmark landmark){
@@ -512,7 +517,39 @@ public class ImageModel extends Model {
     public Landmark getSelectedLandmark() {
     	return this.selectedLandmark;
     }
-    
+    public void hideSelectedLandmark(){
+    	if (selectedLandmark == null){
+    		return;
+    	}
+    	System.out.print(selectedLandmark.toString());
+    	hiddenLandmarks.add(selectedLandmark);
+    	selectedLandmark.isSelected(false);
+    	selectedLandmark.isVisible(false);
+    	selectedLandmark = null;
+    	
+    	setChanged();
+    	notifyObservers(dImage);
+    		
+    }
+    public void hideAllLandmarks(){
+    	hiddenLandmarks.addAll(getLandmarks());
+    	selectedLandmark = null;
+    	for (Landmark lm: hiddenLandmarks){
+    		lm.isSelected(false);
+    		lm.isVisible(false);
+    	}
+    	setChanged();
+    	notifyObservers(dImage);
+    }
+    public void showAllLandmarks(){
+    	for (Landmark lm: hiddenLandmarks){
+    		lm.isVisible(true);
+    	}
+    	hiddenLandmarks.clear();
+    	
+    	setChanged();
+    	notifyObservers(dImage);
+    }
     /**************************************************************************
      *  CONTROL POINTS
      *************************************************************************/
@@ -554,39 +591,7 @@ public class ImageModel extends Model {
         setChanged();
         notifyObservers(dImage);
     }
-    public void hideSelectedLandmark(){
-    	if (selectedLandmark == null){
-    		return;
-    	}
-    	System.out.print(selectedLandmark.toString());
-    	hiddenLandmarks.add(selectedLandmark);
-    	selectedLandmark.isSelected(false);
-    	selectedLandmark.isVisible(false);
-    	selectedLandmark = null;
-    	
-    	setChanged();
-    	notifyObservers(dImage);
-    		
-    }
-    public void hideAllLandmarks(){
-    	hiddenLandmarks.addAll(getVisibleLandmarks());
-    	selectedLandmark = null;
-    	for (Landmark lm: hiddenLandmarks){
-    		lm.isSelected(false);
-    		lm.isVisible(false);
-    	}
-    	setChanged();
-    	notifyObservers(dImage);
-    }
-    public void showAllLandmarks(){
-    	for (Landmark lm: hiddenLandmarks){
-    		lm.isVisible(true);
-    	}
-    	hiddenLandmarks.clear();
-    	
-    	setChanged();
-    	notifyObservers(dImage);
-    }
+    
     /**
      * Sets all contours as visible.
      */

@@ -38,10 +38,12 @@ public class LandmarkContextMenuActionPerformed implements ActionListener{
 			new Toast(Mode.modeToast());
 			menu.setVisible(false);
 		}
+		
 		else if(action.equals("Hide Landmark")){
 			imageModel.hideSelectedLandmark();
 			
 		}
+		
 		else if(action.equals("Hide All Landmark")){
 			imageModel.hideAllLandmarks();
 		}
