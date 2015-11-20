@@ -38,8 +38,16 @@ public class ImageModel extends Model {
         }
 
         this.dImage = dImage;
-        selectedContour = null;
-        selectedLandmark = null;
+        if (selectedContour != null) {
+        	selectedContour.isSelected(false);
+        	selectedContour = null;
+        }
+        
+        if (selectedLandmark != null) {
+        	selectedLandmark.isSelected(false);
+        	selectedLandmark = null;
+        }
+        
         hiddenContours.clear();
 
         setChanged();
@@ -94,7 +102,11 @@ public class ImageModel extends Model {
      */
     public void deleteAllContours() {
         dImage.getContours().clear();
-        selectedContour = null;
+        if (selectedContour != null) {
+        	selectedContour.isSelected(false);
+        	selectedContour = null;
+        }
+
         hiddenContours.clear();
 
         setChanged();
@@ -477,6 +489,9 @@ public class ImageModel extends Model {
     }
 
     public void setSelectedContour(Contour contour) {
+    	if (selectedContour != null) {
+    		selectedContour.isSelected(false);
+    	}
         selectedContour = contour;
         setChanged();
         notifyObservers(dImage);
