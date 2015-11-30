@@ -233,6 +233,10 @@ public class GridControlView extends View implements ChangeListener {
      * toggle button
      ***************************************************************************/
     public static void depressToggles(){
+    	if(getImageModel().getSelectedContour() != null){
+	    	getImageModel().getSelectedControlPoint().isSelected(false);
+	    	getImageModel().setSelectedControlPoint(null);
+    	}
     	if(contour.isSelected()){
     		contour.setSelected(false);
     	}
