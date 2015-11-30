@@ -582,6 +582,18 @@ public class ImageModel extends Model {
     	return this.selectedControlPoint;
     }
     
+    public void setSelectedControlPoint(ControlPoint cp){
+    	this.selectedControlPoint = cp;
+    }
+    
+    public TensionPoint getSelectedTensionPoint(){
+    	return this.selectedTensionPoint;
+    }
+    
+    public void setSelectedTensionPoint(TensionPoint tp){
+    	this.selectedTensionPoint = tp;
+    }
+    
     
     
     /*************************************************************************
@@ -677,6 +689,11 @@ public class ImageModel extends Model {
         selectedContour = contour;
         setChanged();
         notifyObservers(dImage);
+    }
+    
+    public void update() {
+    	setChanged();
+    	notifyObservers(dImage);
     }
 
     public Vector<Contour> getContours() {
