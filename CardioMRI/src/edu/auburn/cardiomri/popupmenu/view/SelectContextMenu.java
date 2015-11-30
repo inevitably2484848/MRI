@@ -71,29 +71,36 @@ public class SelectContextMenu {
 		}
 		if(imageModel.getSelectedContour() != null){
 			menu.addMenuItem("Edit Contour", actionListener);
+			menu.addMenuItem("Hide Contour", contourCMListener);
 		}
 		if(imageModel.getSelectedLandmark() != null){
 			menu.addLabel(imageModel.getSelectedLandmark().getType().toString());
 			menu.add(new MySeparator());
 			menu.addMenuItem("Delete Landmark", actionListener);
-			menu.addMenuItem("Delete All Landmarks", actionListener);
+			//menu.addMenuItem("Delete All Landmarks", actionListener); DELETE ALL MIGHT NOT NEED TO BE IN A CONTEXT MENU
 			menu.addMenuItem("Hide Landmark", actionListener);
-			menu.addMenuItem("Hide All Landmarks", actionListener);
 			menu.add(new MySeparator());
 		}
 		
 		
-		if(imageModel.getSelectedControlPoint() == null &&
-				imageModel.getSelectedContour() == null &&
-				imageModel.getSelectedLandmark() == null){
+//		if(imageModel.getSelectedControlPoint() == null &&
+//				imageModel.getSelectedContour() == null &&
+//				imageModel.getSelectedLandmark() == null){
+		
+			if(!imageModel.getVisibleContours().isEmpty()){
+				menu.addMenuItem("Hide All Contours", contourCMListener);
+			}
+			if(!imageModel.getVisibleLandmarks().isEmpty()){
+				menu.addMenuItem("Hide All Landmarks", actionListener);
+			}
 			if(!imageModel.getHiddenContours().isEmpty()){
-				menu.addMenuItem("Un-Hide Contours", actionListener);
+				menu.addMenuItem("Show All Contours", actionListener);
 			}
 			if(!imageModel.getHiddenLandmarks().isEmpty()){
-				menu.addMenuItem("Un-Hide All Landmarks", actionListener);
+				menu.addMenuItem("Show All Landmarks", actionListener);
 			}
 		
-		}
+//		}
 		
 		
 		
