@@ -20,6 +20,7 @@ import java.util.Vector;
 import edu.auburn.cardiomri.datastructure.Contour;
 import edu.auburn.cardiomri.datastructure.ControlPoint;
 import edu.auburn.cardiomri.datastructure.DICOMImage;
+import edu.auburn.cardiomri.datastructure.Landmark;
 import edu.auburn.cardiomri.datastructure.Point;
 import edu.auburn.cardiomri.datastructure.TensionPoint;
 import edu.auburn.cardiomri.datastructure.Vector3d;
@@ -34,8 +35,14 @@ import edu.auburn.cardiomri.gui.models.WorkspaceModel;
  */
 public final class ContourUtilities {
 	
-	public static void loadContour(File file, Map<String, DICOMImage> SOPInstanceUIDToDICOMImage) {
-        Vector<Contour> contours;
+	public static void loadAnnotations(File file, Map<String, DICOMImage> SOPInstanceUIDToDICOMImage) {
+		loadContours(file, SOPInstanceUIDToDICOMImage);
+		loadLandmarks(file, SOPInstanceUIDToDICOMImage);
+
+    }
+	
+	public static void loadContours(File file, Map<String, DICOMImage> SOPInstanceUIDToDICOMImage) {
+		Vector<Contour> contours;
         List<ControlPoint> controlPoints;
         List<TensionPoint> tensionPoints;
 
@@ -52,8 +59,18 @@ public final class ContourUtilities {
                 sopInstanceUID = reader.readLine();
                 contourType = Integer.parseInt(reader.readLine());
                 
+                
+
+                if (Contour.isControlPointFromInt(contourType) == null)	// not contour type
+                {
+                	while ((lineCheck = reader.readLine()) != "-1") {
+                		if (lineCheck.equals("-1")) {
+	                        break;
+	                    }
+                	}
+                }
                 // Only add contours to image if it is a control point contour
-                if (Contour.isControlPointFromInt(contourType))
+                else if (Contour.isControlPointFromInt(contourType))
                 {
 	                while ((lineCheck = reader.readLine()) != "-1") {
 	                	int pointIdx = 0;
@@ -125,10 +142,112 @@ public final class ContourUtilities {
         } catch (IOException x) {
             System.err.format("IOException: %s%n", x);
         }
+	}
+	
+	public static void loadLandmarks(File file, Map<String, DICOMImage> SOPInstanceUIDToDICOMImage) {
+		Vector<Landmark> landmarks;
 
+        String sopInstanceUID;
+        String[] line = new String[2];
+        @SuppressWarnings("unused")
+        String lineCheck;
 
+        int landmarkType;
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(file));
+            while (reader.readLine() != null) {
+                landmarks = new Vector<Landmark>();
+                sopInstanceUID = reader.readLine();
+                landmarkType = Integer.parseInt(reader.readLine());
+                
+                if (Landmark.isLandmarkFromInt(landmarkType) == null)	// Not landmark type section
+                {
+                	while ((lineCheck = reader.readLine()) != "-1") {
+                		if (lineCheck.equals("-1")) {
+	                        break;
+	                    }
+                	}
+                }
+                else
+                {
+	                while ((lineCheck = reader.readLine()) != "-1") {
+	
+	                    while ((line = reader.readLine().split("\t")).length >= 2) {
+	                    	
+	                    	float x = Float.parseFloat(line[0]);
+	                        float y = Float.parseFloat(line[1]);
+	                        
+	                        landmarks.add(new Landmark(Landmark.getTypeFromInt(landmarkType), x, y));
+	                        
+	                    }
+	                    
+	                    if (line[0].equals("-1")) {
+	                        break;
+	                    }
+	                }
+                }
+
+                DICOMImage image = SOPInstanceUIDToDICOMImage
+                        .get(sopInstanceUID);
+                image.getLandmarks().addAll(landmarks);
+
+            }
+            reader.close();
+        } catch (IOException x) {
+            System.err.format("IOException: %s%n", x);
+        }
+	}
+	
+	
+	
+	public static void writeAnnotationsToFile(
+			Map<String, DICOMImage> SOPInstanceUIDToDICOMImage, String path) {
+		
+		ContourUtilities.writeContoursToFile(SOPInstanceUIDToDICOMImage, path);
+		ContourUtilities.writeLandmarksToFile(SOPInstanceUIDToDICOMImage, path);
+	}
+	
+	
+	public static void writeLandmarksToFile(
+            Map<String, DICOMImage> SOPInstanceUIDToDICOMImage, String path) {
+        Vector<Landmark> landmarks;
+        PrintWriter writer = null;
+
+        File f = new File(path);
+
+        try {
+            writer = new PrintWriter(new BufferedWriter(
+                    new FileWriter(f, true)));
+            for (DICOMImage image : SOPInstanceUIDToDICOMImage.values()) {
+                landmarks = image.getLandmarks();
+                if (landmarks.size() < 1) {
+                    continue;
+                } else {
+                	writer.write("\n" + image.getSopInstanceUID() + "\n");
+                    for (Landmark l: landmarks) {
+                            int numPoints = 1;
+                            String header = l.getIntFromType() + "\n"
+                                    + numPoints + "\n";
+                            writer.write(header);
+                            
+                            writer.write(BigDecimal.valueOf(l.getX())
+                                    .setScale(4, BigDecimal.ROUND_UP)
+                                    + "\t"
+                                    + BigDecimal.valueOf(l.getY())
+                                            .setScale(4,
+                                                     BigDecimal.ROUND_UP)
+                                    + "\n");
+                        }
+                    
+                    writer.write((-1) + "\n");
+                }
+            }
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
-    
+	
     /**
      * Writes the contour data to the specified path for all images
      * containing contours. The file format is as follows: 

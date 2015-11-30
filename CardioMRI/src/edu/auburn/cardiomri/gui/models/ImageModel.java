@@ -4,13 +4,11 @@ import java.awt.event.ActionEvent;
 import java.util.List;
 import java.util.Vector;
 
-import javafx.geometry.Point2D;
 import edu.auburn.cardiomri.datastructure.Contour;
 import edu.auburn.cardiomri.datastructure.DICOMImage;
 import edu.auburn.cardiomri.datastructure.Landmark;
 import edu.auburn.cardiomri.datastructure.Point;
 import edu.auburn.cardiomri.datastructure.TensionPoint;
-import edu.auburn.cardiomri.datastructure.Vector3d;
 import edu.auburn.cardiomri.util.ContourCalc;
 import edu.auburn.cardiomri.util.Mode;
 import edu.auburn.cardiomri.datastructure.ControlPoint;
@@ -76,9 +74,11 @@ public class ImageModel extends Model {
 	        
 	        return true;
         }
-        else{
-        	return deleteControlPoint(x, y);
+        else {
+        	deleteControlPoint(x,y);
+        	return false;
         }
+        
     }
     
     
@@ -126,15 +126,22 @@ public class ImageModel extends Model {
         Vector<Contour> visibleContours = new Vector<Contour>();
 
         for (Contour contour : getContours()) {
-            if (!hiddenContours.contains(contour)) {
+            if (contour.isVisible()) {
                 visibleContours.add(contour);
             }
         }
 
         return visibleContours;
     }
+    
     public Vector<Landmark> getVisibleLandmarks() {
-    	Vector<Landmark> visibleLandmarks = getLandmarks();
+    	Vector<Landmark> visibleLandmarks = new Vector<Landmark>();
+    	
+    	for (Landmark landmark : getLandmarks()) {
+    		if (landmark.isVisible()) {
+    			visibleLandmarks.add(landmark);
+    		}
+    	}
     	
     	return visibleLandmarks;
     }
@@ -151,7 +158,9 @@ public class ImageModel extends Model {
     	
     	Vector<Landmark> visibleLandmarks = getVisibleLandmarks();
     	for (Landmark landmark: visibleLandmarks) {
-    		visiblePoints.add(landmark);
+    		if (landmark.isVisible()) {
+    			visiblePoints.add(landmark);
+    		}
     	}
     	
     	Vector<Contour> visibleContours = getVisibleContours();
@@ -159,8 +168,12 @@ public class ImageModel extends Model {
     		List<ControlPoint> visibleControlPoints = contour.getControlPoints();
     		for (ControlPoint controlPoint: visibleControlPoints) {
     			visiblePoints.add(controlPoint);
-    			visiblePoints.add(controlPoint.getTension1());
-    			visiblePoints.add(controlPoint.getTension2());
+    			if (controlPoint.getTension1().isVisible()) {
+    				visiblePoints.add(controlPoint.getTension1());
+    			}
+    			if (controlPoint.getTension2().isVisible()) {
+    				visiblePoints.add(controlPoint.getTension2());
+    			}
     		}
     	}
     	
@@ -291,6 +304,9 @@ public class ImageModel extends Model {
     		if (newSelectedContour == selectedContour) { // tension point in currently selected contour
     			selectedTensionPoint = (TensionPoint) nearestPoint;
     			selectedTensionPoint.isSelected(true);
+    			
+    			selectedControlPoint = selectedTensionPoint.getControlPoint();
+    			selectedControlPoint.isSelected(true);
     			System.out.println("contour tension point selected");
     		}
     		else {	// tension point in unselected contour
@@ -464,13 +480,16 @@ public class ImageModel extends Model {
     
    
     /**************************************************************************
+     * ************************************************************************
      *  LANDMARK
      * 
+     * ************************************************************************
      *************************************************************************/
     public void addLandmarkToImage(Landmark landmark){
     	if (selectedLandmark != null) {
     		selectedLandmark.isSelected(false);
     	}
+    	
     	
     	this.dImage.addLandmark(landmark);
     	setChanged();
@@ -550,6 +569,10 @@ public class ImageModel extends Model {
     	setChanged();
     	notifyObservers(dImage);
     }
+    
+    public List<Landmark> getHiddenLandmarks(){
+    	return this.hiddenLandmarks;
+    }
     /**************************************************************************
      *  CONTROL POINTS
      *************************************************************************/
@@ -557,6 +580,18 @@ public class ImageModel extends Model {
     
     public ControlPoint getSelectedControlPoint(){
     	return this.selectedControlPoint;
+    }
+    
+    public void setSelectedControlPoint(ControlPoint cp){
+    	this.selectedControlPoint = cp;
+    }
+    
+    public TensionPoint getSelectedTensionPoint(){
+    	return this.selectedTensionPoint;
+    }
+    
+    public void setSelectedTensionPoint(TensionPoint tp){
+    	this.selectedTensionPoint = tp;
     }
     
     
@@ -576,8 +611,10 @@ public class ImageModel extends Model {
         }
 
         hiddenContours.add(selectedContour);
+        selectedContour.isSelected(false);
+        selectedContour.isVisible(false);
         selectedContour = null;
-
+        
         setChanged();
         notifyObservers(dImage);
     }
@@ -587,7 +624,13 @@ public class ImageModel extends Model {
      */
     public void hideAllContours() {
         hiddenContours.addAll(getVisibleContours());
+
+        for(Contour contour : hiddenContours){
+        	contour.isSelected(false);
+        	contour.isVisible(false);
+        }
         selectedContour = null;
+
         setChanged();
         notifyObservers(dImage);
     }
@@ -596,7 +639,10 @@ public class ImageModel extends Model {
      * Sets all contours as visible.
      */
     public void showAllContours() {
-        hiddenContours.clear();
+        for(Contour contour : hiddenContours){
+        	contour.isVisible(true);
+        }
+    	hiddenContours.clear();
 
         setChanged();
         notifyObservers(dImage);
@@ -612,6 +658,8 @@ public class ImageModel extends Model {
         }
 
         dImage.getContours().remove(selectedContour);
+        selectedContour.isSelected(false);
+        selectedContour.isVisible(false);
         setSelectedContour(null);
 
         setChanged();
@@ -642,8 +690,16 @@ public class ImageModel extends Model {
     		selectedContour.isSelected(false);
     	}
         selectedContour = contour;
+        if (selectedContour != null) {
+        	selectedContour.isSelected(true);
+        }
         setChanged();
         notifyObservers(dImage);
+    }
+    
+    public void update() {
+    	setChanged();
+    	notifyObservers(dImage);
     }
 
     public Vector<Contour> getContours() {
@@ -666,5 +722,17 @@ public class ImageModel extends Model {
 	public void arrowAction(ActionEvent e) {
 		setChanged();
 		notifyObservers(e);
+	}
+	
+	public boolean isControlPointLocked() {
+		return selectedControlPoint.getLock();
+	}
+	
+	public void setControlPointLocked(boolean b) {
+		selectedControlPoint.setLock(b);
+	}
+	
+	public void moveContour(double x, double y, Point point) {
+		selectedContour.moveContour(x, y, point);
 	}
 }

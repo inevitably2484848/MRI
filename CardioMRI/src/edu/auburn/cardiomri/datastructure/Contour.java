@@ -252,56 +252,23 @@ public class Contour implements Shape, Serializable {
     				if(controlPoints.get(i).getTension2().getX() == 0.0 && controlPoints.get(i).getTension2().getY() == 0.0) {
 						//check to see if new control point was sorted to the beginning of the contour
     					if(i == 0) {
-	    					//calculate and set the new tension point for the previous control point
-//	    					tPoints.addAll(ContourCalc.getTensionPoint(controlPoints.get(controlPoints.size() - 1), centroid));
-//	    					controlPoints.get(controlPoints.size() - 1).setTension2(tPoints.get(1));
-//	    					tPoints.clear();
-	    					
-	    					//calculate and set the new tension point for the new control point
 	    					tPoints.addAll(ContourCalc.getTensionPoint(controlPoints.get(i), centroid));
 	    					controlPoints.get(i).setTension1(tPoints.get(0));
 	    					controlPoints.get(i).setTension2(tPoints.get(1));
 	    					tPoints.clear();
-	    					
-	    					//calculate and set the new tension point for the next control point
-//	    					tPoints.addAll(ContourCalc.getTensionPoint(controlPoints.get(i + 1), centroid));
-//	    					controlPoints.get(i + 1).setTension1(tPoints.get(0));
-//	    					tPoints.clear();
     					}
     					//check to see if new control point was sorted to the end of the contour
 	    				else if (i == controlPoints.size() - 1) {
-	    					//calculate and set the new tension point for the previous control point
-//	    					tPoints.addAll(ContourCalc.getTensionPoint(controlPoints.get(i - 1), centroid));
-//	    					controlPoints.get(i - 1).setTension2(tPoints.get(1));
-//	    					tPoints.clear();
-	    					
-	    					//calculate and set the new tension point for the new control point
 	    					tPoints.addAll(ContourCalc.getTensionPoint(controlPoints.get(i), centroid));
 	    					controlPoints.get(i).setTension1(tPoints.get(0));
 	    					controlPoints.get(i).setTension2(tPoints.get(1));
 	    					tPoints.clear();
-	    					
-	    					//calculate and set the new tension point for the next control point
-//	    					tPoints.addAll(ContourCalc.getTensionPoint(controlPoints.get(0), centroid));
-//	    					controlPoints.get(0).setTension1(tPoints.get(0));
-//	    					tPoints.clear();
 	    				}
 	    				else {
-	    					//calculate and set the new tension point for the previous control point
-//	    					tPoints.addAll(ContourCalc.getTensionPoint(controlPoints.get(i - 1), centroid));
-//	    					controlPoints.get(i - 1).setTension2(tPoints.get(1));
-//	    					tPoints.clear();
-	    					
-	    					//calculate and set the new tension point for the new control point
 	    					tPoints.addAll(ContourCalc.getTensionPoint(controlPoints.get(i), centroid));
 	    					controlPoints.get(i).setTension1(tPoints.get(0));
 	    					controlPoints.get(i).setTension2(tPoints.get(1));
-	    					tPoints.clear();
-	    					
-	    					//calculate and set the new tension point for the next control point
-//	    					tPoints.addAll(ContourCalc.getTensionPoint(controlPoints.get(i + 1), centroid));
-//	    					controlPoints.get(i + 1).setTension1(tPoints.get(0));
-//	    					tPoints.clear();	    					
+	    					tPoints.clear(); 					
 	    				}
     				}
     			}
@@ -464,8 +431,8 @@ public class Contour implements Shape, Serializable {
      }
      
      public void moveContourPoint(double x, double y, ControlPoint point) {
-    	 dragTensionPoint(x - point.getX(), y - point.getY(), point.getTension1());
-    	 dragTensionPoint(x - point.getX(), y - point.getY(), point.getTension2());
+    	 dragPoint(x - point.getX(), y - point.getY(), point.getTension1());
+    	 dragPoint(x - point.getX(), y - point.getY(), point.getTension2());
     	 
     	 point.setX(x);
     	 point.setY(y);
@@ -475,23 +442,30 @@ public class Contour implements Shape, Serializable {
      public void moveTensionPoint(double x, double y, TensionPoint point) {
     	 //find out which tension point this is before modifying it
     	 int index;
+		 double oldX = point.getX();
+		 double oldY = point.getY();
+		 
     	 if(point.getControlPoint().getTension1().getX() == point.getX()) {
     		 index = 1;
     	 } else {
     		 index = 2;
     	 }
     	 
-		 point.setX(x);
-		 point.setY(y);
-    	 
-		 //send the partner tension point
-		 if(index == 1) {
-			 alignTensionPoint(x, y, point.getControlPoint().getTension2());
-		 } else {
-			 alignTensionPoint(x, y, point.getControlPoint().getTension1());
-		 }
-		 
-    	 generatedPoints = ContourCalc.generate(controlPoints, isClosedCurve());
+    	 if(point.getControlPoint().getX() != x && point.getControlPoint().getY() != y) {
+    		 point.setX(x);
+    		 point.setY(y);
+
+			 //send the partner tension point
+			 if(point.getControlPoint().getLock()){
+				 if(index == 1) {
+					 alignTensionPoint(x, y, point.getControlPoint().getTension2());
+				 } else {
+					 alignTensionPoint(x, y, point.getControlPoint().getTension1());
+				 }
+			 }
+			 
+			 generatedPoints = ContourCalc.generate(controlPoints, isClosedCurve());
+    	 }
      }
      
      public void alignTensionPoint(double x, double y, TensionPoint point) {
@@ -522,9 +496,23 @@ public class Contour implements Shape, Serializable {
     	 point.setY(point.getControlPoint().getY() + finalPointY);
      }
      
-     public void dragTensionPoint(double x, double y, TensionPoint point) {
+     public void dragPoint(double x, double y, Point point) {
     	 point.setX(point.getX() + x);
     	 point.setY(point.getY() + y);
+     }
+     
+     public void moveContour(double x, double y, Point point) {
+    	 
+		 double deltaX = x - point.getX();
+		 double deltaY = y - point.getY();
+    	 for(ControlPoint cPoint: controlPoints) {
+    		 dragPoint(deltaX, deltaY, cPoint);
+    	 }
+    	 
+    	 for (TensionPoint tPoint: tensionPoints) {
+    		 dragPoint(deltaX, deltaY, tPoint);
+    	 }	    	 
+    	 generatedPoints = ContourCalc.generate(controlPoints, isClosedCurve());
      }
      
     /**
@@ -557,7 +545,6 @@ public class Contour implements Shape, Serializable {
      * @return boolean
      */
     protected boolean userCoordinates(double x, double y){
-    	
     	return true;
     }
 
@@ -603,18 +590,18 @@ public class Contour implements Shape, Serializable {
      *
      * @param contourTypeIn the type of contour
      */
-    public void setContourType(Type contourTypeIn) {
+    public void setType(Type contourTypeIn) {
         contourType = contourTypeIn;
         generatedPoints = ContourCalc.generate(controlPoints, isClosedCurve());
     }
 
-    public Type getContourType() {
+    public Type getType() {
         return contourType;
     }
     
 
     public Integer getIntFromType() {
-        return Contour.TYPE_TO_INTEGER.get(getContourType());
+        return Contour.TYPE_TO_INTEGER.get(getType());
     }
 
     public static Type getTypeFromInt(int contourType) {
@@ -622,10 +609,10 @@ public class Contour implements Shape, Serializable {
     }
     
     public Integer getIntFromTypeControlPoints() {
-    	return Contour.TYPE_TO_CONTROL_INTEGER.get(getContourType());
+    	return Contour.TYPE_TO_CONTROL_INTEGER.get(getType());
     }
     
-    public static boolean isControlPointFromInt(int contourType) { 
+    public static Boolean isControlPointFromInt(int contourType) { 
     	return Contour.IS_CONTROL_POINT_CONTOUR.get(contourType);
     }
 
@@ -666,7 +653,7 @@ public class Contour implements Shape, Serializable {
 
     public String toString() {
         String output = "";
-        switch (this.getContourType()) {
+        switch (this.getType()) {
             case LA_ENDO:
                 output += "LEFT ATRIUM ENDOCARDIAL";
                 break;

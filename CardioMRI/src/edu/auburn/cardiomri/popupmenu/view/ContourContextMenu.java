@@ -32,37 +32,47 @@ public class ContourContextMenu  {
 		contourPop.setLocation();
 
 		// Label Menu
-		contourPop.addLabel(imageModel.getSelectedContour().toString());
-		contourPop.add(new MySeparator());
 		
-		
-		
-		if(imageModel.getSelectedControlPoint() != null){
-			contourPop.addMenuItem("Delete Point", contextMenuListener);
-//			if( Point is Locked) {
-//			contourPop.add(addMenuItem("UnLock Point"))
+		if(imageModel.getSelectedContour() != null){
+			contourPop.addLabel(imageModel.getSelectedContour().toString());
+			contourPop.add(new MySeparator());
+// Not editing points in contour mode			
+//			if(imageModel.getSelectedControlPoint() != null){
+//				contourPop.addMenuItem("Delete Point", contextMenuListener);
+//				if( imageModel.isControlPointLocked()) {
+//					contourPop.addMenuItem("Unlock Smooth", contextMenuListener);
+//				}
+//				else{
+//					contourPop.addMenuItem("Lock Smooth", contextMenuListener);
+//				}
+//				
 //			}
-////			else{
-//				contourPop.addMenuItem("Lock Point", contextMenuListener);
-////			}
-//			
-		}
-		
-		contourPop.addMenuItem("Delete Contour", contextMenuListener);
-		contourPop.addMenuItem("Hide Contour", contextMenuListener);
-		contourPop.addMenuItem("Lock Point (need Point Locked)", contextMenuListener);
-		contourPop.addMenuItem("Unlock Point (need Point Locked)", contextMenuListener);
-		contourPop.addMenuItem("Done Adding", contextMenuListener);
+			
+			contourPop.addMenuItem("Delete Contour", contextMenuListener);
+			contourPop.addMenuItem("Hide Contour", contextMenuListener);
 
+			contourPop.addMenuItem("Done Adding", contextMenuListener);
+			
+		}
+		else {
+			contourPop.addLabel("Please Select A Contour Type");
+		}
 		
 		contourPop.setVisible(true);
 		contourPop.getBox();
+		
+
+		
+		
 		
 		return contourPop;
 	}
 
 	public void setVisible(boolean b){
 		contourPop.setVisible(b);
+	}
+	public boolean isVisible(){
+		return contourPop.isVisible();
 	}
 	public  Dimension getSize(){
 		return contourPop.getSize();

@@ -34,7 +34,7 @@ public class LandmarkTypeMenu extends JPopupMenu implements MRIPopupMenu, MouseL
 		
 		Mode.setMode(Mode.landmarkMode());
 		
-        for (Landmark.LandmarkType t : Landmark.LandmarkType.values() ){
+        for (Landmark.Type t : Landmark.Type.values() ){
         	JMenuItem tmp = new JMenuItem(t.abbv());
         	tmp.setActionCommand(t.abbv());
         	tmp.addActionListener(actionListener);

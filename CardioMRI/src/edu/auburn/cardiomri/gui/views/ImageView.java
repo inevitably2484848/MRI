@@ -2,13 +2,13 @@ package edu.auburn.cardiomri.gui.views;
 
 import java.awt.Color;
 import java.awt.GridLayout;
-import java.awt.MouseInfo;
 import java.awt.Shape;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.GeneralPath;
@@ -18,7 +18,6 @@ import java.util.Vector;
 
 import javax.swing.AbstractAction;
 import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
@@ -26,11 +25,10 @@ import com.pixelmed.display.SingleImagePanel;
 
 import edu.auburn.cardiomri.datastructure.Contour;
 import edu.auburn.cardiomri.datastructure.Landmark;
-import edu.auburn.cardiomri.datastructure.Landmark.LandmarkType;
+import edu.auburn.cardiomri.datastructure.Landmark.Type;
 import edu.auburn.cardiomri.datastructure.Point;
 import edu.auburn.cardiomri.datastructure.TensionPoint;
 import edu.auburn.cardiomri.datastructure.DICOMImage;
-import edu.auburn.cardiomri.datastructure.Vector3d;
 import edu.auburn.cardiomri.gui.ConstructImage;
 import edu.auburn.cardiomri.gui.models.ImageModel;
 import edu.auburn.cardiomri.gui.models.Model;
@@ -41,26 +39,21 @@ import edu.auburn.cardiomri.util.Mode;
 import edu.auburn.cardiomri.datastructure.ControlPoint;
 
 public class ImageView extends SingleImagePanel implements ActionListener,
-        ViewInterface, Observer {
+        ViewInterface, Observer, KeyListener {
     protected Model model;
     protected JPanel imageContourPanel, panel, cPanel;
     private static final long serialVersionUID = -6920775905498293695L;
     private boolean lmrkMode = false;
+    private boolean controlPressed = false;
     private Point clickedPoint = null;
     private Vector<Shape> redShapes = new Vector<Shape>();
     private Vector<Shape> orangeShapes = new Vector<Shape>();
     private Vector<Shape> blueShapes = new Vector<Shape>();
     private Vector<Shape> whiteShapes = new Vector<Shape>();
-    /*
-    private Vector<Shape> visibleShapes = new Vector<Shape>();
-    private Vector<Shape> selectedShapes = new Vector<Shape>();
-    private Vector<Shape> visibleTensionPointShapes = new Vector<Shape>();
-    */
-    private ContourControlView contourPanel; // testing
     
     public ContourContextMenu contourCM;// = ContourContextMenu.popupContextMenu(); //kw
     public LandmarkContextMenu landmarkCM; //LandmarkContextMenu()
-    public SelectContextMenu selectCM; //SelectContextMenu();
+    public SelectContextMenu selectCM ; //SelectContextMenu();
     
 
     
@@ -75,32 +68,19 @@ public class ImageView extends SingleImagePanel implements ActionListener,
     }
     
     public void redraw() {
+
+
     	DICOMImage dImage = getImageModel().getImage();
 
         dirtySource(new ConstructImage(dImage));
-        /*visibleShapes.clear();
-        selectedShapes.clear();
-        visibleTensionPointShapes.clear();
-        
-        */
         
         clearShapes();
         
         updateContours(getImageModel().getContours());
         updateLandmarks(getImageModel().getLandmarks());
         
-        /*updateSelectedContour(getImageModel().getSelectedContour());
-        updateVisibleContours(getImageModel().getVisibleContours());
-        
-        updateVisibleLandmarks(getImageModel().getVisibleLandmarks());
-        updateSelectedLandmark(getImageModel().getSelectedLandmark());*/
-        
         colorShapes();
         
-        /*this.setPreDefinedShapes(visibleShapes);
-        this.setLocalizerShapes(selectedShapes);
-        this.setPreDefinedShapes(visibleTensionPointShapes);
-        this.setPreDefinedShapes(visibleTensionPointShapes);*/
         refresh();
     }
     
@@ -118,33 +98,13 @@ public class ImageView extends SingleImagePanel implements ActionListener,
     	this.setLocalizerShapes(whiteShapes);
     }
 
-    /**
-     * Updates the set of control points that should be drawn onto the screen.
-     * Control points are drawn as 2x2 ellipses.
-     * 
-     * @param contour The currently selected contour
-     */
-    /*private void updateSelectedContour(Contour contour) {
-        
-        if (contour != null) {
-            for (ControlPoint controlPoint : contour.getControlPoints()) {
-            	Ellipse2D ellipse = new Ellipse2D.Double(controlPoint.getX(),
-                        controlPoint.getY(), 2, 2);
-                selectedShapes.add(ellipse);
-            }
-            updateTensionPoints(contour);
-        }
-    }*/
     
     private void updateLandmarks(Vector<Landmark> landmarks) {
     	for (Landmark landmark: landmarks) {
     		if (landmark != null) {	
     			if (landmark.isVisible()) {
-
-    				double x = landmark.getCoordinates()[0];
-	        		double y = landmark.getCoordinates()[1];
-
-
+    				double x = landmark.getX();
+	        		double y = landmark.getY();
 	        		GeneralPath cross = new GeneralPath();
 	        		//horizontal component
 	        		cross.moveTo(x-1, y);
@@ -173,24 +133,6 @@ public class ImageView extends SingleImagePanel implements ActionListener,
     			colorShape(contour, contour.getColor());
     		
 	    		if (contour.isSelected()) {
-	    			
-//		            for (ControlPoint controlPoint : contour.getControlPoints()) {
-//		            	
-//		            	Ellipse2D controlPointEllipse = new Ellipse2D.Double(controlPoint.getX(),
-//		                        controlPoint.getY(), 2, 2);
-//		            	
-//		            	TensionPoint tensionPoint1 = controlPoint.getTension1();
-//		            	TensionPoint tensionPoint2 = controlPoint.getTension2();
-//		            	
-//		            	Ellipse2D tensionPoint1Ellipse = new Ellipse2D.Double(tensionPoint1.getX(), tensionPoint1.getY(), 2, 2);
-//		    			Ellipse2D tensionPoint2Ellipse = new Ellipse2D.Double(tensionPoint2.getX(), tensionPoint2.getY(), 2, 2);
-//		    			
-//		            	colorShape(controlPointEllipse, controlPoint.getColor());
-//		            	if(contour.getControlPoints().size() > 1) {
-//			            	colorShape(tensionPoint1Ellipse, tensionPoint1.getColor());
-//			            	colorShape(tensionPoint2Ellipse, tensionPoint2.getColor());
-//		            	}
-//		            }
 		            
 		            for(int i = 0; i < contour.getControlPoints().size(); i++) {
 		            	
@@ -199,35 +141,49 @@ public class ImageView extends SingleImagePanel implements ActionListener,
 		            	Ellipse2D controlPointEllipse = new Ellipse2D.Double(controlPoint.getX(),
 		                        controlPoint.getY(), 2, 2);
 		            	
+		            	colorShape(controlPointEllipse, controlPoint.getColor());
+		            	
 		            	TensionPoint tensionPoint1 = controlPoint.getTension1();
 		            	TensionPoint tensionPoint2 = controlPoint.getTension2();
 		            	
-		            	Ellipse2D tensionPoint1Ellipse = new Ellipse2D.Double(tensionPoint1.getX(), tensionPoint1.getY(), 2, 2);
-		    			Ellipse2D tensionPoint2Ellipse = new Ellipse2D.Double(tensionPoint2.getX(), tensionPoint2.getY(), 2, 2);
-		    			
-		            	colorShape(controlPointEllipse, controlPoint.getColor());
-		            	if(contour.getControlPoints().size() > 1) {
-		            		//check to not draw tension points of the final curve if the bezier curve is open
-		            		if(i == 0) {
-		            			if(contour.isClosedCurve()) {
-		            				colorShape(tensionPoint1Ellipse, tensionPoint1.getColor());
-		            			}
-		            			colorShape(tensionPoint2Ellipse, tensionPoint2.getColor());
-		            			
-		            		} 
-		            		else if(i == (contour.getControlPoints().size() - 1)) {
-		            			if(contour.isClosedCurve()) {
+		            	if ((Mode.getMode() == Mode.contourMode()) || 
+		            		(controlPoint.isSelected() || tensionPoint1.isSelected() || tensionPoint2.isSelected()))
+		            	{
+			            
+			            	Ellipse2D tensionPoint1Ellipse = new Ellipse2D.Double(tensionPoint1.getX(), tensionPoint1.getY(), 2, 2);
+			    			Ellipse2D tensionPoint2Ellipse = new Ellipse2D.Double(tensionPoint2.getX(), tensionPoint2.getY(), 2, 2);
+			    			
+			            	if(contour.getControlPoints().size() > 1) {
+			            		//check to not draw tension points of the final curve if the bezier curve is open
+			            		if(i == 0) {
+			            			if(contour.isClosedCurve()) {
+			            				colorShape(tensionPoint1Ellipse, tensionPoint1.getColor());
+			            			}
+			            			else {
+			            				tensionPoint1.isVisible(false);
+			            			}
 			            			colorShape(tensionPoint2Ellipse, tensionPoint2.getColor());
-		            			}
-		            			colorShape(tensionPoint1Ellipse, tensionPoint1.getColor());
-		            			
-		            		}
-		            		else {
-	            				colorShape(tensionPoint1Ellipse, tensionPoint1.getColor());
-	            				colorShape(tensionPoint2Ellipse, tensionPoint2.getColor());
-		            		}
+			            			tensionPoint2.isVisible(true);
+			            		} 
+			            		else if(i == (contour.getControlPoints().size() - 1)) {
+			            			if(contour.isClosedCurve()) {
+				            			colorShape(tensionPoint2Ellipse, tensionPoint2.getColor());
+			            			}
+			            			else {
+			            				tensionPoint2.isVisible(false);
+			            			}
+			            			colorShape(tensionPoint1Ellipse, tensionPoint1.getColor());
+			            			tensionPoint1.isVisible(true);
+			            		}
+			            		else {
+		            				colorShape(tensionPoint1Ellipse, tensionPoint1.getColor());
+		            				colorShape(tensionPoint2Ellipse, tensionPoint2.getColor());
+		            				tensionPoint1.isVisible(true);
+		            				tensionPoint2.isVisible(true);
+			            		}
+			            	}
 		            	}
-		            }
+			        }
 	    		}
     		}
         }
@@ -246,48 +202,6 @@ public class ImageView extends SingleImagePanel implements ActionListener,
     	else if (color == Color.WHITE) {
     		this.whiteShapes.add(shape);
     	}
-    }
-    
-    /*private void updateSelectedLandmark(Landmark landmark) {
-    	if (landmark != null) {	
-    		double x = landmark.getCoordinates().getX();
-    		double y = landmark.getCoordinates().getY();
-    		GeneralPath cross = new GeneralPath();
-    		//horizontal component
-    		cross.moveTo(x-1, y);
-    		cross.lineTo(x+1, y);
-    		//vertical component
-    		cross.moveTo(x,y-1);
-    		cross.lineTo(x,y+1);
-    		selectedShapes.add(cross);
-    	}
-    }*/
-    
-
-    /*private void updateVisibleLandmarks(Vector<Landmark> landmarks){
-    	for (Landmark l:landmarks){
-    		double x = l.getCoordinates()[0];
-    		double y = l.getCoordinates()[1];
-    		GeneralPath cross = new GeneralPath();
-    		//horizontal component
-    		cross.moveTo(x-1, y);
-    		cross.lineTo(x+1, y);
-    		//vertical component
-    		cross.moveTo(x,y-1);
-    		cross.lineTo(x,y+1);
-    		visibleTensionPointShapes.add(cross);
-    	}
-    }*/
-    
-
-    /**
-     * Updates the list of contours to be drawn onto the screen
-     * 
-     * @param contours List of Contour objects
-     */
-    private void updateVisibleContours(Vector<Contour> contours) {
-        this.setSelectedDrawingShapes(contours);
-        //contourPanel.refreshView(contours); //KW
     }
 
 
@@ -325,6 +239,7 @@ public class ImageView extends SingleImagePanel implements ActionListener,
         panel.add(this);
         panel.setFocusable(true);
         addKeyBindings(panel);
+        panel.addKeyListener(this);
         return panel;
     }
     
@@ -349,7 +264,7 @@ public class ImageView extends SingleImagePanel implements ActionListener,
     public void mouseClicked(MouseEvent e) {
 
     	int mode = Mode.getMode(); //kw
-    	
+    	closeOpenMenus();
     	//System.out.println("MODE : " + mode);
     	
     	java.awt.geom.Point2D mouseClick =  getImageCoordinateFromWindowCoordinate(e.getX(), e.getY());
@@ -362,7 +277,9 @@ public class ImageView extends SingleImagePanel implements ActionListener,
 	            }
     		}
     		else if(SwingUtilities.isRightMouseButton(e)){
+    			
     			contourCM = new ContourContextMenu(getImageModel()); //open context menu
+
     		}
     	} 
     	else if (mode == 2){ 
@@ -374,14 +291,14 @@ public class ImageView extends SingleImagePanel implements ActionListener,
             	GridControlView.depressToggles();
     		}
     		else if(SwingUtilities.isRightMouseButton(e)){
-    			landmarkCM = new LandmarkContextMenu(getImageModel());
+    	    	landmarkCM = new LandmarkContextMenu(getImageModel());
     		}
     		
     	}
     	else { 
     		// SELECT MODE
     		 if (SwingUtilities.isLeftMouseButton(e)) {
-    			 getImageModel().selectClosestAnnotationWithinRange(mouseClick.getX(), mouseClick.getY(), 30);
+    			 //getImageModel().selectClosestAnnotationWithinRange(mouseClick.getX(), mouseClick.getY(), 30);
     	     } 
     		 else if(SwingUtilities.isRightMouseButton(e)){
     			 selectCM = new SelectContextMenu(getImageModel());
@@ -392,12 +309,31 @@ public class ImageView extends SingleImagePanel implements ActionListener,
     } // END MOUSE CLICK
     
     /**************************************************************************
+     *  CLOSE ALL OPEN MENUS
+     *************************************************************************/
+    public void closeOpenMenus(){
+  
+    	if(selectCM != null && selectCM.isVisible()){
+			selectCM.setVisible(false);
+    		selectCM= null;
+		 }
+    	if(landmarkCM != null && landmarkCM.isVisible()){
+			 landmarkCM.setVisible(false);
+			 landmarkCM = null;
+		 }
+    	if(contourCM != null && contourCM.isVisible()){
+			 contourCM.setVisible(false);
+			 contourCM = null;
+		 }
+    }
+    
+    /**************************************************************************
      * MouseMoved checks and see if cursor is in the contextmenus.
      * if mouse is not the in the same range as a menu close menu
      * @param MouseEvent
      *************************************************************************/
     public void mouseMoved(MouseEvent e){
-
+    	
     	if(contourCM != null && !(contourCM.isInBox())){
     		contourCM.setVisible(false);
     	}
@@ -417,10 +353,20 @@ public class ImageView extends SingleImagePanel implements ActionListener,
     	
         if(!lmrkMode) {
         	if (clickedPoint != null && clickedPoint.getClass() == ControlPoint.class) {
-        		getImageModel().getSelectedContour().moveContourPoint(mouseClick.getX(), mouseClick.getY(), (ControlPoint)clickedPoint);
+        		if (this.controlPressed) {	// translate entire contour with control+drag
+        			getImageModel().moveContour(mouseClick.getX(), mouseClick.getY(), clickedPoint);
+        		}
+        		else {	// move single control point without control pressed
+        			getImageModel().getSelectedContour().moveContourPoint(mouseClick.getX(), mouseClick.getY(), (ControlPoint)clickedPoint);
+        		}
         	}
         	else if (clickedPoint != null && clickedPoint.getClass() == TensionPoint.class) {
-        		getImageModel().getSelectedContour().moveTensionPoint(mouseClick.getX(), mouseClick.getY(), (TensionPoint)clickedPoint);
+        		if (this.controlPressed) {	// translate entire contour with control+drag
+        			getImageModel().moveContour(mouseClick.getX(), mouseClick.getY(), clickedPoint);
+        		}
+        		else {	// move single tension point without control pressed
+        			getImageModel().getSelectedContour().moveTensionPoint(mouseClick.getX(), mouseClick.getY(), (TensionPoint)clickedPoint);
+        		}
         	}
         	else if (clickedPoint != null && clickedPoint.getClass() == Landmark.class) {
         		((Landmark) clickedPoint).moveLandmark(mouseClick.getX(),mouseClick.getY());
@@ -428,16 +374,6 @@ public class ImageView extends SingleImagePanel implements ActionListener,
         	else {
         		super.mouseDragged(e);
         	}
-        	/*if(cPointD >= 0) {
-        		getImageModel().getSelectedContour().moveContourPoint(mouseClick.getX(), mouseClick.getY(), cPointD);
-        	}
-        	else if(tPointD >= 0) {
-        		getImageModel().getSelectedContour().moveTensionPoint(mouseClick.getX(), mouseClick.getY(), tPointD);	
-        	}
-        	else {
-        		super.mouseDragged(e);
-        		//add this code to the landmark drag when created
-        	}*/
         	
         	// Forces updating of control and tension points during dragging
         	this.redraw();
@@ -460,18 +396,48 @@ public class ImageView extends SingleImagePanel implements ActionListener,
     
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
 		
 	}
 
     public void mousePressed(MouseEvent e) {
 
-    	java.awt.geom.Point2D mouseClick = getImageCoordinateFromWindowCoordinate(e.getX(), e.getY());
-    	clickedPoint = getImageModel().findNearestPointWithinRange(mouseClick.getX(), mouseClick.getY(), 3);
+    	if (SwingUtilities.isLeftMouseButton(e)) {
+    		java.awt.geom.Point2D mouseClick = getImageCoordinateFromWindowCoordinate(e.getX(), e.getY());
+        	clickedPoint = getImageModel().findNearestPointWithinRange(mouseClick.getX(), mouseClick.getY(), 3);
+        	
+        	if (Mode.getMode() == Mode.selectMode()) {
+    	    	getImageModel().selectClosestAnnotationWithinRange(mouseClick.getX(), mouseClick.getY(), 15);
+        	}
+	    } 
+		else if(SwingUtilities.isRightMouseButton(e)){
+			java.awt.geom.Point2D mouseClick = getImageCoordinateFromWindowCoordinate(e.getX(), e.getY());
+			clickedPoint = getImageModel().findNearestPointWithinRange(mouseClick.getX(), mouseClick.getY(), 10);
+
+			if (clickedPoint != null) {
+				if (clickedPoint.getClass() == Landmark.class) {
+					if (Mode.getMode() == Mode.selectMode()) {
+						getImageModel().selectClosestAnnotationWithinRange(mouseClick.getX(), mouseClick.getY(), 15);
+					}
+				}
+				
+				if (clickedPoint.getClass() == ControlPoint.class) {
+					if (Mode.getMode() == Mode.selectMode()) {
+						getImageModel().selectClosestAnnotationWithinRange(mouseClick.getX(), mouseClick.getY(), 15);
+					}
+				}
+				else if (clickedPoint.getClass() == TensionPoint.class) {
+					if (Mode.getMode() == Mode.selectMode()) {
+						getImageModel().selectClosestAnnotationWithinRange(mouseClick.getX(), mouseClick.getY(), 15);
+					}
+				}
+				
+			}
+			else {
+				
+			}
+			
+		}
     	
-    	if (Mode.getMode() == Mode.selectMode()) {
-	    	getImageModel().selectClosestAnnotationWithinRange(mouseClick.getX(), mouseClick.getY(), 15);
-    	}
     	
     	super.mousePressed(e);
     	
@@ -532,6 +498,30 @@ public class ImageView extends SingleImagePanel implements ActionListener,
                 "Show Contours");
         panel.getActionMap().put("Show Contours",
                 this.new ControlKeyAction("Show Contours", this));
+        
+        panel.getInputMap().put(
+                KeyStroke.getKeyStroke(KeyEvent.VK_F, commandKey),
+                "Show Contours");
+        panel.getActionMap().put("Show Contours",
+                this.new ControlKeyAction("Show Contours", this));
+    }
+    
+    
+    public void keyTyped(KeyEvent e) {
+    }
+
+    
+    public void keyPressed(KeyEvent e) {
+    	if (e.getKeyCode() == KeyEvent.VK_CONTROL) {
+            this.controlPressed = true;
+        }
+    }
+
+    
+    public void keyReleased(KeyEvent e) {
+    	if (e.getKeyCode() == KeyEvent.VK_CONTROL) {
+            this.controlPressed = false;
+        }
     }
 
     /**
@@ -578,7 +568,6 @@ public class ImageView extends SingleImagePanel implements ActionListener,
                     (int) ActionEvent.ACTION_PERFORMED, this.comand));
         }
     }
-
-
-
+    
+    
 }

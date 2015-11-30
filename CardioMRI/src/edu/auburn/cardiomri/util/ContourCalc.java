@@ -7,11 +7,9 @@ import java.util.Vector;
 import edu.auburn.cardiomri.datastructure.Point;
 import edu.auburn.cardiomri.datastructure.ControlPoint;
 import edu.auburn.cardiomri.datastructure.TensionPoint;
-import javafx.geometry.Point2D;
 import toxi.geom.Spline2D;
 import toxi.geom.Vec2D;
 import edu.auburn.cardiomri.datastructure.Contour;
-import edu.auburn.cardiomri.datastructure.Vector3d;
 
 public final class ContourCalc {
     /**
@@ -89,10 +87,6 @@ public final class ContourCalc {
       	  return new Vector<Point>(controlPoints);
         }
         
-        Point centroid = calcCentroid(controlPoints);
-        
-        List<TensionPoint> tPoints = new Vector<TensionPoint>();
-        
         //final points that will make the contour
         List<Point> generatedPoints = new Vector<Point>(); 
         
@@ -102,19 +96,6 @@ public final class ContourCalc {
         //ContourCalc.sortPoints(controlPoints);
         
         for(int i = 0; i < controlPoints.size() - 1 ; i++) {
-      	  
-      	  //checks to make sure tension points that have already been calculated or moved by the user are not overwritten
-          //shouldn't need to check both tension points
-      	  if(controlPoints.get(i).getTension1().getX() == 0.0 && controlPoints.get(i).getTension1().getY() == 0.0) {
-      		  
-      		  //create tension point from two control points of a segment
-      		  tPoints = getTensionPoint(controlPoints.get(i), centroid);
-   
-      		  //represent this tension point within the corresponding control point
-      		  controlPoints.get(i).setTension1(tPoints.get(0));
-      		  controlPoints.get(i).setTension2(tPoints.get(1));
-  		  
-      	  }      	  
       	  //generate points for every segment of the curve
       	  curvePoints = genCurve(controlPoints.get(i), controlPoints.get(i + 1));
       	  
@@ -124,14 +105,6 @@ public final class ContourCalc {
         
         //only close the contour if boolean is selected
         if(isClosed) {
-	        tPoints = getTensionPoint(controlPoints.get(controlPoints.size() - 1), centroid);
-	 
-	    	if(controlPoints.get(controlPoints.size() - 1).getTension1().getX() == 0.0 && controlPoints.get(controlPoints.size() - 1).getTension1().getY() == 0.0) {
-		        controlPoints.get(controlPoints.size() - 1).setTension1(tPoints.get(0));
-		        controlPoints.get(controlPoints.size() - 1).setTension2(tPoints.get(1));
-
-	    	}
-	        //final curve from the last point to the initial point
 	        curvePoints = genCurve(controlPoints.get(controlPoints.size() - 1), controlPoints.get(0));
 	        
 	        generatedPoints.addAll(curvePoints);
@@ -217,6 +190,11 @@ public final class ContourCalc {
  		//calculates the distance vector to the second tension from the first tension point
  		double distanceBX = b.getTension1().getX() - a.getTension2().getX();
  		double distanceBY = b.getTension1().getY() - a.getTension2().getY();
+ 		
+ 		if(distanceBX == 0 || distanceBY == 0) {
+ 			distanceBX = 0.1;
+ 			distanceBY = 0.1;
+ 		}
  		
  		//calculates the distance vector to the second control point from the second tension
  		double distanceCX = b.getX() - b.getTension1().getX();

@@ -229,17 +229,20 @@ public class GridControlView extends View implements ChangeListener {
     
     
     /****************************************************************************
-     * 
+     * Depresses the Toggle Buttons when you leave a mode without depressing the 
+     * toggle button
      ***************************************************************************/
     public static void depressToggles(){
-    	System.out.println("X");
+    	if(getImageModel().getSelectedContour() != null){
+	    	getImageModel().getSelectedControlPoint().isSelected(false);
+	    	getImageModel().setSelectedControlPoint(null);
+    	}
     	if(contour.isSelected()){
     		contour.setSelected(false);
     	}
     	else{
     		landMark.setSelected(false);
     	}
-    	
     }
     
     

@@ -6,6 +6,8 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JPopupMenu;
 
+import edu.auburn.cardiomri.datastructure.ControlPoint;
+import edu.auburn.cardiomri.datastructure.TensionPoint;
 import edu.auburn.cardiomri.gui.models.ImageModel;
 import edu.auburn.cardiomri.gui.models.Model;
 import edu.auburn.cardiomri.gui.views.ImageView;
@@ -47,7 +49,22 @@ public class SelectContextMenuActionPerformed implements ActionListener {
 		}
 		else if (action.equals("Edit Contour")){
 			Mode.setMode(Mode.contourMode());
+			ControlPoint cp = imageModel.getSelectedControlPoint();
+			TensionPoint tp = imageModel.getSelectedTensionPoint();
+			if (cp != null) {
+				cp.isSelected(false);
+				imageModel.setSelectedControlPoint(null);
+			}
+			else if (tp != null) {
+				tp.isSelected(false);
+				imageModel.setSelectedTensionPoint(null);
+			}
+			imageModel.update();
 			menu.setVisible(false);
+		}
+
+		else if(action.equals("Show All Contours")){
+			imageModel.showAllContours();
 		}
 		else if (action.equals("Delete Landmark")){
 			if(imageModel.getSelectedLandmark() != null){
@@ -67,10 +84,11 @@ public class SelectContextMenuActionPerformed implements ActionListener {
 			imageModel.hideAllLandmarks();
 			menu.setVisible(false);
 		}
-		else if(action.equals("Un-Hide All Landmarks")){
+		else if(action.equals("Show All Landmarks")){
 			imageModel.showAllLandmarks();
 			menu.setVisible(false);
 		}
+		menu.setVisible(false);
 	}
 
 }

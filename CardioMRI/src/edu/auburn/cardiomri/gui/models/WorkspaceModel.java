@@ -56,8 +56,8 @@ public class WorkspaceModel extends Model {
         return study;
     }
     
-    public void loadContour(File file) {
-    	ContourUtilities.loadContour(file, this.getStudy().getUIDToImage());
+    public void loadAnnotations(File file) {
+    	ContourUtilities.loadAnnotations(file, this.getStudy().getUIDToImage());
     	setIndices(s, t, i);
     }
 
@@ -279,6 +279,7 @@ public class WorkspaceModel extends Model {
     }
     
     public void rotate() {
+    	System.out.println("ROTATE");
     	temp4CH = study.getFourChamber();
     	study.setFourChamber(study.getTwoChamber());
     	study.setTwoChamber(study.getShortAxis());

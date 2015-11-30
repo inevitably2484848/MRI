@@ -32,7 +32,7 @@ public class ContourTest {
     @Test
     public void testContourConstructorSetsContourType() {
         Contour.Type expected = Contour.Type.LV_EPI;
-        Contour.Type actual = contour.getContourType();
+        Contour.Type actual = contour.getType();
         assertEquals(expected, actual);
     }
 

@@ -12,6 +12,7 @@ import edu.auburn.cardiomri.datastructure.Contour;
 import edu.auburn.cardiomri.datastructure.Contour.Type;
 import edu.auburn.cardiomri.gui.models.ImageModel;
 import edu.auburn.cardiomri.gui.models.WorkspaceModel;
+import edu.auburn.cardiomri.gui.views.GridControlView;
 import edu.auburn.cardiomri.gui.views.ImageView;
 import edu.auburn.cardiomri.gui.views.View;
 import edu.auburn.cardiomri.gui.views.WorkspaceView;
@@ -31,8 +32,8 @@ public class MenuBarContourActionPerformed implements ActionListener {
 		
 		String actionCommand = actionEvent.getActionCommand();
 		
-		if (actionCommand.equals("Save Contours")) {
-            wrkspcVw.saveContour();
+		if (actionCommand.equals("Save Annotations")) {
+            wrkspcVw.saveAnnotations();
         } 
 		
 		if (actionCommand.equals("Delete Contour")) {
@@ -51,6 +52,7 @@ public class MenuBarContourActionPerformed implements ActionListener {
 			} 
 			else {
 				getImageModel().hideSelectedContour();
+				
 			}
 		} 
 		else if (actionCommand.equals("Select Contour")) {
@@ -78,6 +80,7 @@ public class MenuBarContourActionPerformed implements ActionListener {
                 "There are no contours to hide.");
 			} else {
 				getImageModel().hideAllContours();
+			
 			}
 		} 
 		else if (actionCommand.equals("Show Contours")) {
@@ -99,9 +102,10 @@ public class MenuBarContourActionPerformed implements ActionListener {
 			} 
 			else {
 				getImageModel().deleteAllContours();
+				
 			}
 		}
-		else if (actionCommand.equals("Load Contours")) {
+		else if (actionCommand.equals("Load Annotations")) {
             try {
             	wrkspcVw.setUpLoad();
             } catch (IOException e1) {
@@ -143,7 +147,7 @@ public class MenuBarContourActionPerformed implements ActionListener {
 			
 		}
 		
-		
+		GridControlView.depressToggles();
 	}
 		/**
 		 * gets Image model to add contour type
