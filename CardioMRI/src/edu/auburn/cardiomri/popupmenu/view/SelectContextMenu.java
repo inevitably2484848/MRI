@@ -119,7 +119,7 @@ public class SelectContextMenu {
         
         
         //pulled from Landmark Menu Bar
-        for (Landmark.LandmarkType t : Landmark.LandmarkType.values() ){
+        for (Landmark.Type t : Landmark.Type.values() ){
         	 landmark.add(menu.addMenuItemTo(t.abbv(), landmarkType));
         }
 		

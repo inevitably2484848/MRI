@@ -32,8 +32,8 @@ public class MenuBarContourActionPerformed implements ActionListener {
 		
 		String actionCommand = actionEvent.getActionCommand();
 		
-		if (actionCommand.equals("Save Contours")) {
-            wrkspcVw.saveContour();
+		if (actionCommand.equals("Save Annotations")) {
+            wrkspcVw.saveAnnotations();
         } 
 		
 		if (actionCommand.equals("Delete Contour")) {
@@ -105,7 +105,7 @@ public class MenuBarContourActionPerformed implements ActionListener {
 				
 			}
 		}
-		else if (actionCommand.equals("Load Contours")) {
+		else if (actionCommand.equals("Load Annotations")) {
             try {
             	wrkspcVw.setUpLoad();
             } catch (IOException e1) {
