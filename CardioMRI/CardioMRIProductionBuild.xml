@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="create_run_jar" name="Create Runnable Jar for Project CardioMRI">
+    <!--this file was created by Eclipse Runnable JAR Export Wizard-->
+    <!--ANT 1.7 is required                                        -->
+    <!--define folder properties-->
+    <property name="dir.buildfile" value="."/>
+    <property name="dir.workspace" value="/home/davis/SrDesign\"/>
+    <property name="dir.jarfile" value="${user.home}/Desktop"/>
+	<echo message="Outputing jar to ${user.home}/Desktop/CardioMRI.jar" level="info"/>
+    <target name="create_run_jar">
+        <jar destfile="${dir.jarfile}/CardioMRI.jar" filesetmanifest="mergewithoutmain">
+            <manifest>
+                <attribute name="Main-Class" value="edu.auburn.cardiomri.Main"/>
+                <attribute name="Class-Path" value="."/>
+            	<attribute name="Specification-Title" value="Java Advanced Imaging Image I/O Tools"/>
+            	<attribute name="Specification-Version" value="1.1"/>
+            	<attribute name="Specification-Vendor" value="Sun Microsystems, Inc."/>
+            	<attribute name="Implementation-Title" value="com.sun.media.imageio"/>
+            	<attribute name="Implementation-Version" value="1.1"/>
+            	<attribute name="Implementation-Vendor" value="Sun Microsystems, Inc."/>
+            </manifest>
+            <fileset dir="${dir.buildfile}/bin"/>
+            <zipfileset excludes="META-INF/*.SF" src="${dir.buildfile}/jai_imageio-1.1.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="${dir.buildfile}/pixelmed.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="${dir.buildfile}/toxiclibscore.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="/usr/local/eclipse/plugins/org.junit_4.12.0.v201504281640/junit.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="/usr/local/eclipse/plugins/org.hamcrest.core_1.3.0.v201303031735.jar"/>
+        </jar>
+    	<chmod file="${user.home}/Desktop/CardioMRI.jar" perm="ugo+rx"/>
+    </target>
+	
+	
+		
+	
+</project>

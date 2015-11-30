@@ -14,12 +14,14 @@ import java.util.Vector;
 
 import javafx.geometry.Point2D;
 import edu.auburn.cardiomri.datastructure.Contour;
+import edu.auburn.cardiomri.datastructure.ControlPoint;
 import edu.auburn.cardiomri.datastructure.DICOMImage;
 import edu.auburn.cardiomri.datastructure.Group;
 import edu.auburn.cardiomri.datastructure.Slice;
 import edu.auburn.cardiomri.datastructure.Study;
 import edu.auburn.cardiomri.datastructure.Time;
 import edu.auburn.cardiomri.datastructure.Vector3d;
+import edu.auburn.cardiomri.util.ContourUtilities;
 import edu.auburn.cardiomri.util.StudyUtilities;
 
 /**
@@ -30,7 +32,6 @@ import edu.auburn.cardiomri.util.StudyUtilities;
  * @author Moniz
  */
 public class WorkspaceModel extends Model {
-    protected State currentState;
     protected Study study;
     protected Map<ImageModel, Group> imageToGroup;
     private int temp4CH = -1;
@@ -42,7 +43,7 @@ public class WorkspaceModel extends Model {
      */
     public WorkspaceModel() {
         super();
-        currentState = State.UNDEFINED;
+//        currentState = State.UNDEFINED;
         imageToGroup = new HashMap<ImageModel, Group>();
     }
 
@@ -54,9 +55,13 @@ public class WorkspaceModel extends Model {
     public Study getStudy() {
         return study;
     }
+    
+    public void loadAnnotations(File file) {
+    	ContourUtilities.loadAnnotations(file, this.getStudy().getUIDToImage());
+    	setIndices(s, t, i);
+    }
 
     /**
-<<<<<<< HEAD
      * Reads a text file containing the contour data for one or more images in
      * a study. The method creates new Contour objects and associates them with 
      * with the appropriate image. 
@@ -68,7 +73,7 @@ public class WorkspaceModel extends Model {
     public void loadContour(File file,
             Map<String, DICOMImage> SOPInstanceUIDToDICOMImage) {
           Vector<Contour> contours;
-        List<Vector3d> controlPoints;
+        List<ControlPoint> controlPoints;
 
         String sopInstanceUID;
         String[] line = new String[2];
@@ -82,17 +87,25 @@ public class WorkspaceModel extends Model {
                 contours = new Vector<Contour>();
                 sopInstanceUID = reader.readLine();
                 contourType = Integer.parseInt(reader.readLine());
+                
                 while ((lineCheck = reader.readLine()) != "-1") {
-                    controlPoints = new Vector<Vector3d>();
+                    controlPoints = new Vector<ControlPoint>();
                     while ((line = reader.readLine().split("\t")).length >= 2) {
                         float x = Float.parseFloat(line[0]);
                         float y = Float.parseFloat(line[1]);
-                        controlPoints.add(new Vector3d(x, y, 0));
+                        controlPoints.add(new ControlPoint(x, y));
                     }
-                    Contour contour = new Contour(
-                            Contour.getTypeFromInt(contourType));
-                    contour.setControlPoints(controlPoints);
-                    contours.add(contour);
+                    
+                    // Only add contours to image if it is a control point contour
+                    if (Contour.isControlPointFromInt(contourType))
+                    {
+                    	Contour contour = new Contour(
+                    			Contour.getTypeFromInt(contourType));
+                    
+                    	contour.setControlPoints(controlPoints);
+                    	contours.add(contour);
+                    }
+                    
                     if (line[0].equals("-1")) {
                         break;
                     } else {
@@ -126,15 +139,6 @@ public class WorkspaceModel extends Model {
      */
     public void setStudy(Study study) {
         this.study = study;
-        if (study == null) {
-            setCurrentState(State.START);
-        } else if (study.getUIDToImage().size() < 1) {
-            setCurrentState(State.START);
-        } else if (!hasValidIndices()) {
-            setCurrentState(State.GROUP_SELECTION);
-        } else {
-            setCurrentState(State.WORKSPACE);
-        }
     }
 
     /**
@@ -168,25 +172,6 @@ public class WorkspaceModel extends Model {
         return isValid;
     }
 
-    /**
-     * Getter for the current state.
-     * 
-     * @return
-     */
-    public State getCurrentState() {
-        return currentState;
-    }
-
-    /**
-     * Updates the current state and notifies observers with the change.
-     * 
-     * @param currentState
-     */
-    public void setCurrentState(State currentState) {
-        this.currentState = currentState;
-        setChanged();
-        notifyObservers(currentState);
-    }
 
     /**
      * Adds the ImageModel, Group pair to the internal map. When WorkspaceView
@@ -244,6 +229,42 @@ public class WorkspaceModel extends Model {
             imageModel.setCurrentImage(time.getImages().get(imageIndex));
         }
     }
+    
+    /**
+     * Pulls a DICOM image from each Group and sets it in the matching
+     * ImageModel.
+     * 
+     * @param sliceIndex
+     * @param timeIndex
+     * @param imageIndex
+     */
+    public void setIndices() {
+        for (ImageModel imageModel : imageToGroup.keySet()) {
+            Group group = imageToGroup.get(imageModel);
+
+            Slice slice = null;
+            if (this.s < 0 || this.s >= group.getSlices().size()) {
+                //System.err.println("slice index out of bounds");
+                slice = group.getSlices().get(0);
+                //continue;
+            }
+            else
+            {
+            	slice = group.getSlices().get(this.s);
+            }
+
+            if (this.t < 0 || this.t >= slice.getTimes().size()) {
+                System.err.println("time index out of bounds");
+            }
+
+            Time time = slice.getTimes().get(this.t);
+            if (this.i < 0 || this.i >= time.getImages().size()) {
+                System.err.println("image index out of bounds");
+            }
+
+            imageModel.setCurrentImage(time.getImages().get(this.i));
+        }
+    }
 
     public enum State {
         UNDEFINED, START, GROUP_SELECTION, WORKSPACE
@@ -258,12 +279,11 @@ public class WorkspaceModel extends Model {
     }
     
     public void rotate() {
+    	System.out.println("ROTATE");
     	temp4CH = study.getFourChamber();
     	study.setFourChamber(study.getTwoChamber());
     	study.setTwoChamber(study.getShortAxis());
     	study.setShortAxis(temp4CH);
-    	setChanged();
-    	notifyObservers(currentState);
     }
     
 }

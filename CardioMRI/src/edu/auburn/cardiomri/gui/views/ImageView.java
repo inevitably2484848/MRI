@@ -8,14 +8,15 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Ellipse2D;
+import java.awt.geom.GeneralPath;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Vector;
 
 import javax.swing.AbstractAction;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
@@ -23,60 +24,186 @@ import javax.swing.SwingUtilities;
 import com.pixelmed.display.SingleImagePanel;
 
 import edu.auburn.cardiomri.datastructure.Contour;
-import edu.auburn.cardiomri.datastructure.Contour.Type;
+import edu.auburn.cardiomri.datastructure.Landmark;
+import edu.auburn.cardiomri.datastructure.Landmark.Type;
+import edu.auburn.cardiomri.datastructure.Point;
+import edu.auburn.cardiomri.datastructure.TensionPoint;
 import edu.auburn.cardiomri.datastructure.DICOMImage;
-import edu.auburn.cardiomri.datastructure.Vector3d;
 import edu.auburn.cardiomri.gui.ConstructImage;
 import edu.auburn.cardiomri.gui.models.ImageModel;
 import edu.auburn.cardiomri.gui.models.Model;
+import edu.auburn.cardiomri.popupmenu.view.ContourContextMenu;
+import edu.auburn.cardiomri.popupmenu.view.LandmarkContextMenu;
+import edu.auburn.cardiomri.popupmenu.view.SelectContextMenu;
+import edu.auburn.cardiomri.util.Mode;
+import edu.auburn.cardiomri.datastructure.ControlPoint;
 
 public class ImageView extends SingleImagePanel implements ActionListener,
-        ViewInterface, Observer {
+        ViewInterface, Observer, KeyListener {
     protected Model model;
-    protected JPanel imageContourPanel, panel;
+    protected JPanel imageContourPanel, panel, cPanel;
     private static final long serialVersionUID = -6920775905498293695L;
+    private boolean lmrkMode = false;
+    private boolean controlPressed = false;
+    private Point clickedPoint = null;
+    private Vector<Shape> redShapes = new Vector<Shape>();
+    private Vector<Shape> orangeShapes = new Vector<Shape>();
+    private Vector<Shape> blueShapes = new Vector<Shape>();
+    private Vector<Shape> whiteShapes = new Vector<Shape>();
+    
+    public ContourContextMenu contourCM;// = ContourContextMenu.popupContextMenu(); //kw
+    public LandmarkContextMenu landmarkCM; //LandmarkContextMenu()
+    public SelectContextMenu selectCM ; //SelectContextMenu();
+    
 
+    
     /**
      * Redraws the DICOMImage, updates the selected contour's control points,
      * and updates the set of visible contours.
      */
     public void update(Observable obs, Object obj) {
         if (obj.getClass() == DICOMImage.class) {
-            DICOMImage dImage = getImageModel().getImage();
-            dirtySource(new ConstructImage(dImage));
-            updateSelectedContour(getImageModel().getSelectedContour());
-            updateVisibleContours(getImageModel().getVisibleContours());
-            refresh();
+            this.redraw();
         }
     }
+    
+    public void redraw() {
 
-    /**
-     * Updates the set of control points that should be drawn onto the screen.
-     * Control points are drawn as 2x2 ellipses.
-     * 
-     * @param contour The currently selected contour
-     */
-    private void updateSelectedContour(Contour contour) {
-        Vector<Shape> allControlPoints = new Vector<Shape>();
-        if (contour != null) {
-            for (Vector3d controlPoint : contour.getControlPoints()) {
-                Ellipse2D ellipse = new Ellipse2D.Double(controlPoint.getX(),
-                        controlPoint.getY(), 2, 2);
-                allControlPoints.add(ellipse);
-            }
+
+    	DICOMImage dImage = getImageModel().getImage();
+
+        dirtySource(new ConstructImage(dImage));
+        
+        clearShapes();
+        
+        updateContours(getImageModel().getContours());
+        updateLandmarks(getImageModel().getLandmarks());
+        
+        colorShapes();
+        
+        refresh();
+    }
+    
+    private void clearShapes() {
+    	this.redShapes.clear();
+    	this.blueShapes.clear();
+    	this.orangeShapes.clear();
+    	this.whiteShapes.clear();
+    }
+    
+    private void colorShapes() {
+    	this.setSelectedDrawingShapes(redShapes);
+    	this.setPreDefinedShapes(blueShapes);
+    	this.setPersistentDrawingShapes(orangeShapes);
+    	this.setLocalizerShapes(whiteShapes);
+    }
+
+    
+    private void updateLandmarks(Vector<Landmark> landmarks) {
+    	for (Landmark landmark: landmarks) {
+    		if (landmark != null) {	
+    			if (landmark.isVisible()) {
+    				double x = landmark.getX();
+	        		double y = landmark.getY();
+	        		GeneralPath cross = new GeneralPath();
+	        		//horizontal component
+	        		cross.moveTo(x-1, y);
+	        		cross.lineTo(x+1, y);
+	        		//vertical component
+	        		cross.moveTo(x,y-1);
+	        		cross.lineTo(x,y+1);
+	        		
+	        		colorShape(cross, landmark.getColor());
+    			}
+        	}
+    	}
+    }
+    
+
+    private void updateContours(Vector<Contour> contours) {
+    	for (Contour contour: contours) {
+    		updateContour(contour);
+    	}
+    }
+    
+    private void updateContour(Contour contour) {
+    	if (contour != null) {
+    		if (contour.isVisible()) {
+    			
+    			colorShape(contour, contour.getColor());
+    		
+	    		if (contour.isSelected()) {
+		            
+		            for(int i = 0; i < contour.getControlPoints().size(); i++) {
+		            	
+		            	ControlPoint controlPoint = contour.getControlPoints().get(i);
+		            	
+		            	Ellipse2D controlPointEllipse = new Ellipse2D.Double(controlPoint.getX(),
+		                        controlPoint.getY(), 2, 2);
+		            	
+		            	colorShape(controlPointEllipse, controlPoint.getColor());
+		            	
+		            	TensionPoint tensionPoint1 = controlPoint.getTension1();
+		            	TensionPoint tensionPoint2 = controlPoint.getTension2();
+		            	
+		            	if ((Mode.getMode() == Mode.contourMode()) || 
+		            		(controlPoint.isSelected() || tensionPoint1.isSelected() || tensionPoint2.isSelected()))
+		            	{
+			            
+			            	Ellipse2D tensionPoint1Ellipse = new Ellipse2D.Double(tensionPoint1.getX(), tensionPoint1.getY(), 2, 2);
+			    			Ellipse2D tensionPoint2Ellipse = new Ellipse2D.Double(tensionPoint2.getX(), tensionPoint2.getY(), 2, 2);
+			    			
+			            	if(contour.getControlPoints().size() > 1) {
+			            		//check to not draw tension points of the final curve if the bezier curve is open
+			            		if(i == 0) {
+			            			if(contour.isClosedCurve()) {
+			            				colorShape(tensionPoint1Ellipse, tensionPoint1.getColor());
+			            			}
+			            			else {
+			            				tensionPoint1.isVisible(false);
+			            			}
+			            			colorShape(tensionPoint2Ellipse, tensionPoint2.getColor());
+			            			tensionPoint2.isVisible(true);
+			            		} 
+			            		else if(i == (contour.getControlPoints().size() - 1)) {
+			            			if(contour.isClosedCurve()) {
+				            			colorShape(tensionPoint2Ellipse, tensionPoint2.getColor());
+			            			}
+			            			else {
+			            				tensionPoint2.isVisible(false);
+			            			}
+			            			colorShape(tensionPoint1Ellipse, tensionPoint1.getColor());
+			            			tensionPoint1.isVisible(true);
+			            		}
+			            		else {
+		            				colorShape(tensionPoint1Ellipse, tensionPoint1.getColor());
+		            				colorShape(tensionPoint2Ellipse, tensionPoint2.getColor());
+		            				tensionPoint1.isVisible(true);
+		            				tensionPoint2.isVisible(true);
+			            		}
+			            	}
+		            	}
+			        }
+	    		}
+    		}
         }
-
-        this.setPreDefinedShapes(allControlPoints);
+    }
+    
+    private void colorShape(Shape shape, Color color) {
+    	if (color == Color.BLUE) {
+    		this.blueShapes.add(shape);
+    	}
+    	else if (color == Color.ORANGE) {
+    		this.orangeShapes.add(shape);
+    	}
+    	else if (color == Color.RED) {
+    		this.redShapes.add(shape);
+    	}
+    	else if (color == Color.WHITE) {
+    		this.whiteShapes.add(shape);
+    	}
     }
 
-    /**
-     * Updates the list of contours to be drawn onto the screen
-     * 
-     * @param contours List of Contour objects
-     */
-    private void updateVisibleContours(Vector<Contour> contours) {
-        this.setSelectedDrawingShapes(contours);
-    }
 
     /**
      * This is copy/pasted from the View class.
@@ -86,8 +213,15 @@ public class ImageView extends SingleImagePanel implements ActionListener,
         this.model.addObserver(this);
     }
 
+    protected static ImageModel imageModel; //kw
+    
     public ImageModel getImageModel() {
+    	imageModel = (ImageModel) this.model;
         return (ImageModel) this.model;
+    }
+    
+    public static ImageModel getImageModelStatic(){ //kw
+    	return imageModel;
     }
 
     public Model getModel() {
@@ -105,8 +239,10 @@ public class ImageView extends SingleImagePanel implements ActionListener,
         panel.add(this);
         panel.setFocusable(true);
         addKeyBindings(panel);
+        panel.addKeyListener(this);
         return panel;
     }
+    
 
     public void refresh() {
         this.revalidate();
@@ -117,21 +253,130 @@ public class ImageView extends SingleImagePanel implements ActionListener,
         super(sImg);
     }
 
-    /**
-     * Handle mouse click events. Left clicks add a control point. Right clicks
-     * select the nearest visible contour.
-     */
+    /**************************************************************************
+     * Handle mouse click events. 
+     * Depending on which ever mode you are in the mouse click will react
+     * differently.
+     * Mode 1: ContourMode
+     * Mode 2: LandmarkMode
+     * Mode 3: SelectMode
+     *************************************************************************/
     public void mouseClicked(MouseEvent e) {
-        java.awt.geom.Point2D mouseClick = getImageCoordinateFromWindowCoordinate(
-                e.getX(), e.getY());
 
-        if (SwingUtilities.isRightMouseButton(e)) {
-            getImageModel().selectContour(mouseClick.getX(), mouseClick.getY());
-        } else {
-            if (!getImageModel().addControlPoint(mouseClick.getX(),
-                    mouseClick.getY())) {
-                System.err.println("currentContour is null");
-            }
+    	int mode = Mode.getMode(); //kw
+    	closeOpenMenus();
+    	//System.out.println("MODE : " + mode);
+    	
+    	java.awt.geom.Point2D mouseClick =  getImageCoordinateFromWindowCoordinate(e.getX(), e.getY());
+    	
+    	if(mode == 1){ 
+    		// CONTOUR MODE
+    		if(SwingUtilities.isLeftMouseButton(e)){
+	    		if (!getImageModel().addControlPoint(mouseClick.getX(),mouseClick.getY())) {
+	                System.err.println("currentContour is null");
+	            }
+    		}
+    		else if(SwingUtilities.isRightMouseButton(e)){
+    			
+    			contourCM = new ContourContextMenu(getImageModel()); //open context menu
+
+    		}
+    	} 
+    	else if (mode == 2){ 
+    		//landmark mode
+    		if (SwingUtilities.isLeftMouseButton(e)) {    			
+    			Mode.setMode(Mode.selectMode());
+            	getImageModel().addLandmarkToImage(new Landmark(Mode.getNextLandmarkType(), mouseClick.getX(), mouseClick.getY()));
+            	getImageModel().setActiveLandmark(null);
+            	GridControlView.depressToggles();
+    		}
+    		else if(SwingUtilities.isRightMouseButton(e)){
+    	    	landmarkCM = new LandmarkContextMenu(getImageModel());
+    		}
+    		
+    	}
+    	else { 
+    		// SELECT MODE
+    		 if (SwingUtilities.isLeftMouseButton(e)) {
+    			 //getImageModel().selectClosestAnnotationWithinRange(mouseClick.getX(), mouseClick.getY(), 30);
+    	     } 
+    		 else if(SwingUtilities.isRightMouseButton(e)){
+    			 selectCM = new SelectContextMenu(getImageModel());
+    		 }
+
+    	} 
+        this.panel.requestFocusInWindow();
+    } // END MOUSE CLICK
+    
+    /**************************************************************************
+     *  CLOSE ALL OPEN MENUS
+     *************************************************************************/
+    public void closeOpenMenus(){
+  
+    	if(selectCM != null && selectCM.isVisible()){
+			selectCM.setVisible(false);
+    		selectCM= null;
+		 }
+    	if(landmarkCM != null && landmarkCM.isVisible()){
+			 landmarkCM.setVisible(false);
+			 landmarkCM = null;
+		 }
+    	if(contourCM != null && contourCM.isVisible()){
+			 contourCM.setVisible(false);
+			 contourCM = null;
+		 }
+    }
+    
+    /**************************************************************************
+     * MouseMoved checks and see if cursor is in the contextmenus.
+     * if mouse is not the in the same range as a menu close menu
+     * @param MouseEvent
+     *************************************************************************/
+    public void mouseMoved(MouseEvent e){
+    	
+    	if(contourCM != null && !(contourCM.isInBox())){
+    		contourCM.setVisible(false);
+    	}
+    	else if( landmarkCM != null && !(landmarkCM.isInBox())){
+    		landmarkCM.setVisible(false);
+    	}
+    	else if( selectCM != null && !(selectCM.isInBox())){
+    		selectCM.setVisible(false);
+    	}
+    }
+    
+    
+    
+    public void mouseDragged(MouseEvent e) {
+    	java.awt.geom.Point2D mouseClick = getImageCoordinateFromWindowCoordinate(e.getX(), e.getY());
+    	
+    	
+        if(!lmrkMode) {
+        	if (clickedPoint != null && clickedPoint.getClass() == ControlPoint.class) {
+        		if (this.controlPressed) {	// translate entire contour with control+drag
+        			getImageModel().moveContour(mouseClick.getX(), mouseClick.getY(), clickedPoint);
+        		}
+        		else {	// move single control point without control pressed
+        			getImageModel().getSelectedContour().moveContourPoint(mouseClick.getX(), mouseClick.getY(), (ControlPoint)clickedPoint);
+        		}
+        	}
+        	else if (clickedPoint != null && clickedPoint.getClass() == TensionPoint.class) {
+        		if (this.controlPressed) {	// translate entire contour with control+drag
+        			getImageModel().moveContour(mouseClick.getX(), mouseClick.getY(), clickedPoint);
+        		}
+        		else {	// move single tension point without control pressed
+        			getImageModel().getSelectedContour().moveTensionPoint(mouseClick.getX(), mouseClick.getY(), (TensionPoint)clickedPoint);
+        		}
+        	}
+        	else if (clickedPoint != null && clickedPoint.getClass() == Landmark.class) {
+        		((Landmark) clickedPoint).moveLandmark(mouseClick.getX(),mouseClick.getY());
+        	}
+        	else {
+        		super.mouseDragged(e);
+        	}
+        	
+        	// Forces updating of control and tension points during dragging
+        	this.redraw();
         }
         this.panel.requestFocusInWindow();
     }
@@ -142,99 +387,61 @@ public class ImageView extends SingleImagePanel implements ActionListener,
      * 
      */
     public void mouseReleased(MouseEvent e) {
+    	clickedPoint = null;
         this.panel.requestFocusInWindow();
     }
 
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        String actionCommand = e.getActionCommand();
+ 
+  
+    
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		
+	}
 
-        if (actionCommand.equals("Default Type")) {
-            getImageModel().addContourToImage(new Contour(Type.DEFAULT));
-        } else if (actionCommand.equals("LV EPI")) {
-            getImageModel().addContourToImage(new Contour(Type.LV_EPI));
+    public void mousePressed(MouseEvent e) {
 
-        } else if (actionCommand.equals("LV ENDO")) {
-            getImageModel().addContourToImage(new Contour(Type.LV_ENDO));
+    	if (SwingUtilities.isLeftMouseButton(e)) {
+    		java.awt.geom.Point2D mouseClick = getImageCoordinateFromWindowCoordinate(e.getX(), e.getY());
+        	clickedPoint = getImageModel().findNearestPointWithinRange(mouseClick.getX(), mouseClick.getY(), 3);
+        	
+        	if (Mode.getMode() == Mode.selectMode()) {
+    	    	getImageModel().selectClosestAnnotationWithinRange(mouseClick.getX(), mouseClick.getY(), 15);
+        	}
+	    } 
+		else if(SwingUtilities.isRightMouseButton(e)){
+			java.awt.geom.Point2D mouseClick = getImageCoordinateFromWindowCoordinate(e.getX(), e.getY());
+			clickedPoint = getImageModel().findNearestPointWithinRange(mouseClick.getX(), mouseClick.getY(), 10);
 
-        } else if (actionCommand.equals("LA EPI")) {
-            getImageModel().addContourToImage(new Contour(Type.LA_EPI));
-
-        } else if (actionCommand.equals("LA ENDO")) {
-            getImageModel().addContourToImage(new Contour(Type.LA_ENDO));
-
-        } else if (actionCommand.equals("RV EPI")) {
-            getImageModel().addContourToImage(new Contour(Type.RV_EPI));
-
-        } else if (actionCommand.equals("RV ENDO")) {
-            getImageModel().addContourToImage(new Contour(Type.RV_ENDO));
-
-        } else if (actionCommand.equals("RA EPI")) {
-            getImageModel().addContourToImage(new Contour(Type.RA_EPI));
-
-        } else if (actionCommand.equals("RA ENDO")) {
-            getImageModel().addContourToImage(new Contour(Type.RA_ENDO));
-
-        } else if (actionCommand.equals("Delete Contour")) {
-            if (getImageModel().getSelectedContour() == null) {
-                JOptionPane.showMessageDialog(imageContourPanel,
-                        "Please select a contour to delete.");
-            } else {
-                getImageModel().deleteSelectedContour();
-            }
-        } else if (actionCommand.equals("Hide Contour")) {
-            if (getImageModel().getSelectedContour() == null) {
-                JOptionPane.showMessageDialog(imageContourPanel,
-                        "Please select a contour to hide.");
-            } else {
-                getImageModel().hideSelectedContour();
-            }
-
-        } else if (actionCommand.equals("Select Contour")) {
-            Vector<Contour> visibleContours = getImageModel()
-                    .getVisibleContours();
-            if (visibleContours.size() > 0) {
-                Contour[] contours = new Contour[visibleContours.size()];
-                visibleContours.toArray(contours);
-
-                Contour c = (Contour) JOptionPane.showInputDialog(
-                        imageContourPanel, "Select Contour: ", "Contours",
-                        JOptionPane.PLAIN_MESSAGE, null, contours, "ham");
-
-                getImageModel().setSelectedContour(c);
-            } else {
-                JOptionPane.showMessageDialog(imageContourPanel,
-                        "There are no visible contours to select.");
-            }
-        } else if (actionCommand.equals("Hide Contours")) {
-            if (getImageModel().getContours() == null
-                    || getImageModel().getContours().size() == 0) {
-                JOptionPane.showMessageDialog(imageContourPanel,
-                        "There are no contours to hide.");
-            } else {
-                getImageModel().hideAllContours();
-            }
-        } else if (actionCommand.equals("Show Contours")) {
-            if (getImageModel().getHiddenContours() == null
-                    || getImageModel().getHiddenContours().size() == 0) {
-                JOptionPane.showMessageDialog(imageContourPanel,
-                        "There are no contours to show.");
-            } else {
-                getImageModel().showAllContours();
-            }
-        } else if (actionCommand.equals("Delete All Contours")) {
-            if (getImageModel().getContours() == null
-                    || getImageModel().getContours().size() == 0) {
-                JOptionPane.showMessageDialog(imageContourPanel,
-                        "There are no contours to delete.");
-            } else {
-                getImageModel().deleteAllContours();
-            }
-        }
-        this.panel.requestFocusInWindow();
+			if (clickedPoint != null) {
+				if (clickedPoint.getClass() == Landmark.class) {
+					if (Mode.getMode() == Mode.selectMode()) {
+						getImageModel().selectClosestAnnotationWithinRange(mouseClick.getX(), mouseClick.getY(), 15);
+					}
+				}
+				
+				if (clickedPoint.getClass() == ControlPoint.class) {
+					if (Mode.getMode() == Mode.selectMode()) {
+						getImageModel().selectClosestAnnotationWithinRange(mouseClick.getX(), mouseClick.getY(), 15);
+					}
+				}
+				else if (clickedPoint.getClass() == TensionPoint.class) {
+					if (Mode.getMode() == Mode.selectMode()) {
+						getImageModel().selectClosestAnnotationWithinRange(mouseClick.getX(), mouseClick.getY(), 15);
+					}
+				}
+				
+			}
+			else {
+				
+			}
+			
+		}
+    	
+    	
+    	super.mousePressed(e);
+    	
+    	this.panel.requestFocusInWindow();
     }
 
     private void addKeyBindings(JPanel panel) {
@@ -291,6 +498,30 @@ public class ImageView extends SingleImagePanel implements ActionListener,
                 "Show Contours");
         panel.getActionMap().put("Show Contours",
                 this.new ControlKeyAction("Show Contours", this));
+        
+        panel.getInputMap().put(
+                KeyStroke.getKeyStroke(KeyEvent.VK_F, commandKey),
+                "Show Contours");
+        panel.getActionMap().put("Show Contours",
+                this.new ControlKeyAction("Show Contours", this));
+    }
+    
+    
+    public void keyTyped(KeyEvent e) {
+    }
+
+    
+    public void keyPressed(KeyEvent e) {
+    	if (e.getKeyCode() == KeyEvent.VK_CONTROL) {
+            this.controlPressed = true;
+        }
+    }
+
+    
+    public void keyReleased(KeyEvent e) {
+    	if (e.getKeyCode() == KeyEvent.VK_CONTROL) {
+            this.controlPressed = false;
+        }
     }
 
     /**
@@ -337,5 +568,6 @@ public class ImageView extends SingleImagePanel implements ActionListener,
                     (int) ActionEvent.ACTION_PERFORMED, this.comand));
         }
     }
-
+    
+    
 }

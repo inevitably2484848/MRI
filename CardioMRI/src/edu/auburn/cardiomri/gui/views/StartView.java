@@ -37,9 +37,10 @@ public class StartView extends View {
 	public StartView()
 	{
 		super();
-	        
+	    
         this.panel.setLayout(new GridBagLayout());
 
+        
         //Add the three buttons
         JButton newStudy = new JButton("New Study");
         newStudy.setActionCommand("Create New Study");
@@ -104,6 +105,7 @@ public class StartView extends View {
         }
     }
 
+    
     /**
      * Opens a JFileChooser that allows the user to select a Directory, which
      * will then be iterated through to generate a new Study object.
@@ -158,4 +160,5 @@ public class StartView extends View {
     {
     	return (StartModel) this.model;
     }
+    
 }

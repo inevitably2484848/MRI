@@ -1,11 +1,13 @@
 package edu.auburn.cardiomri.datastructure;
 
+import java.awt.Color;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.PathIterator;
 import java.awt.geom.Rectangle2D;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -27,13 +29,20 @@ import edu.auburn.cardiomri.util.ContourCalc;
  */
 public class Contour implements Shape, Serializable {
     private static final long serialVersionUID = 6179619427503035482L;
+    
+    boolean isSelected = true;
+    boolean isVisible = true;
+    
+    static Color color = Color.RED;
 
     // XY coordinates of points the user clicked
-    private List<Vector3d> controlPoints;
+    private List<ControlPoint> controlPoints;
 
     // XY coordinates of points that look like a smooth curve is drawn between
     // each of the control points
-    private List<Vector3d> generatedPoints;
+    private List<Point> generatedPoints;
+    
+    private List<TensionPoint> tensionPoints;
 
     private Type contourType;
 
@@ -46,19 +55,42 @@ public class Contour implements Shape, Serializable {
      * Sets controlPoints to a predefined set of points.
      */
     private Contour() {
-        controlPoints = new Vector<Vector3d>();
-        generatedPoints = new Vector<Vector3d>();
+        controlPoints = new Vector<ControlPoint>();
+        generatedPoints = new Vector<Point>();
+        tensionPoints = new Vector<TensionPoint>();
+    }
+    
+    public boolean isSelected() {
+    	return this.isSelected;
+    }
+    
+    public void isSelected(boolean isSelected) {
+    	this.isSelected = isSelected;
+    }
+    
+    public boolean isVisible() {
+    	return this.isVisible;
+    }
+    
+    public void isVisible(boolean isVisible) {
+    	this.isVisible = isVisible;
+    }
+    
+    public Color getColor() {
+    	return Contour.color;
     }
 
-    public void setControlPoints(List<Vector3d> points) {
+    public void setControlPoints(List<ControlPoint> points) {
         if (points == null) {
             throw new NullPointerException("List cannot be null");
         }
 
-        List<Vector3d> newList = new Vector<Vector3d>();
-        for (Vector3d point : points) {
+        List<ControlPoint> newList = new Vector<ControlPoint>();
+        for (ControlPoint point : points) {
             validateCoordinates(point.getX(), point.getY());
-            newList.add(new Vector3d(point.getX(), point.getY(), 0));
+            validateCoordinates(point.getTension1().getX(), point.getTension1().getY());
+            validateCoordinates(point.getTension2().getX(), point.getTension2().getY());
+            newList.add(point);
         }
 
         controlPoints = newList;
@@ -96,7 +128,7 @@ public class Contour implements Shape, Serializable {
         int maxX = Integer.MIN_VALUE;
         int maxY = Integer.MIN_VALUE;
 
-        for (Vector3d point : controlPoints) {
+        for (ControlPoint point : controlPoints) {
             minX = (int) Math.floor(Math.min(point.getX(), minX));
             minY = (int) Math.floor(Math.min(point.getY(), minY));
             maxX = (int) Math.ceil(Math.max(point.getX(), maxX));
@@ -113,7 +145,7 @@ public class Contour implements Shape, Serializable {
         double maxX = Double.MIN_VALUE;
         double maxY = Double.MIN_VALUE;
 
-        for (Vector3d point : controlPoints) {
+        for (ControlPoint point : controlPoints) {
             minX = Math.min(point.getX(), minX);
             minY = Math.min(point.getY(), minY);
             maxX = Math.max(point.getX(), maxX);
@@ -123,12 +155,12 @@ public class Contour implements Shape, Serializable {
         return new Rectangle2D.Double(minX, minY, (maxX - minX), (maxY - minY));
     }
 
-    private Vector3d transformCoordinates(AffineTransform at, Vector3d source) {
+    private Point transformCoordinates(AffineTransform at, Point source) {
         java.awt.geom.Point2D transformed = new java.awt.geom.Point2D.Double();
         at.transform(
                 new java.awt.geom.Point2D.Double(source.getX(), source.getY()),
                 transformed);
-        return new Vector3d(transformed.getX(), transformed.getY(), 0);
+        return new Point(transformed.getX(), transformed.getY());
     }
 
     @Override
@@ -154,13 +186,13 @@ public class Contour implements Shape, Serializable {
             @Override
             public int currentSegment(double[] coords) {
                 if (index == 0) {
-                    Vector3d point = transformCoordinates(at,
+                    Point point = transformCoordinates(at,
                             generatedPoints.get(0));
                     coords[0] = point.getX();
                     coords[1] = point.getY();
                     return PathIterator.SEG_MOVETO;
                 } else if ((index > 0)) {
-                    Vector3d point = transformCoordinates(at,
+                    Point point = transformCoordinates(at,
                             generatedPoints.get(index));
                     coords[0] = point.getX();
                     coords[1] = point.getY();
@@ -203,18 +235,286 @@ public class Contour implements Shape, Serializable {
         return false;
     }
 
-    /**
-     * Adds a control point to the contour with the given coordinates
-     *
-     * @param x nonnegative double value
-     * @param y nonnegative double value
-     */
     public void addControlPoint(double x, double y) {
-        validateCoordinates(x, y);
-        controlPoints.add(new Vector3d(x, y, 0));
-        generatedPoints = ContourCalc.generate(controlPoints, isClosedCurve());
+    	validateCoordinates(x, y);    	
+    	//list to hold tension points before they are set to control points
+    	//remember to clear after each use
+    	List<TensionPoint> tPoints = new Vector<TensionPoint>();
+    	if(notToClose(x,y)) {
+    		controlPoints.add(new ControlPoint(x, y));
+    		ContourCalc.sortPoints(controlPoints);
+    		
+    		if(controlPoints.size() > 1) {
+    			//calculate centroid
+        		Point centroid = ContourCalc.calcCentroid(controlPoints);
+    			for(int i = 0; i < controlPoints.size(); i++) {
+    				//search the control points to find the new point with no tension point
+    				if(controlPoints.get(i).getTension2().getX() == 0.0 && controlPoints.get(i).getTension2().getY() == 0.0) {
+						//check to see if new control point was sorted to the beginning of the contour
+    					if(i == 0) {
+	    					tPoints.addAll(ContourCalc.getTensionPoint(controlPoints.get(i), centroid));
+	    					controlPoints.get(i).setTension1(tPoints.get(0));
+	    					controlPoints.get(i).setTension2(tPoints.get(1));
+	    					tPoints.clear();
+    					}
+    					//check to see if new control point was sorted to the end of the contour
+	    				else if (i == controlPoints.size() - 1) {
+	    					tPoints.addAll(ContourCalc.getTensionPoint(controlPoints.get(i), centroid));
+	    					controlPoints.get(i).setTension1(tPoints.get(0));
+	    					controlPoints.get(i).setTension2(tPoints.get(1));
+	    					tPoints.clear();
+	    				}
+	    				else {
+	    					tPoints.addAll(ContourCalc.getTensionPoint(controlPoints.get(i), centroid));
+	    					controlPoints.get(i).setTension1(tPoints.get(0));
+	    					controlPoints.get(i).setTension2(tPoints.get(1));
+	    					tPoints.clear(); 					
+	    				}
+    				}
+    			}
+    		}
+            generatedPoints = ContourCalc.generate(controlPoints, isClosedCurve());
+            updateTensionPoints();
+    	}
     }
+    
+    
+    /** -----------------------------------------------------------------------
+     * 	notToClose()  returns boolean, if user tries to add control point that 
+     *   is to close to an existing one (accidently double clicks) return false 
+     *   and not allow control point to be to close.
+     *   @author KulW
+     *   @param x double
+     *   @param y double
+     *   @return bToClose boolean
+     *  ---------------------------------------------------------------------*/
+     public boolean notToClose(double x, double y){
+    	 boolean bToClose = true;
+    	 double dMinGap = 3;
 
+    	 for(ControlPoint controlP : controlPoints){
+    		if(((Math.abs(controlP.getX() - x)) <= dMinGap) && ((Math.abs(controlP.getY() - y) <= dMinGap))){
+    			return false;
+    		}
+    	 } // end for loop
+    	 return bToClose;
+     } // end isToClose
+
+     
+     public boolean deleteControlPoint(double x, double y){
+    	 double minGap = 3;
+    	 boolean bDeleted = false;
+    	 int index = -1;
+    	 ControlPoint temp;
+    	 double tempX, tempY;
+    	 
+    	 //calculate centroid
+    	 Point centroid = ContourCalc.calcCentroid(controlPoints);
+    	 
+     	//list to hold tension points before they are set to control points
+     	//remember to clear after each use
+     	List<TensionPoint> tPoints = new Vector<TensionPoint>();
+     	
+    	 //find point that is close enough to delete 
+    	 for(int i = 0 ; i < controlPoints.size() ; i++){
+    		 temp = controlPoints.get(i);
+    		 tempX = temp.getX();
+    		 tempY = temp.getY();
+    		 if((Math.abs(tempX - x) < minGap) && (Math.abs(tempY - y) < minGap)){
+    			 index = i;
+    			 break;
+    		 }
+    	 } // end loop
+
+    	 if(index >= 0){
+    		 controlPoints.remove(index);
+    		 if(controlPoints.size() != 0) {
+    	    	 //check to see if the removed point was the initial point in the contour
+    			 if(index == 0) {
+    				//calculate and set the second tension point of the previous control point
+    				tPoints.addAll(ContourCalc.getTensionPoint(controlPoints.get(controlPoints.size() - 1), centroid));
+ 					controlPoints.get(controlPoints.size() - 1).setTension2(tPoints.get(1));
+ 					tPoints.clear();
+ 					
+ 					//calculate and set the first tension point of the next control point
+ 					tPoints.addAll(ContourCalc.getTensionPoint(controlPoints.get(index), centroid));
+ 					controlPoints.get(index).setTension1(tPoints.get(0));
+ 					tPoints.clear();
+    			 }
+    			 //check to see if the removed point was the last point in the contour
+    			 else if(index == controlPoints.size()) {
+    				//calculate and set the second tension point of the previous control point
+    				tPoints.addAll(ContourCalc.getTensionPoint(controlPoints.get(index - 1), centroid));
+ 					controlPoints.get(index - 1).setTension2(tPoints.get(1));
+ 					tPoints.clear();
+ 					
+ 					//calculate and set the first tension point of the next control point
+ 					tPoints.addAll(ContourCalc.getTensionPoint(controlPoints.get(controlPoints.size() - 1), centroid));
+ 					controlPoints.get(controlPoints.size() - 1).setTension1(tPoints.get(0));
+ 					tPoints.clear();
+    			 }
+    			 else {
+    				//calculate and set the second tension point of the previous control point
+    				tPoints.addAll(ContourCalc.getTensionPoint(controlPoints.get(index - 1), centroid));
+ 					controlPoints.get(index - 1).setTension2(tPoints.get(1));
+ 					tPoints.clear();
+ 					
+ 					//calculate and set the first tension point of the next control point
+ 					tPoints.addAll(ContourCalc.getTensionPoint(controlPoints.get(index), centroid));
+ 					controlPoints.get(index).setTension1(tPoints.get(0));
+ 					tPoints.clear();
+    			 }
+    		 }
+    		 generatedPoints = ContourCalc.generate(controlPoints, isClosedCurve()); //refresh curve
+    		 bDeleted = true;
+    	 }
+    	 updateTensionPoints();
+    	 return bDeleted;    	 
+     }
+    
+     public int findControlPoint(double x, double y) {
+    	 int cPointD = -1;
+    	 int index = -1;
+    	 double minGap = 3;
+    	 ControlPoint temp;
+    	 double tempX, tempY;
+    	 
+    	 for(int i = 0 ; i < controlPoints.size() ; i++){
+    		 temp = controlPoints.get(i);
+    		 tempX = temp.getX();
+    		 tempY = temp.getY();
+    		 if((Math.abs(tempX - x) < minGap) && (Math.abs(tempY - y) < minGap)){
+    			 index = i;
+    			 break;
+    		 }
+    	 } // end loop
+    	 cPointD = index;
+    	 return cPointD;
+     }
+     
+     public int findTensionPoint(double x, double y) {
+    	 int tPointD = -1;
+    	 int index = -1;
+    	 double minGap = 3;
+    	 ControlPoint temp;
+    	 double tempX, tempY;
+    	 
+    	 //find point that is close enough to delete
+    	 for(int i = 0; i < controlPoints.size(); i ++) {
+    		 temp = controlPoints.get(i);
+    		 tempX = temp.getTension1().getX();
+    		 tempY = temp.getTension1().getY();
+    		 if((Math.abs(tempX - x) < minGap) && (Math.abs(tempY - y) < minGap)){
+    			 index = i;
+    			 //extra code to handle two tension points
+    			 //first tension point represented with an even value
+    			 index = index * 2;
+    	    	 tPointD = index;
+    			 break;
+    		 }
+    	 }
+    	 for(int i = 0; i < controlPoints.size(); i ++) {
+    		 temp = controlPoints.get(i);
+    		 tempX = temp.getTension2().getX();
+    		 tempY = temp.getTension2().getY();
+    		 if((Math.abs(tempX - x) < minGap) && (Math.abs(tempY - y) < minGap)){
+    			 index = i;
+    			 //extra code to handle two tension points
+    			 //second tension point represented with an odd number
+    			 index = index * 2;
+    			 index++;
+    	    	 tPointD = index;
+    			 break;
+    		 }
+    	 }
+    	 return tPointD;
+     }
+     
+     public void moveContourPoint(double x, double y, ControlPoint point) {
+    	 dragPoint(x - point.getX(), y - point.getY(), point.getTension1());
+    	 dragPoint(x - point.getX(), y - point.getY(), point.getTension2());
+    	 
+    	 point.setX(x);
+    	 point.setY(y);
+    	 generatedPoints = ContourCalc.generate(controlPoints, isClosedCurve());
+     }
+     
+     public void moveTensionPoint(double x, double y, TensionPoint point) {
+    	 //find out which tension point this is before modifying it
+    	 int index;
+		 double oldX = point.getX();
+		 double oldY = point.getY();
+		 
+    	 if(point.getControlPoint().getTension1().getX() == point.getX()) {
+    		 index = 1;
+    	 } else {
+    		 index = 2;
+    	 }
+    	 
+    	 if(point.getControlPoint().getX() != x && point.getControlPoint().getY() != y) {
+    		 point.setX(x);
+    		 point.setY(y);
+
+			 //send the partner tension point
+			 if(point.getControlPoint().getLock()){
+				 if(index == 1) {
+					 alignTensionPoint(x, y, point.getControlPoint().getTension2());
+				 } else {
+					 alignTensionPoint(x, y, point.getControlPoint().getTension1());
+				 }
+			 }
+			 
+			 generatedPoints = ContourCalc.generate(controlPoints, isClosedCurve());
+    	 }
+     }
+     
+     public void alignTensionPoint(double x, double y, TensionPoint point) {
+
+    	 //calculate the distance vector to the partner point
+    	 double distVectorX = point.getControlPoint().getX() - x;
+    	 double distVectorY = point.getControlPoint().getY() - y; 
+    	 
+    	 double magnitude = Math.sqrt((distVectorX * distVectorX) + (distVectorY * distVectorY));
+    	 
+    	 //calculate the unit vector to the partner point
+    	 double unitVectorX = distVectorX / magnitude;
+    	 double unitVectorY = distVectorY / magnitude;
+
+    	 //calculate distance vector from control point to current tension point
+    	 double distVectorX2 = point.getX() - point.getControlPoint().getX();
+    	 double distVectorY2 = point.getY() - point.getControlPoint().getY();
+    	 
+    	 //calculate the magnitude of the current tension point to control point
+    	 double magnitude2 = Math.sqrt((distVectorX2 * distVectorX2) + (distVectorY2 * distVectorY2));
+    	 
+    	 //calculate the new point values of the tension point with the unit vector and magnitude
+    	 double finalPointX = unitVectorX * magnitude2;
+    	 double finalPointY = unitVectorY * magnitude2;
+    	 
+    	 //set the values
+    	 point.setX(point.getControlPoint().getX() + finalPointX);
+    	 point.setY(point.getControlPoint().getY() + finalPointY);
+     }
+     
+     public void dragPoint(double x, double y, Point point) {
+    	 point.setX(point.getX() + x);
+    	 point.setY(point.getY() + y);
+     }
+     
+     public void moveContour(double x, double y, Point point) {
+    	 
+		 double deltaX = x - point.getX();
+		 double deltaY = y - point.getY();
+    	 for(ControlPoint cPoint: controlPoints) {
+    		 dragPoint(deltaX, deltaY, cPoint);
+    	 }
+    	 
+    	 for (TensionPoint tPoint: tensionPoints) {
+    		 dragPoint(deltaX, deltaY, tPoint);
+    	 }	    	 
+    	 generatedPoints = ContourCalc.generate(controlPoints, isClosedCurve());
+     }
+     
     /**
      * Throws IllegalArgumentException if x or y is less than zero
      *
@@ -235,14 +535,26 @@ public class Contour implements Shape, Serializable {
             throw new IllegalArgumentException(message);
         }
     }
+    
+    
+    /**
+     * loops through Vector3d list if the x and y coordinates are to close
+     *  to each other then omit, because they either double clicked or just to close.
+     * @param x double
+     * @param y double
+     * @return boolean
+     */
+    protected boolean userCoordinates(double x, double y){
+    	return true;
+    }
 
     /**
      * Returns a copy of the list of the control points
      *
      * @return copy of the internal list
      */
-    public List<Vector3d> getControlPoints() {
-        return new Vector<Vector3d>(controlPoints);
+    public List<ControlPoint> getControlPoints() {
+        return new Vector<ControlPoint>(controlPoints);
     }
 
     /**
@@ -250,8 +562,18 @@ public class Contour implements Shape, Serializable {
      *
      * @return copy of the internal list
      */
-    public List<Vector3d> getGeneratedPoints() {
-        return new Vector<Vector3d>(generatedPoints);
+    public List<Point> getGeneratedPoints() {
+        return new Vector<Point>(generatedPoints);
+    }
+    
+    public List<TensionPoint> getTensionPoints() {
+    	List<TensionPoint> tensionPoints = new ArrayList<TensionPoint>();
+    	for (ControlPoint controlPoint : controlPoints)
+    	{
+    		tensionPoints.add(controlPoint.getTension1());
+    		tensionPoints.add(controlPoint.getTension2());
+    	}
+		return tensionPoints;
     }
 
     /**
@@ -268,35 +590,70 @@ public class Contour implements Shape, Serializable {
      *
      * @param contourTypeIn the type of contour
      */
-    public void setContourType(Type contourTypeIn) {
+    public void setType(Type contourTypeIn) {
         contourType = contourTypeIn;
         generatedPoints = ContourCalc.generate(controlPoints, isClosedCurve());
     }
 
-    public Type getContourType() {
+    public Type getType() {
         return contourType;
     }
+    
 
     public Integer getIntFromType() {
-        return Contour.TYPE_TO_INTEGER.get(getContourType());
+        return Contour.TYPE_TO_INTEGER.get(getType());
     }
 
     public static Type getTypeFromInt(int contourType) {
         return Contour.INTEGER_TO_TYPE.get(contourType);
     }
+    
+    public Integer getIntFromTypeControlPoints() {
+    	return Contour.TYPE_TO_CONTROL_INTEGER.get(getType());
+    }
+    
+    public static Boolean isControlPointFromInt(int contourType) { 
+    	return Contour.IS_CONTROL_POINT_CONTOUR.get(contourType);
+    }
 
     public enum Type {
-        DEFAULT, DEFAULT_CLOSED, // Example of something that is always a closed
-        // contour
-        DEFAULT_OPEN, LV_EPI, LV_ENDO, RV_EPI, RV_ENDO, LA_EPI, LA_ENDO, RA_EPI, RA_ENDO
+//        DEFAULT, DEFAULT_CLOSED, // Example of something that is always a closed
+//        // contour
+//        DEFAULT_OPEN, 
+    	
+        LV_EPI ("LV EPI","Epicardial", "LV"), 
+        LV_ENDO ("LV ENDO","Endocardial", "LV"), 
+        RV_EPI ("RV EPI", "Epicardial", "RV"), 
+        RV_ENDO ("RV ENDO","Endocardial", "RV"), 
+        LA_EPI ("LA EPI","Epicardial" ,"LA"), 
+        LA_ENDO ("LA ENDO","Endocardial", "LA"), 
+        RA_EPI ("RA EPI","Epicardial", "RA"), 
+        RA_ENDO ("RA ENDO","Endocardial", "RA");
+        
+		private String name;
+		private String abbv;
+		private String group;
+        private Type(String abbv, String str, String group){
+        	this.name = str;
+        	this.abbv = abbv;
+        	this.group = group;
+        }
+        
+        public String getName(){
+        	return name;
+        }
+        public String getAbbv(){
+        	return abbv;
+        }
+        
+        public String getGroup(){
+        	return group;
+        }
     }
 
     public String toString() {
         String output = "";
-        switch (this.getContourType()) {
-            case DEFAULT:
-                output += "DEFAULT";
-                break;
+        switch (this.getType()) {
             case LA_ENDO:
                 output += "LEFT ATRIUM ENDOCARDIAL";
                 break;
@@ -329,15 +686,15 @@ public class Contour implements Shape, Serializable {
     }
 
     public static final Map<Type, Boolean> IS_CLOSED_CONTOUR;
+    public static final Map<Integer, Boolean> IS_CONTROL_POINT_CONTOUR;
     public static final Map<Type, Integer> TYPE_TO_INTEGER;
     public static final Map<Integer, Type> INTEGER_TO_TYPE;
+    public static final Map<Type, Integer> TYPE_TO_CONTROL_INTEGER;
 
     static {
         Map<Type, Boolean> tempIsClosedContour = new HashMap<Type, Boolean>();
 
-        tempIsClosedContour.put(Type.DEFAULT, Boolean.TRUE);
-        tempIsClosedContour.put(Type.DEFAULT_CLOSED, Boolean.TRUE);
-        tempIsClosedContour.put(Type.DEFAULT_OPEN, Boolean.FALSE);
+
         tempIsClosedContour.put(Type.LA_ENDO, Boolean.TRUE);
         tempIsClosedContour.put(Type.LA_EPI, Boolean.TRUE);
         tempIsClosedContour.put(Type.LV_ENDO, Boolean.TRUE);
@@ -347,34 +704,91 @@ public class Contour implements Shape, Serializable {
         tempIsClosedContour.put(Type.RV_ENDO, Boolean.FALSE);
         tempIsClosedContour.put(Type.RV_EPI, Boolean.FALSE);
         IS_CLOSED_CONTOUR = Collections.unmodifiableMap(tempIsClosedContour);
+        
+        
+        Map<Integer, Boolean> tempIsControlPointContour = new HashMap<Integer, Boolean>();
+        // Control Points
+        tempIsControlPointContour.put(1, Boolean.TRUE);
+        tempIsControlPointContour.put(2, Boolean.TRUE);
+        tempIsControlPointContour.put(3, Boolean.TRUE);
+        tempIsControlPointContour.put(16, Boolean.TRUE);
+        tempIsControlPointContour.put(17, Boolean.TRUE);
+        tempIsControlPointContour.put(32, Boolean.TRUE);
+        tempIsControlPointContour.put(33, Boolean.TRUE);
+        tempIsControlPointContour.put(64, Boolean.TRUE);
+        tempIsControlPointContour.put(65, Boolean.TRUE);
+        tempIsControlPointContour.put(80, Boolean.TRUE);
+        tempIsControlPointContour.put(81, Boolean.TRUE);
+        
+        // Generated Points
+        tempIsControlPointContour.put(4, Boolean.FALSE);
+        tempIsControlPointContour.put(5, Boolean.FALSE);
+        tempIsControlPointContour.put(6, Boolean.FALSE);
+        tempIsControlPointContour.put(20, Boolean.FALSE);
+        tempIsControlPointContour.put(21, Boolean.FALSE);
+        tempIsControlPointContour.put(36, Boolean.FALSE);
+        tempIsControlPointContour.put(37, Boolean.FALSE);
+        tempIsControlPointContour.put(68, Boolean.FALSE);
+        tempIsControlPointContour.put(69, Boolean.FALSE);
+        tempIsControlPointContour.put(84, Boolean.FALSE);
+        tempIsControlPointContour.put(85, Boolean.FALSE);
+        IS_CONTROL_POINT_CONTOUR = Collections.unmodifiableMap(tempIsControlPointContour);
 
-        Map<Type, Integer> tempTypeToInteger = new HashMap<Type, Integer>();
-        // TODO fine tune exact types/integer values
-        tempTypeToInteger.put(Type.DEFAULT, 1);
-        tempTypeToInteger.put(Type.DEFAULT_CLOSED, 2);
-        tempTypeToInteger.put(Type.DEFAULT_OPEN, 3);
-        tempTypeToInteger.put(Type.LA_ENDO, 7);
-        tempTypeToInteger.put(Type.LA_EPI, 8);
-        tempTypeToInteger.put(Type.LV_ENDO, 9);
-        tempTypeToInteger.put(Type.LV_EPI, 10);
-        tempTypeToInteger.put(Type.RA_ENDO, 11);
-        tempTypeToInteger.put(Type.RA_EPI, 12);
-        tempTypeToInteger.put(Type.RV_ENDO, 13);
-        tempTypeToInteger.put(Type.RV_EPI, 14);
-        TYPE_TO_INTEGER = Collections.unmodifiableMap(tempTypeToInteger);
-
+        
         Map<Integer, Type> tempIntegerToType = new HashMap<Integer, Type>();
-        tempIntegerToType.put(1, Type.DEFAULT);
-        tempIntegerToType.put(3, Type.DEFAULT_OPEN);
-        tempIntegerToType.put(2, Type.DEFAULT_CLOSED);
-        tempIntegerToType.put(7, Type.LA_ENDO);
-        tempIntegerToType.put(8, Type.LA_EPI);
-        tempIntegerToType.put(9, Type.LV_ENDO);
-        tempIntegerToType.put(10, Type.LV_EPI);
-        tempIntegerToType.put(11, Type.RA_ENDO);
-        tempIntegerToType.put(12, Type.RA_EPI);
-        tempIntegerToType.put(13, Type.RV_ENDO);
-        tempIntegerToType.put(14, Type.RV_EPI);
+
+        tempIntegerToType.put(16, Type.LA_ENDO);		//LA2
+        tempIntegerToType.put(17, Type.LA_EPI);			//LA2
+        tempIntegerToType.put(32, Type.LV_ENDO);		//LA4
+        tempIntegerToType.put(33, Type.LV_EPI);			//LA4
+        tempIntegerToType.put(64, Type.RA_ENDO);		//FP1
+        tempIntegerToType.put(65, Type.RA_EPI);			//FP1
+        tempIntegerToType.put(80, Type.RV_ENDO);		//FP2
+        tempIntegerToType.put(81, Type.RV_EPI);			//FP2
+        
+        //Generated Points
+        tempIntegerToType.put(20, Type.LA_ENDO);
+        tempIntegerToType.put(21, Type.LA_EPI);
+        tempIntegerToType.put(36, Type.LV_ENDO);
+        tempIntegerToType.put(37, Type.LV_EPI);
+        tempIntegerToType.put(68, Type.RA_ENDO);
+        tempIntegerToType.put(69, Type.RA_EPI);
+        tempIntegerToType.put(84, Type.RV_ENDO);
+        tempIntegerToType.put(85, Type.RV_EPI);
         INTEGER_TO_TYPE = Collections.unmodifiableMap(tempIntegerToType);
+        
+        
+        Map<Type, Integer> tempTypeToInteger = new HashMap<Type, Integer>();
+        tempTypeToInteger.put(Type.LA_ENDO, 20);		//LA2
+        tempTypeToInteger.put(Type.LA_EPI, 21);			//LA2
+        tempTypeToInteger.put(Type.LV_ENDO, 36);		//LA4
+        tempTypeToInteger.put(Type.LV_EPI, 37);			//LA4
+        tempTypeToInteger.put(Type.RA_ENDO, 68);		//FP1
+        tempTypeToInteger.put(Type.RA_EPI, 69);			//FP1
+        tempTypeToInteger.put(Type.RV_ENDO, 84);		//FP2
+        tempTypeToInteger.put(Type.RV_EPI, 85);			//FP2
+        TYPE_TO_INTEGER = Collections.unmodifiableMap(tempTypeToInteger);
+        
+        
+        Map<Type, Integer> tempTypeToControlInteger = new HashMap<Type, Integer>();
+        // TODO fine tune exact types/integer values
+        tempTypeToControlInteger.put(Type.LA_ENDO, 16);			//LA2
+        tempTypeToControlInteger.put(Type.LA_EPI, 17);			//LA2
+        tempTypeToControlInteger.put(Type.LV_ENDO, 32);			//LA4
+        tempTypeToControlInteger.put(Type.LV_EPI, 33);			//LA4
+        tempTypeToControlInteger.put(Type.RA_ENDO, 64);			//FP1
+        tempTypeToControlInteger.put(Type.RA_EPI, 65);			//FP1
+        tempTypeToControlInteger.put(Type.RV_ENDO, 80);			//FP2			
+        tempTypeToControlInteger.put(Type.RV_EPI, 81);			//FP2
+        TYPE_TO_CONTROL_INTEGER = Collections.unmodifiableMap(tempTypeToControlInteger);
     }
+    
+    public void updateTensionPoints() {
+    	tensionPoints.clear();    	
+    	for(ControlPoint point : controlPoints) {
+    		tensionPoints.add(point.getTension1());
+    		tensionPoints.add(point.getTension2());
+    	}
+    }
+    
 }

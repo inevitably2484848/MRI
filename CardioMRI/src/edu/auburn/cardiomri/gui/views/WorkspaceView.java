@@ -2,6 +2,7 @@ package edu.auburn.cardiomri.gui.views;
 
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 import java.io.File;
@@ -10,6 +11,7 @@ import java.util.Observable;
 
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
+import javax.swing.ImageIcon;
 import javax.swing.InputMap;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
@@ -17,17 +19,26 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.KeyStroke;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import edu.auburn.cardiomri.datastructure.Contour;
+import edu.auburn.cardiomri.datastructure.Landmark;
 import edu.auburn.cardiomri.datastructure.Study;
 import edu.auburn.cardiomri.gui.ConstructImage;
+import edu.auburn.cardiomri.gui.actionperformed.ContourTypeActionPerformed;
+import edu.auburn.cardiomri.gui.actionperformed.LandmarkTypeActionPerformed;
+import edu.auburn.cardiomri.gui.actionperformed.MenuBarContourActionPerformed;
+import edu.auburn.cardiomri.gui.actionperformed.MenuBarFileActionPerformed;
+import edu.auburn.cardiomri.gui.actionperformed.SelectContextMenuActionPerformed;
 import edu.auburn.cardiomri.gui.models.GridModel;
 import edu.auburn.cardiomri.gui.models.ImageModel;
 import edu.auburn.cardiomri.gui.models.SelectModel;
 import edu.auburn.cardiomri.gui.models.StartModel;
+import edu.auburn.cardiomri.gui.models.WorkflowModel;
 import edu.auburn.cardiomri.gui.models.WorkspaceModel;
 import edu.auburn.cardiomri.gui.models.WorkspaceModel.State;
 import edu.auburn.cardiomri.util.ContourUtilities;
@@ -37,7 +48,8 @@ import edu.auburn.cardiomri.util.StudyUtilities;
  * @author Moniz
  * 
  * This view owns and manages all other views. It houses the menu
- * as well as the various panels for the GUI.
+ * as well as the various panels for the GUI.  
+ * Hot Keys
  */
 public class WorkspaceView extends View {
     private static final int WORKSPACE_WIDTH = 1200;
@@ -46,6 +58,10 @@ public class WorkspaceView extends View {
     protected JComponent mainComponent;
     protected JFrame appFrame;
     protected String studyFileName;
+    protected ImageView imageView; //kw
+    public static JPanel ccvPanel;
+    protected WorkflowModel workflowModel;
+    
     
     /**
      * Class constructor. Sets the current working directory and
@@ -58,140 +74,121 @@ public class WorkspaceView extends View {
                 .setCurrentDirectory(new File(System.getProperty("user.dir")));
         createFrame();
     }
-   
-    /**
-     * If the object parameter is a state of the WorkspaceModel, 
-     * this method adds the required panels to the frame and creates
-     *  the necessary views and models based on the state.
-     * <p>
-     * If in the START state, the start view and model are created and the
-     * starting options are displayed.
-     * <p>
-     * If in the GROUP_SELECTION state, the select view and model are created 
-     * so the user can choose which groups to display where.
-     * <p>
-     * If in the WORKSPACE state, the main image, two chamber, and four chamber
-     * models and views are created and the appropriate images are displayed. 
-     * The grid view and model are set up and all of the panes are added to the
-     * frame. 
-     * <p>
-     * If the object is a study, setStudy() is called to update the study.
-     * <p>
-     * If the object is an int array, the indices within the workspace 
-     * model are updated accordingly so that the various images are 
-     * correctly updated.
-     * 
-     * @param obs  the class calling notifyObservers()
-     * @param obj  the object that has been changed, thus signaling this method
-     */
+    
+    public void startState() {
+    	this.disposeFrame();
+        this.createFrame();
+
+        StartModel startModel = new StartModel();
+        StartView startView = new StartView();
+        startView.setModel(startModel);
+        startModel.addObserver(this);
+
+        appFrame.setSize(600, 400);
+        this.appFrame.add(startView.getPanel());
+        appFrame.setIconImage(new ImageIcon("res/CardiacMRI_icon.png").getImage());
+        appFrame.setVisible(true);
+    }
+    
+    public void groupSelectionState() {
+    	this.disposeFrame();
+        this.createFrame();
+
+        Study study = getWorkspaceModel().getStudy();
+        SelectModel selectModel = new SelectModel(study);
+        SelectView selectView = new SelectView(selectModel);
+        selectView.setModel(selectModel);
+        selectModel.addObserver(this);
+
+        appFrame.setSize(WORKSPACE_WIDTH, WORKSPACE_HEIGHT);
+        this.appFrame.add(selectView.getPanel());
+        appFrame.setVisible(true);
+    }
+    
+    public void workspaceState() {
+    	this.disposeFrame();
+        this.createFrame();
+        StartModel.setLoadFalse();
+
+        Study study = getWorkspaceModel().getStudy();
+        ImageModel mainImageModel, twoChamberModel, fourChamberModel;
+        ImageView mainImageView, twoChamberView, fourChamberView;
+
+        mainImageModel = new ImageModel();
+        twoChamberModel = new ImageModel();
+        fourChamberModel = new ImageModel();
+
+        mainImageView = new ImageView(new ConstructImage(
+                study.getCurrentImage()));
+        twoChamberView = new ImageView(new ConstructImage(
+                study.getCurrentImage()));
+        fourChamberView = new ImageView(new ConstructImage(
+                study.getCurrentImage()));
+
+        mainImageView.setModel(mainImageModel);
+        twoChamberView.setModel(twoChamberModel);
+        fourChamberView.setModel(fourChamberModel);
+
+        GridModel gridModel = new GridModel();
+        GridView gridView = new GridView();
+        gridView.setModel(gridModel);
+
+        GridControlView gridControl = new GridControlView();
+        gridControl.setModel(gridModel);
+
+        MultipleImageView multipleImages = new MultipleImageView();
+        multipleImages.setModel(gridModel);
+
+        ContourControlView contourControl = new ContourControlView(null);  //preBuild
+        contourControl.setModel(mainImageModel);
+ 
+        getWorkspaceModel().addImage(mainImageModel,
+                study.getShortAxisGroup());
+        getWorkspaceModel().addImage(twoChamberModel,
+                study.getTwoChamberGroup());
+        getWorkspaceModel().addImage(fourChamberModel,
+                study.getFourChamberGroup());
+
+        mainImageModel.addObserver(this);
+        gridModel.addObserver(this);
+
+        gridModel.setGroup(study.getShortAxisGroup());
+        gridView.setupGrid();
+
+        getWorkspaceModel().setIndices(0, 0, 0);
+
+        LeftPanel leftPanel = new LeftPanel(gridView, gridControl,
+                multipleImages);
+
+        RightPanel rightPanel = new RightPanel(mainImageView,
+                twoChamberView, fourChamberView, contourControl);
+
+        // add to appFrame
+        appFrame.setSize(WORKSPACE_WIDTH, WORKSPACE_HEIGHT);
+
+        JSplitPane allPanes = new JSplitPane(
+                JSplitPane.HORIZONTAL_SPLIT, true,
+                leftPanel.getPanel(), rightPanel.getPanel());
+
+        allPanes.setDividerLocation(WORKSPACE_WIDTH / 4);
+
+        mainComponent = allPanes;
+        this.addKeyBindings(gridView);
+        
+        //kw
+        setMainImageView(mainImageView);
+        setMenu(mainImageView);
+        this.appFrame.add(mainComponent);
+        appFrame.setVisible(true);
+        appFrame.revalidate();  //kw
+        appFrame.repaint();  //kw
+        
+    }
+    
     public void update(Observable obs, Object obj) {
-        if (obj.getClass() == State.class) {
-            State currentState = (State) obj;
-            if (StartModel.getLoadStudy()){
-            	currentState = State.WORKSPACE;
-            }
-            if (currentState == State.START) {
-                this.disposeFrame();
-                this.createFrame();
-
-                StartModel startModel = new StartModel();
-                StartView startView = new StartView();
-                startView.setModel(startModel);
-                startModel.addObserver(this);
-
-                appFrame.setSize(600, 400);
-                this.appFrame.add(startView.getPanel());
-                appFrame.setVisible(true);
-
-            } else if (currentState == State.GROUP_SELECTION) {
-                this.disposeFrame();
-                this.createFrame();
-
-                Study study = getWorkspaceModel().getStudy();
-                SelectModel selectModel = new SelectModel(study);
-                SelectView selectView = new SelectView(selectModel);
-                selectView.setModel(selectModel);
-                selectModel.addObserver(this);
-
-                appFrame.setSize(WORKSPACE_WIDTH, WORKSPACE_HEIGHT);
-                this.appFrame.add(selectView.getPanel());
-                appFrame.setVisible(true);
-
-            } else if (currentState == State.WORKSPACE) {
-                this.disposeFrame();
-                this.createFrame();
-                StartModel.setLoadFalse();
-
-                Study study = getWorkspaceModel().getStudy();
-                ImageModel mainImageModel, twoChamberModel, fourChamberModel;
-                ImageView mainImageView, twoChamberView, fourChamberView;
-
-                mainImageModel = new ImageModel();
-                twoChamberModel = new ImageModel();
-                fourChamberModel = new ImageModel();
-
-                mainImageView = new ImageView(new ConstructImage(
-                        study.getCurrentImage()));
-                twoChamberView = new ImageView(new ConstructImage(
-                        study.getCurrentImage()));
-                fourChamberView = new ImageView(new ConstructImage(
-                        study.getCurrentImage()));
-
-                mainImageView.setModel(mainImageModel);
-                twoChamberView.setModel(twoChamberModel);
-                fourChamberView.setModel(fourChamberModel);
-
-                GridModel gridModel = new GridModel();
-                GridView gridView = new GridView();
-                gridView.setModel(gridModel);
-
-                GridControlView gridControl = new GridControlView();
-                gridControl.setModel(gridModel);
-
-                MultipleImageView multipleImages = new MultipleImageView();
-                multipleImages.setModel(gridModel);
-
-                ContourControlView contourControl = new ContourControlView();
-                contourControl.setModel(mainImageModel);
-
-                getWorkspaceModel().addImage(mainImageModel,
-                        study.getShortAxisGroup());
-                getWorkspaceModel().addImage(twoChamberModel,
-                        study.getTwoChamberGroup());
-                getWorkspaceModel().addImage(fourChamberModel,
-                        study.getFourChamberGroup());
-
-                mainImageModel.addObserver(this);
-                gridModel.addObserver(this);
-
-                gridModel.setGroup(study.getShortAxisGroup());
-                gridView.setupGrid();
-
-                getWorkspaceModel().setIndices(0, 0, 0);
-
-                LeftPanel leftPanel = new LeftPanel(gridView, gridControl,
-                        multipleImages);
-
-                RightPanel rightPanel = new RightPanel(mainImageView,
-                        twoChamberView, fourChamberView, contourControl);
-
-                // add to appFrame
-                appFrame.setSize(WORKSPACE_WIDTH, WORKSPACE_HEIGHT);
-
-                JSplitPane allPanes = new JSplitPane(
-                        JSplitPane.HORIZONTAL_SPLIT, true,
-                        leftPanel.getPanel(), rightPanel.getPanel());
-
-                allPanes.setDividerLocation(WORKSPACE_WIDTH / 4);
-
-                mainComponent = allPanes;
-                this.addKeyBindings(gridView);
-                setMenu(mainImageView);
-                this.appFrame.add(mainComponent);
-                appFrame.setVisible(true);
-            }
-        } else if (obj.getClass() == Study.class) {
+        if (obj.getClass() == Study.class) {
             getWorkspaceModel().setStudy((Study) obj);
+            getWorkflowModel().update();
         } else if (obj.getClass() == int[].class) {
             int[] indices = (int[]) obj;
             getWorkspaceModel().setIndices(indices[0], indices[1], indices[2]);
@@ -200,6 +197,7 @@ public class WorkspaceView extends View {
         }
         
     }
+    
 
     /**
      * Sets the class' appFrame attribute.
@@ -248,6 +246,14 @@ public class WorkspaceView extends View {
         return (WorkspaceModel) this.model;
     }
     
+    public void setWorkflowModel(WorkflowModel workflowModel) {
+    	this.workflowModel = workflowModel;
+    }
+    
+    public WorkflowModel getWorkflowModel() {
+    	return this.workflowModel;
+    }
+    
     /**
      * Handles action events within the workspace. Specifically,
      * saving and loading events.
@@ -265,13 +271,14 @@ public class WorkspaceView extends View {
             this.saveStudy();
         } else if (actionCommand.equals("Save As Study")) {
             this.saveAsStudy();
-        } else if (actionCommand.equals("Save Contours")) {
-            this.saveContour();
+        } else if (actionCommand.equals("Save Annotations")) {
+            this.saveAnnotations();
         } else if (actionCommand.equals("Load Existing Study")) {
         	this.loadExistingStudy();
         } else if (actionCommand.equals("Rotate Image")) {
             this.getWorkspaceModel().rotate();
-        } else if (actionCommand.equals("Load Contours")) {
+            this.getWorkflowModel().update();
+        } else if (actionCommand.equals("Load Annotations")) {
             try {
                 this.setUpLoad();
             } catch (IOException e1) {
@@ -289,92 +296,76 @@ public class WorkspaceView extends View {
      * @param mainImageView  the view in which to set up the menu
      */
     public void setMenu(ImageView mainImageView) {
-        // -------------------- Menu Bar -------------------------------
+        // -------------------- Menu Bar --------------------------------------
 
-        // ----- File -------
+        // ----- File ---------------------------------------------------------
+    	MenuBarFileActionPerformed mbFileAction = new MenuBarFileActionPerformed(this);
+    	
         JMenu fileMenu = new JMenu("File");
 
         // New Submenu
         JMenu newMenu = new JMenu("New Study");
 
         JMenuItem newFromSingle = new JMenuItem("From Single DICOM");
-        newFromSingle.setActionCommand("Load Single DICOM");
-        newFromSingle.addActionListener(this);
+        newFromSingle.setActionCommand("From Single DICOM");
+        newFromSingle.addActionListener(mbFileAction); //FileAction
         newMenu.add(newFromSingle);
 
         JMenuItem newFromFileStruct = new JMenuItem("From File Structure");
-        newFromFileStruct.setActionCommand("Create New Study");
-        newFromFileStruct.addActionListener(this);
+        newFromFileStruct.setActionCommand("From File Structure");
+        newFromFileStruct.addActionListener(mbFileAction); //FileAction
         newMenu.add(newFromFileStruct);
 
         fileMenu.add(newMenu);
 
         JMenuItem openExisting = new JMenuItem("Open Existing (Ctrl+O)");
-        openExisting.setActionCommand("Load Existing Study");
-        openExisting.addActionListener(this);
+        openExisting.setActionCommand("Open Existing");
+        openExisting.addActionListener(mbFileAction); //FileAction
         fileMenu.add(openExisting);
 
-        JMenuItem saveStudy = new JMenuItem("Save (Ctrl+S)");
+        JMenuItem saveStudy = new JMenuItem("Save (Ctrl+S)"); 
         saveStudy.setActionCommand("Save Study");
-        saveStudy.addActionListener(this);
+        saveStudy.addActionListener(mbFileAction); //FileAction
         fileMenu.add(saveStudy);
 
         JMenuItem saveAsStudy = new JMenuItem("Save as (Ctrl+Shift+S)");
         saveAsStudy.setActionCommand("Save As Study");
-        saveAsStudy.addActionListener(this);
+        saveAsStudy.addActionListener(mbFileAction); //FileAction
         fileMenu.add(saveAsStudy);
 
-        // ----- Add ------
-        JMenu add = new JMenu("Add"); // change to add shape later?
+        // ----- Add ----------------------------------------------------------
+        JMenu add = new JMenu("Add"); // change to add shape later?  //kw
 
-        // Contour Submenu
+        // Contour Submenu ----------------------------------------------------
+        ContourTypeActionPerformed contourTypeAction = new ContourTypeActionPerformed(this);
+        LandmarkTypeActionPerformed landmarkTypeAction = new LandmarkTypeActionPerformed();
+      
+        
         JMenu addContour = new JMenu("Add Contour");
         JMenu leftVentricle = new JMenu("LV");
         JMenu leftAtrium = new JMenu("LA");
         JMenu rightVentricle = new JMenu("RV");
         JMenu rightAtrium = new JMenu("RA");
-
-
-        JMenuItem defaultType = new JMenuItem("Default");
-        defaultType.setActionCommand("Default Type");
-        defaultType.addActionListener(mainImageView);
-        addContour.add(defaultType);
         
-        JMenuItem lvEpi = new JMenuItem("Epicardial");
-        lvEpi.setActionCommand("LV EPI");
-        lvEpi.addActionListener(mainImageView);
-        leftVentricle.add(lvEpi);
-        JMenuItem lvEndo = new JMenuItem("Endocardial");
-        lvEndo.setActionCommand("LV ENDO");
-        lvEndo.addActionListener(mainImageView);
-        leftVentricle.add(lvEndo);
-        JMenuItem laEpi = new JMenuItem("Epicardial");
-        laEpi.setActionCommand("LA EPI");
-        laEpi.addActionListener(mainImageView);
-        leftAtrium.add(laEpi);
-        JMenuItem laEndo = new JMenuItem("Endocardial");
-        laEndo.setActionCommand("LA ENDO");
-        laEndo.addActionListener(mainImageView);
-        leftAtrium.add(laEndo);
+        // Add Contour Menus -------------------------------------------------------
+        for(Contour.Type t : Contour.Type.values()){  //loops over Contour Type enum
+        	String group = t.getGroup();
+        	if(group.equals("LV")){
+        		leftVentricle.add(addMenuItem(t.getName(),t.getAbbv(), contourTypeAction));
+        	}
+        	else if(group.equals("LA")){
+        		leftAtrium.add(addMenuItem(t.getName(),t.getAbbv(), contourTypeAction));
+        	}
+        	else if(group.equals("RV")){
+        		rightVentricle.add(addMenuItem(t.getName(),t.getAbbv(), contourTypeAction));
+        	}
+        	else {
+        		rightAtrium.add(addMenuItem(t.getName(),t.getAbbv(), contourTypeAction));
+        	}
+        	
+        } // end for loop
         
-        JMenuItem rvEpi = new JMenuItem("Epicardial");
-        rvEpi.setActionCommand("RV EPI");
-        rvEpi.addActionListener(mainImageView);
-        rightVentricle.add(rvEpi);
-        JMenuItem rvEndo = new JMenuItem("Endocardial");
-        rvEndo.setActionCommand("RV ENDO");
-        rvEndo.addActionListener(mainImageView);
-        rightVentricle.add(rvEndo);
-        JMenuItem raEpi = new JMenuItem("Epicardial");
-        raEpi.setActionCommand("RA EPI");
-        raEpi.addActionListener(mainImageView);
-        rightAtrium.add(raEpi);
-        JMenuItem raEndo = new JMenuItem("Endocardial");
-        raEndo.setActionCommand("RA ENDO");
-        raEndo.addActionListener(mainImageView);
-        rightAtrium.add(raEndo);
-        
-
+//        TODO: closed and open
 //        JMenuItem closedType = new JMenuItem("Closed");
 //        closedType.setActionCommand("Closed Type");
 //        closedType.addActionListener(mainImageView);
@@ -385,74 +376,68 @@ public class WorkspaceView extends View {
 //        openType.addActionListener(mainImageView);
 //        addContour.add(openType);
         
+        
+        // ----- Landmark -----------------------------------------------------
+        //runs through the LandmarkType enum and adds every item to the menu
+        JMenu landmarks = new JMenu("Add Landmark");
+        
+        
+        for (Landmark.Type t : Landmark.Type.values() ){
+        	JMenuItem tmp = new JMenuItem(t.abbv());
+        	tmp.setActionCommand(t.abbv());
+        	tmp.addActionListener(landmarkTypeAction);
+        	tmp.setToolTipText(t.toString());
+        	landmarks.add(tmp);
+        }
+
         add.add(addContour);
+        add.add(landmarks);
         addContour.add(leftVentricle);
         addContour.add(leftAtrium);
         addContour.add(rightVentricle);
         addContour.add(rightAtrium);
 
 
-        // ----- Contour ------
+        // ----- Contour ------------------------------------------------------
+        MenuBarContourActionPerformed menuBarContour = 
+        		new MenuBarContourActionPerformed(this); //workspace view
         JMenu contours = new JMenu("Contours");
-        JMenuItem saveContours = new JMenuItem("Save Contours (.txt File)");
-        saveContours.setActionCommand("Save Contours");
-        saveContours.addActionListener(this);
-        contours.add(saveContours);
-
-        JMenuItem loadContours = new JMenuItem("Load Contours");
-        loadContours.setActionCommand("Load Contours");
-        loadContours.addActionListener(this);
-        contours.add(loadContours);
         
-        JMenuItem selectContour = new JMenuItem("Select Contour");
-        selectContour.setActionCommand("Select Contour");
-        selectContour.addActionListener(mainImageView);
-        contours.add(selectContour);
-
-        JMenuItem deleteContourAxis = new JMenuItem("Delete Contour Axis");
-        deleteContourAxis.setActionCommand("Delete Contour Axis");
-        deleteContourAxis.addActionListener(this);
-        contours.add(deleteContourAxis);
-
-        JMenuItem deleteContour = new JMenuItem("Delete Contour");
-        deleteContour.setActionCommand("Delete Contour");
-        deleteContour.addActionListener(mainImageView);
-        contours.add(deleteContour);
-
-        JMenuItem deleteAllContours = new JMenuItem("Delete All Contours");
-        deleteAllContours.setActionCommand("Delete All Contours");
-        deleteAllContours.addActionListener(mainImageView);
-        contours.add(deleteAllContours);
+        contours.add(addMenuItem("Save Annotations (.txt File)","Save Annotations", menuBarContour));
+        contours.add(addMenuItem("Load Annotations",menuBarContour));
+        contours.add(addMenuItem("Select Contour",menuBarContour));
+        contours.add(addMenuItem("Delete Contour Axis",menuBarContour));
+        contours.add(addMenuItem("Delete Contour",menuBarContour));
+        contours.add(addMenuItem("Delete All Contours",menuBarContour));
+        contours.add(addMenuItem("Hide Contour",menuBarContour));
+        contours.add(addMenuItem("Show Contours",menuBarContour));
+        contours.add(addMenuItem("Hide Contours",menuBarContour));
         
-        JMenuItem hideContour = new JMenuItem("Hide Contour");
-        hideContour.setActionCommand("Hide Contour");
-        hideContour.addActionListener(mainImageView);
-        contours.add(hideContour);
-        
-        JMenuItem showContours = new JMenuItem("Show Contours");
-        showContours.setActionCommand("Show Contours");
-        showContours.addActionListener(mainImageView);
-        contours.add(showContours);
+        //------ Landmark -----------------------------------------------------
+        MenuBarContourActionPerformed menuBarLandmark = 
+        		new MenuBarContourActionPerformed(this);
+        JMenu lmMenu = new JMenu("Landmarks");
+        lmMenu.add(addMenuItem("Delete Landmark", menuBarLandmark));
+        lmMenu.add(addMenuItem("Delete All Landmarks", menuBarLandmark));
+        lmMenu.add(addMenuItem("Hide Landmark", menuBarLandmark));
+        lmMenu.add(addMenuItem("Hide All Landmarks", menuBarLandmark));
+        lmMenu.add(addMenuItem("Un-Hide All Landmarks", menuBarLandmark));
 
-        JMenuItem hideContours = new JMenuItem("Hide Contours");
-        hideContours.setActionCommand("Hide Contours");
-        hideContours.addActionListener(mainImageView);
-        contours.add(hideContours);
-
-        // ----- Rotate -----
+        // ----- Rotate -------------------------------------------------------
         JMenu rotate = new JMenu("Rotate");
         JMenuItem rotateImage = new JMenuItem("Rotate Image");
         rotateImage.setActionCommand("Rotate Image");
-        rotateImage.addActionListener(this);
+        rotateImage.addActionListener(mbFileAction);
         rotate.add(rotateImage);
 
-        // ----- Main Menu -----
+        // ----- Main Menu ----------------------------------------------------
         JMenuBar menuBar = new JMenuBar();
 
         // Add each sub menu to the top menu Bar
         menuBar.add(fileMenu);
         menuBar.add(add);
         menuBar.add(contours);
+        menuBar.add(lmMenu);
         menuBar.add(rotate);
 
         appFrame.setJMenuBar(menuBar);
@@ -460,6 +445,30 @@ public class WorkspaceView extends View {
         appFrame.repaint();
     }
 
+    
+    /** -----------------------------------------------------------------------
+     * adds new JMenuItem to JMenu;
+     *   ex. jMenu.add(addMenuItem(str,actionListener);
+     * @param str
+     * @param actionListener
+     * @return JMenuItem
+     * ----------------------------------------------------------------------*/
+    private JMenuItem addMenuItem(String str, ActionListener actionListener){
+    	JMenuItem newItem = new JMenuItem(str);
+    	newItem.setActionCommand(str);
+    	newItem.addActionListener(actionListener);
+    	
+    	return newItem;
+    }
+    private JMenuItem addMenuItem(String str, String actionCommand, ActionListener actionListener){
+    	JMenuItem newItem = new JMenuItem(str);
+    	newItem.setActionCommand(actionCommand);
+    	newItem.addActionListener(actionListener);
+ 
+    	return newItem;
+    }
+    
+    
     /**
      * Method that will close the GUIController's applicationFrame variable.
      */
@@ -476,7 +485,7 @@ public class WorkspaceView extends View {
      * 
      * @param study  the study to be saved
      */
-    public void saveAsStudy(Study study) {
+    private void saveAsStudy(Study study) {
         JFileChooser saveFC = fileChooser;
 
         FileFilter studyFileFilter = new FileNameExtensionFilter(
@@ -499,11 +508,11 @@ public class WorkspaceView extends View {
         }
     }
 
-    /**
+    /**  TODO: needs to move to model saveContour()
      * Creates a text file in which to write the contour data for a study and
      * calls writeContoursToFile() to perform the actual writing to the file.
      */
-    public void saveContour() {
+    public void saveAnnotations() {
         JFileChooser saveFC = fileChooser;
         
         FileFilter studyFileFilter = new FileNameExtensionFilter(
@@ -520,7 +529,7 @@ public class WorkspaceView extends View {
         		newContourFileName = newContourFileName.concat(".txt");
         	}
         	
-        	ContourUtilities.writeContoursToFile(getWorkspaceModel().getStudy()
+        	ContourUtilities.writeAnnotationsToFile(getWorkspaceModel().getStudy()
         			.getUIDToImage(), newContourFileName);
         }
         else if (response == JFileChooser.CANCEL_OPTION) {
@@ -542,12 +551,15 @@ public class WorkspaceView extends View {
      * @throws IOException
      */
     public void setUpLoad() throws IOException {
-        fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+    	JFileChooser loadFC = fileChooser;
+    	FileFilter studyFileFilter = new FileNameExtensionFilter(
+        		"Text File", "txt");
+        
+        loadFC.setFileFilter(studyFileFilter);
         int returnVal = fileChooser.showOpenDialog(this.mainComponent);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             File file = new File(fileChooser.getSelectedFile().getPath());
-            getWorkspaceModel().loadContour(file, getWorkspaceModel().getStudy()
-                    .getUIDToImage());
+            getWorkspaceModel().loadAnnotations(file);
         }
     }
 
@@ -610,9 +622,9 @@ public class WorkspaceView extends View {
     
     
     /**
-     * 
+     *  TODO: mvc
      */
-    private void loadExistingStudy() {
+    public void loadExistingStudy() {
     	 JFileChooser loadFC = fileChooser;
     	         
     	 FileNameExtensionFilter filter1 = new FileNameExtensionFilter("SMC files", "smc");
@@ -623,19 +635,20 @@ public class WorkspaceView extends View {
     	 String loadFileName;
     	 if (returnVal == JFileChooser.APPROVE_OPTION) {
     		 loadFileName = loadFC.getSelectedFile().getPath();
-    	     this.disposeFrame();
+    		 this.disposeFrame();
     	     this.getWorkspaceModel().setStudy(StudyUtilities.loadStudy(loadFileName));
+    	     this.getWorkflowModel().update();
     	         
-    	     } else if (returnVal == JFileChooser.CANCEL_OPTION) {
-    	             // System.out.println("Choose to Cancel");
-    	     }
+    	 } else if (returnVal == JFileChooser.CANCEL_OPTION) {
+    		 //System.out.println("Choose to Cancel");
+    	 }
     	  
     }
 
     /**
-     * 
+     * TODO: mvc
      */
-    private void saveStudy() {
+    public void saveStudy() {
     	if (studyFileName == null){
             saveAsStudy();
     	} else {
@@ -643,10 +656,11 @@ public class WorkspaceView extends View {
         }
     }
 
+    
     /**
-     * 
+     *  TODO: mvc
      */
-    private void saveAsStudy() {
+    public void saveAsStudy() {
     	JFileChooser saveFC = fileChooser;
 
         FileFilter studyFileFilter = new FileNameExtensionFilter(
@@ -705,5 +719,17 @@ public class WorkspaceView extends View {
             closeWindow();
         }
     }
+    
+    //-------------------------------------------------------------------------
+    //KW
+    //set and get MainImageView()
+    public void setMainImageView(ImageView imageViewIN){
+    	imageView = imageViewIN;
+    }
+    public ImageView getMainImageView(){
+    	return imageView;
+    }
+
+     
     
 }

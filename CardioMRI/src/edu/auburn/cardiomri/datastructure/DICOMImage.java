@@ -20,7 +20,8 @@ public class DICOMImage implements Serializable {
 
     private HashMap<String, String> attributes;
     private Vector<Contour> contours = new Vector<Contour>();
-
+    private Vector<Landmark> landmarks = new Vector<Landmark>();
+    
     private String filename;
     private String manufacturer;
     private String studyID;
@@ -726,5 +727,27 @@ public class DICOMImage implements Serializable {
 
     public void addContour(Contour contour) {
         this.contours.add(contour);
+    }
+    public void addLandmark(Landmark landmark){
+    	if(landmark.getType() == null){
+    		return;
+    	}
+    	if(landmarks.contains(landmark)){
+    		landmarks.set(landmarks.indexOf(landmark), landmark);
+    		//System.out.println("landmark already in");
+    	}
+    	else{
+    		this.landmarks.add(landmark);
+    	}
+    }
+    public boolean deleteLandmark(Landmark landmark){
+    	if(landmarks.contains(landmark)){
+    		landmarks.remove(landmarks.indexOf(landmark));
+    		return true;
+    	}
+    	else return false;
+    }
+    public Vector<Landmark> getLandmarks(){
+    	return this.landmarks;
     }
 }

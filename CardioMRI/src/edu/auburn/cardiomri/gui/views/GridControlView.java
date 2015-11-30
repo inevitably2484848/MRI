@@ -2,16 +2,32 @@ package edu.auburn.cardiomri.gui.views;
 
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.MouseInfo;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseListener;
 import java.util.concurrent.TimeUnit;
 
 import javax.swing.BoxLayout;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JSlider;
+import javax.swing.JToggleButton;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import edu.auburn.cardiomri.gui.actionperformed.ContourTypeActionPerformed;
 import edu.auburn.cardiomri.gui.models.GridModel;
+import edu.auburn.cardiomri.gui.models.ImageModel;
+import edu.auburn.cardiomri.popupmenu.view.ContourTypeMenu;
+import edu.auburn.cardiomri.popupmenu.view.LandmarkTypeMenu;
+
+import edu.auburn.cardiomri.util.Mode;
+
 
 /**
  * This view will house all the control functions of the gridView
@@ -30,6 +46,18 @@ public class GridControlView extends View implements ChangeListener {
 	protected JButton playButton;
 	protected int playSpeed;
 	protected RunPlaybutton runner;
+	
+	public static JToggleButton contour = new JToggleButton("Add Contour"); //kw
+	public static JToggleButton landMark = new JToggleButton("Add LandMark"); //kw
+	
+ 
+	
+	
+	
+	protected ContourTypeMenu cntrPM = new ContourTypeMenu();
+	protected LandmarkTypeMenu lndmrkPM = new LandmarkTypeMenu();
+
+	
 	/**
 	 * Sets panel to visible, adds slider to panel
 	 * 
@@ -51,8 +79,11 @@ public class GridControlView extends View implements ChangeListener {
 		//Slider is from 0 to 20 with one digit increments
 		JSlider framesPerSecond = new JSlider(JSlider.HORIZONTAL, 0, 20, 1); 
 		framesPerSecond.addChangeListener(this);
+		framesPerSecond.setToolTipText("Change Speed");
 		   
 		this.panel.add(framesPerSecond);
+		
+		modeToggleButton(); //kw
 	}
 	
 	/**
@@ -69,6 +100,37 @@ public class GridControlView extends View implements ChangeListener {
 		
 		this.panel.add(playButton);
 	}
+	
+	/** -----------------------------------------------------------------------
+	 *  mode ToogleButton set up
+	 *  Creates a new panel and adds 2 toggle buttons to that panel. Then adds
+	 *  the new panel to the main panel.
+	 *  adds and sets actions to the toggle buttons
+	 *  you can set modes to add contours , add landmarks, de-selecting button 
+	 *  sets select mode
+	 *  @author KulW
+	 */
+	public void modeToggleButton(){
+		Mode.setMode(Mode.selectMode()); //set Mode
+		
+		JPanel modePanel = new JPanel();
+	
+		contour.addActionListener(this);
+		contour.setActionCommand("contour");
+		contour.setToolTipText("Add New Contour");
+		contour.setMinimumSize(new Dimension(124,29));
+		
+		landMark.addActionListener(this);
+		landMark.setActionCommand("landmark");
+		landMark.setToolTipText("Add New Landmark Point");
+		
+		modePanel.add(contour);
+		modePanel.add(landMark);
+		
+		this.panel.add(modePanel);
+	} 
+	
+
 	
 	/**
 	 * Required for changeListener
@@ -89,28 +151,30 @@ public class GridControlView extends View implements ChangeListener {
      */
     private void changeButtonState()
     {
-    	if(buttonPressed)
-    	{
+    	if(buttonPressed) {
+    		Icon image = new ImageIcon("icons/play.png");
     		//Set to not pressed
     		playButton.setActionCommand("PLAY");
-            playButton.setText(">");
+    		playButton.setToolTipText("Play");
+    		playButton.setIcon(image);
     	}
-    	else
-    	{
+    	else {
     		//Set to pressed
     		playButton.setActionCommand("STOP");
-            playButton.setText("[ ]");
+    		playButton.setIcon(new ImageIcon("icons/pause1.png"));
+    		playButton.setToolTipText("Pause");
     	}
     	buttonPressed = !buttonPressed;
     }
     
     /**
+     * ***************** NEEDS REFACTORING ******************************
      * Currently only listening for the play and stop of the play button.
      * 
      */
     public void actionPerformed(ActionEvent e) {
         String actionCommand = e.getActionCommand();
-        
+       
         if(actionCommand.equals("STOP"))
         {
         	changeButtonState();
@@ -123,9 +187,76 @@ public class GridControlView extends View implements ChangeListener {
         	Thread t = new Thread(runner);
         	t.start();
         }
+        else if(actionCommand.equalsIgnoreCase("contour")){  //kw
+        	landMark.setSelected(false);
+        	lndmrkPM.setVisible(false);
+			if(Mode.getMode() == Mode.contourMode()){  //if already in contour mode
+				contour.setSelected(false);
+				Mode.setMode(Mode.selectMode());
+				cntrPM.hidePopup();
+			}
+			else{
+				lndmrkPM.hidePopup();
+				contour.setSelected(true);
+				cntrPM.setLocation();
+				cntrPM.getPopup();
+				Mode.setMode(Mode.contourMode());
+			}
+        }
+        else if(actionCommand.equalsIgnoreCase("landMark")){ //kw
+        	contour.setSelected(false);
+        	cntrPM.hidePopup();
+        	if(Mode.getMode() == Mode.landmarkMode()){
+        		landMark.setSelected(false);
+        		Mode.setMode(Mode.selectMode());
+        		lndmrkPM.hidePopup();
+        	}
+        	else {
+        		landMark.setSelected(true);
+        		lndmrkPM.getPopup();
+        		
+        		Mode.setMode(Mode.landmarkMode());
+        	}
+        	new Toast(Mode.modeToast());
+        		
+        }
+        
+        if(getImageModel().getSelectedContour() != null){
+        	getImageModel().setSelectedContour(null);
+        }
+
+    } //*************************************************************************
+    
+    
+    /****************************************************************************
+     * Depresses the Toggle Buttons when you leave a mode without depressing the 
+     * toggle button
+     ***************************************************************************/
+    public static void depressToggles(){
+    	if(getImageModel().getSelectedContour() != null){
+	    	getImageModel().getSelectedControlPoint().isSelected(false);
+	    	getImageModel().setSelectedControlPoint(null);
+    	}
+    	if(contour.isSelected()){
+    		contour.setSelected(false);
+    	}
+    	else{
+    		landMark.setSelected(false);
+    	}
     }
+    
+    
+	/**
+	 * gets Image model 
+	 * @return
+	 */
+	public static ImageModel getImageModel(){
+		return ImageView.getImageModelStatic();
+	}
+    
     /**
-     * Because the gridContorlModel would be more than a hassle, we chose to have the GridModel be the designated model for gridControlView
+     * Because the gridContorlModel would be more than a hassle, we chose to have 
+     * the GridModel be the designated model for gridControlView
      * 		This is set in the WorkspaceView
      * 
      * @return current Grid Model
@@ -180,3 +311,5 @@ public class GridControlView extends View implements ChangeListener {
         }
    }
 }
+
+

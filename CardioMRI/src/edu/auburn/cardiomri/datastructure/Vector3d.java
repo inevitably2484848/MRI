@@ -11,6 +11,10 @@ import java.io.Serializable;
 public class Vector3d implements Serializable {
     private static final long serialVersionUID = -2673685056075348464L;
     private double x, y, z;
+    private double tensionX = 0.0;
+    private double tensionY = 0.0;
+    private double tensionY2 = 0.0;
+    private double tensionX2 = 0.0;
 
     /**
      * Basic constructor for Vector3d
@@ -36,7 +40,46 @@ public class Vector3d implements Serializable {
     public double getZ() {
         return z;
     }
-
+    
+    public void setX(double x) {
+    	this.x = x;
+    }
+    
+    public void setY(double y) {
+    	this.y = y;
+    }
+    
+    public double getTensionX() {
+    	return tensionX;
+    }
+    
+    public double getTensionY() {
+    	return tensionY;
+	}	
+    
+    public double getTensionX2() {
+    	return tensionX2;
+    }
+    
+    public double getTensionY2() {
+    	return tensionY2;
+    }
+    
+    public void setTensionX(double x) {
+    	this.tensionX = x;
+    }
+    
+    public void setTensionY(double y) {
+    	this.tensionY = y;
+    }
+    
+    public void setTensionX2(double x) {
+    	this.tensionX2 = x;
+    }
+    
+    public void setTensionY2(double y) {
+    	this.tensionY2 = y;
+    }
     /**
      * This method performs the cross product of (calling Vector3d) x (vec2)
      * 
@@ -76,9 +119,15 @@ public class Vector3d implements Serializable {
         return new Vector3d(this.x / length, this.y / length, this.z / length);
     }
 
-    public boolean equals(Vector3d vec2) {
-        return this.getX() == vec2.getX() && this.getY() == vec2.getY()
-                && this.getZ() == vec2.getZ();
+    @Override
+    public boolean equals(Object o) {
+    	boolean result = false;
+    	if (o instanceof Vector3d) {
+    		Vector3d vec2 = (Vector3d) o;
+	        result = this.getX() == vec2.getX() && this.getY() == vec2.getY()
+	                && this.getZ() == vec2.getZ();
+    	}
+        return result;
     }
 
     public double distance(Vector3d vec2) {
