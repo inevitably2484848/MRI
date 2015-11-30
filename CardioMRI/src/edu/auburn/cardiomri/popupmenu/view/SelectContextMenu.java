@@ -77,9 +77,8 @@ public class SelectContextMenu {
 			menu.addLabel(imageModel.getSelectedLandmark().getType().toString());
 			menu.add(new MySeparator());
 			menu.addMenuItem("Delete Landmark", actionListener);
-			menu.addMenuItem("Delete All Landmarks", actionListener);
+			//menu.addMenuItem("Delete All Landmarks", actionListener); DELETE ALL MIGHT NOT NEED TO BE IN A CONTEXT MENU
 			menu.addMenuItem("Hide Landmark", actionListener);
-			menu.addMenuItem("Hide All Landmarks", actionListener);
 			menu.add(new MySeparator());
 		}
 		
