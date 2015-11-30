@@ -40,6 +40,8 @@ public class LandmarkTypeActionPerformed extends View implements ActionListener 
 			selectMenu.setVisible(false);
 		}
 		
+		System.out.println(actionCommand);
+		
 		LandmarkTypeMenu.staticHide();  //hides current landmarkTypeMenu
 		
 		if (actionCommand.equals("ARV")){

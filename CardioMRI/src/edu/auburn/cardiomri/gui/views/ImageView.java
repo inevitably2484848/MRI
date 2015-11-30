@@ -53,7 +53,7 @@ public class ImageView extends SingleImagePanel implements ActionListener,
     
     public ContourContextMenu contourCM;// = ContourContextMenu.popupContextMenu(); //kw
     public LandmarkContextMenu landmarkCM; //LandmarkContextMenu()
-    public SelectContextMenu selectCM; //SelectContextMenu();
+    public SelectContextMenu selectCM ; //SelectContextMenu();
     
 
     
@@ -68,6 +68,8 @@ public class ImageView extends SingleImagePanel implements ActionListener,
     }
     
     public void redraw() {
+
+
     	DICOMImage dImage = getImageModel().getImage();
 
         dirtySource(new ConstructImage(dImage));
@@ -144,7 +146,9 @@ public class ImageView extends SingleImagePanel implements ActionListener,
 		            	TensionPoint tensionPoint1 = controlPoint.getTension1();
 		            	TensionPoint tensionPoint2 = controlPoint.getTension2();
 		            	
-		            	if (controlPoint.isSelected() || tensionPoint1.isSelected() || tensionPoint2.isSelected()) {
+		            	if ((Mode.getMode() == Mode.contourMode()) || 
+		            		(controlPoint.isSelected() || tensionPoint1.isSelected() || tensionPoint2.isSelected()))
+		            	{
 			            
 			            	Ellipse2D tensionPoint1Ellipse = new Ellipse2D.Double(tensionPoint1.getX(), tensionPoint1.getY(), 2, 2);
 			    			Ellipse2D tensionPoint2Ellipse = new Ellipse2D.Double(tensionPoint2.getX(), tensionPoint2.getY(), 2, 2);
@@ -260,7 +264,7 @@ public class ImageView extends SingleImagePanel implements ActionListener,
     public void mouseClicked(MouseEvent e) {
 
     	int mode = Mode.getMode(); //kw
-    	
+    	closeOpenMenus();
     	//System.out.println("MODE : " + mode);
     	
     	java.awt.geom.Point2D mouseClick =  getImageCoordinateFromWindowCoordinate(e.getX(), e.getY());
@@ -273,7 +277,9 @@ public class ImageView extends SingleImagePanel implements ActionListener,
 	            }
     		}
     		else if(SwingUtilities.isRightMouseButton(e)){
+    			
     			contourCM = new ContourContextMenu(getImageModel()); //open context menu
+
     		}
     	} 
     	else if (mode == 2){ 
@@ -285,7 +291,7 @@ public class ImageView extends SingleImagePanel implements ActionListener,
             	GridControlView.depressToggles();
     		}
     		else if(SwingUtilities.isRightMouseButton(e)){
-    			landmarkCM = new LandmarkContextMenu(getImageModel());
+    	    	landmarkCM = new LandmarkContextMenu(getImageModel());
     		}
     		
     	}
@@ -303,12 +309,31 @@ public class ImageView extends SingleImagePanel implements ActionListener,
     } // END MOUSE CLICK
     
     /**************************************************************************
+     *  CLOSE ALL OPEN MENUS
+     *************************************************************************/
+    public void closeOpenMenus(){
+  
+    	if(selectCM != null && selectCM.isVisible()){
+			selectCM.setVisible(false);
+    		selectCM= null;
+		 }
+    	if(landmarkCM != null && landmarkCM.isVisible()){
+			 landmarkCM.setVisible(false);
+			 landmarkCM = null;
+		 }
+    	if(contourCM != null && contourCM.isVisible()){
+			 contourCM.setVisible(false);
+			 contourCM = null;
+		 }
+    }
+    
+    /**************************************************************************
      * MouseMoved checks and see if cursor is in the contextmenus.
      * if mouse is not the in the same range as a menu close menu
      * @param MouseEvent
      *************************************************************************/
     public void mouseMoved(MouseEvent e){
-
+    	
     	if(contourCM != null && !(contourCM.isInBox())){
     		contourCM.setVisible(false);
     	}
@@ -376,12 +401,43 @@ public class ImageView extends SingleImagePanel implements ActionListener,
 
     public void mousePressed(MouseEvent e) {
 
-    	java.awt.geom.Point2D mouseClick = getImageCoordinateFromWindowCoordinate(e.getX(), e.getY());
-    	clickedPoint = getImageModel().findNearestPointWithinRange(mouseClick.getX(), mouseClick.getY(), 3);
+    	if (SwingUtilities.isLeftMouseButton(e)) {
+    		java.awt.geom.Point2D mouseClick = getImageCoordinateFromWindowCoordinate(e.getX(), e.getY());
+        	clickedPoint = getImageModel().findNearestPointWithinRange(mouseClick.getX(), mouseClick.getY(), 3);
+        	
+        	if (Mode.getMode() == Mode.selectMode()) {
+    	    	getImageModel().selectClosestAnnotationWithinRange(mouseClick.getX(), mouseClick.getY(), 15);
+        	}
+	    } 
+		else if(SwingUtilities.isRightMouseButton(e)){
+			java.awt.geom.Point2D mouseClick = getImageCoordinateFromWindowCoordinate(e.getX(), e.getY());
+			clickedPoint = getImageModel().findNearestPointWithinRange(mouseClick.getX(), mouseClick.getY(), 10);
+
+			if (clickedPoint != null) {
+				if (clickedPoint.getClass() == Landmark.class) {
+					if (Mode.getMode() == Mode.selectMode()) {
+						getImageModel().selectClosestAnnotationWithinRange(mouseClick.getX(), mouseClick.getY(), 15);
+					}
+				}
+				
+				if (clickedPoint.getClass() == ControlPoint.class) {
+					if (Mode.getMode() == Mode.selectMode()) {
+						getImageModel().selectClosestAnnotationWithinRange(mouseClick.getX(), mouseClick.getY(), 15);
+					}
+				}
+				else if (clickedPoint.getClass() == TensionPoint.class) {
+					if (Mode.getMode() == Mode.selectMode()) {
+						getImageModel().selectClosestAnnotationWithinRange(mouseClick.getX(), mouseClick.getY(), 15);
+					}
+				}
+				
+			}
+			else {
+				
+			}
+			
+		}
     	
-    	if (Mode.getMode() == Mode.selectMode()) {
-	    	getImageModel().selectClosestAnnotationWithinRange(mouseClick.getX(), mouseClick.getY(), 15);
-    	}
     	
     	super.mousePressed(e);
     	

@@ -279,6 +279,7 @@ public class WorkspaceModel extends Model {
     }
     
     public void rotate() {
+    	System.out.println("ROTATE");
     	temp4CH = study.getFourChamber();
     	study.setFourChamber(study.getTwoChamber());
     	study.setTwoChamber(study.getShortAxis());

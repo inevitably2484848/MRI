@@ -76,6 +76,9 @@ public class LandmarkContextMenu {
 	public void setVisible(boolean b){
 		menu.setVisible(b);
 	}
+	public boolean isVisible(){
+		return menu.isVisible();
+	}
 	
 
 }

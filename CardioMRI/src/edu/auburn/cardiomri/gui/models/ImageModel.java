@@ -74,9 +74,11 @@ public class ImageModel extends Model {
 	        
 	        return true;
         }
-        else{
-        	return deleteControlPoint(x, y);
+        else {
+        	deleteControlPoint(x,y);
+        	return false;
         }
+        
     }
     
     
@@ -478,13 +480,16 @@ public class ImageModel extends Model {
     
    
     /**************************************************************************
+     * ************************************************************************
      *  LANDMARK
      * 
+     * ************************************************************************
      *************************************************************************/
     public void addLandmarkToImage(Landmark landmark){
     	if (selectedLandmark != null) {
     		selectedLandmark.isSelected(false);
     	}
+    	
     	
     	this.dImage.addLandmark(landmark);
     	setChanged();
@@ -564,6 +569,10 @@ public class ImageModel extends Model {
     	setChanged();
     	notifyObservers(dImage);
     }
+    
+    public List<Landmark> getHiddenLandmarks(){
+    	return this.hiddenLandmarks;
+    }
     /**************************************************************************
      *  CONTROL POINTS
      *************************************************************************/
@@ -571,6 +580,18 @@ public class ImageModel extends Model {
     
     public ControlPoint getSelectedControlPoint(){
     	return this.selectedControlPoint;
+    }
+    
+    public void setSelectedControlPoint(ControlPoint cp){
+    	this.selectedControlPoint = cp;
+    }
+    
+    public TensionPoint getSelectedTensionPoint(){
+    	return this.selectedTensionPoint;
+    }
+    
+    public void setSelectedTensionPoint(TensionPoint tp){
+    	this.selectedTensionPoint = tp;
     }
     
     
@@ -603,9 +624,13 @@ public class ImageModel extends Model {
      */
     public void hideAllContours() {
         hiddenContours.addAll(getVisibleContours());
-        selectedContour.isSelected(false);
-        selectedContour.isVisible(false);
+
+        for(Contour contour : hiddenContours){
+        	contour.isSelected(false);
+        	contour.isVisible(false);
+        }
         selectedContour = null;
+
         setChanged();
         notifyObservers(dImage);
     }
@@ -614,7 +639,10 @@ public class ImageModel extends Model {
      * Sets all contours as visible.
      */
     public void showAllContours() {
-        hiddenContours.clear();
+        for(Contour contour : hiddenContours){
+        	contour.isVisible(true);
+        }
+    	hiddenContours.clear();
 
         setChanged();
         notifyObservers(dImage);
@@ -667,6 +695,11 @@ public class ImageModel extends Model {
         }
         setChanged();
         notifyObservers(dImage);
+    }
+    
+    public void update() {
+    	setChanged();
+    	notifyObservers(dImage);
     }
 
     public Vector<Contour> getContours() {
