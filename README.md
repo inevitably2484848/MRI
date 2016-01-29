@@ -18,7 +18,7 @@
 
 ##Contributors 
 
-Thank you to all that have helped make this pacakge a reality!
+Thank you to all that have helped make this package a reality!
 ___________________________________________________________
 
 ####Senior Design Fall 2015 Auburn University -- MRI Group.
