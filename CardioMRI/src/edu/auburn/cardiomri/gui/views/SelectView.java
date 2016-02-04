@@ -49,64 +49,70 @@ public class SelectView extends View {
         this.model = model;
         String[] seriesDescriptions = model.getSeriesDescriptions();
         this.panel.setLayout(new GridBagLayout());
-        GridBagConstraints c = new GridBagConstraints();
+        GridBagConstraints c = new GridBagConstraints(); //creates grid
 
+        //Short Axis label
         JLabel SALabel = new JLabel("ShortAxis");
-        c.weightx = 0.5;
+        c.weightx = 0;
         c.gridx = 0;
         c.gridy = 0;
-        this.panel.add(SALabel, c);
+        this.panel.add(SALabel, c); //sets the label at the specified grid location with weight
         
+        //Short Axis drop down box
         JComboBox<String> axisTypeSA = new JComboBox<String>(seriesDescriptions);
         axisTypeSA.setRenderer(new ComboBoxRenderer("ShortAxis"));
         axisTypeSA.setSelectedIndex(-1);
-        c.weightx = 0.5;
+        c.weightx = 0;
         c.gridx = 0;
         c.gridy = 1;
         axisTypeSA.setActionCommand(SHORT_AXIS);
         axisTypeSA.addActionListener(this);
         this.panel.add(axisTypeSA, c);
         
+        //Two Chamber Label
         JLabel Label2CH = new JLabel("Two Chamber");
-        c.weightx = 0.5;
+        c.weightx = 0;
         c.gridx = 1;
         c.gridy = 0;
         this.panel.add(Label2CH, c);
         
+        //Two Chamber drop down box
         JComboBox<String> axisType2CH = new JComboBox<String>(
                 seriesDescriptions);
         axisType2CH.setRenderer(new ComboBoxRenderer("Two Chamber"));
         axisType2CH.setSelectedIndex(-1);
-        c.weightx = 0.5;
+        c.weightx = 0;
         c.gridx = 1;
         c.gridy = 1;
         axisType2CH.setActionCommand(TWO_CHAMBER);
         axisType2CH.addActionListener(this);
         this.panel.add(axisType2CH, c);
         
+        //Four Chamber label
         JLabel Label4CH = new JLabel("Four Chamber");
-        c.weightx = 0.5;
+        c.weightx = 0;
         c.gridx = 2;
         c.gridy = 0;
         this.panel.add(Label4CH, c);
         
+        //Four Chamber drop down box
         JComboBox<String> axisType4CH = new JComboBox<String>(
                 seriesDescriptions);
         axisType4CH.setRenderer(new ComboBoxRenderer("Four Chamber"));
         axisType4CH.setSelectedIndex(-1);
-        c.weightx = 0.5;
+        c.weightx = 0;
         c.gridx = 2;
         c.gridy = 1;
         axisType4CH.addActionListener(this);
         axisType4CH.setActionCommand(FOUR_CHAMBER);
         this.panel.add(axisType4CH, c);
         
-
+        //Continue button
         JButton continueButton = new JButton(CONTINUE);
         continueButton.setActionCommand(CONTINUE);
         c.weightx = 0;
         c.gridwidth = 3;
-        c.insets = new Insets(200,0,0,0);
+        c.insets = new Insets(150,0,0,0);
         c.gridx = 0;
         c.gridy = 2;
         continueButton.addActionListener(this);
