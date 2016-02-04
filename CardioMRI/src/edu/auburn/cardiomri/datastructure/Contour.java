@@ -32,9 +32,20 @@ public class Contour implements Shape, Serializable {
     
     boolean isSelected = true;
     boolean isVisible = true;
-    
-    static Color color = Color.RED;
-
+    Color color = null;
+    private static HashMap<String,Color> colorMap;
+    static {
+    	HashMap<String,Color> myMap = new HashMap();
+    	myMap.put("LV EPI", Color.getColor("Red"));
+    	myMap.put("LV ENDO", Color.CYAN);
+    	myMap.put("RV EPI", Color.getColor("Green"));
+    	myMap.put("RV ENDO", Color.PINK);
+    	myMap.put("LA EPI", Color.YELLOW);
+    	myMap.put("LA ENDO", Color.BLUE);
+    	myMap.put("RA EPI", Color.GRAY);
+    	myMap.put("RA ENDO", Color.ORANGE);
+    	colorMap = myMap;
+    }
     // XY coordinates of points the user clicked
     private List<ControlPoint> controlPoints;
 
@@ -48,6 +59,7 @@ public class Contour implements Shape, Serializable {
 
     public Contour(Type contourTypeIn) {
         this();
+        this.color = colorMap.get(contourTypeIn.getAbbv());
         contourType = contourTypeIn;
     }
 
@@ -77,7 +89,7 @@ public class Contour implements Shape, Serializable {
     }
     
     public Color getColor() {
-    	return Contour.color;
+    	return this.color;
     }
 
     public void setControlPoints(List<ControlPoint> points) {
