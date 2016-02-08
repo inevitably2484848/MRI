@@ -16,31 +16,33 @@ import javax.vecmath.*;
  */
 public class GeometryOfVolume {
 
-	private static final String identString = "@(#) $Header: /userland/cvs/pixelmed/imgbook/com/pixelmed/geometry/GeometryOfVolume.java,v 1.16 2014/01/05 19:27:15 dclunie Exp $";
+   private static final String identString = "@(#) $Header: /userland/cvs/pixelmed/imgbook/com/pixelmed/geometry/GeometryOfVolume.java,v 1.16 2014/01/05 19:27:15 dclunie Exp $";
 
 	/***/
-	protected GeometryOfSlice[] frames;
+   protected GeometryOfSlice[] frames;
 		
-	protected GeometryOfVolume() {
-	}
+   protected GeometryOfVolume() {
+   }
 		
-	public GeometryOfVolume(GeometryOfSlice[] frames) {
-		this.frames = frames;
-	}
+   public GeometryOfVolume(GeometryOfSlice[] frames) {
+      this.frames = frames;
+   }
 
 	/**
 	 * <p>Get the number of slices.</p>
 	 *
 	 * @return	the number of slices
 	 */
-	public final int getNumberOfSlices() { return frames == null ? 0 : frames.length; }
+   public final int getNumberOfSlices() { 
+      return frames == null ? 0 : frames.length; }
 	
 	/**
 	 * <p>Get the geometry of the slices.</p>
 	 *
 	 * @return	an array of the geometry of the slices
 	 */
-	public final GeometryOfSlice[] getGeometryOfSlices() { return frames; }
+   public final GeometryOfSlice[] getGeometryOfSlices() { 
+      return frames; }
 	
 	/**
 	 * <p>Get the geometry of the selected slice.</p>
@@ -48,7 +50,8 @@ public class GeometryOfVolume {
 	 * @param	frame	the offset along the frames from first frame, zero being no offset
 	 * @return	the geometry of the selected slice
 	 */
-	public final GeometryOfSlice getGeometryOfSlice(int frame) { return frames != null && frame >= 0 && frame < frames.length ? frames[frame] : null; }
+   public final GeometryOfSlice getGeometryOfSlice(int frame) { 
+      return frames != null && frame >= 0 && frame < frames.length ? frames[frame] : null; }
 	
 	/**
 	 * <p>Given the present geometry, look up the location of a point specified
@@ -60,9 +63,9 @@ public class GeometryOfVolume {
 	 * @param	frame	the offset along the frames from first frame, zero being no offset
 	 * @return		the x, y and z location in 3D space
 	 */
-	public final double[] lookupImageCoordinate(int column,int row,int frame) {
-		return lookupImageCoordinate((double)column,(double)row,frame);
-	}
+   public final double[] lookupImageCoordinate(int column,int row,int frame) {
+      return lookupImageCoordinate((double)column,(double)row,frame);
+   }
 	
 	/**
 	 * <p>Given the present geometry, look up the location of a point specified
@@ -74,9 +77,9 @@ public class GeometryOfVolume {
 	 * @param	row		the offset along the row from the top left hand corner, zero being no offset
 	 * @param	frame		the offset along the frames from first frame, zero being no offset
 	 */
-	public final void lookupImageCoordinate(double[] location,int column,int row,int frame) {
-		lookupImageCoordinate(location,(double)column,(double)row,frame);
-	}
+   public final void lookupImageCoordinate(double[] location,int column,int row,int frame) {
+      lookupImageCoordinate(location,(double)column,(double)row,frame);
+   }
 	
 	/**
 	 * <p>Given the present geometry, look up the location of a point specified
@@ -88,13 +91,13 @@ public class GeometryOfVolume {
 	 * @param	frame	the offset along the frames from first frame, zero being no offset
 	 * @return		the x, y and z location in 3D space
 	 */
-	public final double[] lookupImageCoordinate(double column,double row,int frame) {
-		double[] location = null;
-		if (frames != null && frame < frames.length && frames[frame] != null) {
-			location = frames[frame].lookupImageCoordinate(column,row);
-		}
-		return location;
-	}
+   public final double[] lookupImageCoordinate(double column,double row,int frame) {
+      double[] location = null;
+      if (frames != null && frame < frames.length && frames[frame] != null) {
+         location = frames[frame].lookupImageCoordinate(column,row);
+      }
+      return location;
+   }
 	
 	/**
 	 * <p>Given the present geometry, look up the location of a point specified
@@ -106,14 +109,14 @@ public class GeometryOfVolume {
 	 * @param	row		the offset along the row from the top left hand corner, zero being no offset
 	 * @param	frame		the offset along the frames from first frame, zero being no offset
 	 */
-	public final void lookupImageCoordinate(double[] location,double column,double row,int frame) {
-		if (frames != null && frame < frames.length && frames[frame] != null) {
-			frames[frame].lookupImageCoordinate(location,column,row);
-		}
-		else {
-			location[0]=0; location[1]=0; location[2]=0;
-		}
-	}
+   public final void lookupImageCoordinate(double[] location,double column,double row,int frame) {
+      if (frames != null && frame < frames.length && frames[frame] != null) {
+         frames[frame].lookupImageCoordinate(location,column,row);
+      }
+      else {
+         location[0]=0; location[1]=0; location[2]=0;
+      }
+   }
 	
 	/**
 	 * <p>Given the present geometry, look up the location of a point specified
@@ -123,46 +126,46 @@ public class GeometryOfVolume {
 	 * @param	location	the x, y and z location in 3D space
 	 * @return				the column and row and frame offsets from the top left hand corner of the volume (or NaN if not a regularly sampled volume)
 	 */
-	public final double[] lookupImageCoordinate(double[] location) {
-		double[] offsets = new double[3];
-		lookupImageCoordinate(offsets,location);
-		return offsets;
-	}
+   public final double[] lookupImageCoordinate(double[] location) {
+      double[] offsets = new double[3];
+      lookupImageCoordinate(offsets,location);
+      return offsets;
+   }
 	
-	protected int R = -1;			// the x, y or z row vector component with the largest magnitude for use in recovering 2D from 3D locations
-	protected int C = -1;			// the x, y or z col vector component with the largest magnitude for use in recovering 2D from 3D locations
-	protected int N = -1;			// the x, y or z col vector component with the largest magnitude for use in recovering 2D from 3D locations
+   protected int R = -1;			// the x, y or z row vector component with the largest magnitude for use in recovering 2D from 3D locations
+   protected int C = -1;			// the x, y or z col vector component with the largest magnitude for use in recovering 2D from 3D locations
+   protected int N = -1;			// the x, y or z col vector component with the largest magnitude for use in recovering 2D from 3D locations
 	
-	protected final void findMaxComponents(double[] rowArray,double[] columnArray,double[] normalArray) {
-		double[] rowAbs = new double[3];
-		double[] columnAbs = new double[3];
-		double[] normalAbs = new double[3];
-		for (int i=0; i<3; ++i) {
-			rowAbs[i] = Math.abs(rowArray[i]);
-			columnAbs[i] = Math.abs(columnArray[i]);
-			normalAbs[i] = Math.abs(normalArray[i]);
-		}
-		double rowAbsSoFar = -1;
-		double columnAbsSoFar = -1;
-		double normalAbsSoFar = -1;
-		for (int i=0; i<3; ++i) {
-			if (rowAbs[i] > rowAbsSoFar) {
-				rowAbsSoFar = rowAbs[i];
-				R = i;
-			}
-			if (columnAbs[i] > columnAbsSoFar) {
-				columnAbsSoFar = columnAbs[i];
-				C = i;
-			}
-			if (normalAbs[i] > normalAbsSoFar) {
-				normalAbsSoFar = normalAbs[i];
-				N = i;
-			}
-		}
-System.err.println("maxRowIndex = "+R);
-System.err.println("maxColumnIndex = "+C);
-System.err.println("maxNormalIndex = "+N);
-	}
+   protected final void findMaxComponents(double[] rowArray,double[] columnArray,double[] normalArray) {
+      double[] rowAbs = new double[3];
+      double[] columnAbs = new double[3];
+      double[] normalAbs = new double[3];
+      for (int i=0; i<3; ++i) {
+         rowAbs[i] = Math.abs(rowArray[i]);
+         columnAbs[i] = Math.abs(columnArray[i]);
+         normalAbs[i] = Math.abs(normalArray[i]);
+      }
+      double rowAbsSoFar = -1;
+      double columnAbsSoFar = -1;
+      double normalAbsSoFar = -1;
+      for (int i=0; i<3; ++i) {
+         if (rowAbs[i] > rowAbsSoFar) {
+            rowAbsSoFar = rowAbs[i];
+            R = i;
+         }
+         if (columnAbs[i] > columnAbsSoFar) {
+            columnAbsSoFar = columnAbs[i];
+            C = i;
+         }
+         if (normalAbs[i] > normalAbsSoFar) {
+            normalAbsSoFar = normalAbs[i];
+            N = i;
+         }
+      }
+      System.err.println("maxRowIndex = "+R);
+      System.err.println("maxColumnIndex = "+C);
+      System.err.println("maxNormalIndex = "+N);
+   }
 	
 	/**
 	 * <p>Given the present geometry, look up the location of a point specified
@@ -172,50 +175,50 @@ System.err.println("maxNormalIndex = "+N);
 	 * @param	offsets		an array in which to return the column and row and frame offsets from the top left hand corner of the volume (or NaN if not a regularly sampled volume)
 	 * @param	location	the x, y and z location in 3D space
 	 */
-	public final void lookupImageCoordinate(double offsets[],double[] location) {
-		if (isVolume) {
-			double[]          rowArray = frames[0].getRowArray();
-			double[]       columnArray = frames[0].getColumnArray();
-			double[]       normalArray = frames[0].getNormalArray();
-			double[]         tlhcArray = frames[0].getTLHCArray();
-			double[] voxelSpacingArray = frames[0].getVoxelSpacingArray();
-
-			if (R == -1 || C == -1 || N == -1) {
-				findMaxComponents(rowArray,columnArray,normalArray);
-			}
-			
-			// use matrix inversion to solve 3 linear equations with 3 unknowns
-			
-			Matrix3d matrix = new Matrix3d(
-				rowArray[R],columnArray[R],normalArray[R],
-				rowArray[C],columnArray[C],normalArray[C],
-				rowArray[N],columnArray[N],normalArray[N]);
-				
-			matrix.invert();
-				
-			Vector3d vector = new Vector3d(
-				location[R] - tlhcArray[R],
-				location[C] - tlhcArray[C],
-				location[N] - tlhcArray[N]);
-				
-			matrix.transform(vector);
-			
-			vector.get(offsets);
-			
-			offsets[0] /= voxelSpacingArray[0];
-			offsets[1] /= voxelSpacingArray[1];
-			offsets[2] /= voxelSpacingArray[2];
-		
-			offsets[0] += 0.5;	// account for sub-pixel resolution per DICOM PS 3.3 Figure C.10.5-1
-			offsets[1] += 0.5;
-		}
-		else {
-System.err.println("Cannot look up 2D coordinate from 3D coordinate if not regularly sampled volume");
-			offsets[0] = Double.NaN;
-			offsets[1] = Double.NaN;
-			offsets[2] = Double.NaN;
-		}
-	}
+   public final void lookupImageCoordinate(double offsets[],double[] location) {
+      if (isVolume) {
+         double[]          rowArray = frames[0].getRowArray();
+         double[]       columnArray = frames[0].getColumnArray();
+         double[]       normalArray = frames[0].getNormalArray();
+         double[]         tlhcArray = frames[0].getTLHCArray();
+         double[] voxelSpacingArray = frames[0].getVoxelSpacingArray();
+      
+         if (R == -1 || C == -1 || N == -1) {
+            findMaxComponents(rowArray,columnArray,normalArray);
+         }
+      	
+      	// use matrix inversion to solve 3 linear equations with 3 unknowns
+      	
+         Matrix3d matrix = new Matrix3d(
+            rowArray[R],columnArray[R],normalArray[R],
+            rowArray[C],columnArray[C],normalArray[C],
+            rowArray[N],columnArray[N],normalArray[N]);
+      		
+         matrix.invert();
+      		
+         Vector3d vector = new Vector3d(
+            location[R] - tlhcArray[R],
+            location[C] - tlhcArray[C],
+            location[N] - tlhcArray[N]);
+      		
+         matrix.transform(vector);
+      	
+         vector.get(offsets);
+      	
+         offsets[0] /= voxelSpacingArray[0];
+         offsets[1] /= voxelSpacingArray[1];
+         offsets[2] /= voxelSpacingArray[2];
+      
+         offsets[0] += 0.5;	// account for sub-pixel resolution per DICOM PS 3.3 Figure C.10.5-1
+         offsets[1] += 0.5;
+      }
+      else {
+         System.err.println("Cannot look up 2D coordinate from 3D coordinate if not regularly sampled volume");
+         offsets[0] = Double.NaN;
+         offsets[1] = Double.NaN;
+         offsets[2] = Double.NaN;
+      }
+   }
 	
 	/**
 	 * <p>Find the slice in the our geometry that is closest to the supplied slice geometry.</p>
@@ -227,27 +230,27 @@ System.err.println("Cannot look up 2D coordinate from 3D coordinate if not regul
 	 * @return			the index of the closest frame in this volume (numbered from 0), or -1 if something goes wrong
 	 */
 	
-	public final int findClosestSliceInSamePlane(GeometryOfSlice otherSlice) {
-//System.err.println("GeometryOfVolume.findClosestSliceInSamePlane():");
-		double otherDistance = otherSlice.getDistanceAlongNormalFromOrigin();
-//System.err.println("GeometryOfVolume.findClosestSliceInSamePlane(): otherDistance = "+otherDistance);
-		int found=-1;
-		double closest = 999999999;
-		for (int i=0; i<frames.length; ++i) {
-//System.err.println("GeometryOfVolume.findClosestSliceInSamePlane(): testing "+i);
-			double distanceThisFrame = frames[i].getDistanceAlongNormalFromOrigin();
-//System.err.println("GeometryOfVolume.findClosestSliceInSamePlane(): distanceThisFrame = "+distanceThisFrame);
-			double distance = Math.abs(distanceThisFrame-otherDistance);
-//System.err.println("GeometryOfVolume.findClosestSliceInSamePlane(): difference in distance = "+distance);
-			if (distance < closest) {
-//System.err.println("GeometryOfVolume.findClosestSliceInSamePlane(): closer");
-				closest=distance;
-				found=i;
-			}
-		}
-//System.err.println("GeometryOfVolume.findClosestSliceInSamePlane(): found = "+found+" with closest distance difference of "+closest);
-		return found;
-	}
+   public final int findClosestSliceInSamePlane(GeometryOfSlice otherSlice) {
+   //System.err.println("GeometryOfVolume.findClosestSliceInSamePlane():");
+      double otherDistance = otherSlice.getDistanceAlongNormalFromOrigin();
+   //System.err.println("GeometryOfVolume.findClosestSliceInSamePlane(): otherDistance = "+otherDistance);
+      int found=-1;
+      double closest = 999999999;
+      for (int i=0; i<frames.length; ++i) {
+      //System.err.println("GeometryOfVolume.findClosestSliceInSamePlane(): testing "+i);
+         double distanceThisFrame = frames[i].getDistanceAlongNormalFromOrigin();
+      //System.err.println("GeometryOfVolume.findClosestSliceInSamePlane(): distanceThisFrame = "+distanceThisFrame);
+         double distance = Math.abs(distanceThisFrame-otherDistance);
+      //System.err.println("GeometryOfVolume.findClosestSliceInSamePlane(): difference in distance = "+distance);
+         if (distance < closest) {
+         //System.err.println("GeometryOfVolume.findClosestSliceInSamePlane(): closer");
+            closest=distance;
+            found=i;
+         }
+      }
+   //System.err.println("GeometryOfVolume.findClosestSliceInSamePlane(): found = "+found+" with closest distance difference of "+closest);
+      return found;
+   }
 
 	
 	/**
@@ -257,34 +260,36 @@ System.err.println("Cannot look up 2D coordinate from 3D coordinate if not regul
 	 *
 	 * @return	an array of the distances of the TLHCs from the origin along the normal axis
 	 */
-	public final double[] getDistanceAlongNormalFromOrigin() {
-		double[] distances = new double[frames.length];
-		for (int i=0; i<frames.length; ++i) {
-			distances[i]=frames[i].getDistanceAlongNormalFromOrigin();
-		}
-		return distances;
-	}
+   public final double[] getDistanceAlongNormalFromOrigin() {
+      double[] distances = new double[frames.length];
+      for (int i=0; i<frames.length; ++i) {
+         distances[i]=frames[i].getDistanceAlongNormalFromOrigin();
+      }
+      return distances;
+   }
 	
 	
 	/***/
-	protected boolean areParallel;
+   protected boolean areParallel;
 	
 	/**
 	 * <p>Are all the frames in the set of frames parallel ?</p>
 	 *
 	 * @return	true if all frames have the same orientation
 	 */
-	public final boolean areAllSlicesParallel() { return areParallel; }
+   public final boolean areAllSlicesParallel() { 
+      return areParallel; }
 	
 	/***/
-	protected boolean isVolume;
+   protected boolean isVolume;
 	
 	/**
 	 * <p>Is the set of frames regularly sampled along the frame dimension ?</p>
 	 *
 	 * @return	true if same spacing between centers of frames and position monotonically increasing
 	 */
-	public final boolean isVolumeSampledRegularlyAlongFrameDimension() { return isVolume; }
+   public final boolean isVolumeSampledRegularlyAlongFrameDimension() { 
+      return isVolume; }
 	
 	/**
 	 * <p>Check if the set of frames regularly sampled along the frame dimension.</p>
@@ -292,77 +297,77 @@ System.err.println("Cannot look up 2D coordinate from 3D coordinate if not regul
 	 * <p>Method is public only to make it accessible from constructors in other packages.</p>
 	 *
 	 */
-	public final void checkAndSetVolumeSampledRegularlyAlongFrameDimension() {
-//System.err.println("GeometryOfVolume.checkAndSetVolumeSampledRegularlyAlongFrameDimension():");
-		areParallel = true;
-		if (frames != null && frames.length > 1) {
-			// check to see if we are actually a volume
-			// - more than one slice
-			// - slices all parallel
-			// - spacing between slices the same
-			// - distance along normal to plane of slice monotonically increasing
-			
-			GeometryOfSlice lastGeometry    = frames[0];
-			GeometryOfSlice currentGeometry = frames[1];
-			double  lastDistanceAlongNormal = lastGeometry.getDistanceAlongNormalFromOrigin();
-			if (GeometryOfSlice.areSlicesParallel(lastGeometry,currentGeometry)) {
-				double currentDistanceAlongNormal = currentGeometry.getDistanceAlongNormalFromOrigin();
-				double wantIntervalAlongNormal    = currentDistanceAlongNormal - lastDistanceAlongNormal;
-				lastDistanceAlongNormal=currentDistanceAlongNormal;
-				boolean success=true;
-				for (int f=2; f<frames.length && success; ++f) {
-					currentGeometry = frames[f];
-					if (GeometryOfSlice.areSlicesParallel(lastGeometry,currentGeometry)) {
-						currentDistanceAlongNormal = currentGeometry.getDistanceAlongNormalFromOrigin();
-						double currentIntervalAlongNormal = currentDistanceAlongNormal - lastDistanceAlongNormal;
-						if (Math.abs(currentIntervalAlongNormal-wantIntervalAlongNormal) >= .001) {
-							success=false;	// different spacing
-//System.err.println("GeometryOfVolume.checkAndSetVolumeSampledRegularlyAlongFrameDimension(): different spacing currentIntervalAlongNormal="+currentIntervalAlongNormal+" wantIntervalAlongNormal="+wantIntervalAlongNormal);
-							break;
-						}
-						lastDistanceAlongNormal=currentDistanceAlongNormal;
-					}
-					else {
-						areParallel = false;
-						success=false;
-//System.err.println("GeometryOfVolume.checkAndSetVolumeSampledRegularlyAlongFrameDimension(): not parallel");
-						break;
-					}
-				}
-				if (success) {
-//System.err.println("GeometryOfVolume.checkAndSetVolumeSampledRegularlyAlongFrameDimension(): spacing="+wantIntervalAlongNormal);
-					isVolume=true;
-					wantIntervalAlongNormal=Math.abs(wantIntervalAlongNormal);	// since sign may be negative and we don't want that
-					for (int f=0; f<frames.length; ++f) {
-						frames[f].setVoxelSpacingBetweenSlices(wantIntervalAlongNormal);
-					}
-				}
-			}
-			else {
-				areParallel = false;
-//System.err.println("GeometryOfVolume.checkAndSetVolumeSampledRegularlyAlongFrameDimension(): not parallel");
-			}
-		}
-//System.err.println("GeometryOfVolume.checkAndSetVolumeSampledRegularlyAlongFrameDimension(): isVolume="+isVolume);
-//System.err.println(toString());
-	}
+   public final void checkAndSetVolumeSampledRegularlyAlongFrameDimension() {
+   //System.err.println("GeometryOfVolume.checkAndSetVolumeSampledRegularlyAlongFrameDimension():");
+      areParallel = true;
+      if (frames != null && frames.length > 1) {
+      	// check to see if we are actually a volume
+      	// - more than one slice
+      	// - slices all parallel
+      	// - spacing between slices the same
+      	// - distance along normal to plane of slice monotonically increasing
+      	
+         GeometryOfSlice lastGeometry    = frames[0];
+         GeometryOfSlice currentGeometry = frames[1];
+         double  lastDistanceAlongNormal = lastGeometry.getDistanceAlongNormalFromOrigin();
+         if (GeometryOfSlice.areSlicesParallel(lastGeometry,currentGeometry)) {
+            double currentDistanceAlongNormal = currentGeometry.getDistanceAlongNormalFromOrigin();
+            double wantIntervalAlongNormal    = currentDistanceAlongNormal - lastDistanceAlongNormal;
+            lastDistanceAlongNormal=currentDistanceAlongNormal;
+            boolean success=true;
+            for (int f=2; f<frames.length && success; ++f) {
+               currentGeometry = frames[f];
+               if (GeometryOfSlice.areSlicesParallel(lastGeometry,currentGeometry)) {
+                  currentDistanceAlongNormal = currentGeometry.getDistanceAlongNormalFromOrigin();
+                  double currentIntervalAlongNormal = currentDistanceAlongNormal - lastDistanceAlongNormal;
+                  if (Math.abs(currentIntervalAlongNormal-wantIntervalAlongNormal) >= .001) {
+                     success=false;	// different spacing
+                  //System.err.println("GeometryOfVolume.checkAndSetVolumeSampledRegularlyAlongFrameDimension(): different spacing currentIntervalAlongNormal="+currentIntervalAlongNormal+" wantIntervalAlongNormal="+wantIntervalAlongNormal);
+                     break;
+                  }
+                  lastDistanceAlongNormal=currentDistanceAlongNormal;
+               }
+               else {
+                  areParallel = false;
+                  success=false;
+               //System.err.println("GeometryOfVolume.checkAndSetVolumeSampledRegularlyAlongFrameDimension(): not parallel");
+                  break;
+               }
+            }
+            if (success) {
+            //System.err.println("GeometryOfVolume.checkAndSetVolumeSampledRegularlyAlongFrameDimension(): spacing="+wantIntervalAlongNormal);
+               isVolume=true;
+               wantIntervalAlongNormal=Math.abs(wantIntervalAlongNormal);	// since sign may be negative and we don't want that
+               for (int f=0; f<frames.length; ++f) {
+                  frames[f].setVoxelSpacingBetweenSlices(wantIntervalAlongNormal);
+               }
+            }
+         }
+         else {
+            areParallel = false;
+         //System.err.println("GeometryOfVolume.checkAndSetVolumeSampledRegularlyAlongFrameDimension(): not parallel");
+         }
+      }
+   //System.err.println("GeometryOfVolume.checkAndSetVolumeSampledRegularlyAlongFrameDimension(): isVolume="+isVolume);
+   //System.err.println(toString());
+   }
 
 	/**
 	 * <p>Get a human-readable rendering of the geometry.</p>
 	 *
 	 * @return	the string rendering of the geometry
 	 */
-	public final String toString() {
-		StringBuffer str = new StringBuffer();
-		for (int f=0; f<frames.length; ++f) {
-			str.append("[");
-			str.append(f);
-			str.append("] ");
-			str.append(frames[f].toString());
-			str.append("\n");
-		}
-		return str.toString();
-	}
+   public final String toString() {
+      StringBuffer str = new StringBuffer();
+      for (int f=0; f<frames.length; ++f) {
+         str.append("[");
+         str.append(f);
+         str.append("] ");
+         str.append(frames[f].toString());
+         str.append("\n");
+      }
+      return str.toString();
+   }
 
 	/**
 	 * <p>Get the letter representation of the orientation of the rows of this slice.</p>
@@ -371,9 +376,9 @@ System.err.println("Cannot look up 2D coordinate from 3D coordinate if not regul
 	 * @return	a string rendering of the row orientation, L or R, A or P, H or F,
 	 *		more than one letter if oblique to the orthogonal axes, or empty string (not null) if fails
 	 */
-	public final String getRowOrientation(int frame) {
-		return frames != null && frame < frames.length ? frames[frame].getRowOrientation() : "";
-	}
+   public final String getRowOrientation(int frame) {
+      return frames != null && frame < frames.length ? frames[frame].getRowOrientation() : "";
+   }
 
 	/**
 	 * <p>Get the letter representation of the orientation of the columns of this slice.</p>
@@ -382,7 +387,7 @@ System.err.println("Cannot look up 2D coordinate from 3D coordinate if not regul
 	 * @return	a string rendering of the column orientation, L or R, A or P, H or F,
 	 *		more than one letter if oblique to the orthogonal axes, or empty string (not null) if fails
 	 */
-	public final String getColumnOrientation(int frame) {
-		return frames != null && frame < frames.length ? frames[frame].getColumnOrientation() : "";
-	}
+   public final String getColumnOrientation(int frame) {
+      return frames != null && frame < frames.length ? frames[frame].getColumnOrientation() : "";
+   }
 }
