@@ -33,7 +33,7 @@ public class Contour implements Shape, Serializable {
     boolean isSelected = true;
     boolean isVisible = true;
     
-    static Color color = Color.BLUE;
+    static Color color = Color.RED;
 
     // XY coordinates of points the user clicked
     private List<ControlPoint> controlPoints;

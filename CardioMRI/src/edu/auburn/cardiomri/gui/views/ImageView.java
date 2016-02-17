@@ -2,6 +2,7 @@ package edu.auburn.cardiomri.gui.views;
 
 import java.awt.Color;
 import java.awt.GridLayout;
+import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -92,6 +93,11 @@ public class ImageView extends SingleImagePanel implements ActionListener,
     }
     
     private void colorShapes() {
+    	//this.setVolumeLocalizationShapes(redShapes); //draws blue shapes
+    	Rectangle shape = new Rectangle(20, 20,20,20);
+    	Vector<Shape> testShapes = new Vector<Shape>();
+    	testShapes.add(shape);
+    	this.setVolumeLocalizationShapes(testShapes);
     	this.setSelectedDrawingShapes(redShapes);
     	this.setPreDefinedShapes(blueShapes);
     	this.setPersistentDrawingShapes(orangeShapes);
