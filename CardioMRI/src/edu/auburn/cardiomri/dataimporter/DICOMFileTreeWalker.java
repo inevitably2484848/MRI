@@ -73,6 +73,7 @@ public class DICOMFileTreeWalker extends SimpleFileVisitor<Path> {
                     return FileVisitResult.CONTINUE;
                 } else {
                     // System.out.println("Adding");
+                	image.setRawFile(f);
                     imageList.add(image);
                     // System.out.println("List size: " + imageList.size());
                 }

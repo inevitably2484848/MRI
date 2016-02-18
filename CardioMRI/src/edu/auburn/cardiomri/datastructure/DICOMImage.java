@@ -1,5 +1,6 @@
 package edu.auburn.cardiomri.datastructure;
 
+import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -79,6 +80,8 @@ public class DICOMImage implements Serializable {
     private Integer largestMonochromePixelValue;
     private Integer largestImagePixelValue;
     private String pixelPresentation;
+    
+    private File rawFile;
 
     public String[][] getAttributeInfo() {
         ArrayList<String> names = new ArrayList<String>();
@@ -750,4 +753,12 @@ public class DICOMImage implements Serializable {
     public Vector<Landmark> getLandmarks(){
     	return this.landmarks;
     }
+
+	public File getRawFile() {
+		return rawFile;
+	}
+
+	public void setRawFile(File rawFile) {
+		this.rawFile = rawFile;
+	}
 }
