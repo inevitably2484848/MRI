@@ -7,6 +7,6 @@
 	<classpathentry kind="lib" path="toxiclibscore.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="C:/Program Files/Java/Java3D/1.5.2/lib/ext/vecmath.jar"/>
+	<classpathentry kind="lib" path="vecmath.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
