@@ -58,6 +58,8 @@ public class ImageView extends SingleImagePanel implements ActionListener,
     private Vector<Shape> orangeShapes = new Vector<Shape>();
     private Vector<Shape> blueShapes = new Vector<Shape>();
     private Vector<Shape> whiteShapes = new Vector<Shape>();
+    private Vector<Shape> twoChamberSliceLines = new Vector<Shape>();
+    private Vector<Shape> fourChamberSliceLines = new Vector<Shape>();
     
     public ContourContextMenu contourCM;// = ContourContextMenu.popupContextMenu(); //kw
     public LandmarkContextMenu landmarkCM; //LandmarkContextMenu()
@@ -92,6 +94,8 @@ public class ImageView extends SingleImagePanel implements ActionListener,
         updateContours(getImageModel().getContours());
         updateLandmarks(getImageModel().getLandmarks());
         
+    	addSliceLines();
+        
         colorShapes();
         
         refresh();
@@ -105,21 +109,44 @@ public class ImageView extends SingleImagePanel implements ActionListener,
     }
     
     private void colorShapes() {
-    	//this.setVolumeLocalizationShapes(redShapes); //draws blue shapes
-    	Vector<Shape> twoChamberSliceLines = new Vector<Shape>();
-    	Vector<Shape> fourChamberSliceLines = new Vector<Shape>();
-    	if(this.getMainImageView() == null && this.getTwoChamberView() != null && this.getFourChamberView() != null){
-    		twoChamberSliceLines = getTwoChamberSliceLines();
-    		fourChamberSliceLines = getFourChamberSliceLines();
-    	}
-    	this.setVolumeLocalizationShapes(twoChamberSliceLines);
-    	redShapes.addAll(fourChamberSliceLines);
+
     	this.setSelectedDrawingShapes(redShapes);
     	this.setPreDefinedShapes(blueShapes);
     	this.setPersistentDrawingShapes(orangeShapes);
     	this.setLocalizerShapes(whiteShapes);
     }
 
+	private void addSliceLines() {
+		DICOMImage mainImage = null;
+		DICOMImage twoChamberImage = null;
+		DICOMImage fourChamberImage = null;
+		
+		if(this.getMainImageView() == null && this.getTwoChamberView() != null && this.getFourChamberView() != null){
+			mainImage = getImageModel().getImage();
+			twoChamberImage = this.getTwoChamberImage();
+			fourChamberImage = this.getFourChamberImage();
+    		blueShapes.addAll(getSliceLines(twoChamberImage, mainImage));
+    		redShapes.addAll(getSliceLines(fourChamberImage, mainImage));
+    	} else if(this.getMainImageView() != null && this.getTwoChamberView() == null && this.getFourChamberView() != null){
+			mainImage = this.getMainImage();
+			twoChamberImage = getImageModel().getImage();
+			fourChamberImage = this.getFourChamberImage();
+    		orangeShapes.addAll(getSliceLines(mainImage, twoChamberImage));
+    		redShapes.addAll(getSliceLines(fourChamberImage, twoChamberImage));
+    	} else if(this.getMainImageView() != null && this.getTwoChamberView() != null && this.getFourChamberView() == null){
+			mainImage = this.getMainImage();
+			twoChamberImage = this.getTwoChamberImage();
+			fourChamberImage = getImageModel().getImage();
+    		orangeShapes.addAll(getSliceLines(mainImage, fourChamberImage));
+    		blueShapes.addAll(getSliceLines(twoChamberImage, fourChamberImage));
+    	}
+	}
+
+	private Vector<Shape> getSliceLines(DICOMImage mainImage, DICOMImage secondImage) {
+		Vector<Shape> intersectionShapes = findIntersection(mainImage, secondImage);
+		return intersectionShapes;
+	}
+	
 	private Vector<Shape> getTwoChamberSliceLines() {
 		DICOMImage mainImage = getImageModel().getImage();
 		DICOMImage twoChamberImage = this.getTwoChamberImage();
@@ -668,6 +695,10 @@ public class ImageView extends SingleImagePanel implements ActionListener,
 	public void setFourChamberView(ImageView fourChamberView) {
 		this.fourChamberView = fourChamberView;
 	}
+    public DICOMImage getMainImage(){
+    	DICOMImage dImage = getMainImageView().getImageModel().getImage();
+    	return dImage;
+    }
     public DICOMImage getTwoChamberImage(){
     	DICOMImage dImage = getTwoChamberView().getImageModel().getImage();
     	return dImage;
