@@ -32,6 +32,15 @@ public class RightPanel extends View {
 	public RightPanel(ImageView mainImage, ImageView twoChamber, ImageView fourChamber, ModeView contourControl)
 	{
 		super();
+		mainImage.setTwoChamberView(twoChamber);
+		mainImage.setFourChamberView(fourChamber);
+		
+		twoChamber.setMainImageView(mainImage);
+		twoChamber.setFourChamberView(fourChamber);
+		
+		fourChamber.setMainImageView(mainImage);
+		fourChamber.setTwoChamberView(twoChamber);
+		
 		this.mainImageView = mainImage;
 		this.twoChamberView = twoChamber;
 		this.fourChamberView = fourChamber;

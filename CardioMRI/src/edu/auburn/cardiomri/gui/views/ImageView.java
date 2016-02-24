@@ -2,6 +2,7 @@ package edu.auburn.cardiomri.gui.views;
 
 import java.awt.Color;
 import java.awt.GridLayout;
+import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -12,6 +13,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.GeneralPath;
+import java.io.IOException;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Vector;
@@ -21,7 +23,13 @@ import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
+import com.pixelmed.dicom.AttributeList;
+import com.pixelmed.dicom.DicomException;
+import com.pixelmed.dicom.GeometryOfSliceFromAttributeList;
 import com.pixelmed.display.SingleImagePanel;
+import com.pixelmed.geometry.GeometryOfSlice;
+import com.pixelmed.geometry.LocalizerPoster;
+import com.pixelmed.geometry.LocalizerPosterFactory;
 
 import edu.auburn.cardiomri.datastructure.Contour;
 import edu.auburn.cardiomri.datastructure.Landmark;
@@ -55,6 +63,11 @@ public class ImageView extends SingleImagePanel implements ActionListener,
     public LandmarkContextMenu landmarkCM; //LandmarkContextMenu()
     public SelectContextMenu selectCM ; //SelectContextMenu();
     
+    private ImageView mainImageView = null;
+    private ImageView twoChamberView = null;
+    private ImageView fourChamberView = null;
+    
+    
 
     
     /**
@@ -79,6 +92,8 @@ public class ImageView extends SingleImagePanel implements ActionListener,
         updateContours(getImageModel().getContours());
         updateLandmarks(getImageModel().getLandmarks());
         
+    	addSliceLines();
+        
         colorShapes();
         
         refresh();
@@ -92,11 +107,84 @@ public class ImageView extends SingleImagePanel implements ActionListener,
     }
     
     private void colorShapes() {
+
     	this.setSelectedDrawingShapes(redShapes);
     	this.setPreDefinedShapes(blueShapes);
     	this.setPersistentDrawingShapes(orangeShapes);
     	this.setLocalizerShapes(whiteShapes);
     }
+
+	private void addSliceLines() {
+		DICOMImage mainImage = null;
+		DICOMImage twoChamberImage = null;
+		DICOMImage fourChamberImage = null;
+		
+		if(this.getMainImageView() == null && this.getTwoChamberView() != null && this.getFourChamberView() != null){
+			mainImage = getImageModel().getImage();
+			twoChamberImage = this.getTwoChamberImage();
+			fourChamberImage = this.getFourChamberImage();
+    		blueShapes.addAll(getSliceLines(twoChamberImage, mainImage));
+    		redShapes.addAll(getSliceLines(fourChamberImage, mainImage));
+    	} else if(this.getMainImageView() != null && this.getTwoChamberView() == null && this.getFourChamberView() != null){
+			mainImage = this.getMainImage();
+			twoChamberImage = getImageModel().getImage();
+			fourChamberImage = this.getFourChamberImage();
+    		orangeShapes.addAll(getSliceLines(mainImage, twoChamberImage));
+    		redShapes.addAll(getSliceLines(fourChamberImage, twoChamberImage));
+    	} else if(this.getMainImageView() != null && this.getTwoChamberView() != null && this.getFourChamberView() == null){
+			mainImage = this.getMainImage();
+			twoChamberImage = this.getTwoChamberImage();
+			fourChamberImage = getImageModel().getImage();
+    		orangeShapes.addAll(getSliceLines(mainImage, fourChamberImage));
+    		blueShapes.addAll(getSliceLines(twoChamberImage, fourChamberImage));
+    	}
+	}
+
+	private Vector<Shape> getSliceLines(DICOMImage mainImage, DICOMImage secondImage) {
+		Vector<Shape> intersectionShapes = findIntersection(mainImage, secondImage);
+		return intersectionShapes;
+	}
+
+	private Vector<Shape> findIntersection(DICOMImage postImage, DICOMImage localizerImage) {
+		AttributeList localizerAttributeList = new AttributeList();
+		try {
+			localizerAttributeList.read(localizerImage.getRawFile());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (DicomException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		AttributeList postImageAttributeList = new AttributeList();
+		try {
+			postImageAttributeList.read(postImage.getRawFile());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (DicomException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		GeometryOfSlice localizerGeometry = null;
+		try {
+			localizerGeometry = new GeometryOfSliceFromAttributeList(localizerAttributeList);
+		} catch (DicomException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		GeometryOfSlice postImageGeometry = null;
+		try {
+			postImageGeometry = new GeometryOfSliceFromAttributeList(postImageAttributeList);
+		} catch (DicomException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		LocalizerPoster localizerPoster = LocalizerPosterFactory.getLocalizerPoster(false,false);
+		localizerPoster.setLocalizerGeometry(localizerGeometry);
+		Vector<Shape> shapes = localizerPoster.getOutlineOnLocalizerForThisGeometry(postImageGeometry);
+		return shapes;
+	}
 
     
     private void updateLandmarks(Vector<Landmark> landmarks) {
@@ -568,6 +656,41 @@ public class ImageView extends SingleImagePanel implements ActionListener,
                     (int) ActionEvent.ACTION_PERFORMED, this.comand));
         }
     }
-    
+
+	public ImageView getMainImageView() {
+		return mainImageView;
+	}
+
+	public void setMainImageView(ImageView mainImageView) {
+		this.mainImageView = mainImageView;
+	}
+
+	public ImageView getTwoChamberView() {
+		return twoChamberView;
+	}
+
+	public void setTwoChamberView(ImageView twoChamberView) {
+		this.twoChamberView = twoChamberView;
+	}
+
+	public ImageView getFourChamberView() {
+		return fourChamberView;
+	}
+
+	public void setFourChamberView(ImageView fourChamberView) {
+		this.fourChamberView = fourChamberView;
+	}
+    public DICOMImage getMainImage(){
+    	DICOMImage dImage = getMainImageView().getImageModel().getImage();
+    	return dImage;
+    }
+    public DICOMImage getTwoChamberImage(){
+    	DICOMImage dImage = getTwoChamberView().getImageModel().getImage();
+    	return dImage;
+    }
+    public DICOMImage getFourChamberImage(){
+    	DICOMImage dImage = getFourChamberView().getImageModel().getImage();
+    	return dImage;
+    }
     
 }
