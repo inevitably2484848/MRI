@@ -380,6 +380,7 @@ public class GridControlView extends View implements ChangeListener {
         if(getImageModel().getSelectedContour() != null){
         	getImageModel().setSelectedContour(null);
         }
+        
 
     } //*************************************************************************
     

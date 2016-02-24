@@ -33,7 +33,7 @@ public class LandmarkTypeActionPerformed extends View implements ActionListener 
 	@Override
 	public void actionPerformed(ActionEvent actionEvent) {
 		String actionCommand = actionEvent.getActionCommand();
-		Mode.setMode(Mode.landmarkMode());
+		Mode.setMode(Mode.landmarkMode(), actionCommand);
 		
 		if(istoggled && selectMenu != null) {
 			this.model = getImageModel();

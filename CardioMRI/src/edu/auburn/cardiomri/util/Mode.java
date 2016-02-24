@@ -41,11 +41,27 @@ public class Mode {
     	}
     }
     
-   // to set the mode in another class Mode.setMode(Mode.contourMode()) 
+    // to set the mode in another class, use Mode.setMode(Mode.contourMode()) 
     public static void setMode(int modeIN){
     	mode = modeIN;
     	RightPanel.changeMode(modeChange());
     }
+    
+    
+    // to set the mode in another class with a qualifier, use Mode.setMode(Mode.contourMode(), String)) 
+    public static void setMode(int modeIN, String qualifier){
+    	mode = modeIN;
+    	RightPanel.changeMode(modeChange(), qualifier);
+    	
+    }
+    
+    // to set the ModeView panel to a specific string, use Mode.setMode(String)
+    // This automatically sets the mode to select mode
+    public static void setMode(String message){
+    	mode = Mode.selectMode();
+    	RightPanel.changeMode(message);
+    }
+    
     
     public static Type getNextLandmarkType() {
     	return nextLandmarkType;

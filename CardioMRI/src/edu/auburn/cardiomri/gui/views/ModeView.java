@@ -14,22 +14,22 @@ import java.awt.GridBagLayout;
 
 public class ModeView extends View{
 	
-	public JPanel toastPanel;
-	public JLabel lblToastString;
+	public JPanel modePanel;
+	private JLabel modeLabelString;
 	private Color bgColor = new Color(145,235,115);
 
 	public ModeView(String text){
 		super();
 		
 		//Create panel 
-		toastPanel = this.panel;
-	    toastPanel.setOpaque(true);  
-	    toastPanel.setVisible(true);
+		modePanel = this.panel;
+	    modePanel.setOpaque(true);  
+	    modePanel.setVisible(true);
         
         //Create the Jlabel
-        lblToastString = new JLabel("SELECT MODE");
-        lblToastString.setFont(new Font("Dialog", Font.BOLD, 15));
-        lblToastString.setForeground(Color.BLACK);
+        modeLabelString = new JLabel("SELECT MODE");
+        modeLabelString.setFont(new Font("Dialog", Font.BOLD, 15));
+        modeLabelString.setForeground(Color.BLACK);
         
         //Format the label is centered in the panel
         this.panel.setLayout(new GridBagLayout());
@@ -40,7 +40,18 @@ public class ModeView extends View{
         
         //Change the background color of the panel and add the label to the panel
         this.panel.setBackground(bgColor);
-        this.panel.add(lblToastString, c);
+        this.panel.add(modeLabelString, c);
       
 	}   
+	
+	public void setMessage(String mode) {
+		modeLabelString.setText(mode);
+		
+	}
+	
+	public void setMessage(String mode, String qualifier) {
+		modeLabelString.setText("<html>" + mode + "<br>" + qualifier + "</html>");
+		
+	}
+	
 }

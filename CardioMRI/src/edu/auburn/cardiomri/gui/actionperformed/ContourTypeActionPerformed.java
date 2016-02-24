@@ -53,7 +53,7 @@ public class ContourTypeActionPerformed  implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent actionEvent) {
 		String actionCommand = actionEvent.getActionCommand();
-		Mode.setMode(Mode.contourMode());
+		Mode.setMode(Mode.contourMode(), actionCommand); // Aaron Fregeau, ModeView now shoes the specific contour/landmark
 
 		System.out.println(actionCommand);
 		

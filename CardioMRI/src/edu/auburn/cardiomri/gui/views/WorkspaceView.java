@@ -142,7 +142,7 @@ public class WorkspaceView extends View {
        //ContourControlView contourControl = new ContourControlView(null);  //preBuild
         //contourControl.setModel(mainImageModel);
         
-        ModeView modelToast = new ModeView("SHANNON");
+        ModeView modelToast = new ModeView("");
  
         getWorkspaceModel().addImage(mainImageModel,
                 study.getShortAxisGroup());

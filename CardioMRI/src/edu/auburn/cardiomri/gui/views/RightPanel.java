@@ -16,10 +16,16 @@ public class RightPanel extends View {
 	
 	public static void changeMode(String mode) {
 		if (contourControl != null) {
-		contourControl.lblToastString.setText(mode);
+		contourControl.setMessage(mode);
 		}
 	}
 	
+	
+	public static void changeMode(String mode, String qualifier) {
+		if (contourControl != null) {
+		contourControl.setMessage(mode, qualifier);
+		}
+	}
 	
 	/**
 	 * Takes all needed Views for the main image panel, and the right most column of panels in the workspace view
@@ -32,15 +38,15 @@ public class RightPanel extends View {
 	public RightPanel(ImageView mainImage, ImageView twoChamber, ImageView fourChamber, ModeView contourControl)
 	{
 		super();
-		mainImage.setTwoChamberView(twoChamber);
-		mainImage.setFourChamberView(fourChamber);
-		
-		twoChamber.setMainImageView(mainImage);
-		twoChamber.setFourChamberView(fourChamber);
-		
-		fourChamber.setMainImageView(mainImage);
-		fourChamber.setTwoChamberView(twoChamber);
-		
+//		mainImage.setTwoChamberView(twoChamber);
+//		mainImage.setFourChamberView(fourChamber);
+//		
+//		twoChamber.setMainImageView(mainImage);
+//		twoChamber.setFourChamberView(fourChamber);
+//		
+//		fourChamber.setMainImageView(mainImage);
+//		fourChamber.setTwoChamberView(twoChamber);
+//		
 		this.mainImageView = mainImage;
 		this.twoChamberView = twoChamber;
 		this.fourChamberView = fourChamber;
