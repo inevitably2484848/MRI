@@ -58,8 +58,6 @@ public class ImageView extends SingleImagePanel implements ActionListener,
     private Vector<Shape> orangeShapes = new Vector<Shape>();
     private Vector<Shape> blueShapes = new Vector<Shape>();
     private Vector<Shape> whiteShapes = new Vector<Shape>();
-    private Vector<Shape> twoChamberSliceLines = new Vector<Shape>();
-    private Vector<Shape> fourChamberSliceLines = new Vector<Shape>();
     
     public ContourContextMenu contourCM;// = ContourContextMenu.popupContextMenu(); //kw
     public LandmarkContextMenu landmarkCM; //LandmarkContextMenu()
@@ -145,19 +143,6 @@ public class ImageView extends SingleImagePanel implements ActionListener,
 	private Vector<Shape> getSliceLines(DICOMImage mainImage, DICOMImage secondImage) {
 		Vector<Shape> intersectionShapes = findIntersection(mainImage, secondImage);
 		return intersectionShapes;
-	}
-	
-	private Vector<Shape> getTwoChamberSliceLines() {
-		DICOMImage mainImage = getImageModel().getImage();
-		DICOMImage twoChamberImage = this.getTwoChamberImage();
-		Vector<Shape> twoChamberShapes = findIntersection(mainImage, twoChamberImage);
-		return twoChamberShapes;
-	}
-	private Vector<Shape> getFourChamberSliceLines() {
-		DICOMImage mainImage = getImageModel().getImage();
-		DICOMImage fourChamberImage = this.getFourChamberImage();
-		Vector<Shape> fourChamberShapes = findIntersection(mainImage, fourChamberImage);
-		return fourChamberShapes;
 	}
 
 	private Vector<Shape> findIntersection(DICOMImage postImage, DICOMImage localizerImage) {
