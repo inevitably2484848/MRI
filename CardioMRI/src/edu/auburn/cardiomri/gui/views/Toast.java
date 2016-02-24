@@ -1,53 +1,46 @@
 package edu.auburn.cardiomri.gui.views;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dimension;
-
-import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.border.LineBorder;
-
 import java.awt.Font;
-import java.awt.Toolkit;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 
-public class Toast extends JDialog{
+/** This class creates the JLabel indicating which mode the user is in. 
+ * This JLabel is added to the RightPanel.
+ * @author Shannon Lavender and Aaron Fregeau
+ */
 
-	int miliseconds;
+public class Toast extends View{
+	
+	public JPanel toastPanel;
+	public JLabel lblToastString;
+	private Color bgColor = new Color(145,235,115);
+
 	public Toast(String text){
+		super();
 		
-		this.miliseconds = 2000;
-		setBounds(400, 400, 280,100);
-        setUndecorated(true);
-        getContentPane().setLayout(new BorderLayout(0, 0));
+		//Create panel 
+		toastPanel = this.panel;
+	    toastPanel.setOpaque(true);  
+	    toastPanel.setVisible(true);
         
-        JPanel panel = new JPanel();
-        panel.setBackground(Color.ORANGE);
-        panel.setBorder(new LineBorder(Color.LIGHT_GRAY, 2));
-        getContentPane().add(panel, BorderLayout.CENTER);
-        
-        JLabel lblToastString = new JLabel("");
-        lblToastString.setText(text);
+        //Create the Jlabel
+        lblToastString = new JLabel("SELECT MODE");
         lblToastString.setFont(new Font("Dialog", Font.BOLD, 15));
-        lblToastString.setForeground(Color.WHITE);
+        lblToastString.setForeground(Color.BLACK);
         
-        setAlwaysOnTop(true);
-        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+        //Format the label is centered in the panel
+        this.panel.setLayout(new GridBagLayout());
+        GridBagConstraints c = new GridBagConstraints();
+        c.weightx = 0;
+        c.gridx = 0;
+        c.gridy = 0;
         
-        setLocation(dim.width-getSize().width, dim.height-getSize().height);
-        panel.add(lblToastString);
-        setVisible(true);
-        
-        new Thread(){
-            public void run() {
-                try {
-                    Thread.sleep(miliseconds);
-                    dispose();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }.start();
+        //Change the background color of the panel and add the label to the panel
+        this.panel.setBackground(bgColor);
+        this.panel.add(lblToastString, c);
+      
 	}   
 }

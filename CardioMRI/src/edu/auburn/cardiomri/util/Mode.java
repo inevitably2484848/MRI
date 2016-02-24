@@ -1,5 +1,6 @@
 package edu.auburn.cardiomri.util;
 
+import edu.auburn.cardiomri.gui.views.RightPanel;
 import edu.auburn.cardiomri.gui.views.Toast;
 import edu.auburn.cardiomri.datastructure.Landmark.Type;
 
@@ -32,7 +33,7 @@ public class Mode {
 	    		return "CONTOUR MODE";
 	    	}
 	    	case LANDMARK_MODE : {
-	    		return "LANDMARK_MODE";
+	    		return "LANDMARK MODE";
 	    	}
 	    	default : {
 	    		return null;
@@ -43,7 +44,7 @@ public class Mode {
    // to set the mode in another class Mode.setMode(Mode.contourMode()) 
     public static void setMode(int modeIN){
     	mode = modeIN;
-    	new Toast(modeToast());
+    	RightPanel.changeMode(modeToast());
     }
     
     public static Type getNextLandmarkType() {
