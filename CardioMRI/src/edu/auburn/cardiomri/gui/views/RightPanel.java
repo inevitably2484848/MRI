@@ -10,7 +10,16 @@ import javax.swing.JSplitPane;
 public class RightPanel extends View {
 	
 	protected ImageView  mainImageView, twoChamberView, fourChamberView;
-	protected ContourControlView contourControl;
+	protected static Toast contourControl = null;
+	
+	//contourControl a public static and inside Mode access RightPanel.contourControl.accessthepanel.setText(text)
+	
+	public static void changeMode(String mode) {
+		if (contourControl != null) {
+		contourControl.lblToastString.setText(mode);
+		}
+	}
+	
 	
 	/**
 	 * Takes all needed Views for the main image panel, and the right most column of panels in the workspace view
@@ -20,7 +29,7 @@ public class RightPanel extends View {
 	 * @param fourChamber		Image View with the four chamber group (Middle Right image)
 	 * @param contourControl    Image View for the contour control (Bottom right panel)
 	 */
-	public RightPanel(ImageView mainImage, ImageView twoChamber, ImageView fourChamber, ContourControlView contourControl)
+	public RightPanel(ImageView mainImage, ImageView twoChamber, ImageView fourChamber, Toast contourControl)
 	{
 		super();
 		this.mainImageView = mainImage;

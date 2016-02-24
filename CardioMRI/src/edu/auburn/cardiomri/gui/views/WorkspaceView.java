@@ -139,8 +139,10 @@ public class WorkspaceView extends View {
         MultipleImageView multipleImages = new MultipleImageView();
         multipleImages.setModel(gridModel);
 
-        ContourControlView contourControl = new ContourControlView(null);  //preBuild
-        contourControl.setModel(mainImageModel);
+       //ContourControlView contourControl = new ContourControlView(null);  //preBuild
+        //contourControl.setModel(mainImageModel);
+        
+        Toast modelToast = new Toast("SHANNON");
  
         getWorkspaceModel().addImage(mainImageModel,
                 study.getShortAxisGroup());
@@ -161,7 +163,7 @@ public class WorkspaceView extends View {
                 multipleImages);
 
         RightPanel rightPanel = new RightPanel(mainImageView,
-                twoChamberView, fourChamberView, contourControl);
+                twoChamberView, fourChamberView, modelToast);
 
         // add to appFrame
         appFrame.setSize(WORKSPACE_WIDTH, WORKSPACE_HEIGHT);
