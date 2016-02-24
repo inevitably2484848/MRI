@@ -9,7 +9,7 @@ import edu.auburn.cardiomri.datastructure.Landmark;
 import edu.auburn.cardiomri.datastructure.Landmark.Type;
 import edu.auburn.cardiomri.gui.models.ImageModel;
 import edu.auburn.cardiomri.gui.views.ImageView;
-import edu.auburn.cardiomri.gui.views.Toast;
+import edu.auburn.cardiomri.gui.views.ModeView;
 import edu.auburn.cardiomri.gui.views.View;
 import edu.auburn.cardiomri.popupmenu.view.LandmarkTypeMenu;
 import edu.auburn.cardiomri.popupmenu.view.SelectContextMenu;

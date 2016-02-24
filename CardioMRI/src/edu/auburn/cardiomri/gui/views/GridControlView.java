@@ -200,6 +200,7 @@ public class GridControlView extends View implements ChangeListener {
 				contour.setSelected(true);
 				cntrPM.setLocation();
 				cntrPM.getPopup();
+				
 				Mode.setMode(Mode.contourMode());
 			}
         }
@@ -217,7 +218,7 @@ public class GridControlView extends View implements ChangeListener {
         		
         		Mode.setMode(Mode.landmarkMode());
         	}
-        	new Toast(Mode.modeToast());
+        	new ModeView(Mode.modeChange());
         		
         }
         

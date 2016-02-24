@@ -12,13 +12,13 @@ import java.awt.GridBagLayout;
  * @author Shannon Lavender and Aaron Fregeau
  */
 
-public class Toast extends View{
+public class ModeView extends View{
 	
 	public JPanel toastPanel;
 	public JLabel lblToastString;
 	private Color bgColor = new Color(145,235,115);
 
-	public Toast(String text){
+	public ModeView(String text){
 		super();
 		
 		//Create panel 

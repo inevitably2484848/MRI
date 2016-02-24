@@ -1,7 +1,7 @@
 package edu.auburn.cardiomri.util;
 
 import edu.auburn.cardiomri.gui.views.RightPanel;
-import edu.auburn.cardiomri.gui.views.Toast;
+import edu.auburn.cardiomri.gui.views.ModeView;
 import edu.auburn.cardiomri.datastructure.Landmark.Type;
 
 /**
@@ -24,7 +24,7 @@ public class Mode {
     	return mode;
     }
     
-    public static String modeToast(){
+    public static String modeChange(){
     	switch (getMode()){
 	    	case SELECT_MODE: {
 	    		return "SELECT MODE";
@@ -44,7 +44,7 @@ public class Mode {
    // to set the mode in another class Mode.setMode(Mode.contourMode()) 
     public static void setMode(int modeIN){
     	mode = modeIN;
-    	RightPanel.changeMode(modeToast());
+    	RightPanel.changeMode(modeChange());
     }
     
     public static Type getNextLandmarkType() {
