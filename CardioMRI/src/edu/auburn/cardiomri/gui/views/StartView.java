@@ -1,13 +1,16 @@
 package edu.auburn.cardiomri.gui.views;
 
+import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.event.ActionEvent;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
+import javax.swing.JLabel;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
@@ -39,25 +42,43 @@ public class StartView extends View {
 		super();
 	    
         this.panel.setLayout(new GridBagLayout());
-
+        GridBagConstraints c = new GridBagConstraints(); //creates grid
         
         //Add the three buttons
         JButton newStudy = new JButton("New Study");
         newStudy.setActionCommand("Create New Study");
         newStudy.addActionListener(this);
-        this.panel.add(newStudy);
+        c.weightx = 0;
+        c.gridx = 0;
+        c.gridy = 1;
+        this.panel.add(newStudy, c);
         
         JButton existingStudy = new JButton("Existing Study");
         existingStudy.setActionCommand("Load Existing Study");
         existingStudy.addActionListener(this);
-        this.panel.add(existingStudy);
+        c.weightx = 0;
+        c.gridx = 1;
+        c.gridy = 1;
+        this.panel.add(existingStudy, c);
         
         
         JButton singleImage = new JButton("Single Image");
         singleImage.setActionCommand("Load Single DICOM");
         singleImage.addActionListener(this);
-        this.panel.add(singleImage);
+        c.weightx = 0;
+        c.gridx = 2;
+        c.gridy = 1;
+        this.panel.add(singleImage, c);
+
+        Icon icon = new ImageIcon("icons/LoadingHeart.gif");
+        JLabel label = new JLabel(icon);
+        c.weightx = 0;
+        c.gridx = 1;
+        c.gridy = 0;
+        this.panel.add(label, c);
         
+
+       
         fileChooser = new JFileChooser();
         fileChooser.setCurrentDirectory(new File(System.getProperty("user.dir")));
 	}
@@ -112,19 +133,38 @@ public class StartView extends View {
      *
      */
     public void createNewStudy() {
+    	
+        
+        
         fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 
+ 
         int returnVal = fileChooser.showOpenDialog(this.panel);
-        if (returnVal == JFileChooser.APPROVE_OPTION) {
 
+
+
+    	
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            
+            
+        	
             String directory = fileChooser.getSelectedFile().getAbsolutePath();
             Path path = Paths.get(directory);
 
+
             DICOMFileTreeWalker fileTreeWalker = new DICOMFileTreeWalker();
-
+            
             Study study = fileTreeWalker.addFileTreeToStudy(path, new Study());
-
+            
             this.getStartModel().setStudy(study);
+            
+            
+            
+
+
+            //loading.done();   
+            
+            
         } else {
             // System.out.println("FileChooser : Canceled choosing directory");
         }
