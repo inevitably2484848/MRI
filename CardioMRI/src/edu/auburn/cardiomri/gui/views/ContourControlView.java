@@ -2,6 +2,8 @@ package edu.auburn.cardiomri.gui.views;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.sql.Time;
 import java.util.Vector;
 import javax.swing.DefaultListModel;
@@ -38,6 +40,14 @@ public class ContourControlView extends View {
 		ccv = this.panel;
 	    ccv.setOpaque(true);  // * 
 	    ccv.setVisible(true); // *
+	    //this.panel.setLayout(new GridBagLayout());
+        //GridBagConstraints c = new GridBagConstraints(); //creates grid
+
+        //Short Axis label
+//        JLabel SALabel = new JLabel("Hello");
+//        this.panel.add(SALabel, c); 
+	    
+	    
 	    
 //	    ccv = this.panel;
 //		String fileName = "Title";
@@ -94,8 +104,8 @@ public class ContourControlView extends View {
 //	    ccv.doLayout();
 //		ccv.revalidate();
 //		ccv.repaint();
-//		
-//		
+		
+		
 	}	
 
 }

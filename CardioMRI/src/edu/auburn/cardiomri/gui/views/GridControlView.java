@@ -2,6 +2,9 @@ package edu.auburn.cardiomri.gui.views;
 
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.MouseInfo;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -12,7 +15,9 @@ import javax.swing.BoxLayout;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JSlider;
@@ -39,9 +44,11 @@ import edu.auburn.cardiomri.util.Mode;
  * 
  * @author Ben Gustafson
  *
+ *
  */
 public class GridControlView extends View implements ChangeListener {
 
+	protected JPanel imageContourPanel;
 	protected boolean buttonPressed;
 	protected JButton playButton;
 	protected int playSpeed;
@@ -50,7 +57,10 @@ public class GridControlView extends View implements ChangeListener {
 	public static JToggleButton contour = new JToggleButton("Add Contour"); //kw
 	public static JToggleButton landMark = new JToggleButton("Add LandMark"); //kw
 	
- 
+	protected JButton showContours;
+	protected JButton hideContours;
+	protected JButton showLandmarks;
+	protected JButton hideLandmarks;
 	
 	
 	
@@ -63,43 +73,153 @@ public class GridControlView extends View implements ChangeListener {
 	 * 
 	 * In order to get the play button to work, look in to swing timers. I couldn't get it to work in the time we had
 	 * 
+	 * 
+	 * Buttons are added to panels, then those panels are added to the super panel
+	 * author Megan
 	 */
 	public GridControlView()
 	{
 		super();
-		this.panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+		//this.panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+		this.panel.setLayout(new GridBagLayout());
+	    GridBagConstraints c = new GridBagConstraints(); //creates grid
 		this.panel.setOpaque(true);
 		this.panel.setVisible(true);
 		
 		buttonPressed = true;
 		playSpeed = 0;
 		runner = new RunPlaybutton(playSpeed);
-		setUp();
+		//setUp();
+		
+		//play button
+		playButton = new JButton();
+		playButton.addActionListener(this);
+		playButton.setPreferredSize(new Dimension(50, 20));
+		playButton.setBorderPainted(true);
+		playButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+		changeButtonState();
+		c.weightx = 0;
+		c.gridwidth = 2;
+        c.gridx = 1;
+        c.gridy = 0;
+		this.panel.add(playButton, c);
 		
 		//Slider is from 0 to 20 with one digit increments
 		JSlider framesPerSecond = new JSlider(JSlider.HORIZONTAL, 0, 20, 1); 
 		framesPerSecond.addChangeListener(this);
 		framesPerSecond.setToolTipText("Change Speed");
-		   
-		this.panel.add(framesPerSecond);
+		c.weightx = 0;
+		c.gridwidth = 3;
+        c.gridx = 0;
+        c.gridy = 1;
+		this.panel.add(framesPerSecond, c);
 		
-		modeToggleButton(); //kw
+		//ToggleButtons
+		Mode.setMode(Mode.selectMode()); //set Mode
+		
+		JPanel modePanel = new JPanel();
+		modePanel.setLayout(new GridBagLayout()); //layout for mode buttons
+	    GridBagConstraints k = new GridBagConstraints();
+		contour.addActionListener(this);
+		contour.setActionCommand("contour");
+		contour.setToolTipText("Add New Contour");
+		contour.setMinimumSize(new Dimension(124,29));
+		k.weightx = 0;
+        k.gridx = 0;
+        k.gridy = 0;
+        //c.insets = new Insets(50,0,0,0);
+        modePanel.add(contour, k);
+        
+		landMark.addActionListener(this);
+		landMark.setActionCommand("landmark");
+		landMark.setToolTipText("Add New Landmark Point");
+		//c.insets = new Insets(50,0,0,0);
+		//modePanel.add(contour);
+		//modePanel.add(landMark);
+		k.weightx = 0;
+        k.gridx = 1;
+        k.gridy = 0;
+        modePanel.add(landMark, k);
+        
+        c.weightx = 0;
+		c.gridwidth = 3;
+        c.gridx = 0;
+        c.gridy = 2;
+        c.insets = new Insets(10,0,0,0);
+		this.panel.add(modePanel,c); //adds model panel to super panel
+		//modeToggleButton(); //kw
+		
+		//this.panel.setLayout(new GridBagLayout());
+       //GridBagConstraints c = new GridBagConstraints(); //creates grid
+
+        JPanel leftButtonsPanel = new JPanel();
+		leftButtonsPanel.setLayout(new GridBagLayout()); //layout for left buttons
+	    GridBagConstraints l = new GridBagConstraints();
+		showContours = new JButton("Show Contours");
+		showContours.addActionListener(this);
+		showContours.setActionCommand("showContours");
+		showContours.setToolTipText("Show All Contours");
+		l.weightx = 0;
+        l.gridx = 0;
+        l.gridy = 0;
+		leftButtonsPanel.add(showContours, l);
+		
+		//showContours.setMinimumSize(new Dimension(124,29))
+		
+		hideContours = new JButton("Hide Contours");
+		hideContours.addActionListener(this);
+		hideContours.setActionCommand("hideContours");
+		hideContours.setToolTipText("Hide All Contours");
+		l.weightx = 0;
+        l.gridx = 0;
+        l.gridy = 1;
+		leftButtonsPanel.add(hideContours, l);
+		
+		showLandmarks = new JButton("Show Landmarks");
+		showLandmarks.addActionListener(this);
+		showLandmarks.setActionCommand("showLandmarks");
+		showLandmarks.setToolTipText("Show All Landmarks");
+		l.weightx = 0;
+        l.gridx = 1;
+        l.gridy = 0;
+		leftButtonsPanel.add(showLandmarks, l);
+		
+		hideLandmarks = new JButton("Hide Landmarks");
+		hideLandmarks.addActionListener(this);
+		hideLandmarks.setActionCommand("hideLandmarks");
+		hideLandmarks.setToolTipText("Hide All Landmarks");
+		l.weightx = 0;
+        l.gridx = 1;
+        l.gridy = 1;
+		leftButtonsPanel.add(hideLandmarks, l);
+		
+		c.weightx = 0;
+		c.gridwidth = 3;
+        c.gridx = 0;
+        c.gridy = 3;
+		this.panel.add(leftButtonsPanel,c); //adds left buttons panel to super panel
 	}
 	
 	/**
 	 * Sets up the play button
 	 */
-	public void setUp()
-	{
-		playButton = new JButton();
-        playButton.addActionListener(this);
-        playButton.setPreferredSize(new Dimension(50, 20));
-        playButton.setBorderPainted(true);
-		playButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-		changeButtonState();
-		
-		this.panel.add(playButton);
-	}
+//	public void setUp()
+//	{
+//		playButton = new JButton();
+//        playButton.addActionListener(this);
+//        playButton.setPreferredSize(new Dimension(50, 20));
+//        playButton.setBorderPainted(true);
+//		playButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+//		changeButtonState();
+//		
+//		this.panel.add(playButton);
+//	}
+	
+	/**
+	 * sets up left panel side buttons
+	 **/
+	
+	
 	
 	/** -----------------------------------------------------------------------
 	 *  mode ToogleButton set up
@@ -110,7 +230,7 @@ public class GridControlView extends View implements ChangeListener {
 	 *  sets select mode
 	 *  @author KulW
 	 */
-	public void modeToggleButton(){
+/*	public void modeToggleButton(){
 		Mode.setMode(Mode.selectMode()); //set Mode
 		
 		JPanel modePanel = new JPanel();
@@ -128,7 +248,7 @@ public class GridControlView extends View implements ChangeListener {
 		modePanel.add(landMark);
 		
 		this.panel.add(modePanel);
-	} 
+	} */
 	
 
 	
@@ -220,7 +340,42 @@ public class GridControlView extends View implements ChangeListener {
         	new Toast(Mode.modeToast());
         		
         }
-        
+        else if(actionCommand.equals("hideContours")){ //megan
+        	if (getImageModel().getContours() == null || getImageModel().getContours()
+					.size() == 0) {
+				JOptionPane.showMessageDialog(imageContourPanel,
+                "There are no Contours to hide.");
+			} else {
+				getImageModel().hideAllContours();
+        	
+        }}
+        else if(actionCommand.equals("showContours")){ //megan
+        	if (getImageModel().getContours() == null || getImageModel().getContours()
+					.size() == 0) {
+				JOptionPane.showMessageDialog(imageContourPanel,
+                "There are no Contours to show.");
+			} else {
+				getImageModel().showAllContours();
+        	
+        }}
+        else if(actionCommand.equals("hideLandmarks")){ //megan
+        	if (getImageModel().getLandmarks() == null || getImageModel().getLandmarks()
+					.size() == 0) {
+				JOptionPane.showMessageDialog(imageContourPanel,
+                "There are no Landmarks to hide.");
+			} else {
+				getImageModel().hideAllLandmarks();
+        	
+        }}
+        else if(actionCommand.equals("showLandmarks")){ //megan
+        	if (getImageModel().getLandmarks() == null || getImageModel().getLandmarks()
+					.size() == 0) {
+				JOptionPane.showMessageDialog(imageContourPanel,
+                "There are no Landmarks to show.");
+			} else {
+				getImageModel().showAllLandmarks();
+        	
+        }}
         if(getImageModel().getSelectedContour() != null){
         	getImageModel().setSelectedContour(null);
         }
