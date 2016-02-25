@@ -61,6 +61,8 @@ public class GridControlView extends View implements ChangeListener {
 	protected JButton hideContours;
 	protected JButton showLandmarks;
 	protected JButton hideLandmarks;
+	protected JButton hideSliceLines;
+	protected JButton showSliceLines;
 	
 	
 	
@@ -192,6 +194,24 @@ public class GridControlView extends View implements ChangeListener {
         l.gridx = 1;
         l.gridy = 1;
 		leftButtonsPanel.add(hideLandmarks, l);
+		
+		hideSliceLines = new JButton("Hide Slice Lines");
+		hideSliceLines.addActionListener(this);
+		hideSliceLines.setActionCommand("hideSliceLines");
+		hideSliceLines.setToolTipText("Hide Slice Lines");
+		l.weightx = 0;
+        l.gridx = 1;
+        l.gridy = 2;
+		leftButtonsPanel.add(hideSliceLines, l);
+		
+		showSliceLines = new JButton("Show Slice Lines");
+		showSliceLines.addActionListener(this);
+		showSliceLines.setActionCommand("showSliceLines");
+		showSliceLines.setToolTipText("Show Slice Lines");
+		l.weightx = 0;
+        l.gridx = 0;
+        l.gridy = 2;
+		leftButtonsPanel.add(showSliceLines, l);
 		
 		c.weightx = 0;
 		c.gridwidth = 3;
@@ -375,7 +395,12 @@ public class GridControlView extends View implements ChangeListener {
 			} else {
 				getImageModel().showAllLandmarks();
         	
-        }}
+        }} else if(actionCommand.equals("hideSliceLines")){ //brad
+        	getImageModel().hideSliceLines();
+        }
+        else if(actionCommand.equals("showSliceLines")){ //brad
+        	getImageModel().showSliceLines();
+        }
         if(getImageModel().getSelectedContour() != null){
         	getImageModel().setSelectedContour(null);
         }

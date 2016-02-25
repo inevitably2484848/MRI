@@ -1,6 +1,20 @@
 package edu.auburn.cardiomri.gui.views;
 
+import java.awt.Shape;
+import java.io.IOException;
+import java.util.Vector;
+
 import javax.swing.JSplitPane;
+
+import com.pixelmed.dicom.AttributeList;
+import com.pixelmed.dicom.DicomException;
+import com.pixelmed.dicom.GeometryOfSliceFromAttributeList;
+import com.pixelmed.geometry.GeometryOfSlice;
+import com.pixelmed.geometry.LocalizerPoster;
+import com.pixelmed.geometry.LocalizerPosterFactory;
+
+import edu.auburn.cardiomri.datastructure.DICOMImage;
+import edu.auburn.cardiomri.gui.models.ImageModel;
 
 /** This class creates the layout for main image panel, and the right most column of panels in the workspace view
  * 		Included are the 2 chamber and 4 chamber image views, and the image contour panel
@@ -32,19 +46,11 @@ public class RightPanel extends View {
 	public RightPanel(ImageView mainImage, ImageView twoChamber, ImageView fourChamber, Toast contourControl)
 	{
 		super();
-		mainImage.setTwoChamberView(twoChamber);
-		mainImage.setFourChamberView(fourChamber);
-		
-		twoChamber.setMainImageView(mainImage);
-		twoChamber.setFourChamberView(fourChamber);
-		
-		fourChamber.setMainImageView(mainImage);
-		fourChamber.setTwoChamberView(twoChamber);
-		
 		this.mainImageView = mainImage;
 		this.twoChamberView = twoChamber;
 		this.fourChamberView = fourChamber;
 		this.contourControl = contourControl;
+		addSliceLines(this.mainImageView.getImageModel(), this.twoChamberView.getImageModel(), this.fourChamberView.getImageModel());
 		SetupPanel();
 	}
 	
@@ -57,6 +63,7 @@ public class RightPanel extends View {
 	 */
 	private void SetupPanel()
 	{
+		
     	JSplitPane smallImagesPane = new JSplitPane(
 	            JSplitPane.VERTICAL_SPLIT, true, this.twoChamberView.getPanel(), this.fourChamberView.getPanel());
   	
@@ -77,4 +84,65 @@ public class RightPanel extends View {
 	    this.panel.add(imagePanes);
 	}
 	
+	private void addSliceLines(ImageModel mainImageModel, ImageModel twoChamberModel, ImageModel fourChamberModel) {
+		DICOMImage mainImage = mainImageModel.getImage();
+		DICOMImage twoChamberImage = twoChamberModel.getImage();
+		DICOMImage fourChamberImage = fourChamberModel.getImage();
+		
+			mainImageModel.setTwoChamberSliceLines(getSliceLines(twoChamberImage, mainImage));
+			mainImageModel.setFourChamberSliceLines(getSliceLines(fourChamberImage, mainImage));
+
+			twoChamberModel.setMainSliceLines(getSliceLines(mainImage, twoChamberImage));
+			twoChamberModel.setFourChamberSliceLines(getSliceLines(fourChamberImage, twoChamberImage));
+
+			fourChamberModel.setMainSliceLines(getSliceLines(mainImage, fourChamberImage));
+			fourChamberModel.setTwoChamberSliceLines(getSliceLines(twoChamberImage, fourChamberImage));
+    	
+	}
+
+	private Vector<Shape> getSliceLines(DICOMImage mainImage, DICOMImage secondImage) {
+		Vector<Shape> intersectionShapes = findIntersection(mainImage, secondImage);
+		return intersectionShapes;
+	}
+
+	private Vector<Shape> findIntersection(DICOMImage postImage, DICOMImage localizerImage) {
+		AttributeList localizerAttributeList = new AttributeList();
+		try {
+			localizerAttributeList.read(localizerImage.getRawFile());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (DicomException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		AttributeList postImageAttributeList = new AttributeList();
+		try {
+			postImageAttributeList.read(postImage.getRawFile());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (DicomException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		GeometryOfSlice localizerGeometry = null;
+		try {
+			localizerGeometry = new GeometryOfSliceFromAttributeList(localizerAttributeList);
+		} catch (DicomException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		GeometryOfSlice postImageGeometry = null;
+		try {
+			postImageGeometry = new GeometryOfSliceFromAttributeList(postImageAttributeList);
+		} catch (DicomException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		LocalizerPoster localizerPoster = LocalizerPosterFactory.getLocalizerPoster(false,false);
+		localizerPoster.setLocalizerGeometry(localizerGeometry);
+		Vector<Shape> shapes = localizerPoster.getOutlineOnLocalizerForThisGeometry(postImageGeometry);
+		return shapes;
+	}
 }
