@@ -1,5 +1,6 @@
 package edu.auburn.cardiomri.gui.views;
 
+import java.awt.Cursor;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -78,6 +79,7 @@ public class WorkspaceView extends View {
     public void startState() {
     	this.disposeFrame();
         this.createFrame();
+        
 
         StartModel startModel = new StartModel();
         StartView startView = new StartView();
@@ -88,6 +90,7 @@ public class WorkspaceView extends View {
         this.appFrame.add(startView.getPanel());
         appFrame.setIconImage(new ImageIcon("res/CardiacMRI_icon.png").getImage());
         appFrame.setVisible(true);
+       
     }
     
     public void groupSelectionState() {
@@ -210,6 +213,7 @@ public class WorkspaceView extends View {
     public void setAppFrame(JFrame f) {
         this.appFrame = f;
     }
+    
 
     /**
      * Creates the main JFrame with the appropriate title. 

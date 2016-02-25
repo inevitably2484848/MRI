@@ -2,6 +2,9 @@ package edu.auburn.cardiomri.util;
 
 import edu.auburn.cardiomri.gui.views.RightPanel;
 import edu.auburn.cardiomri.gui.views.ModeView;
+
+import java.awt.Cursor;
+
 import edu.auburn.cardiomri.datastructure.Landmark.Type;
 
 /**

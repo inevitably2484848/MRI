@@ -9,11 +9,12 @@ import java.awt.GridBagLayout;
 
 /** This class creates the JLabel indicating which mode the user is in. 
  * This JLabel is added to the RightPanel.
+ * Originally the Toast class. Refactored on 2/22/2016 into ModeView.
  * @author Shannon Lavender and Aaron Fregeau
  */
 
 public class ModeView extends View{
-	
+	 
 	public JPanel modePanel;
 	private JLabel modeLabelString;
 	private Color bgColor = new Color(145,235,115);
@@ -44,13 +45,19 @@ public class ModeView extends View{
       
 	}   
 	
+	/** Sets the message in the mode label */
 	public void setMessage(String mode) {
 		modeLabelString.setText(mode);
 		
 	}
 	
+	/** Sets the label in the mode label with a second line of qualifier text 
+	 * 	Uses HTML to avoid needing multiple JLabels
+	 * 
+	 * */
+	
 	public void setMessage(String mode, String qualifier) {
-		modeLabelString.setText("<html>" + mode + "<br>" + qualifier + "</html>");
+		modeLabelString.setText("<html>" + mode + "<br><center>" + qualifier + "</html>"); 
 		
 	}
 	

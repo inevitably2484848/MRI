@@ -1,32 +1,54 @@
 package edu.auburn.cardiomri.gui.views;
 
+import java.awt.Cursor;
+
 import javax.swing.JSplitPane;
 
 /** This class creates the layout for main image panel, and the right most column of panels in the workspace view
  * 		Included are the 2 chamber and 4 chamber image views, and the image contour panel
- * 
+ * 		Further functionality implemented on 2/25/2016 by Aaron Fregeau
  * @author Ben Gustafson
+ * @author Aaron Fregeau 
  */
 public class RightPanel extends View {
-	
-	protected ImageView  mainImageView, twoChamberView, fourChamberView;
+
+	protected static ImageView  mainImageView, twoChamberView, fourChamberView;
 	protected static ModeView contourControl = null;
+	protected static Cursor crossHair = Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR);
+	protected static Cursor defaultCursor = Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR);
 	
-	//contourControl a public static and inside Mode access RightPanel.contourControl.accessthepanel.setText(text)
 	
+	
+	// changing the mode based on a single mode string
 	public static void changeMode(String mode) {
 		if (contourControl != null) {
-		contourControl.setMessage(mode);
+			cursorChange(mode);
+			contourControl.setMessage(mode);
 		}
 	}
 	
-	
+	// changes the mode if a qualifier has been passed in
 	public static void changeMode(String mode, String qualifier) {
 		if (contourControl != null) {
-		contourControl.setMessage(mode, qualifier);
+			cursorChange(mode);
+			contourControl.setMessage(mode, qualifier);
+		
 		}
 	}
 	
+	// Changes the cursor to crosshair or back to default based on the mode
+	private static void cursorChange(String mode) {
+		if (mode.equals("LANDMARK MODE")) {
+			mainImageView.setCursor(crossHair);
+	    	twoChamberView.setCursor(crossHair);
+	    	fourChamberView.setCursor(crossHair);
+			}
+		else {
+			mainImageView.setCursor(defaultCursor);
+			twoChamberView.setCursor(defaultCursor);
+			fourChamberView.setCursor(defaultCursor);
+		}
+	}
 	/**
 	 * Takes all needed Views for the main image panel, and the right most column of panels in the workspace view
 	 * 

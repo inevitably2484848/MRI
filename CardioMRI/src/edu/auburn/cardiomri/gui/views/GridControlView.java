@@ -1,6 +1,7 @@
 package edu.auburn.cardiomri.gui.views;
 
 import java.awt.Component;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
