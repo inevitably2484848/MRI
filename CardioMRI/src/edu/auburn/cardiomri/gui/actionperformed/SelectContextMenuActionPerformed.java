@@ -11,7 +11,7 @@ import edu.auburn.cardiomri.datastructure.TensionPoint;
 import edu.auburn.cardiomri.gui.models.ImageModel;
 import edu.auburn.cardiomri.gui.models.Model;
 import edu.auburn.cardiomri.gui.views.ImageView;
-import edu.auburn.cardiomri.gui.views.Toast;
+import edu.auburn.cardiomri.gui.views.ModeView;
 import edu.auburn.cardiomri.gui.views.View;
 import edu.auburn.cardiomri.popupmenu.view.ContourTypeMenu;
 import edu.auburn.cardiomri.popupmenu.view.SelectContextMenu;

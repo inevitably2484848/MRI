@@ -1,6 +1,7 @@
 package edu.auburn.cardiomri.gui.views;
 
 import java.awt.Component;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -340,6 +341,7 @@ public class GridControlView extends View implements ChangeListener {
 				contour.setSelected(true);
 				cntrPM.setLocation();
 				cntrPM.getPopup();
+				
 				Mode.setMode(Mode.contourMode());
 			}
         }
@@ -357,7 +359,7 @@ public class GridControlView extends View implements ChangeListener {
         		
         		Mode.setMode(Mode.landmarkMode());
         	}
-        	new Toast(Mode.modeToast());
+        	new ModeView(Mode.modeChange());
         		
         }
         else if(actionCommand.equals("hideContours")){ //megan
@@ -404,6 +406,7 @@ public class GridControlView extends View implements ChangeListener {
         if(getImageModel().getSelectedContour() != null){
         	getImageModel().setSelectedContour(null);
         }
+        
 
     } //*************************************************************************
     

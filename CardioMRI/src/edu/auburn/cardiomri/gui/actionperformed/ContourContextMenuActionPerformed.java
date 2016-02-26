@@ -7,7 +7,7 @@ import javax.swing.JPopupMenu;
 
 import edu.auburn.cardiomri.gui.models.ImageModel;
 import edu.auburn.cardiomri.gui.views.GridControlView;
-import edu.auburn.cardiomri.gui.views.Toast;
+import edu.auburn.cardiomri.gui.views.ModeView;
 import edu.auburn.cardiomri.popupmenu.view.ContourContextMenu;
 import edu.auburn.cardiomri.util.Mode;
 

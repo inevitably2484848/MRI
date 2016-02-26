@@ -1,5 +1,6 @@
 package edu.auburn.cardiomri.gui.views;
 
+import java.awt.Cursor;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.io.File;
@@ -25,7 +26,8 @@ import edu.auburn.cardiomri.util.StudyUtilities;
 /**
  * 
  * This view is the first view of the project. A study or a single image
- *  will be selected from the fileChooser
+ *  will be selected from the fileChooser. 
+ *	
  *
  */
 public class StartView extends View {
@@ -134,36 +136,26 @@ public class StartView extends View {
      */
     public void createNewStudy() {
     	
-        
+   
         
         fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 
- 
         int returnVal = fileChooser.showOpenDialog(this.panel);
 
-
-
-    	
         if (returnVal == JFileChooser.APPROVE_OPTION) {
-            
-            
-        	
+                    	
             String directory = fileChooser.getSelectedFile().getAbsolutePath();
             Path path = Paths.get(directory);
 
-
+            setCursorWait();
+            
             DICOMFileTreeWalker fileTreeWalker = new DICOMFileTreeWalker();
             
             Study study = fileTreeWalker.addFileTreeToStudy(path, new Study());
+
+            setCursorDefault();
             
             this.getStartModel().setStudy(study);
-            
-            
-            
-
-
-            //loading.done();   
-            
             
         } else {
             // System.out.println("FileChooser : Canceled choosing directory");
@@ -200,5 +192,16 @@ public class StartView extends View {
     {
     	return (StartModel) this.model;
     }
+    
+    //Sets the cursor to a waiting cursor
+    private void setCursorWait() {
+    	this.panel.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));	
+    }
+    
+    //Sets the cursor to the default pointer
+    private void setCursorDefault() {
+    	this.panel.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+    }
+    
     
 }
