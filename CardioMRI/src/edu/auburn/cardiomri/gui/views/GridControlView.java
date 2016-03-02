@@ -174,8 +174,8 @@ public class GridControlView extends View implements ChangeListener {
 		hideContours.setActionCommand("hideContours");
 		hideContours.setToolTipText("Hide All Contours");
 		l.weightx = 0;
-        l.gridx = 0;
-        l.gridy = 1;
+        l.gridx = 1;
+        l.gridy = 0;
 		leftButtonsPanel.add(hideContours, l);
 		
 		showLandmarks = new JButton("Show Landmarks");
@@ -183,8 +183,8 @@ public class GridControlView extends View implements ChangeListener {
 		showLandmarks.setActionCommand("showLandmarks");
 		showLandmarks.setToolTipText("Show All Landmarks");
 		l.weightx = 0;
-        l.gridx = 1;
-        l.gridy = 0;
+        l.gridx = 0;
+        l.gridy = 1;
 		leftButtonsPanel.add(showLandmarks, l);
 		
 		hideLandmarks = new JButton("Hide Landmarks");
