@@ -1,26 +1,54 @@
 package edu.auburn.cardiomri.gui.views;
 
+import java.awt.Cursor;
+
 import javax.swing.JSplitPane;
 
 /** This class creates the layout for main image panel, and the right most column of panels in the workspace view
  * 		Included are the 2 chamber and 4 chamber image views, and the image contour panel
- * 
+ * 		Further functionality implemented on 2/25/2016 by Aaron Fregeau
  * @author Ben Gustafson
+ * @author Aaron Fregeau 
  */
 public class RightPanel extends View {
+
+	protected static ImageView  mainImageView, twoChamberView, fourChamberView;
+	protected static ModeView contourControl = null;
+	protected static Cursor crossHair = Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR);
+	protected static Cursor defaultCursor = Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR);
 	
-	protected ImageView  mainImageView, twoChamberView, fourChamberView;
-	protected static Toast contourControl = null;
 	
-	//contourControl a public static and inside Mode access RightPanel.contourControl.accessthepanel.setText(text)
 	
+	// changing the mode based on a single mode string
 	public static void changeMode(String mode) {
 		if (contourControl != null) {
-		contourControl.lblToastString.setText(mode);
+			cursorChange(mode);
+			contourControl.setMessage(mode);
 		}
 	}
 	
+	// changes the mode if a qualifier has been passed in
+	public static void changeMode(String mode, String qualifier) {
+		if (contourControl != null) {
+			cursorChange(mode);
+			contourControl.setMessage(mode, qualifier);
+		
+		}
+	}
 	
+	// Changes the cursor to crosshair or back to default based on the mode
+	private static void cursorChange(String mode) {
+		if (mode.equals("LANDMARK MODE")) {
+			mainImageView.setCursor(crossHair);
+	    	twoChamberView.setCursor(crossHair);
+	    	fourChamberView.setCursor(crossHair);
+			}
+		else {
+			mainImageView.setCursor(defaultCursor);
+			twoChamberView.setCursor(defaultCursor);
+			fourChamberView.setCursor(defaultCursor);
+		}
+	}
 	/**
 	 * Takes all needed Views for the main image panel, and the right most column of panels in the workspace view
 	 * 
@@ -29,7 +57,7 @@ public class RightPanel extends View {
 	 * @param fourChamber		Image View with the four chamber group (Middle Right image)
 	 * @param contourControl    Image View for the contour control (Bottom right panel)
 	 */
-	public RightPanel(ImageView mainImage, ImageView twoChamber, ImageView fourChamber, Toast contourControl)
+	public RightPanel(ImageView mainImage, ImageView twoChamber, ImageView fourChamber, ModeView contourControl)
 	{
 		super();
 //		mainImage.setTwoChamberView(twoChamber);

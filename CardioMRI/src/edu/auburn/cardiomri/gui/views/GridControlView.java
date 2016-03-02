@@ -1,6 +1,7 @@
 package edu.auburn.cardiomri.gui.views;
 
 import java.awt.Component;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -108,6 +109,7 @@ public class GridControlView extends View implements ChangeListener {
 		JSlider framesPerSecond = new JSlider(JSlider.HORIZONTAL, 0, 20, 1); 
 		framesPerSecond.addChangeListener(this);
 		framesPerSecond.setToolTipText("Change Speed");
+		framesPerSecond.setInverted(true); // This inverts the slider so the right side is faster
 		c.weightx = 0;
 		c.gridwidth = 3;
         c.gridx = 0;
@@ -319,6 +321,7 @@ public class GridControlView extends View implements ChangeListener {
 				contour.setSelected(true);
 				cntrPM.setLocation();
 				cntrPM.getPopup();
+				
 				Mode.setMode(Mode.contourMode());
 			}
         }
@@ -336,7 +339,7 @@ public class GridControlView extends View implements ChangeListener {
         		
         		Mode.setMode(Mode.landmarkMode());
         	}
-        	new Toast(Mode.modeToast());
+        	new ModeView(Mode.modeChange());
         		
         }
         //if no contours, shows message. else, hides all contours
@@ -381,6 +384,7 @@ public class GridControlView extends View implements ChangeListener {
         if(getImageModel().getSelectedContour() != null){
         	getImageModel().setSelectedContour(null);
         }
+        
 
     } //*************************************************************************
     

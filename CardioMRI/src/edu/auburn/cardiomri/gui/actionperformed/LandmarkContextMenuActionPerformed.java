@@ -6,7 +6,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JPopupMenu;
 
 import edu.auburn.cardiomri.gui.models.ImageModel;
-import edu.auburn.cardiomri.gui.views.Toast;
+import edu.auburn.cardiomri.gui.views.ModeView;
 import edu.auburn.cardiomri.util.Mode;
 
 public class LandmarkContextMenuActionPerformed implements ActionListener{
@@ -26,7 +26,7 @@ public class LandmarkContextMenuActionPerformed implements ActionListener{
 		
 		if(action.equals("Done Adding") ||action.equals("Done Editing") ){
 			Mode.setMode(Mode.selectMode());
-			new Toast(Mode.modeToast());
+			new ModeView(Mode.modeChange());
 			menu.setVisible(false);
 			
 		}
@@ -35,7 +35,7 @@ public class LandmarkContextMenuActionPerformed implements ActionListener{
 			imageModel.deleteLandmarkFromImage(imageModel.getSelectedLandmark());
 			
 			Mode.setMode(Mode.selectMode());
-			new Toast(Mode.modeToast());
+			new ModeView(Mode.modeChange());
 			menu.setVisible(false);
 		}
 		

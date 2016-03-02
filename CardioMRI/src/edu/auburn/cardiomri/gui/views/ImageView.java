@@ -58,8 +58,6 @@ public class ImageView extends SingleImagePanel implements ActionListener,
     private Vector<Shape> orangeShapes = new Vector<Shape>();
     private Vector<Shape> blueShapes = new Vector<Shape>();
     private Vector<Shape> whiteShapes = new Vector<Shape>();
-    private Vector<Shape> twoChamberSliceLines = new Vector<Shape>();
-    private Vector<Shape> fourChamberSliceLines = new Vector<Shape>();
     
     public ContourContextMenu contourCM;// = ContourContextMenu.popupContextMenu(); //kw
     public LandmarkContextMenu landmarkCM; //LandmarkContextMenu()
@@ -115,92 +113,6 @@ public class ImageView extends SingleImagePanel implements ActionListener,
     	this.setPersistentDrawingShapes(orangeShapes);
     	this.setLocalizerShapes(whiteShapes);
     }
-
-/*	private void addSliceLines() {
-		DICOMImage mainImage = null;
-		DICOMImage twoChamberImage = null;
-		DICOMImage fourChamberImage = null;
-		
-		if(this.getMainImageView() == null && this.getTwoChamberView() != null && this.getFourChamberView() != null){
-			mainImage = getImageModel().getImage();
-			twoChamberImage = this.getTwoChamberImage();
-			fourChamberImage = this.getFourChamberImage();
-    		blueShapes.addAll(getSliceLines(twoChamberImage, mainImage));
-    		redShapes.addAll(getSliceLines(fourChamberImage, mainImage));
-    	} else if(this.getMainImageView() != null && this.getTwoChamberView() == null && this.getFourChamberView() != null){
-			mainImage = this.getMainImage();
-			twoChamberImage = getImageModel().getImage();
-			fourChamberImage = this.getFourChamberImage();
-    		orangeShapes.addAll(getSliceLines(mainImage, twoChamberImage));
-    		redShapes.addAll(getSliceLines(fourChamberImage, twoChamberImage));
-    	} else if(this.getMainImageView() != null && this.getTwoChamberView() != null && this.getFourChamberView() == null){
-			mainImage = this.getMainImage();
-			twoChamberImage = this.getTwoChamberImage();
-			fourChamberImage = getImageModel().getImage();
-    		orangeShapes.addAll(getSliceLines(mainImage, fourChamberImage));
-    		blueShapes.addAll(getSliceLines(twoChamberImage, fourChamberImage));
-    	}
-	}
-
-	private Vector<Shape> getSliceLines(DICOMImage mainImage, DICOMImage secondImage) {
-		Vector<Shape> intersectionShapes = findIntersection(mainImage, secondImage);
-		return intersectionShapes;
-	}
-	
-	private Vector<Shape> getTwoChamberSliceLines() {
-		DICOMImage mainImage = getImageModel().getImage();
-		DICOMImage twoChamberImage = this.getTwoChamberImage();
-		Vector<Shape> twoChamberShapes = findIntersection(mainImage, twoChamberImage);
-		return twoChamberShapes;
-	}
-	private Vector<Shape> getFourChamberSliceLines() {
-		DICOMImage mainImage = getImageModel().getImage();
-		DICOMImage fourChamberImage = this.getFourChamberImage();
-		Vector<Shape> fourChamberShapes = findIntersection(mainImage, fourChamberImage);
-		return fourChamberShapes;
-	}
-
-	private Vector<Shape> findIntersection(DICOMImage postImage, DICOMImage localizerImage) {
-		AttributeList localizerAttributeList = new AttributeList();
-		try {
-			localizerAttributeList.read(localizerImage.getRawFile());
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (DicomException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		AttributeList postImageAttributeList = new AttributeList();
-		try {
-			postImageAttributeList.read(postImage.getRawFile());
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (DicomException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		GeometryOfSlice localizerGeometry = null;
-		try {
-			localizerGeometry = new GeometryOfSliceFromAttributeList(localizerAttributeList);
-		} catch (DicomException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		GeometryOfSlice postImageGeometry = null;
-		try {
-			postImageGeometry = new GeometryOfSliceFromAttributeList(postImageAttributeList);
-		} catch (DicomException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		LocalizerPoster localizerPoster = LocalizerPosterFactory.getLocalizerPoster(false,false);
-		localizerPoster.setLocalizerGeometry(localizerGeometry);
-		Vector<Shape> shapes = localizerPoster.getOutlineOnLocalizerForThisGeometry(postImageGeometry);
-		return shapes;
-	}
-*/
     
     private void updateLandmarks(Vector<Landmark> landmarks) {
     	for (Landmark landmark: landmarks) {
@@ -671,41 +583,5 @@ public class ImageView extends SingleImagePanel implements ActionListener,
                     (int) ActionEvent.ACTION_PERFORMED, this.comand));
         }
     }
-
-/*	public ImageView getMainImageView() {
-		return mainImageView;
-	}
-
-	public void setMainImageView(ImageView mainImageView) {
-		this.mainImageView = mainImageView;
-	}
-
-	public ImageView getTwoChamberView() {
-		return twoChamberView;
-	}
-
-	public void setTwoChamberView(ImageView twoChamberView) {
-		this.twoChamberView = twoChamberView;
-	}
-
-	public ImageView getFourChamberView() {
-		return fourChamberView;
-	}
-
-	public void setFourChamberView(ImageView fourChamberView) {
-		this.fourChamberView = fourChamberView;
-	}
-    public DICOMImage getMainImage(){
-    	DICOMImage dImage = getMainImageView().getImageModel().getImage();
-    	return dImage;
-    }
-    public DICOMImage getTwoChamberImage(){
-    	DICOMImage dImage = getTwoChamberView().getImageModel().getImage();
-    	return dImage;
-    }
-    public DICOMImage getFourChamberImage(){
-    	DICOMImage dImage = getFourChamberView().getImageModel().getImage();
-    	return dImage;
-    }*/
     
 }
