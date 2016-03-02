@@ -474,7 +474,6 @@ public class ImageModel extends Model {
     public void addContourToImage(Contour contour) {
         this.dImage.addContour(contour);
         setSelectedContour(contour);
-        
     }
 
     

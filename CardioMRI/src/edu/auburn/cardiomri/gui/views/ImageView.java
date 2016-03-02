@@ -65,10 +65,10 @@ public class ImageView extends SingleImagePanel implements ActionListener,
     public LandmarkContextMenu landmarkCM; //LandmarkContextMenu()
     public SelectContextMenu selectCM ; //SelectContextMenu();
     
-    private ImageView mainImageView = null;
-    private ImageView twoChamberView = null;
-    private ImageView fourChamberView = null;
-    
+//    private ImageView mainImageView = null;
+//    private ImageView twoChamberView = null;
+//    private ImageView fourChamberView = null;
+//    
     
 
     
@@ -94,7 +94,7 @@ public class ImageView extends SingleImagePanel implements ActionListener,
         updateContours(getImageModel().getContours());
         updateLandmarks(getImageModel().getLandmarks());
         
-    	addSliceLines();
+    	//addSliceLines();
         
         colorShapes();
         
@@ -116,7 +116,7 @@ public class ImageView extends SingleImagePanel implements ActionListener,
     	this.setLocalizerShapes(whiteShapes);
     }
 
-	private void addSliceLines() {
+/*	private void addSliceLines() {
 		DICOMImage mainImage = null;
 		DICOMImage twoChamberImage = null;
 		DICOMImage fourChamberImage = null;
@@ -200,7 +200,7 @@ public class ImageView extends SingleImagePanel implements ActionListener,
 		Vector<Shape> shapes = localizerPoster.getOutlineOnLocalizerForThisGeometry(postImageGeometry);
 		return shapes;
 	}
-
+*/
     
     private void updateLandmarks(Vector<Landmark> landmarks) {
     	for (Landmark landmark: landmarks) {
@@ -672,7 +672,7 @@ public class ImageView extends SingleImagePanel implements ActionListener,
         }
     }
 
-	public ImageView getMainImageView() {
+/*	public ImageView getMainImageView() {
 		return mainImageView;
 	}
 
@@ -706,6 +706,6 @@ public class ImageView extends SingleImagePanel implements ActionListener,
     public DICOMImage getFourChamberImage(){
     	DICOMImage dImage = getFourChamberView().getImageModel().getImage();
     	return dImage;
-    }
+    }*/
     
 }

@@ -155,10 +155,10 @@ public class GridControlView extends View implements ChangeListener {
         JPanel leftButtonsPanel = new JPanel();
 		leftButtonsPanel.setLayout(new GridBagLayout()); //layout for left buttons
 	    GridBagConstraints l = new GridBagConstraints();
-		showContours = new JButton("Show Contours");
+		showContours = new JButton("Show All Contours");
 		showContours.addActionListener(this);
 		showContours.setActionCommand("showContours");
-		showContours.setToolTipText("Show All Contours");
+		//showContours.setToolTipText("Show All Contours");
 		l.weightx = 0;
         l.gridx = 0;
         l.gridy = 0;
@@ -166,33 +166,32 @@ public class GridControlView extends View implements ChangeListener {
 		
 		//showContours.setMinimumSize(new Dimension(124,29))
 		
-		hideContours = new JButton("Hide Contours");
+		hideContours = new JButton("Hide All Contours");
 		hideContours.addActionListener(this);
 		hideContours.setActionCommand("hideContours");
-		hideContours.setToolTipText("Hide All Contours");
+		//hideContours.setToolTipText("Hide All Contours");
 		l.weightx = 0;
         l.gridx = 0;
         l.gridy = 1;
 		leftButtonsPanel.add(hideContours, l);
 		
-		showLandmarks = new JButton("Show Landmarks");
+		showLandmarks = new JButton("Show All Landmarks");
 		showLandmarks.addActionListener(this);
 		showLandmarks.setActionCommand("showLandmarks");
-		showLandmarks.setToolTipText("Show All Landmarks");
+		//showLandmarks.setToolTipText("Show All Landmarks");
 		l.weightx = 0;
         l.gridx = 1;
         l.gridy = 0;
 		leftButtonsPanel.add(showLandmarks, l);
 		
-		hideLandmarks = new JButton("Hide Landmarks");
+		hideLandmarks = new JButton("Hide All Landmarks");
 		hideLandmarks.addActionListener(this);
 		hideLandmarks.setActionCommand("hideLandmarks");
-		hideLandmarks.setToolTipText("Hide All Landmarks");
+		//hideLandmarks.setToolTipText("Hide All Landmarks");
 		l.weightx = 0;
         l.gridx = 1;
         l.gridy = 1;
 		leftButtonsPanel.add(hideLandmarks, l);
-		
 		c.weightx = 0;
 		c.gridwidth = 3;
         c.gridx = 0;
@@ -340,6 +339,7 @@ public class GridControlView extends View implements ChangeListener {
         	new Toast(Mode.modeToast());
         		
         }
+        //if no contours, shows message. else, hides all contours
         else if(actionCommand.equals("hideContours")){ //megan
         	if (getImageModel().getContours() == null || getImageModel().getContours()
 					.size() == 0) {
@@ -349,15 +349,16 @@ public class GridControlView extends View implements ChangeListener {
 				getImageModel().hideAllContours();
         	
         }}
+        //if no contours shows message, else shows all contours. if all contours are shown does nothing.
         else if(actionCommand.equals("showContours")){ //megan
-        	if (getImageModel().getContours() == null || getImageModel().getContours()
-					.size() == 0) {
+        	if (getImageModel().getContours() == null || getImageModel().getContours().size() == 0) {
 				JOptionPane.showMessageDialog(imageContourPanel,
                 "There are no Contours to show.");
 			} else {
 				getImageModel().showAllContours();
         	
         }}
+        //if no landmarks, shows message. else, hides all landmarks
         else if(actionCommand.equals("hideLandmarks")){ //megan
         	if (getImageModel().getLandmarks() == null || getImageModel().getLandmarks()
 					.size() == 0) {
@@ -367,6 +368,7 @@ public class GridControlView extends View implements ChangeListener {
 				getImageModel().hideAllLandmarks();
         	
         }}
+        //if no landmarks shows message, else shows all landmarks. if all landmarks are shown does nothing
         else if(actionCommand.equals("showLandmarks")){ //megan
         	if (getImageModel().getLandmarks() == null || getImageModel().getLandmarks()
 					.size() == 0) {
