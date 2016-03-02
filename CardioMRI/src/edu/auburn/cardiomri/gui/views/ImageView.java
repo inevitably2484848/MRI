@@ -116,6 +116,7 @@ public class ImageView extends SingleImagePanel implements ActionListener,
     	this.setPersistentDrawingShapes(orangeShapes);
     	this.setLocalizerShapes(whiteShapes);
     }
+
     
     private void updateLandmarks(Vector<Landmark> landmarks) {
     	for (Landmark landmark: landmarks) {

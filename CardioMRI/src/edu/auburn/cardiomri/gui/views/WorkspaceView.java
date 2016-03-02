@@ -416,8 +416,8 @@ public class WorkspaceView extends View {
         contours.add(addMenuItem("Delete Contour",menuBarContour));
         contours.add(addMenuItem("Delete All Contours",menuBarContour));
         contours.add(addMenuItem("Hide Contour",menuBarContour));
-        contours.add(addMenuItem("Show Contours",menuBarContour));
-        contours.add(addMenuItem("Hide Contours",menuBarContour));
+        contours.add(addMenuItem("Show All Contours",menuBarContour));
+        contours.add(addMenuItem("Hide All Contours",menuBarContour));
         
         //------ Landmark -----------------------------------------------------
         MenuBarContourActionPerformed menuBarLandmark = 
@@ -427,7 +427,7 @@ public class WorkspaceView extends View {
         lmMenu.add(addMenuItem("Delete All Landmarks", menuBarLandmark));
         lmMenu.add(addMenuItem("Hide Landmark", menuBarLandmark));
         lmMenu.add(addMenuItem("Hide All Landmarks", menuBarLandmark));
-        lmMenu.add(addMenuItem("Un-Hide All Landmarks", menuBarLandmark));
+        lmMenu.add(addMenuItem("Show All Landmarks", menuBarLandmark));
 
         // ----- Rotate -------------------------------------------------------
         JMenu rotate = new JMenu("Rotate");

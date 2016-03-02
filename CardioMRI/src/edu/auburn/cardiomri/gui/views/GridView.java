@@ -7,6 +7,8 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.util.Observable;
 import java.util.StringTokenizer;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
@@ -17,6 +19,7 @@ import javax.swing.KeyStroke;
 import edu.auburn.cardiomri.datastructure.Group;
 import edu.auburn.cardiomri.datastructure.Slice;
 import edu.auburn.cardiomri.gui.models.GridModel;
+import edu.auburn.cardiomri.gui.models.ImageModel;
 
 /**
  * The gird view seen in top left in the main workspace view, creates a lay out of slices and time frames
@@ -28,6 +31,7 @@ import edu.auburn.cardiomri.gui.models.GridModel;
 public class GridView extends View {
 	
 	// s= slice, t= time, i= group_index
+	private boolean contour = false;
     private int s = 0;
     private int t = 0;
     private int i = 0;
@@ -37,7 +41,11 @@ public class GridView extends View {
     private static final Color END_DIASTOLE = Color.ORANGE;//Completely full
     private static final Color SELECTED_COLOR = Color.GREEN;
     private static final Color NORMAL_COLOR = Color.GRAY;
+    private static final Color HAS_OBJECTS = Color.RED;
     private JButton[][] buttons;
+    //ArrayList<ArrayList<Integer>> contourListList = new ArrayList<ArrayList<Integer>>();
+    ArrayList<Integer> contourList = new ArrayList<Integer>();
+    //Iterator<ArrayList<Integer>> iterator = contourListList.iterator();
 
     /**
      * Makes sure it is a button on the grid, then takes the x,y coordinates from the action command
@@ -76,26 +84,50 @@ public class GridView extends View {
      * @note this is called from gridModel right after the setCurrentImage is called in grid model
      */
 	public void update(Observable obs, Object obj) {
-        if (obj.getClass() == int[].class) {
-
+			
+			if (obj.getClass() == int[].class) {
             // first, set current back to regular
             this.buttons[this.t][this.s].setBorderPainted(true);
             this.buttons[this.t][this.s].setOpaque(false);
             this.buttons[this.t][this.s].setBackground(NORMAL_COLOR);
-            if(getGridModel().getGroup().getEd_index() == this.t )
-            {
+			}
+            if(getGridModel().getGroup().getEd_index() == this.t ){
             	this.buttons[this.t][this.s].setBackground(END_DIASTOLE);
             	this.buttons[this.t][this.s].setOpaque(true);
 	    		this.buttons[this.t][this.s].setBorderPainted(false);
             }
-            if(getGridModel().getGroup().getEs_index() == this.t)
-            {
+            if(getGridModel().getGroup().getEs_index() == this.t){
             	this.buttons[this.t][this.s].setBackground(END_SYSTOLE);
             	this.buttons[this.t][this.s].setOpaque(true);
 	    		this.buttons[this.t][this.s].setBorderPainted(false);
             }
             
-
+//			if(contour == true){
+//				int time;
+//				int slice;
+//				int k = 0;
+//				System.out.print(contourList);
+//				while(k < contourList.size()){
+//					time = contourList.get(k);
+//					slice = contourList.get(k+1);
+//					System.out.println(time);
+//				    System.out.println(slice);
+//				    if(time == this.t && slice == this.s){
+//				    	this.buttons[this.t][this.s].setBackground(HAS_OBJECTS);
+//			           	this.buttons[this.t][this.s].setOpaque(true);
+//			           	this.buttons[this.t][this.s].setBorderPainted(false);
+//				}
+//				    k=k+2;
+//			}
+//			}
+		
+//            if(contour == true){
+//            	this.buttons[this.t][this.s].setBackground(HAS_OBJECTS);
+//            	this.buttons[this.t][this.s].setOpaque(true);
+//	    		this.buttons[this.t][this.s].setBorderPainted(false);
+//            }
+			
+            
             int[] indices = (int[]) obj;
             this.s = indices[0];
             this.t = indices[1];
@@ -103,12 +135,32 @@ public class GridView extends View {
             
             // Then set new button
             this.buttons[this.t][this.s].setBackground(SELECTED_COLOR);
-            this.buttons[this.t][this.s].setOpaque(true);
-            this.buttons[this.t][this.s].setBorderPainted(false);
+           	this.buttons[this.t][this.s].setOpaque(true);
+           	this.buttons[this.t][this.s].setBorderPainted(false);
+           	
+//          	if (hasContour()){
+//           		contour = true;
+////           		//contourList.add(this.t);
+////           		//contourList.add(this.s);
+////           		//contourListList.add(contourList);
+//           	}
+//           	else{
+//           		contour = false;
+//           	}
 
             this.panel.revalidate();
-        }
+              
+
     }
+	
+//	public boolean hasContour(){
+//	 if(getImageModel().getContours().size()>0){
+// 		return true;
+//	 }
+//	 else{
+//		 return false;
+//	 }
+//	}
 
     /**
      * Sets up the class' array of JButton objects and ensures that it
@@ -260,7 +312,6 @@ public class GridView extends View {
         super();
         this.panel.setFocusable(true);
         setKeyBindings();
-
         this.s = 0;
         this.t = 0;
         this.i = 0;
@@ -423,4 +474,8 @@ public class GridView extends View {
             getGridModel().incrementSliceIndex();
         }
     }
+    
+	public static ImageModel getImageModel(){
+		return ImageView.getImageModelStatic();
+	}
 }

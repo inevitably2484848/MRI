@@ -28,6 +28,7 @@ public class GridModel extends Model {
 
         int[] indices = { this.s, this.t, this.i };
 
+        
         setChanged();
         notifyObservers(indices);
     }
