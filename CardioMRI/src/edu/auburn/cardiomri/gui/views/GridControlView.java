@@ -109,6 +109,7 @@ public class GridControlView extends View implements ChangeListener {
 		JSlider framesPerSecond = new JSlider(JSlider.HORIZONTAL, 0, 20, 1); 
 		framesPerSecond.addChangeListener(this);
 		framesPerSecond.setToolTipText("Change Speed");
+		framesPerSecond.setInverted(true); // This inverts the slider so the right side is faster
 		c.weightx = 0;
 		c.gridwidth = 3;
         c.gridx = 0;
