@@ -365,6 +365,8 @@ public class GridControlView extends View implements ChangeListener {
         }
         //if no contours, shows message. else, hides all contours
         else if(actionCommand.equals("hideContours")){ //megan
+        	depressToggles();
+        	
         	if (getImageModel().getContours() == null || getImageModel().getContours()
 					.size() == 0) {
 				JOptionPane.showMessageDialog(imageContourPanel,
@@ -375,6 +377,8 @@ public class GridControlView extends View implements ChangeListener {
         }}
         //if no contours shows message, else shows all contours. if all contours are shown does nothing.
         else if(actionCommand.equals("showContours")){ //megan
+        	depressToggles();
+        	
         	if (getImageModel().getContours() == null || getImageModel().getContours().size() == 0) {
 				JOptionPane.showMessageDialog(imageContourPanel,
                 "There are no Contours to show.");
@@ -384,6 +388,9 @@ public class GridControlView extends View implements ChangeListener {
         }}
         //if no landmarks, shows message. else, hides all landmarks
         else if(actionCommand.equals("hideLandmarks")){ //megan
+        	
+        	depressToggles();
+        	
         	if (getImageModel().getLandmarks() == null || getImageModel().getLandmarks()
 					.size() == 0) {
 				JOptionPane.showMessageDialog(imageContourPanel,
@@ -394,6 +401,8 @@ public class GridControlView extends View implements ChangeListener {
         }}
         //if no landmarks shows message, else shows all landmarks. if all landmarks are shown does nothing
         else if(actionCommand.equals("showLandmarks")){ //megan
+        	depressToggles();
+        	
         	if (getImageModel().getLandmarks() == null || getImageModel().getLandmarks()
 					.size() == 0) {
 				JOptionPane.showMessageDialog(imageContourPanel,
@@ -402,9 +411,11 @@ public class GridControlView extends View implements ChangeListener {
 				getImageModel().showAllLandmarks();
         	
         }} else if(actionCommand.equals("hideSliceLines")){ //brad
+        	depressToggles();
         	getImageModel().hideSliceLines();
         }
         else if(actionCommand.equals("showSliceLines")){ //brad
+        	depressToggles();
         	getImageModel().showSliceLines();
         }
         if(getImageModel().getSelectedContour() != null){
@@ -420,7 +431,8 @@ public class GridControlView extends View implements ChangeListener {
      * toggle button
      ***************************************************************************/
     public static void depressToggles(){
-    	if(getImageModel().getSelectedContour() != null){
+    	if(getImageModel().getSelectedContour() != null && getImageModel().getSelectedControlPoint() != null){
+  
 	    	getImageModel().getSelectedControlPoint().isSelected(false);
 	    	getImageModel().setSelectedControlPoint(null);
     	}
