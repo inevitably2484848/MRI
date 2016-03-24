@@ -9,6 +9,7 @@ import edu.auburn.cardiomri.datastructure.DICOMImage;
 import edu.auburn.cardiomri.datastructure.Landmark;
 import edu.auburn.cardiomri.datastructure.Point;
 import edu.auburn.cardiomri.datastructure.TensionPoint;
+import edu.auburn.cardiomri.gui.views.GridControlView;
 import edu.auburn.cardiomri.util.ContourCalc;
 import edu.auburn.cardiomri.util.Mode;
 import edu.auburn.cardiomri.datastructure.ControlPoint;
@@ -51,6 +52,7 @@ public class ImageModel extends Model {
         hiddenContours.clear();
 
         setChanged();
+
         notifyObservers(dImage);
     }
 

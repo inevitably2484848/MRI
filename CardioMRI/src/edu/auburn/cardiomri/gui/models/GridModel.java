@@ -1,6 +1,7 @@
 package edu.auburn.cardiomri.gui.models;
 
 import edu.auburn.cardiomri.datastructure.Group;
+import edu.auburn.cardiomri.gui.views.GridControlView;
 
 /**
  * Holds all information the Grid view needs, mainly the Group

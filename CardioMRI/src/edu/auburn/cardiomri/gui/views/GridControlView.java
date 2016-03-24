@@ -65,8 +65,8 @@ public class GridControlView extends View implements ChangeListener {
 	
 	
 	
-	protected ContourTypeMenu cntrPM = new ContourTypeMenu();
-	protected LandmarkTypeMenu lndmrkPM = new LandmarkTypeMenu();
+	protected static ContourTypeMenu cntrPM = new ContourTypeMenu();
+	protected static LandmarkTypeMenu lndmrkPM = new LandmarkTypeMenu();
 
 	
 	/**
@@ -399,13 +399,32 @@ public class GridControlView extends View implements ChangeListener {
 	    	getImageModel().setSelectedControlPoint(null);
     	}
     	if(contour.isSelected()){
+    		// Functionality slightly changed to depress the addCountour button 3/24/2016
+    		landMark.setSelected(false);
+        	lndmrkPM.setVisible(false);
     		contour.setSelected(false);
+    		Mode.setMode(Mode.selectMode());
+    		cntrPM.hidePopup();
     	}
     	else{
     		landMark.setSelected(false);
     	}
     }
     
+    /** 
+     * This was created to be used in conjunction with depressToggles() to  
+     * 
+     */
+    
+    public static void untoggleContourMode() {
+    	  
+    	landMark.setSelected(false);
+    	lndmrkPM.setVisible(false);
+		contour.setSelected(false);
+		Mode.setMode(Mode.selectMode());
+		cntrPM.hidePopup();
+    	
+    }
     
 	/**
 	 * gets Image model 

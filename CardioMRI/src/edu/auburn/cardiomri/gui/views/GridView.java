@@ -75,6 +75,8 @@ public class GridView extends View {
                 getGridModel().setCurrentImage(newSlice, newTime, i);
             }
         }
+        
+        GridControlView.depressToggles();
         this.panel.requestFocusInWindow();
     }
 
