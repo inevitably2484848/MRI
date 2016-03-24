@@ -1,5 +1,6 @@
 package edu.auburn.cardiomri.gui.models;
 
+import java.awt.Shape;
 import java.awt.event.ActionEvent;
 import java.util.List;
 import java.util.Vector;
@@ -24,8 +25,13 @@ public class ImageModel extends Model {
     protected List<Contour> hiddenContours;
     protected List<Landmark> hiddenLandmarks;
     
+    private Vector<Shape> mainSliceLines = null;
+    private Vector<Shape> twoChamberSliceLines = null;
+    private Vector<Shape> fourChamberSliceLines = null;
+    private boolean showSliceLines = false;
+    
 
-    public ImageModel() {
+	public ImageModel() {
         super();
         hiddenContours = new Vector<Contour>();
         hiddenLandmarks = new Vector<Landmark>();
@@ -649,6 +655,17 @@ public class ImageModel extends Model {
         notifyObservers(dImage);
     }
 
+    public void showSliceLines() {
+    	this.setShowSliceLines(true);
+        setChanged();
+        notifyObservers(dImage);
+    }
+    public void hideSliceLines() {
+    	this.setShowSliceLines(false);
+        setChanged();
+        notifyObservers(dImage);
+    }
+    
     /**
      * Removes the selected contour from the list of all contours.
      */
@@ -735,5 +752,35 @@ public class ImageModel extends Model {
 	
 	public void moveContour(double x, double y, Point point) {
 		selectedContour.moveContour(x, y, point);
+	}
+	public Vector<Shape> getMainSliceLines() {
+		return mainSliceLines;
+	}
+
+	public void setMainSliceLines(Vector<Shape> mainSliceLines) {
+		this.mainSliceLines = mainSliceLines;
+	}
+
+	public Vector<Shape> getTwoChamberSliceLines() {
+		return twoChamberSliceLines;
+	}
+
+	public void setTwoChamberSliceLines(Vector<Shape> twoChamberSliceLines) {
+		this.twoChamberSliceLines = twoChamberSliceLines;
+	}
+
+	public Vector<Shape> getFourChamberSliceLines() {
+		return fourChamberSliceLines;
+	}
+
+	public void setFourChamberSliceLines(Vector<Shape> fourChamberSliceLines) {
+		this.fourChamberSliceLines = fourChamberSliceLines;
+	}
+    public boolean isShowSliceLines() {
+		return showSliceLines;
+	}
+
+	public void setShowSliceLines(boolean showSliceLines) {
+		this.showSliceLines = showSliceLines;
 	}
 }

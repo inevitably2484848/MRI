@@ -62,12 +62,6 @@ public class ImageView extends SingleImagePanel implements ActionListener,
     public ContourContextMenu contourCM;// = ContourContextMenu.popupContextMenu(); //kw
     public LandmarkContextMenu landmarkCM; //LandmarkContextMenu()
     public SelectContextMenu selectCM ; //SelectContextMenu();
-    
-//    private ImageView mainImageView = null;
-//    private ImageView twoChamberView = null;
-//    private ImageView fourChamberView = null;
-//    
-    
 
     
     /**
@@ -92,8 +86,17 @@ public class ImageView extends SingleImagePanel implements ActionListener,
         updateContours(getImageModel().getContours());
         updateLandmarks(getImageModel().getLandmarks());
         
-    	//addSliceLines();
-        
+        if(imageModel.isShowSliceLines()){
+        	if(imageModel.getMainSliceLines() != null){
+        		orangeShapes.addAll(imageModel.getMainSliceLines() );
+        	}
+        	if(imageModel.getTwoChamberSliceLines() != null){
+        		blueShapes.addAll(imageModel.getTwoChamberSliceLines());
+        	}
+        	if(imageModel.getFourChamberSliceLines() != null){
+        		redShapes.addAll(imageModel.getFourChamberSliceLines());
+        	}
+        }
         colorShapes();
         
         refresh();
@@ -113,6 +116,7 @@ public class ImageView extends SingleImagePanel implements ActionListener,
     	this.setPersistentDrawingShapes(orangeShapes);
     	this.setLocalizerShapes(whiteShapes);
     }
+
     
     private void updateLandmarks(Vector<Landmark> landmarks) {
     	for (Landmark landmark: landmarks) {
