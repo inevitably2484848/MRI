@@ -418,12 +418,16 @@ public class GridControlView extends View implements ChangeListener {
         	depressToggles();
         	getImageModel().showSliceLines();
         }
-        if(getImageModel().getSelectedContour() != null){
-        	getImageModel().setSelectedContour(null);
-        }
         
+        
+        // Removed 3/25/2016 due to issues with depressToggles()
+        
+//        if(getImageModel().getSelectedContour() != null){
+//        	getImageModel().setSelectedContour(null);
+//        }
+//        
 
-    } //*************************************************************************
+    } 
     
     
     /****************************************************************************
@@ -449,21 +453,8 @@ public class GridControlView extends View implements ChangeListener {
     	}
     }
     
-    /** 
-     * This was created to be used in conjunction with depressToggles() to  
-     * 
-     */
     
-    public static void untoggleContourMode() {
-    	  
-    	landMark.setSelected(false);
-    	lndmrkPM.setVisible(false);
-		contour.setSelected(false);
-		Mode.setMode(Mode.selectMode());
-		cntrPM.hidePopup();
-    	
-    }
-    
+ 
 	/**
 	 * gets Image model 
 	 * @return
