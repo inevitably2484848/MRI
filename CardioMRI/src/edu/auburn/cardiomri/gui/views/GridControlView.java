@@ -422,10 +422,10 @@ public class GridControlView extends View implements ChangeListener {
         
         // Removed 3/25/2016 due to issues with depressToggles()
         
-//        if(getImageModel().getSelectedContour() != null){
-//        	getImageModel().setSelectedContour(null);
-//        }
-//        
+//      if(getImageModel().getSelectedContour() != null){
+//      	getImageModel().setSelectedContour(null);
+//      }
+//  
 
     } 
     

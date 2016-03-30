@@ -3,8 +3,11 @@ package edu.auburn.cardiomri.gui.views;
 import java.awt.Shape;
 import java.io.IOException;
 import java.util.Vector;
+import java.awt.Color;
 import java.awt.Cursor;
 
+import javax.swing.BorderFactory;
+import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 
 import com.pixelmed.dicom.AttributeList;
@@ -90,15 +93,23 @@ public class RightPanel extends View {
 	 */
 	private void SetupPanel()
 	{
+		//Get the panels and set borders as a legend for the slice lines
+		JPanel mainImagePanel = this.mainImageView.getPanel();
+		mainImagePanel.setBorder(BorderFactory.createLineBorder(Color.yellow, 3));
+		JPanel twoChamberPanel = this.twoChamberView.getPanel();
+		twoChamberPanel.setBorder(BorderFactory.createLineBorder(Color.red, 3));
+		JPanel fourChamberPanel = this.fourChamberView.getPanel();
+		fourChamberPanel.setBorder(BorderFactory.createLineBorder(Color.blue, 3));
 		
     	JSplitPane smallImagesPane = new JSplitPane(
-	            JSplitPane.VERTICAL_SPLIT, true, this.twoChamberView.getPanel(), this.fourChamberView.getPanel());
+	            JSplitPane.VERTICAL_SPLIT, true, twoChamberPanel, fourChamberPanel);
   	
     	JSplitPane rightSideOfWindow = new JSplitPane(
 	            JSplitPane.VERTICAL_SPLIT, true, smallImagesPane, this.contourControl.getPanel());
     	
+    	
     	JSplitPane imagePanes  = new JSplitPane(
-    			JSplitPane.HORIZONTAL_SPLIT,true, this.mainImageView.getPanel(), rightSideOfWindow);
+    			JSplitPane.HORIZONTAL_SPLIT,true, mainImagePanel, rightSideOfWindow);
 
         smallImagesPane.setResizeWeight(0.47);
         rightSideOfWindow.setResizeWeight(0.6);
