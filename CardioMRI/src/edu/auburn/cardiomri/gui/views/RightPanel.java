@@ -97,9 +97,9 @@ public class RightPanel extends View {
 		JPanel mainImagePanel = this.mainImageView.getPanel();
 		mainImagePanel.setBorder(BorderFactory.createLineBorder(Color.yellow, 3));
 		JPanel twoChamberPanel = this.twoChamberView.getPanel();
-		twoChamberPanel.setBorder(BorderFactory.createLineBorder(Color.red, 3));
+		twoChamberPanel.setBorder(BorderFactory.createLineBorder(Color.blue, 3));
 		JPanel fourChamberPanel = this.fourChamberView.getPanel();
-		fourChamberPanel.setBorder(BorderFactory.createLineBorder(Color.blue, 3));
+		fourChamberPanel.setBorder(BorderFactory.createLineBorder(Color.red, 3));
 		
     	JSplitPane smallImagesPane = new JSplitPane(
 	            JSplitPane.VERTICAL_SPLIT, true, twoChamberPanel, fourChamberPanel);
