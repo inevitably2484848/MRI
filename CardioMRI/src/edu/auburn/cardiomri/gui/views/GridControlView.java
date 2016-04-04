@@ -156,6 +156,7 @@ public class GridControlView extends View implements ChangeListener {
 		//this.panel.setLayout(new GridBagLayout());
        //GridBagConstraints c = new GridBagConstraints(); //creates grid
 
+
         JPanel leftButtonsPanel = new JPanel();
 		leftButtonsPanel.setLayout(new GridBagLayout()); //layout for left buttons
 	    GridBagConstraints l = new GridBagConstraints();
@@ -175,8 +176,8 @@ public class GridControlView extends View implements ChangeListener {
 		hideContours.setActionCommand("hideContours");
 		//hideContours.setToolTipText("Hide All Contours");
 		l.weightx = 0;
-        l.gridx = 1;
-        l.gridy = 0;
+        l.gridx = 0;
+        l.gridy = 1;
 		leftButtonsPanel.add(hideContours, l);
 		
 		showLandmarks = new JButton("Show All Landmarks");
@@ -184,8 +185,8 @@ public class GridControlView extends View implements ChangeListener {
 		showLandmarks.setActionCommand("showLandmarks");
 		//showLandmarks.setToolTipText("Show All Landmarks");
 		l.weightx = 0;
-        l.gridx = 0;
-        l.gridy = 1;
+        l.gridx = 1;
+        l.gridy = 0;
 		leftButtonsPanel.add(showLandmarks, l);
 		
 		hideLandmarks = new JButton("Hide All Landmarks");
@@ -197,29 +198,39 @@ public class GridControlView extends View implements ChangeListener {
         l.gridy = 1;
 		leftButtonsPanel.add(hideLandmarks, l);
 		
+		c.weightx = 0;
+		c.gridwidth = 3;
+        c.gridx = 0;
+        c.gridy = 3;
+        c.insets = new Insets(10,0,0,0);
+		this.panel.add(leftButtonsPanel,c); //adds left buttons panel to super panel
+		
+		JPanel sliceLinesButtons = new JPanel();
+		sliceLinesButtons.setLayout(new GridBagLayout()); //layout for left buttons
+	    GridBagConstraints s = new GridBagConstraints();
 		hideSliceLines = new JButton("Hide Slice Lines");
 		hideSliceLines.addActionListener(this);
 		hideSliceLines.setActionCommand("hideSliceLines");
 		hideSliceLines.setToolTipText("Hide Slice Lines");
-		l.weightx = 0;
-        l.gridx = 1;
-        l.gridy = 2;
-		leftButtonsPanel.add(hideSliceLines, l);
+		s.weightx = 0;
+        s.gridx = 1;
+        s.gridy = 0;
+		sliceLinesButtons.add(hideSliceLines, s);
 		
 		showSliceLines = new JButton("Show Slice Lines");
 		showSliceLines.addActionListener(this);
 		showSliceLines.setActionCommand("showSliceLines");
 		showSliceLines.setToolTipText("Show Slice Lines");
-		l.weightx = 0;
-        l.gridx = 0;
-        l.gridy = 2;
-		leftButtonsPanel.add(showSliceLines, l);
-
+		s.weightx = 0;
+        s.gridx = 0;
+        s.gridy = 0;
+		sliceLinesButtons.add(showSliceLines, s);
+		
 		c.weightx = 0;
 		c.gridwidth = 3;
         c.gridx = 0;
-        c.gridy = 3;
-		this.panel.add(leftButtonsPanel,c); //adds left buttons panel to super panel
+        c.gridy = 4;
+		this.panel.add(sliceLinesButtons,c); //adds slice lines buttons panel to super panel
 	}
 	
 	/**
