@@ -1,6 +1,7 @@
 package edu.auburn.cardiomri.gui.views;
 
 import java.awt.Color;
+
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import java.awt.Font;
