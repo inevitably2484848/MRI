@@ -82,6 +82,7 @@ public class DICOMImage implements Serializable {
     private String pixelPresentation;
     
     private File rawFile;
+    private Double scaleFactor;
 
     public String[][] getAttributeInfo() {
         ArrayList<String> names = new ArrayList<String>();
@@ -760,5 +761,16 @@ public class DICOMImage implements Serializable {
 
 	public void setRawFile(File rawFile) {
 		this.rawFile = rawFile;
+	}
+
+	public Double getScaleFactor() {
+		if(scaleFactor == null){
+			this.scaleFactor = 1.00;
+		}
+		return scaleFactor;
+	}
+
+	public void setScaleFactor(Double scaleFactor) {
+		this.scaleFactor = scaleFactor;
 	}
 }

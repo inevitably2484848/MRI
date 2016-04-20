@@ -5,9 +5,11 @@ import java.io.IOException;
 import java.util.Vector;
 import java.awt.Color;
 import java.awt.Cursor;
+import java.awt.Dimension;
 
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 
 import com.pixelmed.dicom.AttributeList;
@@ -94,11 +96,12 @@ public class RightPanel extends View {
 	private void SetupPanel()
 	{
 		//Get the panels and set borders as a legend for the slice lines
-		JPanel mainImagePanel = this.mainImageView.getPanel();
+      
+		JScrollPane mainImagePanel = this.mainImageView.getScrollPane();
 		mainImagePanel.setBorder(BorderFactory.createLineBorder(Color.yellow, 3));
-		JPanel twoChamberPanel = this.twoChamberView.getPanel();
+		JPanel twoChamberPanel = (JPanel) this.twoChamberView.getPanel();
 		twoChamberPanel.setBorder(BorderFactory.createLineBorder(Color.blue, 3));
-		JPanel fourChamberPanel = this.fourChamberView.getPanel();
+		JPanel fourChamberPanel = (JPanel) this.fourChamberView.getPanel();
 		fourChamberPanel.setBorder(BorderFactory.createLineBorder(Color.red, 3));
 		
     	JSplitPane smallImagesPane = new JSplitPane(
