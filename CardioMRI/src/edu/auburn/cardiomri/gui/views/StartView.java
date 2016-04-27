@@ -11,9 +11,14 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
+
+import com.sun.javafx.scene.paint.GradientUtils.Point;
 
 import edu.auburn.cardiomri.dataimporter.DICOM3Importer;
 import edu.auburn.cardiomri.dataimporter.DICOMFileTreeWalker;
@@ -31,6 +36,9 @@ import edu.auburn.cardiomri.util.StudyUtilities;
  *
  */
 public class StartView extends View {
+	
+	Cursor waitCursor = new Cursor(Cursor.WAIT_CURSOR);
+	Cursor defaultCursor = new Cursor(Cursor.DEFAULT_CURSOR);
 
 	protected JFileChooser fileChooser;
 	
@@ -42,7 +50,6 @@ public class StartView extends View {
 	public StartView()
 	{
 		super();
-	    
         this.panel.setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints(); //creates grid
         
@@ -119,6 +126,9 @@ public class StartView extends View {
 
         int response = fileChooser.showOpenDialog(this.panel);
         if (response == JFileChooser.APPROVE_OPTION) {
+        	
+        	setCursorWait();
+        	
             String fileName = fileChooser.getSelectedFile().getAbsolutePath();
 
             Study study = StudyUtilities.loadStudy(fileName);
@@ -136,30 +146,34 @@ public class StartView extends View {
      */
     public void createNewStudy() {
     	
-   
-        
         fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-
+        
         int returnVal = fileChooser.showOpenDialog(this.panel);
+        
+
 
         if (returnVal == JFileChooser.APPROVE_OPTION) {
-                    	
+        
+        	setCursorWait();
+        	
             String directory = fileChooser.getSelectedFile().getAbsolutePath();
+            
             Path path = Paths.get(directory);
-
-            setCursorWait();
             
             DICOMFileTreeWalker fileTreeWalker = new DICOMFileTreeWalker();
             
             Study study = fileTreeWalker.addFileTreeToStudy(path, new Study());
-
-            setCursorDefault();
             
             this.getStartModel().setStudy(study);
+
+            this.panel.repaint();
             
         } else {
             // System.out.println("FileChooser : Canceled choosing directory");
         }
+        
+        
+        
     }
 
     /**
@@ -171,19 +185,26 @@ public class StartView extends View {
     public void loadSingleDicom() throws NotInStudyException {
 
         FileFilter dicomType = new FileNameExtensionFilter("DICOM file (.dcm)","dcm");
+        
         fileChooser.addChoosableFileFilter(dicomType);
 
         int returnVal = fileChooser.showOpenDialog(this.panel);
+        
         if (returnVal == JFileChooser.APPROVE_OPTION) {
+        	
+        	setCursorWait();
+        	
             String filename = fileChooser.getSelectedFile().getPath();
 
             DICOMImage dImage = DICOM3Importer.makeDICOMImageFromFile(filename);
 
             Study study = new Study();
+            
             study.addImage(dImage);
 
             this.getStartModel().setStudy(study);
         } else {
+        	
             // System.out.println("GUIController : Cancel choosing file");
         }
     }
@@ -195,12 +216,28 @@ public class StartView extends View {
     
     //Sets the cursor to a waiting cursor
     private void setCursorWait() {
-    	this.panel.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));	
+    	
+    	// These 4 lines refresh the frame so the cursor will change on a Mac
+        // We tried dozens of ideas but this was the only thing to work
+        this.panel.setCursor(waitCursor);
+        JFrame topFrame = ((JFrame) SwingUtilities.getWindowAncestor(this.panel));
+        topFrame.setVisible(false);
+        topFrame.setVisible(true);
+        /////////////////
+        
     }
     
     //Sets the cursor to the default pointer
+    
     private void setCursorDefault() {
-    	this.panel.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+    	
+       	// These 4 lines refresh the frame so the cursor will change on a Mac
+        // We tried dozens of ideas but this was the only thing to work
+        this.panel.setCursor(defaultCursor);
+        JFrame topFrame = ((JFrame) SwingUtilities.getWindowAncestor(this.panel));
+        topFrame.setVisible(false);
+        topFrame.setVisible(true);
+        /////////////////
     }
     
     
