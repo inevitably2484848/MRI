@@ -3,6 +3,7 @@
  */
 package edu.auburn.cardiomri.gui.views;
 
+import javax.swing.JComponent;
 import javax.swing.JPanel;
 
 import edu.auburn.cardiomri.gui.models.Model;
@@ -17,7 +18,7 @@ import edu.auburn.cardiomri.gui.models.Model;
  * 
  */
 public interface ViewInterface {
-    public abstract JPanel getPanel();
+    public abstract JComponent getPanel();
 
 //    public abstract Model getModel();
 //

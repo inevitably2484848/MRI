@@ -1,6 +1,7 @@
 package edu.auburn.cardiomri.gui.views;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Rectangle;
 import java.awt.Shape;
@@ -19,8 +20,12 @@ import java.util.Observer;
 import java.util.Vector;
 
 import javax.swing.AbstractAction;
+import javax.swing.BorderFactory;
+import javax.swing.JComponent;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
+import javax.swing.ScrollPaneLayout;
 import javax.swing.SwingUtilities;
 
 import com.pixelmed.dicom.AttributeList;
@@ -49,7 +54,7 @@ import edu.auburn.cardiomri.datastructure.ControlPoint;
 public class ImageView extends SingleImagePanel implements ActionListener,
         ViewInterface, Observer, KeyListener {
     protected Model model;
-    protected JPanel imageContourPanel, panel, cPanel;
+    protected JComponent imageContourPanel, panel, cPanel;
     private static final long serialVersionUID = -6920775905498293695L;
     private boolean lmrkMode = false;
     private boolean controlPressed = false;
@@ -250,7 +255,7 @@ public class ImageView extends SingleImagePanel implements ActionListener,
     /**
      * Returns a JPanel with this ImageView as its only element
      */
-    public JPanel getPanel() {
+    public JComponent getPanel() {
         panel = new JPanel();
         panel.setSize(200, 200);
         panel.setLayout(new GridLayout(1, 1));
@@ -260,6 +265,21 @@ public class ImageView extends SingleImagePanel implements ActionListener,
         addKeyBindings(panel);
         panel.addKeyListener(this);
         return panel;
+    }
+    public JScrollPane getScrollPane() {
+        JScrollPane myJScrollPane = new JScrollPane(this,
+                JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+                JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+        Dimension panelSize = new Dimension(100,100);
+        myJScrollPane.setPreferredSize(panelSize);
+        
+        myJScrollPane.setLayout(new ScrollPaneLayout());
+        myJScrollPane.setBackground(Color.BLACK);
+        myJScrollPane.setFocusable(true);
+        addKeyBindings(myJScrollPane);
+        myJScrollPane.addKeyListener(this);
+        panel = myJScrollPane;
+        return myJScrollPane;
     }
     
 
@@ -464,6 +484,128 @@ public class ImageView extends SingleImagePanel implements ActionListener,
     }
 
     private void addKeyBindings(JPanel panel) {
+        panel.getInputMap().put(KeyStroke.getKeyStroke("LEFT"), "left");
+        panel.getActionMap().put("left", this.new ArrowKeyAction("left"));
+
+        panel.getInputMap().put(KeyStroke.getKeyStroke("RIGHT"), "right");
+        panel.getActionMap().put("right", this.new ArrowKeyAction("right"));
+
+        panel.getInputMap().put(KeyStroke.getKeyStroke("DOWN"), "down");
+        panel.getActionMap().put("down", this.new ArrowKeyAction("down"));
+
+        panel.getInputMap().put(KeyStroke.getKeyStroke("UP"), "up");
+        panel.getActionMap().put("up", this.new ArrowKeyAction("up"));
+
+        int commandKey = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
+
+        panel.getInputMap().put(
+                KeyStroke.getKeyStroke(KeyEvent.VK_E, commandKey), "LV ENDO");
+        panel.getActionMap().put("LV ENDO",
+                this.new ControlKeyAction("LV ENDO", this));
+
+        panel.getInputMap().put(
+                KeyStroke.getKeyStroke(KeyEvent.VK_R, commandKey), "LV EPI");
+        panel.getActionMap().put("LV EPI",
+                this.new ControlKeyAction("LV EPI", this));
+
+        panel.getInputMap().put(
+                KeyStroke.getKeyStroke(KeyEvent.VK_D, commandKey),
+                "Delete Contour");
+        panel.getActionMap().put("Delete Contour",
+                this.new ControlKeyAction("Delete Contour", this));
+
+        panel.getInputMap().put(
+                KeyStroke.getKeyStroke(KeyEvent.VK_D, commandKey
+                        | InputEvent.SHIFT_MASK), "Delete Contours");
+        panel.getActionMap().put("Delete Contours",
+                this.new ControlKeyAction("Delete All Contours", this));
+
+        panel.getInputMap().put(
+                KeyStroke.getKeyStroke(KeyEvent.VK_G, commandKey
+                        | InputEvent.SHIFT_MASK), "Hide Contours");
+        panel.getActionMap().put("Hide Contours",
+                this.new ControlKeyAction("Hide Contours", this));
+
+        panel.getInputMap().put(
+                KeyStroke.getKeyStroke(KeyEvent.VK_G, commandKey),
+                "Hide Contour");
+        panel.getActionMap().put("Hide Contour",
+                this.new ControlKeyAction("Hide Contour", this));
+
+        panel.getInputMap().put(
+                KeyStroke.getKeyStroke(KeyEvent.VK_F, commandKey),
+                "Show Contours");
+        panel.getActionMap().put("Show Contours",
+                this.new ControlKeyAction("Show Contours", this));
+        
+        panel.getInputMap().put(
+                KeyStroke.getKeyStroke(KeyEvent.VK_F, commandKey),
+                "Show Contours");
+        panel.getActionMap().put("Show Contours",
+                this.new ControlKeyAction("Show Contours", this));
+    }
+    private void addKeyBindings(JScrollPane panel) {
+        panel.getInputMap().put(KeyStroke.getKeyStroke("LEFT"), "left");
+        panel.getActionMap().put("left", this.new ArrowKeyAction("left"));
+
+        panel.getInputMap().put(KeyStroke.getKeyStroke("RIGHT"), "right");
+        panel.getActionMap().put("right", this.new ArrowKeyAction("right"));
+
+        panel.getInputMap().put(KeyStroke.getKeyStroke("DOWN"), "down");
+        panel.getActionMap().put("down", this.new ArrowKeyAction("down"));
+
+        panel.getInputMap().put(KeyStroke.getKeyStroke("UP"), "up");
+        panel.getActionMap().put("up", this.new ArrowKeyAction("up"));
+
+        int commandKey = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
+
+        panel.getInputMap().put(
+                KeyStroke.getKeyStroke(KeyEvent.VK_E, commandKey), "LV ENDO");
+        panel.getActionMap().put("LV ENDO",
+                this.new ControlKeyAction("LV ENDO", this));
+
+        panel.getInputMap().put(
+                KeyStroke.getKeyStroke(KeyEvent.VK_R, commandKey), "LV EPI");
+        panel.getActionMap().put("LV EPI",
+                this.new ControlKeyAction("LV EPI", this));
+
+        panel.getInputMap().put(
+                KeyStroke.getKeyStroke(KeyEvent.VK_D, commandKey),
+                "Delete Contour");
+        panel.getActionMap().put("Delete Contour",
+                this.new ControlKeyAction("Delete Contour", this));
+
+        panel.getInputMap().put(
+                KeyStroke.getKeyStroke(KeyEvent.VK_D, commandKey
+                        | InputEvent.SHIFT_MASK), "Delete Contours");
+        panel.getActionMap().put("Delete Contours",
+                this.new ControlKeyAction("Delete All Contours", this));
+
+        panel.getInputMap().put(
+                KeyStroke.getKeyStroke(KeyEvent.VK_G, commandKey
+                        | InputEvent.SHIFT_MASK), "Hide Contours");
+        panel.getActionMap().put("Hide Contours",
+                this.new ControlKeyAction("Hide Contours", this));
+
+        panel.getInputMap().put(
+                KeyStroke.getKeyStroke(KeyEvent.VK_G, commandKey),
+                "Hide Contour");
+        panel.getActionMap().put("Hide Contour",
+                this.new ControlKeyAction("Hide Contour", this));
+
+        panel.getInputMap().put(
+                KeyStroke.getKeyStroke(KeyEvent.VK_F, commandKey),
+                "Show Contours");
+        panel.getActionMap().put("Show Contours",
+                this.new ControlKeyAction("Show Contours", this));
+        
+        panel.getInputMap().put(
+                KeyStroke.getKeyStroke(KeyEvent.VK_F, commandKey),
+                "Show Contours");
+        panel.getActionMap().put("Show Contours",
+                this.new ControlKeyAction("Show Contours", this));
+    }
+    private void addKeyBindings(JComponent panel) {
         panel.getInputMap().put(KeyStroke.getKeyStroke("LEFT"), "left");
         panel.getActionMap().put("left", this.new ArrowKeyAction("left"));
 

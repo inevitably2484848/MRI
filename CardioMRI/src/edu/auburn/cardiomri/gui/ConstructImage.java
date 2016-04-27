@@ -4,6 +4,7 @@ import java.awt.Dimension;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
+import java.awt.Image;
 import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.Transparency;
@@ -519,6 +520,8 @@ public class ConstructImage extends SourceImage {
         }
     }
     
+
+    
     /**
      * 
      * Buffers image details
@@ -629,8 +632,22 @@ public class ConstructImage extends SourceImage {
 
         WritableRaster wr = Raster.createWritableRaster(sm, buf,
                 new Point(0, 0));
+        
+        BufferedImage unscaledImage = new BufferedImage(cm, wr, true, null);
+//        System.out.println("Components before scaling: " + unscaledImage.getColorModel().getNumComponents());
+//        BufferedImage scaledImage = applyScaleFactor(unscaledImage, cm, wr); // this does zooming... Brad
+//        System.out.println("Components after scaling: " + scaledImage.getColorModel().getNumComponents());
 
-        return new BufferedImage(cm, wr, true, null);
+        return unscaledImage;
+    }
+    
+    public static BufferedImage applyScaleFactor(BufferedImage image, ComponentColorModel cm, WritableRaster wr){
+    	int scaleX = (int) (image.getWidth() * 1.25);
+    	int scaleY = (int) (image.getHeight() * 1.25);
+    	Image newImg = image.getScaledInstance(scaleX, scaleY, Image.SCALE_SMOOTH);
+    	BufferedImage i = new BufferedImage(cm, wr, true, null);
+    	i.getGraphics().drawImage(newImg, 0, 0 , null);
+    	return i;
     }
     
     /**

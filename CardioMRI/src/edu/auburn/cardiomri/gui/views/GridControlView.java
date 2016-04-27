@@ -64,6 +64,7 @@ public class GridControlView extends View implements ChangeListener {
 	protected JButton hideLandmarks;
 	protected JButton hideSliceLines;
 	protected JButton showSliceLines;
+	protected JButton zoomIn;
 	
 	
 	
@@ -225,6 +226,15 @@ public class GridControlView extends View implements ChangeListener {
         s.gridx = 0;
         s.gridy = 0;
 		sliceLinesButtons.add(showSliceLines, s);
+		
+		zoomIn = new JButton("Zoom In");
+		zoomIn.addActionListener(this);
+		zoomIn.setActionCommand("zoomIn");
+		zoomIn.setToolTipText("Zoom In");
+		s.weightx = 0;
+        s.gridx = 0;
+        s.gridy = 1;
+		sliceLinesButtons.add(zoomIn, s);
 		
 		c.weightx = 0;
 		c.gridwidth = 3;
@@ -429,14 +439,18 @@ public class GridControlView extends View implements ChangeListener {
         	depressToggles();
         	getImageModel().showSliceLines();
         }
+        else if(actionCommand.equals("zoomIn")) {
+        	getImageModel().increaseScaleFactor();
+        	getImageModel().refresh();
+        }
         
         
         // Removed 3/25/2016 due to issues with depressToggles()
         
-//        if(getImageModel().getSelectedContour() != null){
-//        	getImageModel().setSelectedContour(null);
-//        }
-//        
+//      if(getImageModel().getSelectedContour() != null){
+//      	getImageModel().setSelectedContour(null);
+//      }
+//  
 
     } 
     

@@ -783,4 +783,10 @@ public class ImageModel extends Model {
 	public void setShowSliceLines(boolean showSliceLines) {
 		this.showSliceLines = showSliceLines;
 	}
+	public void increaseScaleFactor(){
+		dImage.setScaleFactor(dImage.getScaleFactor() + .25);
+	}
+	public void decreaseScaleFactor(){
+		dImage.setScaleFactor(dImage.getScaleFactor() - .25);
+	}
 }
